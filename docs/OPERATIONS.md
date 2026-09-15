@@ -99,7 +99,8 @@ validée avec Actionlint. Il est prêt pour sa première exécution dans le dép
 créé après autorisation explicite de Franck.
 
 Il utilise `windows-2022`, Visual Studio 2022 du runner, Qt 6.10.0 et MSYS2.
-Les actions sont fixées par commit. Déclenchement manuel uniquement, droits du
+Les actions sont fixées par commit. Pystache 0.6.8 est installé via pip dans
+le Python MSYS2 : le paquet MSYS2 `python-pystache` est indisponible. Déclenchement manuel uniquement, droits du
 workflow limités à la lecture du contenu ; aucune publication de release et
 aucun accès Asterisk nécessaires. Les dépendances système MSYS2 évoluent avec
 leur dépôt : le build reste à valider sur le runner, notamment l’espace disque.

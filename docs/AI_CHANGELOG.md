@@ -69,3 +69,11 @@
 - Contrôles : fichiers publiables inspectés, absence de motifs de jetons et clés
   privées vérifiée, Actionlint réussi. Première compilation Windows à lancer.
 - Aucune modification du PBX, donnée client ou infrastructure de production.
+
+## 2026-09-15 — Correction du premier essai Windows
+
+- Run GitHub `34979644374` : sources personnalisées et Qt installés ; arrêt
+  avant compilation car `mingw-w64-x86_64-python-pystache` est introuvable.
+- Installation de Pystache 0.6.8 via pip dans le Python MSYS2 ; autres paquets
+  conservés. Actionlint vérifié, nouvelle compilation à lancer.
+- Aucun changement applicatif, migration ou impact production.

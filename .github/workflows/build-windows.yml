@@ -55,7 +55,6 @@ jobs:
             base-devel git patch diffutils make
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-python-pip
-            mingw-w64-x86_64-python-pystache
             mingw-w64-x86_64-python-six
             mingw-w64-x86_64-doxygen
             mingw-w64-x86_64-yasm
@@ -68,6 +67,13 @@ jobs:
             mingw-w64-x86_64-glib2
             mingw-w64-x86_64-pkgconf
             perl intltool
+
+      - name: Install the SDK template generator
+        env:
+          APISNIX_MSYS_ROOT: ${{ steps.msys2.outputs.msys2-location }}
+        run: |
+          & "$env:APISNIX_MSYS_ROOT\mingw64\bin\python.exe" -m pip install --disable-pip-version-check pystache==0.6.8
+          if ($LASTEXITCODE -ne 0) { throw 'Pystache installation failed.' }
 
       - name: Build and package Windows x64
         env:

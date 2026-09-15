@@ -46,7 +46,10 @@ existantes. Les protocoles du moteur sont conservés.
   avancés conservés. Nom et futur exécutable personnalisés.
 - Syntaxe des deux fichiers QML modifiés vérifiée avec Qt 6.10.3.
 - Script Windows et workflow GitHub Actions préparés d'après le build amont ;
-  **non exécutés sur Windows**. Workflow validé statiquement avec Actionlint 1.7.12.
+  **première exécution lancée sur GitHub**. Préparation des sources et installation
+  Qt réussies. Premier essai arrêté sur un paquet MSYS2 Pystache indisponible ;
+  procédure corrigée pour installer Pystache 0.6.8 avec pip. Aucun `.exe` produit.
+  Workflow validé statiquement avec Actionlint 1.7.12.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
   avec Qt. Les interfaces Windows complètes restent à tester.
 - Aucun `.exe` créé : le Mac actuel ne dispose pas de l'environnement MSVC/Qt
