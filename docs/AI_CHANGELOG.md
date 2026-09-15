@@ -77,3 +77,20 @@
 - Installation de Pystache 0.6.8 via pip dans le Python MSYS2 ; autres paquets
   conservés. Actionlint vérifié, nouvelle compilation à lancer.
 - Aucun changement applicatif, migration ou impact production.
+
+## 2026-09-15 — Sources SDK accessibles pour le build Windows
+
+- Run `34980016908` : outils et Pystache installés ; échec de connexion au
+  GitLab Linphone pendant le clonage du SDK, avant compilation C++.
+- Ajout d’un verrou des sources SDK et de leur préparation contrôlée. SDK
+  sur miroir officiel GitHub ; 30 dépendances disponibles aux commits
+  d’origine, certaines sur miroir communautaire. Pas de remplacement par
+  une branche ou une version différente.
+- RNNoise désactivé pour le pilote Windows : le commit requis est inaccessible.
+  Transports conservés et SDK Android inchangé. Python CMake sélectionné
+  explicitement pour utiliser les modules installés dans MSYS2.
+- Préparation complète du SDK exécutée localement avec succès : SDK et
+  30 dépendances vérifiés contre les gitlinks officiels. Syntaxe Python,
+  Actionlint et diff contrôlés. Documentation
+  d’architecture, opérations et état mise à jour dans le même commit.
+- Aucun accès téléphonique, changement de production ou migration.

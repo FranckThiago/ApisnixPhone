@@ -25,7 +25,7 @@ moteur existant. Aucun serveur intermédiaire APISNIX supplémentaire n'a été 
 | Android | Linphone Android 6.2.7 | `1fde063979b68608e10a043b981e5ddd829a3a9e` |
 | Moteur Android | SDK Maven Linphone | `5.5.21` |
 | Desktop | Linphone Desktop 6.2.2 | `29e500257525bb1b10668f09bfd6c485fb27fa87` |
-| Moteur Desktop | Sous-module amont `external/linphone-sdk` | Révision inscrite dans le commit Desktop ; pas encore compilée |
+| Moteur Desktop | Sous-module amont `external/linphone-sdk` | Révision `29c17f19aead75a838e50bb37317e7ca8eb20f02`, verrouillée dans `desktop-sdk.lock.json` ; pas encore compilée |
 
 `sources.lock.json` fait autorité sur les dépôts, tags et commits. Le moteur
 Android est fixé dans `gradle/libs.versions.toml`. Les autres dépendances amont
@@ -39,6 +39,11 @@ sont conservées ; il ne s'agit pas d'une garantie de build identique bit pour b
   application du patch ; refuse de remplacer un dossier existant.
 - `scripts/export-patches.py` : sauvegarde des changements suivis par Git,
   avec contrôle du commit de base et refus des nouveaux fichiers non suivis.
+- `desktop-sdk.lock.json` et `scripts/prepare-desktop-sdk.py` : miroir officiel
+  GitHub du SDK et URLs des dépendances, vérifiées contre les commits Git
+  inscrits dans l’arbre du SDK. Les dépendances externes sans miroir officiel
+  accessible utilisent les copies publiques `a791143125-arch/external-*` ; aucune
+  branche de ces miroirs n’est choisie à la place du commit d’origine.
 - `scripts/build-*` : construction des fichiers de test.
 - `.github/workflows/build-windows.yml` : build Windows x64 déclenché manuellement,
   Windows Server 2022, Qt 6.10.0, dépendances MSYS2, installateur conservé 14 jours.
@@ -58,7 +63,11 @@ Ne pas remplacer le paramètre interne `default_domain` par le domaine APISNIX :
 la base s'en sert pour distinguer les comptes Linphone/Flexisip des comptes SIP
 tiers. Utiliser `assistant_third_party_sip_account_domain` pour notre serveur.
 
-Le chat et les réunions sont masqués, mais le moteur conserve ses capacités.
+Le chat et les réunions sont masqués. Les transports SIP restent conservés.
+Pour le pilote Windows, `ENABLE_RNNOISE=OFF` désactive le réducteur de bruit
+RNNoise : son commit exact n’est pas disponible via un miroir accessible.
+L’annulation d’écho WebRTC reste activée par défaut. Ce compromis est propre
+au build Windows ; le SDK Android n’est pas modifié.
 L'adaptation ne prétend pas avoir retiré toute la vidéo ou tous les écrans amont.
 
 L'envoi de logs et la recherche de mise à jour vers les services Linphone sont

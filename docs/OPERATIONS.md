@@ -77,7 +77,7 @@ nécessiter la désinstallation du pilote et une nouvelle saisie des accès.
 
 Machine Windows x64 avec Visual Studio 2022 (C++/Windows SDK), Qt 6.10 ou plus
 récent avec kit MSVC x64, NetworkAuth et ShaderTools, CMake/CPack, NSIS, Git et
-les dépendances MSYS2 du SDK. Le PDF et le gestionnaire de crash sont désactivés
+les dépendances MSYS2 du SDK. Le PDF, le gestionnaire de crash et RNNoise sont désactivés
 pour ce build. Voir aussi `apps/desktop/README.md` pour les dépendances amont.
 
 Depuis un environnement développeur Visual Studio, exemple à adapter :
@@ -86,7 +86,8 @@ Depuis un environnement développeur Visual Studio, exemple à adapter :
 ./scripts/build-windows.ps1 -QtRoot 'C:\Qt\6.10.0\msvc2022_64' -Jobs 4
 ```
 
-Le script initialise le SDK, compile, appelle l'installation/packaging amont
+Le script prépare le SDK avec `prepare-desktop-sdk.py`, compile, appelle
+l’installation/packaging amont
 et récupère les `.exe` dans `dist/windows/`. Les vérifications d'outils Windows
 amont peuvent installer des dépendances MSYS2 manquantes. Utiliser une machine
 de compilation dédiée. Cette procédure reste à éprouver en environnement réel.
@@ -102,7 +103,17 @@ Il utilise `windows-2022`, Visual Studio 2022 du runner, Qt 6.10.0 et MSYS2.
 Les actions sont fixées par commit. Pystache 0.6.8 est installé via pip dans
 le Python MSYS2 : le paquet MSYS2 `python-pystache` est indisponible. Déclenchement manuel uniquement, droits du
 workflow limités à la lecture du contenu ; aucune publication de release et
-aucun accès Asterisk nécessaires. Les dépendances système MSYS2 évoluent avec
+aucun accès Asterisk nécessaires. Le GitLab Linphone étant inaccessible depuis le runner, les sources du SDK
+sont obtenues sur GitHub. `desktop-sdk.lock.json` conserve chaque URL et commit.
+La préparation contrôle les commits d’origine inscrits dans Desktop/SDK, refuse
+les révisions et changements locaux inattendus, puis vérifie les checkouts.
+Le SDK utilise son miroir officiel ; plusieurs dépendances utilisent un miroir
+communautaire au même commit Git. Ne pas suivre les branches de ces miroirs.
+RNNoise est omis explicitement et désactivé dans CMake pour le pilote Windows.
+Le Python utilisé par CMake est celui qui reçoit Pystache, pour éviter les
+interférences avec le Python installé par l’action Qt.
+
+Les dépendances système MSYS2 évoluent avec
 leur dépôt : le build reste à valider sur le runner, notamment l’espace disque.
 
 Après publication : onglet Actions → ApisnixPhone Windows installer → Run workflow.

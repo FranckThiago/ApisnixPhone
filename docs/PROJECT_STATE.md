@@ -45,16 +45,19 @@ existantes. Les protocoles du moteur sont conservés.
 - Sources du client Desktop 6.2.2 adaptées, formulaire réduit et paramètres
   avancés conservés. Nom et futur exécutable personnalisés.
 - Syntaxe des deux fichiers QML modifiés vérifiée avec Qt 6.10.3.
-- Script Windows et workflow GitHub Actions préparés d'après le build amont ;
-  **première exécution lancée sur GitHub**. Préparation des sources et installation
-  Qt réussies. Premier essai arrêté sur un paquet MSYS2 Pystache indisponible ;
-  procédure corrigée pour installer Pystache 0.6.8 avec pip. Aucun `.exe` produit.
-  Workflow validé statiquement avec Actionlint 1.7.12.
+- Deux exécutions GitHub réalisées : préparation des sources, Qt, MSYS2 et
+  Pystache réussis après correction. Le second run `34980016908` s’arrête au
+  téléchargement du SDK, car GitLab Linphone est inaccessible depuis le runner.
+- Préparation du SDK adaptée pour utiliser des miroirs GitHub, avec contrôle
+  des commits d’origine pour le SDK et 30 dépendances. RNNoise temporairement
+  désactivé sur Windows, son commit exact étant inaccessible ; transports SIP
+  conservés. Préparation complète du SDK validée localement. Nouveau build à
+  lancer ; aucun `.exe` produit à ce stade.
+- Workflow validé statiquement avec Actionlint 1.7.12.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
   avec Qt. Les interfaces Windows complètes restent à tester.
-- Aucun `.exe` créé : le Mac actuel ne dispose pas de l'environnement MSVC/Qt
-  Windows. Il faut une machine de compilation Windows locale ou distante.
-  Le poste prévu pour tester n'a pas besoin de devenir cette machine.
+- La machine de compilation Windows est fournie par GitHub Actions. Le poste
+  prévu pour tester n’a besoin que du futur installateur.
 
 ## Limites avant remise aux clients
 
@@ -64,7 +67,7 @@ existantes. Les protocoles du moteur sont conservés.
 2. Terminer la revue des écrans secondaires : certains liens d'aide et de
    confidentialité restent ceux de Linphone. Ne pas présenter ces liens comme
    la politique APISNIX. Les mentions de licence et d'auteur doivent rester.
-3. Lancer la première compilation Windows depuis le dépôt GitHub autorisé
+3. Achever la compilation Windows depuis le dépôt GitHub autorisé
    et corriger les éventuels problèmes du runner. Tester
    l’installateur Windows et l’APK sur les appareils de Franck.
 4. Vérifier connexion Asterisk, audio bidirectionnel, DTMF, casques, erreurs et
