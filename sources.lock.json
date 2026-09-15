@@ -1,0 +1,14 @@
+{
+  "android": {
+    "url": "https://github.com/BelledonneCommunications/linphone-android.git",
+    "tag": "6.2.7",
+    "commit": "1fde063979b68608e10a043b981e5ddd829a3a9e",
+    "remove_upstream_files": ["app/google-services.json", "keystore.properties"]
+  },
+  "desktop": {
+    "url": "https://github.com/BelledonneCommunications/linphone-desktop.git",
+    "tag": "6.2.2",
+    "commit": "29e500257525bb1b10668f09bfd6c485fb27fa87",
+    "remove_upstream_files": []
+  }
+}

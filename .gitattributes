@@ -1,0 +1,4 @@
+* text=auto
+# Unified diff context contains significant leading/trailing spaces.
+patches/*.patch text eol=lf -whitespace
+*.sh text eol=lf
