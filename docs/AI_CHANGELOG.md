@@ -94,3 +94,12 @@
   Actionlint et diff contrôlés. Documentation
   d’architecture, opérations et état mise à jour dans le même commit.
 - Aucun accès téléphonique, changement de production ou migration.
+
+## 2026-09-15 — Chemins Windows compatibles avec CMake
+
+- Run `34983081292` : récupération SDK réussie ; configuration arrêtée par
+  un antislash du chemin Qt interprété comme échappement dans `try_compile`.
+- Normalisation des chemins Qt, Qt6_DIR, QT_ROOT_DIR et Python vers des slashs
+  dans le script Windows. Aucun changement du code applicatif ou du SDK.
+- Diff contrôlé ; validation effective par la prochaine exécution Windows.
+  État et procédure mis à jour avec le correctif. Aucun impact production.

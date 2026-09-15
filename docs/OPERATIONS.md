@@ -95,7 +95,7 @@ de compilation dédiée. Cette procédure reste à éprouver en environnement r�
 ### Compilation en ligne choisie : GitHub Actions
 
 Le workflow `.github/workflows/build-windows.yml` est préparé et sa syntaxe
-validée avec Actionlint. Il est prêt pour sa première exécution dans le dépôt public
+validée avec Actionlint. Il est exécuté dans le dépôt public
 [FranckThiago/ApisnixPhone](https://github.com/FranckThiago/ApisnixPhone),
 créé après autorisation explicite de Franck.
 
@@ -111,7 +111,9 @@ Le SDK utilise son miroir officiel ; plusieurs dépendances utilisent un miroir
 communautaire au même commit Git. Ne pas suivre les branches de ces miroirs.
 RNNoise est omis explicitement et désactivé dans CMake pour le pilote Windows.
 Le Python utilisé par CMake est celui qui reçoit Pystache, pour éviter les
-interférences avec le Python installé par l’action Qt.
+interférences avec le Python installé par l’action Qt. Les chemins Qt et Python
+sont normalisés avec des slashs avant leur passage à CMake, car les antislashs
+Windows peuvent devenir des échappements dans les projets de test générés.
 
 Les dépendances système MSYS2 évoluent avec
 leur dépôt : le build reste à valider sur le runner, notamment l’espace disque.

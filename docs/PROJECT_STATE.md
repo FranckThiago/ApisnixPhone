@@ -45,15 +45,14 @@ existantes. Les protocoles du moteur sont conservés.
 - Sources du client Desktop 6.2.2 adaptées, formulaire réduit et paramètres
   avancés conservés. Nom et futur exécutable personnalisés.
 - Syntaxe des deux fichiers QML modifiés vérifiée avec Qt 6.10.3.
-- Deux exécutions GitHub réalisées : préparation des sources, Qt, MSYS2 et
-  Pystache réussis après correction. Le second run `34980016908` s’arrête au
-  téléchargement du SDK, car GitLab Linphone est inaccessible depuis le runner.
-- Préparation du SDK adaptée pour utiliser des miroirs GitHub, avec contrôle
-  des commits d’origine pour le SDK et 30 dépendances. RNNoise temporairement
-  désactivé sur Windows, son commit exact étant inaccessible ; transports SIP
-  conservés. Préparation complète du SDK validée localement. Nouveau build à
-  lancer ; aucun `.exe` produit à ce stade.
-- Workflow validé statiquement avec Actionlint 1.7.12.
+- Run `34983081292` : récupération du SDK réussie, puis configuration CMake
+  engagée. Arrêt sur un chemin Qt Windows contenant des antislashs interprétés
+  comme échappements dans un test de compilation généré.
+- Les chemins Qt et Python transmis à CMake sont désormais normalisés avec
+  des slashs. Relance nécessaire pour valider la configuration puis la compilation.
+- SDK et 30 dépendances restent verrouillés aux commits d’origine. RNNoise
+  temporairement désactivé sur Windows ; transports SIP conservés.
+- Aucun `.exe` produit à ce stade. Workflow validé avec Actionlint 1.7.12.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
   avec Qt. Les interfaces Windows complètes restent à tester.
 - La machine de compilation Windows est fournie par GitHub Actions. Le poste

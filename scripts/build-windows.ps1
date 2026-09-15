@@ -16,16 +16,19 @@ if (-not (Test-Path (Join-Path $QtRoot 'lib/cmake/Qt6/Qt6Config.cmake'))) {
 if (-not (Test-Path (Join-Path $sourceRoot 'CMakeLists.txt'))) {
     throw 'Prepare the sources first: python scripts/prepare-sources.py desktop'
 }
+# CMake embeds these paths in generated source; backslashes can become escapes.
+$QtRoot = (Resolve-Path -LiteralPath $QtRoot).Path.Replace('\', '/')
 function Invoke-Checked {
     param([string]$Program, [string[]]$Arguments)
     & $Program @Arguments
     if ($LASTEXITCODE -ne 0) { throw "$Program failed with exit code $LASTEXITCODE" }
 }
 $env:PATH = (Join-Path $QtRoot 'bin') + ';' + $env:PATH
-$env:Qt6_DIR = Join-Path $QtRoot 'lib/cmake/Qt6'
+$env:Qt6_DIR = "$QtRoot/lib/cmake/Qt6"
+$env:QT_ROOT_DIR = $QtRoot
 Invoke-Checked 'git' @('-C', $sourceRoot, 'status', '--short')
 Invoke-Checked 'python' @((Join-Path $PSScriptRoot 'prepare-desktop-sdk.py'))
-$pythonExecutable = (Get-Command python).Source
+$pythonExecutable = (Get-Command python).Source.Replace('\', '/')
 Invoke-Checked 'cmake' @(
     '-S', $sourceRoot, '-B', $buildRoot,
     '-G', 'Visual Studio 17 2022', '-A', 'x64',
