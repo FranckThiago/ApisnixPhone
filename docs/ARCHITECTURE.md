@@ -25,7 +25,7 @@ moteur existant. Aucun serveur intermédiaire APISNIX supplémentaire n'a été 
 | Android | Linphone Android 6.2.7 | `1fde063979b68608e10a043b981e5ddd829a3a9e` |
 | Moteur Android | SDK Maven Linphone | `5.5.21` |
 | Desktop | Linphone Desktop 6.2.2 | `29e500257525bb1b10668f09bfd6c485fb27fa87` |
-| Moteur Desktop | Sous-module amont `external/linphone-sdk` | Révision `29c17f19aead75a838e50bb37317e7ca8eb20f02`, verrouillée dans `desktop-sdk.lock.json` ; pas encore compilée |
+| Moteur Desktop | Sous-module amont `external/linphone-sdk` | Révision `29c17f19aead75a838e50bb37317e7ca8eb20f02`, verrouillée dans `desktop-sdk.lock.json` ; compilée sur Windows x64 |
 
 `sources.lock.json` fait autorité sur les dépôts, tags et commits. Le moteur
 Android est fixé dans `gradle/libs.versions.toml`. Les autres dépendances amont

@@ -73,7 +73,7 @@ clé dans un espace sûr : les mises à jour doivent garder la même identité d
 signature. Une version finale signée autrement que le pilote debug pourra
 nécessiter la désinstallation du pilote et une nouvelle saisie des accès.
 
-## Windows — procédure préparée, non validée
+## Windows — compilation et packaging exécutés avec succès
 
 Machine Windows x64 avec Visual Studio 2022 (C++/Windows SDK), Qt 6.10 ou plus
 récent avec kit MSVC x64, NetworkAuth et ShaderTools, CMake/CPack, NSIS, Git et
@@ -90,7 +90,8 @@ Le script prépare le SDK avec `prepare-desktop-sdk.py`, compile, appelle
 l’installation/packaging amont
 et récupère les `.exe` dans `dist/windows/`. Les vérifications d'outils Windows
 amont peuvent installer des dépendances MSYS2 manquantes. Utiliser une machine
-de compilation dédiée. Cette procédure reste à éprouver en environnement réel.
+de compilation dédiée. Cette procédure a réussi sur le runner GitHub Windows ;
+l'installation et l'exécution du softphone sur un PC utilisateur restent à tester.
 
 ### Compilation en ligne choisie : GitHub Actions
 
@@ -115,11 +116,11 @@ interférences avec le Python installé par l’action Qt. Les chemins Qt et Pyt
 sont normalisés avec des slashs avant leur passage à CMake, car les antislashs
 Windows peuvent devenir des échappements dans les projets de test générés.
 
-Les dépendances système MSYS2 évoluent avec
-leur dépôt : le build reste à valider sur le runner, notamment l’espace disque.
+Les dépendances système MSYS2 évoluent avec leur dépôt. La compilation a réussi
+dans le run `34985036963` ; une reconstruction ultérieure reste à contrôler.
 
 Après publication : onglet Actions → ApisnixPhone Windows installer → Run workflow.
-Le résultat attendu est l’archive `ApisnixPhone-Windows-x64-test`, conservée
+Le résultat est l’archive `ApisnixPhone-Windows-x64-test`, conservée
 14 jours, contenant le `.exe` non signé et son empreinte SHA-256. Télécharger
 et extraire cette archive, puis installer le `.exe` sur le poste de test.
 
@@ -127,9 +128,28 @@ Les runners standard sont gratuits pour les dépôts publics. Un dépôt privé
 consomme le quota du compte, puis peut être facturé. Source consultée le
 15 septembre 2026 : [documentation GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 Aucun achat. Le dépôt public et le lancement de la compilation ont été
-autorisés le 15 septembre 2026 ; aucun installateur Windows validé à ce stade.
+autorisés le 15 septembre 2026. Compilation et packaging validés ; installation
+sur un PC utilisateur et appels SIP non testés.
 Le poste de test n’a besoin que de l’installateur ; la signature Windows de
 diffusion reste à organiser.
+
+### Pilote Windows disponible
+
+- Fichier : `dist/windows/ApisnixPhone-6.2.2-win64.exe`.
+- Taille : 156 770 423 octets (environ 150 Mio).
+- SHA-256 : `b296a10522e795e1cbc012d2f171962fe4c07a9a5609bbcc8c350b3cf0229260`.
+- [Compilation réussie](https://github.com/FranckThiago/ApisnixPhone/actions/runs/34985036963),
+  commit `a3ae95be325337a0ddcc21777705f8e1e8a27bf5`.
+- Artefact `ApisnixPhone-Windows-x64-test` récupéré le 15 septembre 2026 ;
+  empreinte comparée à `SHA256SUMS` du runner, en-tête PE x64 vérifié localement.
+  Le binaire n'a pas été exécuté sur le Mac.
+
+Transférer l'installateur au PC Windows x64, l'ouvrir puis lancer ApisnixPhone.
+Le pilote n'est pas signé avec un certificat de diffusion : Windows peut
+afficher un avertissement d'éditeur inconnu. Le domaine est préconfiguré ;
+saisir l'identifiant et le mot de passe de test puis vérifier un appel avec
+audio dans les deux sens. Ne pas distribuer ce pilote comme version client
+validée avant les essais ci-dessous.
 
 ## Mise à jour des logos
 

@@ -45,14 +45,17 @@ existantes. Les protocoles du moteur sont conservés.
 - Sources du client Desktop 6.2.2 adaptées, formulaire réduit et paramètres
   avancés conservés. Nom et futur exécutable personnalisés.
 - Syntaxe des deux fichiers QML modifiés vérifiée avec Qt 6.10.3.
-- Run `34983081292` : récupération du SDK réussie, puis configuration CMake
-  engagée. Arrêt sur un chemin Qt Windows contenant des antislashs interprétés
-  comme échappements dans un test de compilation généré.
-- Les chemins Qt et Python transmis à CMake sont désormais normalisés avec
-  des slashs. Relance nécessaire pour valider la configuration puis la compilation.
+- Run `34985036963` réussi le 15 septembre 2026 : SDK et client compilés,
+  installateur produit et artefact GitHub téléversé. Commit de construction
+  `a3ae95be325337a0ddcc21777705f8e1e8a27bf5`.
+- La normalisation des chemins Qt/Python corrige l'échec CMake précédent.
 - SDK et 30 dépendances restent verrouillés aux commits d’origine. RNNoise
   temporairement désactivé sur Windows ; transports SIP conservés.
-- Aucun `.exe` produit à ce stade. Workflow validé avec Actionlint 1.7.12.
+- Installateur `.exe` de test non signé produit pour Windows x64.
+  Workflow validé avec Actionlint 1.7.12 et exécution complète réussie.
+- Fichier récupéré dans `dist/windows/ApisnixPhone-6.2.2-win64.exe` ; empreinte
+  SHA-256 identique à celle du runner et en-tête PE x64 vérifiés sur le Mac.
+  Aucun lancement du binaire Windows effectué. Voir les opérations pour le hash.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
   avec Qt. Les interfaces Windows complètes restent à tester.
 - La machine de compilation Windows est fournie par GitHub Actions. Le poste
@@ -66,9 +69,9 @@ existantes. Les protocoles du moteur sont conservés.
 2. Terminer la revue des écrans secondaires : certains liens d'aide et de
    confidentialité restent ceux de Linphone. Ne pas présenter ces liens comme
    la politique APISNIX. Les mentions de licence et d'auteur doivent rester.
-3. Achever la compilation Windows depuis le dépôt GitHub autorisé
-   et corriger les éventuels problèmes du runner. Tester
-   l’installateur Windows et l’APK sur les appareils de Franck.
+3. Tester l’installateur Windows et l’APK sur les appareils de Franck.
+   Les deux compilations ont réussi ; cela ne valide pas leur fonctionnement
+   sur un appareil réel.
 4. Vérifier connexion Asterisk, audio bidirectionnel, DTMF, casques, erreurs et
    reconnexion réseau avec des comptes de test dédiés.
 5. Préparer signatures de distribution, sources correspondantes et procédure

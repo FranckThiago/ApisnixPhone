@@ -103,3 +103,17 @@
   dans le script Windows. Aucun changement du code applicatif ou du SDK.
 - Diff contrôlé ; validation effective par la prochaine exécution Windows.
   État et procédure mis à jour avec le correctif. Aucun impact production.
+
+## 2026-09-15 — Installateur Windows de test disponible
+
+- Run `34985036963` réussi : SDK, application et packaging Windows x64 compilés
+  depuis `a3ae95be325337a0ddcc21777705f8e1e8a27bf5`.
+- Artefact récupéré dans `dist/windows/` : `ApisnixPhone-6.2.2-win64.exe`,
+  156 770 423 octets. SHA-256 identique au manifeste du runner et en-tête PE x64
+  vérifiés localement. Aucun binaire ajouté aux sources Git.
+- README, état, architecture et opérations actualisés avec la procédure de
+  test. Contrôle du diff documentaire. Aucune modification du code applicatif.
+- Limites : pilote non signé pour diffusion ; installation, interface sur PC,
+  audio et appels SIP non testés. Identifiants de test attendus de Franck.
+- Aucune migration ou modification du PBX. Suivi automatique à mettre en pause
+  lors de la remise de l'installateur.

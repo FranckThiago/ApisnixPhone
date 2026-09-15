@@ -9,13 +9,16 @@ SIP UDP par défaut, autres transports conservés dans les réglages avancés.
 
 - **Android** : premier APK de test compilé, nom et connexion personnalisés.
   Android 9 minimum, ARM 32/64 bits. Logo APISNIX intégré ; appels non testés.
-- **Windows** : sources et icônes personnalisées ; procédure GitHub Actions préparée,
-  première compilation en ligne restant à lancer.
+- **Windows** : installateur de test x64 compilé avec succès sur GitHub Actions,
+  nom et icônes personnalisés. Installation sur PC et appels réels à tester.
 - **Mac et iPhone** : extensions possibles, aucun installateur produit.
 
 Le fichier Android provisoire se trouve dans
 `dist/android/apisnixphone-android-debug-6.2.7-apisnix.2.apk`.
 Il utilise une signature de développement et n'est pas une version client finale.
+
+L'installateur Windows de test est `dist/windows/ApisnixPhone-6.2.2-win64.exe`
+(environ 150 Mio), non signé. Voir la procédure de test dans les opérations.
 
 ## Documentation
 
