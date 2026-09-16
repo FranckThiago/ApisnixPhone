@@ -35,7 +35,8 @@ Invoke-Checked 'cmake' @(
     "-DCMAKE_PREFIX_PATH=$QtRoot", "-DPython3_EXECUTABLE=$pythonExecutable", '-DCMAKE_BUILD_TYPE=RelWithDebInfo',
     '-DENABLE_WINDOWS_TOOLS_CHECK=ON', '-DENABLE_APP_PACKAGING=ON',
     '-DENABLE_APP_LICENSE=ON', '-DENABLE_UPDATE_CHECK=OFF', '-DENABLE_CRASH_HANDLER=OFF',
-    '-DENABLE_APP_PDF_VIEWER=OFF', '-DENABLE_RNNOISE=OFF'
+    '-DENABLE_APP_PDF_VIEWER=OFF', '-DENABLE_RNNOISE=OFF',
+    '-DLINPHONEAPP_VERSION=6.2.2-apisnix.2'
 )
 Invoke-Checked 'cmake' @('--build', $buildRoot, '--config', 'RelWithDebInfo', '--parallel', "$Jobs")
 Push-Location $buildRoot

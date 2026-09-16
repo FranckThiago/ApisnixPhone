@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-16 — Téléphone Windows vertical
+
+- Premier pilote Windows confirmé fonctionnel par Franck ; demande explicite
+  d'un petit format vertical. Numérotation et appel audio compacts ajoutés,
+  connexion réorganisée en largeur réduite, retour à l'interface complète
+  pour les fonctions avancées. Aucun changement du moteur SIP ni du serveur.
+- Accès SIP direct prioritaire sur l'accueil Linphone du premier lancement.
+  Le signalement précis des deux écrans de démarrage reste à confirmer.
+- Quatre composants QML ajoutés, exportés dans le patch Desktop. Version du
+  prochain paquet : 6.2.2-apisnix.2. Sources de vérité et procédure mises à jour.
+- Contrôles Qt sans serveur : création/rendu, numéro vide ou hors connexion,
+  appel, anti-double-clic, clavier, effacement, retour à l'appel et DTMF.
+  Syntaxe des QML et application inverse du patch contrôlées. La compilation
+  Windows et le test réel de cette nouvelle interface restent à effectuer.
+
 ## 2026-09-15 — Cadrage du softphone APISNIX
 
 - Objectif : identifier une base pour un softphone Windows/Android sous la marque

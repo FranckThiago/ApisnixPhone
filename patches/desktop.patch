@@ -4112,37 +4112,146 @@ index d0b18d1..988a844 100644
  	static constexpr char TranslationUrl[] = "https://weblate.linphone.org/projects/linphone-desktop/";
  
  	static constexpr int MaxMosaicParticipants =
+diff --git a/Linphone/view/CMakeLists.txt b/Linphone/view/CMakeLists.txt
+index ebb5390..bd9abae 100644
+--- a/Linphone/view/CMakeLists.txt
++++ b/Linphone/view/CMakeLists.txt
+@@ -1,5 +1,9 @@
+ 
+ list(APPEND _LINPHONEAPP_QML_FILES
++	view/Control/Button/CompactButton.qml
++	view/Control/Input/CompactDialPad.qml
++	view/Page/Main/Call/CompactPhonePage.qml
++	view/Page/Main/Call/CompactCallPage.qml
+ 	view/Control/Button/Button.qml
+ 	view/Control/Button/CalendarComboBox.qml
+ 	view/Control/Button/CheckableButton.qml
+diff --git a/Linphone/view/Control/Button/CompactButton.qml b/Linphone/view/Control/Button/CompactButton.qml
+new file mode 100644
+index 0000000..0e08358
+--- /dev/null
++++ b/Linphone/view/Control/Button/CompactButton.qml
+@@ -0,0 +1,31 @@
++// APISNIX compact phone controls. GPL-3.0-or-later, like the Desktop client.
++import QtQuick
++import QtQuick.Controls.Basic as Basic
++
++Basic.Button {
++    id: control
++    property color accent: "#1010ff"
++    property bool filled: false
++    property bool selected: false
++    implicitHeight: 48
++    implicitWidth: Math.max(80, label.implicitWidth + 24)
++    padding: 12
++    font.pixelSize: 14
++    Accessible.name: text
++    contentItem: Text {
++        id: label
++        text: control.text
++        font: control.font
++        horizontalAlignment: Text.AlignHCenter
++        verticalAlignment: Text.AlignVCenter
++        elide: Text.ElideRight
++        color: !control.enabled ? "#8995a5" : control.filled ? "white" : control.accent
++    }
++    background: Rectangle {
++        radius: 14
++        color: !control.enabled ? "#edf0f5" : control.down ? "#daddff"
++               : control.filled ? control.accent : control.selected || control.hovered ? "#eeeeff" : "#f5f6fa"
++        border.width: control.activeFocus ? 2 : 0
++        border.color: control.accent
++    }
++}
+diff --git a/Linphone/view/Control/Input/CompactDialPad.qml b/Linphone/view/Control/Input/CompactDialPad.qml
+new file mode 100644
+index 0000000..2896e3b
+--- /dev/null
++++ b/Linphone/view/Control/Input/CompactDialPad.qml
+@@ -0,0 +1,27 @@
++import QtQuick
++import QtQuick.Layouts
++import Linphone
++
++GridLayout {
++    id: pad
++    columns: 3
++    rowSpacing: 10
++    columnSpacing: 14
++    signal digitPressed(string digit)
++    property bool allowPlus: true
++    Repeater {
++        model: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0", "#"]
++        CompactButton {
++            required property string modelData
++            objectName: "digit_" + modelData
++            Layout.fillWidth: true
++            Layout.preferredHeight: 52
++            text: modelData
++            font.pixelSize: 25
++            accent: "#23344d"
++            Accessible.name: modelData === "0" && pad.allowPlus ? qsTr("0, appui long pour +") : modelData
++            onClicked: pad.digitPressed(modelData)
++            onPressAndHold: if (modelData === "0" && pad.allowPlus) pad.digitPressed("+")
++        }
++    }
++}
 diff --git a/Linphone/view/Page/Form/Login/SIPLoginPage.qml b/Linphone/view/Page/Form/Login/SIPLoginPage.qml
-index 4542d18..0ebbdb9 100644
+index 4542d18..7b3f82a 100644
 --- a/Linphone/view/Page/Form/Login/SIPLoginPage.qml
 +++ b/Linphone/view/Page/Form/Login/SIPLoginPage.qml
-@@ -12,6 +12,7 @@ LoginLayout {
+@@ -12,10 +12,12 @@ LoginLayout {
  	signal goBack()
  	signal goToRegister()
  	property bool showBackButton: false
 +	property bool showAdvancedSettings: false
++    readonly property bool compact: width < Utils.getSizeWithScreenRatio(800)
  	
  	titleContent: [
  		RowLayout {
-@@ -41,7 +42,7 @@ LoginLayout {
+-            Layout.leftMargin: Utils.getSizeWithScreenRatio(119)
++            Layout.leftMargin: Utils.getSizeWithScreenRatio(mainItem.compact ? 24 : 119)
+ 			visible: !SettingsCpp.assistantHideThirdPartyAccount
+             spacing: Utils.getSizeWithScreenRatio(21)
+ 			Button {
+@@ -41,9 +43,9 @@ LoginLayout {
  			}
  			Text {
                  //: Compte SIP tiers
 -                text: qsTr("assistant_login_third_party_sip_account_title")
 +                text: applicationName
  				font {
-                     pixelSize: Typography.h1.pixelSize
+-                    pixelSize: Typography.h1.pixelSize
++                    pixelSize: mainItem.compact ? 25 : Typography.h1.pixelSize
                      weight: Typography.h1.weight
-@@ -160,7 +161,7 @@ LoginLayout {
+ 				}
+ 				scaleLettersFactor: 1.1
+@@ -160,7 +162,8 @@ LoginLayout {
  		id: secondItem
  		Flickable {
              id: formFlickable
 -			width: Utils.getSizeWithScreenRatio(770)
-+			width: Utils.getSizeWithScreenRatio(mainItem.showAdvancedSettings ? 770 : 410)
++			width: mainItem.compact ? mainItem.width - Utils.getSizeWithScreenRatio(48)
++                                   : Utils.getSizeWithScreenRatio(mainItem.showAdvancedSettings ? 770 : 410)
  			contentWidth: content.implicitWidth
  			contentHeight: content.implicitHeight
  			clip: true
-@@ -212,12 +213,13 @@ LoginLayout {
+@@ -168,10 +171,12 @@ LoginLayout {
+ 
+             Control.ScrollBar.vertical: scrollbar
+ 
+-			RowLayout {
++			GridLayout {
+ 				id: content
++				columns: mainItem.compact ? 1 : 2
+ 				width: formFlickable.width - scrollbar.width*2
+-				spacing: Utils.getSizeWithScreenRatio(50)
++				columnSpacing: Utils.getSizeWithScreenRatio(50)
++				rowSpacing: Utils.getSizeWithScreenRatio(24)
+ 				ColumnLayout {
+ 					spacing: Utils.getSizeWithScreenRatio(2)
+ 					Layout.preferredWidth: Utils.getSizeWithScreenRatio(360)
+@@ -212,12 +217,13 @@ LoginLayout {
  									hidden: true
  									width: parent.width
  									KeyNavigation.up: usernameEdit
@@ -4157,7 +4266,7 @@ index 4542d18..0ebbdb9 100644
  								//: "Domaine"
  								label: qsTr("sip_address_domain")
  								//: "Domaine de votre identité SIP (ex: sip.example.com)"
-@@ -245,6 +247,7 @@ LoginLayout {
+@@ -245,6 +251,7 @@ LoginLayout {
  							}
  							FormItemLayout {
  								//: Nom d'affichage
@@ -4165,7 +4274,7 @@ index 4542d18..0ebbdb9 100644
  								label: qsTr("sip_address_display_name")
  								Layout.fillWidth: true
  								contentItem: TextField {
-@@ -257,6 +260,7 @@ LoginLayout {
+@@ -257,6 +264,7 @@ LoginLayout {
  							}
  							FormItemLayout {
  								//: "Transport"
@@ -4173,7 +4282,7 @@ index 4542d18..0ebbdb9 100644
  								label: qsTr("transport")
  								Layout.fillWidth: true
  								contentItem: ComboBox {
-@@ -282,6 +286,16 @@ LoginLayout {
+@@ -282,6 +290,16 @@ LoginLayout {
  						}
  					}
  
@@ -4190,7 +4299,7 @@ index 4542d18..0ebbdb9 100644
  					TemporaryText {
  						id: errorText
  						Layout.fillWidth: true
-@@ -346,7 +360,7 @@ LoginLayout {
+@@ -346,7 +364,7 @@ LoginLayout {
  							loginDelay.restart()
  						}
  						onPressed: trigger()
@@ -4199,7 +4308,7 @@ index 4542d18..0ebbdb9 100644
  						KeyNavigation.tab: tabTarget
  						Timer{
  							id: loginDelay
-@@ -376,6 +390,7 @@ LoginLayout {
+@@ -376,6 +394,7 @@ LoginLayout {
  					}
  				}
  				ColumnLayout {
@@ -4207,6 +4316,67 @@ index 4542d18..0ebbdb9 100644
  					Layout.preferredWidth: Utils.getSizeWithScreenRatio(360)
  					Layout.fillHeight: true
  					spacing: Utils.getSizeWithScreenRatio(22)
+@@ -457,7 +476,7 @@ LoginLayout {
+ 			anchors.left: parent.left
+ 			anchors.top: parent.top
+ 			anchors.bottom: parent.bottom
+-			anchors.leftMargin: Utils.getSizeWithScreenRatio(127)
++			anchors.leftMargin: Utils.getSizeWithScreenRatio(mainItem.compact ? 24 : 127)
+ 			width: currentItem ? currentItem.width : 0
+ 		},
+         // Item {
+@@ -468,6 +487,7 @@ LoginLayout {
+         // },
+ 		Image {
+ 			id: image
++			visible: !mainItem.compact
+ 			z: -1
+ 			anchors.top: parent.top
+ 			anchors.right: parent.right
+diff --git a/Linphone/view/Page/Layout/Login/LoginLayout.qml b/Linphone/view/Page/Layout/Login/LoginLayout.qml
+index b539dd4..9747b2f 100644
+--- a/Linphone/view/Page/Layout/Login/LoginLayout.qml
++++ b/Linphone/view/Page/Layout/Login/LoginLayout.qml
+@@ -72,7 +72,7 @@ Rectangle {
+ 	Dialog {
+ 		id: aboutPopup
+ 		anchors.centerIn: parent
+-        width: Utils.getSizeWithScreenRatio(637)
++        width: Math.min(Utils.getSizeWithScreenRatio(637), mainItem.width - 24)
+         //: À propos de %1
+         title: qsTr("help_about_title").arg(applicationName)
+         bottomPadding: Utils.getSizeWithScreenRatio(10)
+@@ -163,6 +163,7 @@ Rectangle {
+ 		}
+ 		Image {
+ 			id: bottomMountains
++			visible: mainItem.width >= Utils.getSizeWithScreenRatio(800)
+ 			source: AppIcons.belledonne
+ 			fillMode: Image.Stretch
+ 			Layout.fillWidth: true
+diff --git a/Linphone/view/Page/Layout/Main/MainLayout.qml b/Linphone/view/Page/Layout/Main/MainLayout.qml
+index 4bafdb4..3157e02 100644
+--- a/Linphone/view/Page/Layout/Main/MainLayout.qml
++++ b/Linphone/view/Page/Layout/Main/MainLayout.qml
+@@ -36,6 +36,7 @@ Item {
+         tabbar.currentIndex = 0;
+         mainItem.openCallHistory();
+     }
++    function goToContacts() { tabbar.currentIndex = 1; }
+     function displayContactPage(contactAddress) {
+         tabbar.currentIndex = 1;
+         mainItem.displayContactRequested(contactAddress);
+@@ -109,6 +110,10 @@ Item {
+         openContextualMenuComponent(page);
+     }
+ 
++    function openSettings() {
++        openContextualMenuComponent(settingsPageComponent.createObject(mainItem));
++    }
++
+     AccountProxy {
+         id: accountProxy
+         onDefaultAccountChanged: if (tabbar.currentIndex === 0 && defaultAccount)
 diff --git a/Linphone/view/Page/Layout/Settings/DebugSettingsLayout.qml b/Linphone/view/Page/Layout/Settings/DebugSettingsLayout.qml
 index 24ce4f4..18f261b 100644
 --- a/Linphone/view/Page/Layout/Settings/DebugSettingsLayout.qml
@@ -4219,6 +4389,486 @@ index 24ce4f4..18f261b 100644
  					enabled: SettingsCpp.logsEnabled || SettingsCpp.fullLogsEnabled
  					onClicked: {
                          //: "Téléversement des traces en cours …"
+diff --git a/Linphone/view/Page/Main/Call/CompactCallPage.qml b/Linphone/view/Page/Main/Call/CompactCallPage.qml
+new file mode 100644
+index 0000000..6a6e168
+--- /dev/null
++++ b/Linphone/view/Page/Main/Call/CompactCallPage.qml
+@@ -0,0 +1,123 @@
++import QtQuick
++import QtQuick as Quick
++import QtQuick.Layouts
++import QtQuick.Controls.Basic as Basic
++import Linphone
++
++Rectangle {
++    id: phone
++    color: "#ffffff"
++    property string remoteName: ""
++    property string statusText: ""
++    property string durationText: ""
++    property bool incoming: false
++    property bool connected: false
++    property bool terminated: false
++    property bool microphoneMuted: false
++    property bool paused: false
++    property bool canPause: false
++    property bool showKeypad: false
++    signal acceptRequested()
++    signal endRequested()
++    signal muteRequested()
++    signal pauseRequested()
++    signal dtmfRequested(string digit)
++    signal fullInterfaceRequested()
++    focus: true
++    Keys.onPressed: event => {
++        if (showKeypad && connected && !paused && !terminated && /^[0-9*#]$/.test(event.text)) {
++            dtmfRequested(event.text)
++            event.accepted = true
++        }
++    }
++
++    Basic.ScrollView {
++        anchors.fill: parent
++        anchors.margins: 22
++        contentWidth: availableWidth
++        clip: true
++        ColumnLayout {
++            width: parent.width
++            spacing: 14
++            RowLayout {
++                Layout.fillWidth: true
++                Quick.Text { Layout.fillWidth: true; text: "ApisnixPhone"; color: "#1010ff"; font.pixelSize: 18; font.bold: true }
++                CompactButton { text: qsTr("Options"); onClicked: phone.fullInterfaceRequested() }
++            }
++            Rectangle {
++                Layout.alignment: Qt.AlignHCenter
++                visible: !phone.showKeypad
++                Layout.topMargin: 24
++                width: 82; height: 82; radius: 41
++                color: "#eeeeff"
++                Quick.Text { anchors.centerIn: parent; text: phone.remoteName.length ? phone.remoteName.charAt(0).toUpperCase() : "☎"; font.pixelSize: 32; color: "#1010ff" }
++            }
++            Quick.Text {
++                Layout.fillWidth: true
++                text: phone.remoteName
++                font.pixelSize: 23
++                font.bold: true
++                color: "#1e2d44"
++                horizontalAlignment: Quick.Text.AlignHCenter
++                elide: Quick.Text.ElideMiddle
++                maximumLineCount: 2
++            }
++            Quick.Text {
++                Layout.fillWidth: true
++                text: phone.statusText
++                wrapMode: Quick.Text.WordWrap
++                horizontalAlignment: Quick.Text.AlignHCenter
++                font.pixelSize: 15
++                color: "#627086"
++            }
++            Quick.Text { Layout.alignment: Qt.AlignHCenter; text: phone.durationText; visible: text.length > 0; font.pixelSize: 25; color: "#1e2d44" }
++            RowLayout {
++                Layout.fillWidth: true
++                spacing: 8
++                CompactButton {
++                    Layout.fillWidth: true; implicitWidth: 0
++                    text: phone.microphoneMuted ? qsTr("Activer micro") : qsTr("Couper micro")
++                    selected: phone.microphoneMuted
++                    enabled: !phone.terminated
++                    onClicked: phone.muteRequested()
++                }
++                CompactButton {
++                    Layout.fillWidth: true; implicitWidth: 0
++                    text: phone.paused ? qsTr("Reprendre") : qsTr("En attente")
++                    selected: phone.paused
++                    enabled: phone.canPause && !phone.terminated
++                    onClicked: phone.pauseRequested()
++                }
++                CompactButton {
++                    Layout.fillWidth: true; implicitWidth: 0
++                    text: qsTr("Clavier")
++                    selected: phone.showKeypad
++                    enabled: phone.connected && !phone.terminated
++                    onClicked: phone.showKeypad = !phone.showKeypad
++                }
++            }
++            CompactDialPad {
++                Layout.fillWidth: true
++                visible: phone.showKeypad
++                enabled: phone.connected && !phone.paused && !phone.terminated
++                allowPlus: false
++                onDigitPressed: digit => phone.dtmfRequested(digit)
++            }
++            CompactButton {
++                Layout.fillWidth: true
++                visible: phone.incoming && !phone.terminated
++                text: qsTr("Répondre")
++                filled: true; accent: "#21854c"
++                onClicked: phone.acceptRequested()
++            }
++            CompactButton {
++                Layout.fillWidth: true
++                Layout.preferredHeight: 54
++                text: phone.incoming ? qsTr("Refuser") : qsTr("Raccrocher")
++                filled: true; accent: "#ce414d"
++                enabled: !phone.terminated
++                onClicked: phone.endRequested()
++            }
++        }
++    }
++}
+diff --git a/Linphone/view/Page/Main/Call/CompactPhonePage.qml b/Linphone/view/Page/Main/Call/CompactPhonePage.qml
+new file mode 100644
+index 0000000..5e31622
+--- /dev/null
++++ b/Linphone/view/Page/Main/Call/CompactPhonePage.qml
+@@ -0,0 +1,141 @@
++import QtQuick
++import QtQuick as Quick
++import QtQuick.Layouts
++import QtQuick.Controls.Basic as Basic
++import Linphone
++
++Rectangle {
++    id: phone
++    color: "#ffffff"
++    property string brandName: "ApisnixPhone"
++    property url brandLogo: "image://internal/logo.svg"
++    property string accountLabel: ""
++    property string statusText: ""
++    property bool registered: false
++    property bool hasCall: false
++    property bool dialPending: false
++    readonly property bool canDial: registered && !hasCall && !dialPending && number.text.trim().length > 0
++    signal dialRequested(string address)
++    signal toneRequested(string digit)
++    signal openCallRequested()
++    signal fullInterfaceRequested(string page)
++
++    function focusNumber() { number.forceActiveFocus() }
++    function dial() {
++        if (!canDial) return
++        dialPending = true
++        retryDelay.restart()
++        dialRequested(number.text.trim())
++    }
++    Timer {
++        id: retryDelay
++        interval: 2500
++        onTriggered: phone.dialPending = false
++    }
++    Basic.ScrollView {
++        anchors.fill: parent
++        anchors.margins: 22
++        contentWidth: availableWidth
++        clip: true
++        ColumnLayout {
++            width: parent.width
++            spacing: 14
++            RowLayout {
++                Layout.fillWidth: true
++                spacing: 12
++                Image { source: phone.brandLogo; Layout.preferredWidth: 40; Layout.preferredHeight: 40; fillMode: Image.PreserveAspectFit }
++                ColumnLayout {
++                    Layout.fillWidth: true
++                    spacing: 3
++                    Quick.Text { text: phone.brandName; font.pixelSize: 23; font.bold: true; color: "#1e2d44" }
++                    Quick.Text {
++                        Layout.fillWidth: true
++                        text: phone.accountLabel
++                        elide: Quick.Text.ElideRight
++                        font.pixelSize: 12
++                        color: "#6c7a8f"
++                    }
++                }
++            }
++            Rectangle {
++                Layout.fillWidth: true
++                implicitHeight: statusLabel.implicitHeight + 22
++                radius: 12
++                color: phone.registered ? "#e8f5ee" : "#fff4df"
++                Quick.Text {
++                    id: statusLabel
++                    anchors.fill: parent
++                    anchors.margins: 11
++                    text: phone.registered ? qsTr("Connecté") : phone.statusText || qsTr("Connexion en cours…")
++                    wrapMode: Quick.Text.WordWrap
++                    font.pixelSize: 13
++                    color: phone.registered ? "#23704a" : "#8a5b12"
++                    Accessible.role: Accessible.StaticText
++                }
++            }
++            Quick.Text { text: qsTr("Numéro à appeler"); color: "#627086"; font.pixelSize: 13 }
++            RowLayout {
++                Layout.fillWidth: true
++                Basic.TextField {
++                    id: number
++                    objectName: "phoneNumber"
++                    Layout.fillWidth: true
++                    Layout.preferredHeight: 54
++                    padding: 12
++                    font.pixelSize: 23
++                    selectByMouse: true
++                    placeholderText: qsTr("Numéro ou adresse SIP")
++                    Accessible.name: qsTr("Numéro à appeler")
++                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
++                    onAccepted: phone.dial()
++                    background: Rectangle { radius: 12; color: "#f8f9fc"; border.color: number.activeFocus ? "#1010ff" : "#dce1eb" }
++                }
++                CompactButton {
++                    objectName: "eraseNumber"
++                    implicitWidth: 48
++                    text: "⌫"
++                    Accessible.name: qsTr("Effacer le dernier caractère")
++                    onClicked: {
++                        if (number.selectedText.length) number.remove(number.selectionStart, number.selectionEnd)
++                        else if (number.cursorPosition > 0) number.remove(number.cursorPosition - 1, number.cursorPosition)
++                        number.forceActiveFocus()
++                    }
++                }
++            }
++            CompactDialPad {
++                Layout.fillWidth: true
++                onDigitPressed: digit => {
++                    if (number.selectedText.length) number.remove(number.selectionStart, number.selectionEnd)
++                    number.insert(number.cursorPosition, digit)
++                    number.forceActiveFocus()
++                    phone.toneRequested(digit)
++                }
++            }
++            CompactButton {
++                objectName: "dialButton"
++                Layout.fillWidth: true
++                Layout.preferredHeight: 54
++                filled: true
++                accent: "#21854c"
++                text: phone.hasCall ? qsTr("Revenir à l'appel") : phone.dialPending ? qsTr("Appel en cours…") : qsTr("Appeler")
++                enabled: phone.hasCall || phone.canDial
++                onClicked: phone.hasCall ? phone.openCallRequested() : phone.dial()
++            }
++            RowLayout {
++                Layout.fillWidth: true
++                spacing: 8
++                Repeater {
++                    model: [{label: qsTr("Historique"), page: "history"}, {label: qsTr("Contacts"), page: "contacts"}, {label: qsTr("Réglages"), page: "settings"}]
++                    CompactButton {
++                        required property var modelData
++                        Layout.fillWidth: true
++                        implicitWidth: 0
++                        text: modelData.label
++                        font.pixelSize: 12
++                        onClicked: phone.fullInterfaceRequested(modelData.page)
++                    }
++                }
++            }
++        }
++    }
++}
+diff --git a/Linphone/view/Page/Window/AbstractWindow.qml b/Linphone/view/Page/Window/AbstractWindow.qml
+index c79a93e..630ea3f 100644
+--- a/Linphone/view/Page/Window/AbstractWindow.qml
++++ b/Linphone/view/Page/Window/AbstractWindow.qml
+@@ -13,8 +13,8 @@ ApplicationWindow {
+     id: mainWindow
+     x: 0
+     y: 0
+-    width: Math.min(Utils.getSizeWithScreenRatio(1512), Screen.desktopAvailableWidth)
+-    height: Math.min(Utils.getSizeWithScreenRatio(982), Screen.desktopAvailableHeight)
++    width: Math.min(Utils.getSizeWithScreenRatio(420), Screen.desktopAvailableWidth)
++    height: Math.min(Utils.getSizeWithScreenRatio(680), Screen.desktopAvailableHeight)
+ 
+     onActiveChanged: {
+         if (active) UtilsCpp.setLastActiveWindow(this)
+diff --git a/Linphone/view/Page/Window/Call/CallsWindow.qml b/Linphone/view/Page/Window/Call/CallsWindow.qml
+index ae051f8..5e211fb 100644
+--- a/Linphone/view/Page/Window/Call/CallsWindow.qml
++++ b/Linphone/view/Page/Window/Call/CallsWindow.qml
+@@ -13,8 +13,16 @@ import "qrc:/qt/qml/Linphone/view/Style/buttonStyle.js" as ButtonStyle
+ AbstractWindow {
+     id: mainWindow
+     flags: Qt.Window
+-    minimumWidth: Utils.getSizeWithScreenRatio(1020)
+-    minimumHeight: Utils.getSizeWithScreenRatio(700)
++    property bool compactMode: true
++    minimumWidth: Utils.getSizeWithScreenRatio(compactMode ? 420 : 1020)
++    minimumHeight: Utils.getSizeWithScreenRatio(compactMode ? 640 : 700)
++    function setCompactMode(compact) {
++        compactMode = compact
++        width = Math.min(Utils.getSizeWithScreenRatio(compact ? 420 : 1100), Screen.desktopAvailableWidth)
++        height = Math.min(Utils.getSizeWithScreenRatio(compact ? 680 : 760), Screen.desktopAvailableHeight)
++    }
++    onCameraEnabledChanged: if (cameraEnabled && compactMode) setCompactMode(false)
++    onIsConferenceChanged: if (isConference && compactMode) setCompactMode(false)
+ 
+     // modality: Qt.WindowModal
+     property CallGui call
+@@ -330,8 +338,56 @@ AbstractWindow {
+     }
+ 
+     /************************* CONTENT ********************************/
++    Loader {
++        anchors.fill: parent
++        active: mainWindow.compactMode
++        sourceComponent: CompactCallPage {
++            property var current: mainWindow.call
++            remoteName: current ? current.core.remoteName || current.core.remoteAddress : ""
++            incoming: mainWindow.callState === LinphoneEnums.CallState.IncomingReceived
++                      || mainWindow.callState === LinphoneEnums.CallState.PushIncomingReceived
++            connected: mainWindow.callState === LinphoneEnums.CallState.Connected
++                       || mainWindow.callState === LinphoneEnums.CallState.StreamsRunning
++                       || mainWindow.callState === LinphoneEnums.CallState.Paused
++                       || mainWindow.callState === LinphoneEnums.CallState.PausedByRemote
++            terminated: !callsModel.haveCall || mainWindow.callState === LinphoneEnums.CallState.Error
++                        || mainWindow.callState === LinphoneEnums.CallState.End
++                        || mainWindow.callState === LinphoneEnums.CallState.Released
++            microphoneMuted: current ? current.core.microphoneMuted : false
++            paused: current ? current.core.paused : false
++            canPause: mainWindow.callState === LinphoneEnums.CallState.StreamsRunning
++                      || mainWindow.callState === LinphoneEnums.CallState.Paused
++            statusText: terminated ? current && current.core.lastErrorMessage.length ? current.core.lastErrorMessage : qsTr("Appel terminé")
++                        : incoming ? qsTr("Appel entrant") : paused ? qsTr("En attente")
++                        : connected ? qsTr("En communication") : qsTr("Appel en cours…")
++            durationText: connected && current ? UtilsCpp.formatDuration(current.core.duration) : ""
++            onAcceptRequested: if (current && incoming) current.core.lAccept(false)
++            onEndRequested: {
++                mainWindow.callTerminatedByUser = true
++                mainWindow.endCall(current)
++            }
++            onMuteRequested: if (current && !terminated) current.core.lSetMicrophoneMuted(!current.core.microphoneMuted)
++            onPauseRequested: if (current && canPause) current.core.lSetPaused(!current.core.paused)
++            onDtmfRequested: digit => { if (current && connected && !terminated) current.core.lSendDtmf(digit) }
++            onFullInterfaceRequested: mainWindow.setCompactMode(false)
++        }
++    }
++    Control.ToolBar {
++        anchors.top: parent.top
++        anchors.left: parent.left
++        anchors.right: parent.right
++        height: 44
++        visible: !mainWindow.compactMode
++        Control.Button {
++            text: qsTr("← Téléphone compact")
++            enabled: !mainWindow.cameraEnabled && !mainWindow.isConference
++            onClicked: mainWindow.setCompactMode(true)
++        }
++    }
+     Rectangle {
+         anchors.fill: parent
++        anchors.topMargin: 44
++        visible: !mainWindow.compactMode
+         color: DefaultStyle.grey_900
+ 
+         ColumnLayout {
+diff --git a/Linphone/view/Page/Window/Main/MainWindow.qml b/Linphone/view/Page/Window/Main/MainWindow.qml
+index be8bc3e..446d735 100644
+--- a/Linphone/view/Page/Window/Main/MainWindow.qml
++++ b/Linphone/view/Page/Window/Main/MainWindow.qml
+@@ -2,6 +2,7 @@ import QtQuick
+ import QtQuick.Layouts
+ import QtQuick.Window
+ import QtQuick.Controls.Basic
++import QtQuick.Controls.Basic as Basic
+ import Linphone
+ import UtilsCpp
+ import SettingsCpp
+@@ -21,8 +22,15 @@ AbstractWindow {
+     }
+ 
+ 	color: DefaultStyle.grey_0
+-    minimumWidth: Utils.getSizeWithScreenRatio(1020)
+-    minimumHeight: Utils.getSizeWithScreenRatio(700)
++    property bool compactMode: true
++    minimumWidth: Utils.getSizeWithScreenRatio(compactMode ? 420 : 1020)
++    minimumHeight: Utils.getSizeWithScreenRatio(compactMode ? 640 : 700)
++    function setCompactMode(compact) {
++        compactMode = compact
++        width = Math.min(Utils.getSizeWithScreenRatio(compact ? 420 : 1100), Screen.desktopAvailableWidth)
++        height = Math.min(Utils.getSizeWithScreenRatio(compact ? 680 : 760), Screen.desktopAvailableHeight)
++    }
++    CallProxy { id: compactCalls; sourceModel: AppCpp.calls }
+ 
+ 	signal callCreated()
+ 	property var accountProxy
+@@ -78,8 +86,8 @@ AbstractWindow {
+ 	function initStackViewItem() {
+         if(accountProxy && accountProxy.isInitialized) {
+             if (accountProxy.haveAccount) openMainPage()
+-            else if (SettingsCpp.getFirstLaunch()) mainStackViewLoader.item.replace(welcomePage, StackView.Immediate)
+             else if (SettingsCpp.assistantGoDirectlyToThirdPartySipAccountLogin) mainStackViewLoader.item.replace(sipLoginPage, StackView.Immediate)
++            else if (SettingsCpp.getFirstLaunch()) mainStackViewLoader.item.replace(welcomePage, StackView.Immediate)
+             else mainStackViewLoader.item.replace(loginPage, StackView.Immediate)
+         }
+     }
+@@ -344,9 +352,58 @@ AbstractWindow {
+ 	}
+ 	Component {
+ 		id: mainPage
+-		MainLayout {
+-			id: mainLayout
++		Item {
++			id: mainPageRoot
+ 			objectName: "mainPage"
++            function goToCallHistory() { mainWindow.setCompactMode(false); mainLayout.goToCallHistory() }
++            function goToNewCall() {
++                if (mainWindow.compactMode) compactPhone.focusNumber()
++                else mainLayout.goToNewCall()
++            }
++            function displayContactPage(address) { mainWindow.setCompactMode(false); mainLayout.displayContactPage(address) }
++            function createContact(name, address) { mainWindow.setCompactMode(false); mainLayout.createContact(name, address) }
++            function displayChatPage(address) { mainWindow.setCompactMode(false); mainLayout.displayChatPage(address) }
++            function openChat(chat) { mainWindow.setCompactMode(false); mainLayout.openChat(chat) }
++            function scheduleMeeting(subject, addresses) { mainWindow.setCompactMode(false); mainLayout.scheduleMeeting(subject, addresses) }
++            CompactPhonePage {
++                id: compactPhone
++                anchors.fill: parent
++                visible: mainWindow.compactMode
++                brandName: applicationName
++                property var account: mainWindow.accountProxy ? mainWindow.accountProxy.defaultAccount : null
++                accountLabel: account ? account.core.identityAddress : ""
++                statusText: account ? account.core.humaneReadableRegistrationStateExplained : ""
++                registered: account ? account.core.registrationState === LinphoneEnums.RegistrationState.Ok : false
++                hasCall: compactCalls.haveCall
++                onDialRequested: address => UtilsCpp.createCall(address, {localVideoEnabled: false})
++                onToneRequested: digit => UtilsCpp.playDtmf(digit)
++                onOpenCallRequested: {
++                    var window = UtilsCpp.getOrCreateCallsWindow(compactCalls.currentCall)
++                    if (window) UtilsCpp.smartShowWindow(window)
++                }
++                onFullInterfaceRequested: page => {
++                    mainWindow.setCompactMode(false)
++                    if (page === "history") mainLayout.goToCallHistory()
++                    else if (page === "contacts") mainLayout.goToContacts()
++                    else mainLayout.openSettings()
++                }
++            }
++            Basic.ToolBar {
++                anchors.top: parent.top
++                anchors.left: parent.left
++                anchors.right: parent.right
++                height: 44
++                visible: !mainWindow.compactMode
++                Basic.Button {
++                    text: qsTr("← Téléphone compact")
++                    onClicked: mainWindow.setCompactMode(true)
++                }
++            }
++            MainLayout {
++			id: mainLayout
++            anchors.fill: parent
++            anchors.topMargin: 44
++            visible: !mainWindow.compactMode
+ 			onAddAccountRequest: goToLogin()
+ 			onAccountRemoved: {
+ 				initStackViewItem()
+@@ -356,6 +413,7 @@ AbstractWindow {
+ 				function onCallCreated(){ mainLayout.callCreated() }
+ 			}
+ 			// StackView.onActivated: connectionSecured(0) // TODO : connect to cpp part when ready
++			}
+ 		}
+ 	}
+ 
 diff --git a/Linphone/view/Style/Themes.qml b/Linphone/view/Style/Themes.qml
 index 769f279..a259e14 100644
 --- a/Linphone/view/Style/Themes.qml

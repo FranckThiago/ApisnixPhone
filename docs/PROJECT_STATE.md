@@ -59,7 +59,15 @@ existantes. Les protocoles du moteur sont conservés.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
   avec Qt. Les interfaces Windows complètes restent à tester.
 - La machine de compilation Windows est fournie par GitHub Actions. Le poste
-  prévu pour tester n’a besoin que du futur installateur.
+  prévu pour tester n’a besoin que de l’installateur.
+- Retour du 16 septembre : Franck confirme que le premier pilote fonctionne
+  sur son PC Windows. Aucun relevé détaillé des cas DTMF/reconnexion n'a été reçu.
+- À sa demande, [format vertical 420 × 680](FENETRE_COMPACTE.md) ajouté aux
+  sources : clavier, appel audio compact et connexion adaptée ; interface
+  complète accessible. Le premier accueil Linphone est contourné quand la
+  connexion SIP directe est configurée. Nouveau paquet prévu : 6.2.2-apisnix.2.
+- Contrôles Qt des composants et de leurs signaux réussis, syntaxe QML et
+  export du patch vérifiés. Compilation et nouvel essai Windows encore requis.
 
 ## Limites avant remise aux clients
 

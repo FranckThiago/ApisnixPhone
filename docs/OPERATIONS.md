@@ -151,6 +151,15 @@ saisir l'identifiant et le mot de passe de test puis vérifier un appel avec
 audio dans les deux sens. Ne pas distribuer ce pilote comme version client
 validée avant les essais ci-dessous.
 
+## Évolution Windows : téléphone compact
+
+Franck confirme le bon fonctionnement du premier pilote le 16 septembre.
+Le nouveau format vertical est décrit dans [FENETRE_COMPACTE.md](FENETRE_COMPACTE.md).
+La commande de build distingue son paquet par la version `6.2.2-apisnix.2`.
+Les composants ont été rendus et leurs signaux testés avec Qt sans serveur SIP ;
+la compilation et un nouvel essai réel Windows restent requis. Conserver le
+premier installateur ci-dessus pour revenir à l'interface déjà testée.
+
 ## Mise à jour des logos
 
 Le fichier original retenu est copié dans `branding/apisnix-mark.png`. Sur macOS :
@@ -178,7 +187,9 @@ Avec les comptes dédiés que Franck fournira après préparation des installate
 7. Appel entrant avec l'application active ; veille Android à documenter séparément.
 
 Noter modèle/OS, version de l'app et résultat, sans identifiant sensible, mot de
-passe ou numéro de client dans le dépôt. Aucun test de ce tableau n'est encore validé.
+passe ou numéro de client dans le dépôt. Franck confirme le fonctionnement
+général du premier pilote Windows ; les cas individuels de cette liste n'ont
+pas été consignés. Android et le nouveau format compact restent à tester.
 
 ## Production et retour arrière
 

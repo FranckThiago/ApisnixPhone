@@ -70,6 +70,13 @@ L’annulation d’écho WebRTC reste activée par défaut. Ce compromis est pro
 au build Windows ; le SDK Android n’est pas modifié.
 L'adaptation ne prétend pas avoir retiré toute la vidéo ou tous les écrans amont.
 
+Le pilote Desktop compact ajoute deux pages QML pour la numérotation et l'appel
+audio, reliées aux mêmes modèles natifs. Base de fenêtre 420 × 680 ; historique,
+contacts, réglages et fonctions avancées conservent l'interface complète avec
+retour au téléphone. L'assistant SIP direct précède l'accueil de premier
+lancement. Voir [le format compact](FENETRE_COMPACTE.md) pour les contrôles et
+les limites. Aucun changement du SDK, des codecs ou des routes SIP.
+
 L'envoi de logs et la recherche de mise à jour vers les services Linphone sont
 désactivés dans la configuration personnalisée. Les configurations Google et
 la signature de démonstration amont sont retirées au moment de la préparation.

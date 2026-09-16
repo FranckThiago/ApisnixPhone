@@ -10,7 +10,9 @@ SIP UDP par défaut, autres transports conservés dans les réglages avancés.
 - **Android** : premier APK de test compilé, nom et connexion personnalisés.
   Android 9 minimum, ARM 32/64 bits. Logo APISNIX intégré ; appels non testés.
 - **Windows** : installateur de test x64 compilé avec succès sur GitHub Actions,
-  nom et icônes personnalisés. Installation sur PC et appels réels à tester.
+  nom et icônes personnalisés. Franck confirme son bon fonctionnement sur PC.
+  Le [format téléphone vertical](docs/FENETRE_COMPACTE.md) est préparé pour un
+  nouveau pilote ; sa compilation et son essai Windows restent à valider.
 - **Mac et iPhone** : extensions possibles, aucun installateur produit.
 
 Le fichier Android provisoire se trouve dans
