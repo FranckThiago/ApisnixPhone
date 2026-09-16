@@ -47,8 +47,13 @@ Ce contrôle couvre l'interdiction de numéroter hors connexion, l'appel,
 le verrou anti-double-clic, le clavier et l'effacement, le retour à un appel
 en cours et les signaux DTMF. Les aperçus sont écrits dans `.work/compact-ui-qa/`.
 Ils représentent le rendu Qt du Mac, pas une capture d'un appel Windows réel.
-La syntaxe QML est contrôlée séparément avec qmlformat. La compilation Windows
-et un nouvel essai réel sont nécessaires pour valider l'intégration native.
+La syntaxe QML a été contrôlée avec qmlformat. La compilation et le packaging
+Windows du [run 35115685999](https://github.com/FranckThiago/ApisnixPhone/actions/runs/35115685999)
+ont réussi le 16 septembre depuis `a8c5171bb79d0acb2da0a95ce2541bc7dd530fb0`.
+Installateur récupéré : `dist/windows/ApisnixPhone-6.2.2-apisnix.2-win64.exe` ;
+empreinte du runner et format PE x64 vérifiés. Voir OPERATIONS.md pour le
+hash et l’installation. Un nouvel essai réel sur Windows reste nécessaire
+pour valider l’interface et ses commandes avec le moteur natif.
 
 À vérifier sur Windows : connexion existante et première connexion, audio,
 micro, pause/reprise, DTMF, raccrochage, appel entrant, accès aux réglages et

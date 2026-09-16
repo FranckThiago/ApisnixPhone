@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-09-16 — Installateur Windows compact disponible
+
+- Run `35115685999` réussi sur le commit `a8c5171` : SDK, client et paquet
+  `6.2.2-apisnix.2` construits. Artefact récupéré, SHA-256 identique au runner
+  et en-tête PE x64 vérifiés ; ancien installateur et son hash conservés.
+- README, état, opérations et fiche du mode compact actualisés. Le premier
+  pilote a été testé par Franck ; le nouvel écran reste à essayer sur PC.
+- Aucun changement de production ni nouvelle migration. Suivi de compilation
+  terminé ; versions Apple toujours en attente à la demande de Franck.
+
 ## 2026-09-16 — Versions Apple en attente
 
 - Franck confirme ne pas posséder de compte Apple Developer et reporte les

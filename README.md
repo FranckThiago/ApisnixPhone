@@ -11,10 +11,10 @@ SIP UDP par défaut, autres transports conservés dans les réglages avancés.
   pays ajouté automatiquement, y compris pour les comptes existants. Android 9
   minimum, ARM 32/64 bits ; nouvel essai réel à confirmer. Voir
   [la numérotation](docs/NUMEROTATION_ANDROID.md).
-- **Windows** : installateur de test x64 compilé avec succès sur GitHub Actions,
-  nom et icônes personnalisés. Franck confirme son bon fonctionnement sur PC.
-  Le [format téléphone vertical](docs/FENETRE_COMPACTE.md) est préparé pour un
-  nouveau pilote ; sa compilation et son essai Windows restent à valider.
+- **Windows** : nouveau pilote x64 `6.2.2-apisnix.2` compilé et récupéré,
+  avec [format téléphone vertical](docs/FENETRE_COMPACTE.md). Intégrité du
+  fichier vérifiée ; nouvel essai Windows requis. Franck a confirmé le bon
+  fonctionnement du premier pilote, conservé pour retour arrière.
 - **Mac et iPhone** : en attente à la demande de Franck, qui ne possède pas
   encore de compte Apple Developer. Aucun installateur Apple produit.
   [Prérequis et état vérifiés](docs/PLATEFORMES_APPLE.md).
@@ -23,8 +23,9 @@ Le fichier Android provisoire se trouve dans
 `dist/android/apisnixphone-android-debug-6.2.7-apisnix.3.apk`.
 Il utilise une signature de développement et n'est pas une version client finale.
 
-L'installateur Windows de test est `dist/windows/ApisnixPhone-6.2.2-win64.exe`
-(environ 150 Mio), non signé. Voir la procédure de test dans les opérations.
+L'installateur Windows compact est `dist/windows/ApisnixPhone-6.2.2-apisnix.2-win64.exe`
+(environ 150 Mio), non signé. Voir les opérations pour installation,
+empreinte et ancien pilote conservé.
 
 ## Documentation
 

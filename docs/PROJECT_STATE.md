@@ -50,7 +50,8 @@ existantes. Les protocoles du moteur sont conservés.
 
 - Sources du client Desktop 6.2.2 adaptées, formulaire réduit et paramètres
   avancés conservés. Nom et futur exécutable personnalisés.
-- Syntaxe des deux fichiers QML modifiés vérifiée avec Qt 6.10.3.
+- Syntaxe des QML modifiés vérifiée avec Qt 6.10.3 ; composants compacts
+  rendus et signaux contrôlés sur le Mac, sans serveur SIP.
 - Run `34985036963` réussi le 15 septembre 2026 : SDK et client compilés,
   installateur produit et artefact GitHub téléversé. Commit de construction
   `a3ae95be325337a0ddcc21777705f8e1e8a27bf5`.
@@ -61,9 +62,10 @@ existantes. Les protocoles du moteur sont conservés.
   Workflow validé avec Actionlint 1.7.12 et exécution complète réussie.
 - Fichier récupéré dans `dist/windows/ApisnixPhone-6.2.2-win64.exe` ; empreinte
   SHA-256 identique à celle du runner et en-tête PE x64 vérifiés sur le Mac.
-  Aucun lancement du binaire Windows effectué. Voir les opérations pour le hash.
+  Le binaire n’a pas été lancé sur le Mac ; Franck a ensuite confirmé son
+  fonctionnement sur Windows. Voir les opérations pour le hash.
 - Icône ICO multirésolution et cinq ressources SVG de marque décodées/rendues
-  avec Qt. Les interfaces Windows complètes restent à tester.
+  avec Qt. Les cas détaillés des interfaces Windows restent à tester.
 - La machine de compilation Windows est fournie par GitHub Actions. Le poste
   prévu pour tester n’a besoin que de l’installateur.
 - Retour du 16 septembre : Franck confirme que le premier pilote fonctionne
@@ -71,9 +73,13 @@ existantes. Les protocoles du moteur sont conservés.
 - À sa demande, [format vertical 420 × 680](FENETRE_COMPACTE.md) ajouté aux
   sources : clavier, appel audio compact et connexion adaptée ; interface
   complète accessible. Le premier accueil Linphone est contourné quand la
-  connexion SIP directe est configurée. Nouveau paquet prévu : 6.2.2-apisnix.2.
-- Contrôles Qt des composants et de leurs signaux réussis, syntaxe QML et
-  export du patch vérifiés. Compilation et nouvel essai Windows encore requis.
+  connexion SIP directe est configurée. Nouveau paquet : `6.2.2-apisnix.2`.
+- Run `35115685999` réussi le 16 septembre, depuis le commit
+  `a8c5171bb79d0acb2da0a95ce2541bc7dd530fb0` : SDK/client compilés,
+  installateur récupéré et contrôlé (SHA-256 du runner identique, PE x64).
+  Fichier : `dist/windows/ApisnixPhone-6.2.2-apisnix.2-win64.exe`.
+  Premier installateur conservé ; nouvel essai réel de l’interface compacte
+  encore requis. Le suivi de compilation est terminé.
 
 ### Mac et iPhone
 
@@ -114,4 +120,5 @@ de build Apple. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
 - Sources/reconstruction : [architecture](ARCHITECTURE.md) et
   [opérations](OPERATIONS.md). Patches exportés, contrôle inverse d'application
   et `git diff --check` réussis.
-- Aucun identifiant SIP reçu ou enregistré. Aucune migration.
+- Aucun identifiant SIP reçu ou enregistré. Aucune migration serveur.
+  La migration locale du paramètre Android est décrite dans NUMEROTATION_ANDROID.md.

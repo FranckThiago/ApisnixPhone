@@ -113,7 +113,8 @@ l’installation/packaging amont
 et récupère les `.exe` dans `dist/windows/`. Les vérifications d'outils Windows
 amont peuvent installer des dépendances MSYS2 manquantes. Utiliser une machine
 de compilation dédiée. Cette procédure a réussi sur le runner GitHub Windows ;
-l'installation et l'exécution du softphone sur un PC utilisateur restent à tester.
+Franck a confirmé le fonctionnement du premier pilote sur Windows.
+Le nouvel installateur compact nécessite son propre essai sur PC.
 
 ### Compilation en ligne choisie : GitHub Actions
 
@@ -150,12 +151,13 @@ Les runners standard sont gratuits pour les dépôts publics. Un dépôt privé
 consomme le quota du compte, puis peut être facturé. Source consultée le
 15 septembre 2026 : [documentation GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
 Aucun achat. Le dépôt public et le lancement de la compilation ont été
-autorisés le 15 septembre 2026. Compilation et packaging validés ; installation
-sur un PC utilisateur et appels SIP non testés.
+autorisés le 15 septembre 2026. Compilation et packaging validés ; le premier
+pilote fonctionne selon Franck. Les nouveaux écrans et les cas détaillés
+d’appel restent à tester sur le nouveau pilote.
 Le poste de test n’a besoin que de l’installateur ; la signature Windows de
 diffusion reste à organiser.
 
-### Pilote Windows disponible
+### Premier pilote Windows conservé
 
 - Fichier : `dist/windows/ApisnixPhone-6.2.2-win64.exe`.
 - Taille : 156 770 423 octets (environ 150 Mio).
@@ -178,12 +180,25 @@ validée avant les essais ci-dessous.
 Franck confirme le bon fonctionnement du premier pilote le 16 septembre.
 Le nouveau format vertical est décrit dans [FENETRE_COMPACTE.md](FENETRE_COMPACTE.md).
 La commande de build distingue son paquet par la version `6.2.2-apisnix.2`.
-Les composants ont été rendus et leurs signaux testés avec Qt sans serveur SIP ;
-la [compilation 35115685999](https://github.com/FranckThiago/ApisnixPhone/actions/runs/35115685999)
-est en cours pour le commit `a8c5171bb79d0acb2da0a95ce2541bc7dd530fb0`,
-branche `codex/windows-compact`. Aucun nouveau `.exe` encore récupéré à ce
-contrôle. Le suivi automatique reste actif jusqu’à livraison. Conserver le
-premier installateur ci-dessus pour revenir à l'interface déjà testée.
+Les composants ont été rendus et leurs signaux testés avec Qt sans serveur SIP.
+La [compilation 35115685999](https://github.com/FranckThiago/ApisnixPhone/actions/runs/35115685999)
+a réussi le 16 septembre pour le commit
+`a8c5171bb79d0acb2da0a95ce2541bc7dd530fb0`, branche `codex/windows-compact`.
+
+- Fichier : `dist/windows/ApisnixPhone-6.2.2-apisnix.2-win64.exe`.
+- Taille : 157 022 414 octets (environ 150 Mio).
+- SHA-256 : `98673a23b94363cd81ea730d91c1d893f1cf1c4247550ae065077406dc43831a`.
+- Artefact `ApisnixPhone-Windows-x64-test` récupéré dans un nouveau dossier ;
+  empreinte comparée au `SHA256SUMS` du runner, format PE x64 vérifié.
+- Installateur de test non signé. Aucun lancement du nouvel exécutable sur
+  Windows ni appel réel effectué par l’agent.
+
+Fermer ApisnixPhone, installer le nouveau pilote puis vérifier connexion,
+appel audio, micro, attente/reprise, DTMF et raccrochage. Vérifier également
+l’accès aux réglages et le retour au petit format. Garder les comptes et
+l’ancien installateur pour retour arrière ; ne pas effacer les données.
+Le suivi de compilation est terminé. Aucun changement Asterisk ou migration
+serveur lié à ce paquet.
 
 ## Mise à jour des logos
 
