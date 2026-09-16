@@ -2,7 +2,10 @@
 
 État vérifié le 16 septembre 2026. Franck demande une suite pour ces deux
 plateformes ; aucun `.dmg`, `.app` APISNIX ou `.ipa` n'a encore été produit.
-Windows et Android sont les seuls pilotes construits à ce stade.
+Windows et Android sont les seuls pilotes construits à ce stade. Franck
+confirme ensuite ne pas avoir de compte Apple Developer et demande de laisser
+les versions Apple en attente. Ne pas lancer leur réalisation ou une adhésion
+sans nouvelle demande.
 
 ## Mac
 
@@ -32,9 +35,9 @@ le logo et la connexion, empêcher l'ajout automatique d'indicatif, puis tester
 audio et cycle de vie sur appareil. Aucun checkout iOS APISNIX ni adaptation
 de cette base n'est présent actuellement.
 
-La présence d'un abonnement Apple Developer chez Franck a été demandée ;
-réponse encore attendue à cette vérification. Ne pas annoncer un TestFlight
-APISNIX prêt ni demander un mot de passe Apple dans la conversation.
+Franck confirme ne pas avoir de compte Apple Developer et reporte cette suite.
+Ne pas annoncer un TestFlight APISNIX prêt ni demander un mot de passe Apple
+dans la conversation. Les prérequis ci-dessous sont conservés pour la reprise.
 
 - Apple permet les essais personnels via Xcode avec un compte gratuit, avec
   des profils expirant au bout de sept jours et des limites de capacités/appareils.

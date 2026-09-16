@@ -15,9 +15,9 @@ SIP UDP par défaut, autres transports conservés dans les réglages avancés.
   nom et icônes personnalisés. Franck confirme son bon fonctionnement sur PC.
   Le [format téléphone vertical](docs/FENETRE_COMPACTE.md) est préparé pour un
   nouveau pilote ; sa compilation et son essai Windows restent à valider.
-- **Mac et iPhone** : [prérequis et état vérifiés](docs/PLATEFORMES_APPLE.md),
-  aucun installateur produit. Xcode est disponible sur le Mac de travail ;
-  le compte Apple Developer reste à préciser pour la distribution iPhone.
+- **Mac et iPhone** : en attente à la demande de Franck, qui ne possède pas
+  encore de compte Apple Developer. Aucun installateur Apple produit.
+  [Prérequis et état vérifiés](docs/PLATEFORMES_APPLE.md).
 
 Le fichier Android provisoire se trouve dans
 `dist/android/apisnixphone-android-debug-6.2.7-apisnix.3.apk`.

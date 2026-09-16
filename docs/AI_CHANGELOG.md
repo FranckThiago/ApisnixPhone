@@ -1,5 +1,12 @@
 # Journal des changements
 
+## 2026-09-16 — Versions Apple en attente
+
+- Franck confirme ne pas posséder de compte Apple Developer et reporte les
+  versions Apple. README, état et fiche Apple actualisés ; aucun achat ou
+  build Apple lancé. Le nouveau Windows compact compile encore dans le run
+  35115685999 ; seul le premier installateur reste disponible localement.
+
 ## 2026-09-16 — Correction de l’indicatif Android et état Apple
 
 - Signalement de Franck : Android remplace un numéro national par `+237…`.

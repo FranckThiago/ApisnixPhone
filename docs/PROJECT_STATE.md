@@ -81,8 +81,9 @@ Franck redemande une suite pour ces plateformes. Xcode 26.6 et les outils Apple
 sont disponibles sur son Mac Apple Silicon ; le kit Qt C++ et les outils de
 compilation Desktop manquent encore. Aucun build Mac lancé ni paquet produit.
 Le client iOS officiel est une base distincte à adapter ; aucun checkout ou
-paquet APISNIX iOS créé. Présence d'un abonnement Apple Developer demandée,
-réponse attendue. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
+paquet APISNIX iOS créé. Franck confirme ne pas avoir de compte Apple Developer
+et demande de laisser les versions Apple en attente. Aucun achat ni lancement
+de build Apple. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
 
 ## Limites avant remise aux clients
 

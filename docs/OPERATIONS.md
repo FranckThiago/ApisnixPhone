@@ -179,7 +179,10 @@ Franck confirme le bon fonctionnement du premier pilote le 16 septembre.
 Le nouveau format vertical est décrit dans [FENETRE_COMPACTE.md](FENETRE_COMPACTE.md).
 La commande de build distingue son paquet par la version `6.2.2-apisnix.2`.
 Les composants ont été rendus et leurs signaux testés avec Qt sans serveur SIP ;
-la compilation et un nouvel essai réel Windows restent requis. Conserver le
+la [compilation 35115685999](https://github.com/FranckThiago/ApisnixPhone/actions/runs/35115685999)
+est en cours pour le commit `a8c5171bb79d0acb2da0a95ce2541bc7dd530fb0`,
+branche `codex/windows-compact`. Aucun nouveau `.exe` encore récupéré à ce
+contrôle. Le suivi automatique reste actif jusqu’à livraison. Conserver le
 premier installateur ci-dessus pour revenir à l'interface déjà testée.
 
 ## Mise à jour des logos
