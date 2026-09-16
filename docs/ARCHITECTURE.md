@@ -59,6 +59,13 @@ Les deux clients ouvrent la connexion SIP tierce native avec le domaine
 les paramètres avancés. Le mot de passe Android est utilisé sans supprimer
 les espaces. Le bouton Android exige identifiant et mot de passe non vides.
 
+À partir du pilote Android `.3`, le pays du réseau mobile ne préremplit plus
+un indicatif SIP. Le paramètre `useInternationalPrefixForCallsAndChats` est
+désactivé pour les nouveaux comptes tiers et migré une fois pour les comptes
+existants avant `config_version=602008`. Le moteur conserve les chiffres saisis ;
+un choix explicite ultérieur dans les paramètres reste possible. Voir
+[NUMEROTATION_ANDROID.md](NUMEROTATION_ANDROID.md).
+
 Ne pas remplacer le paramètre interne `default_domain` par le domaine APISNIX :
 la base s'en sert pour distinguer les comptes Linphone/Flexisip des comptes SIP
 tiers. Utiliser `assistant_third_party_sip_account_domain` pour notre serveur.
@@ -91,4 +98,5 @@ sources correspondantes lors de la distribution. Voir l'étude pour les sources.
 
 Le client Desktop peut servir de base à macOS. iPhone nécessitera une adaptation
 du client iOS, sa signature et son propre cycle de validation ; rien n'est encore
-compilé pour ces deux plateformes.
+compilé pour ces deux plateformes. Les prérequis vérifiés et les accès Apple
+à préciser sont dans [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).

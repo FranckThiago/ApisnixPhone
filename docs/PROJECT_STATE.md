@@ -32,13 +32,19 @@ existantes. Les protocoles du moteur sont conservés.
 ### Android
 
 - Client 6.2.7, moteur Liblinphone 5.5.21 fixé après résolution et compilation.
-- APK `6.2.7-apisnix.2` de développement produit dans `dist/android/` (~127 Mio).
+- APK `6.2.7-apisnix.3` de développement produit dans `dist/android/` (~127 Mio).
 - Identifiant `com.apisnix.phone`, libellé ApisnixPhone, Android 9 minimum,
   architectures `armeabi-v7a` et `arm64-v8a` vérifiés dans le paquet.
 - Compilation Kotlin/Java, ressources et assemblage réussis ; signature APK v2
   vérifiée. Une seconde exécution du script de construction a réussi.
 - Configuration APISNIX/UDP et accès direct à la connexion vérifiés dans l'APK.
-- Aucun appareil connecté ni test d'interface ou d'appel réel effectué.
+- Franck a essayé le pilote `.2` et signalé le remplacement d'un numéro
+  national par un numéro préfixé `+237`. La détection automatique du pays a
+  été retirée ; ajout d'indicatif désactivé à la création et migré une seule
+  fois pour les comptes existants. Voir [NUMEROTATION_ANDROID.md](NUMEROTATION_ANDROID.md).
+- Pilote `.3` compilé, signature v2 vérifiée et certificat identique à `.2` ;
+  mise à jour possible sans supprimer le compte. Aucun téléphone ni émulateur
+  connecté pour valider le correctif en appel réel ; essai de Franck attendu.
 
 ### Windows
 
@@ -69,6 +75,15 @@ existantes. Les protocoles du moteur sont conservés.
 - Contrôles Qt des composants et de leurs signaux réussis, syntaxe QML et
   export du patch vérifiés. Compilation et nouvel essai Windows encore requis.
 
+### Mac et iPhone
+
+Franck redemande une suite pour ces plateformes. Xcode 26.6 et les outils Apple
+sont disponibles sur son Mac Apple Silicon ; le kit Qt C++ et les outils de
+compilation Desktop manquent encore. Aucun build Mac lancé ni paquet produit.
+Le client iOS officiel est une base distincte à adapter ; aucun checkout ou
+paquet APISNIX iOS créé. Présence d'un abonnement Apple Developer demandée,
+réponse attendue. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
+
 ## Limites avant remise aux clients
 
 1. Contrôler visuellement les écrans sur appareil : logos principaux intégrés,
@@ -77,9 +92,9 @@ existantes. Les protocoles du moteur sont conservés.
 2. Terminer la revue des écrans secondaires : certains liens d'aide et de
    confidentialité restent ceux de Linphone. Ne pas présenter ces liens comme
    la politique APISNIX. Les mentions de licence et d'auteur doivent rester.
-3. Tester l’installateur Windows et l’APK sur les appareils de Franck.
-   Les deux compilations ont réussi ; cela ne valide pas leur fonctionnement
-   sur un appareil réel.
+3. Tester les nouveaux pilotes Android `.3` et Windows compact sur les appareils
+   de Franck. Le premier pilote Windows fonctionne selon son retour ; cela ne
+   valide pas ces évolutions ni tous les cas détaillés ci-dessous.
 4. Vérifier connexion Asterisk, audio bidirectionnel, DTMF, casques, erreurs et
    reconnexion réseau avec des comptes de test dédiés.
 5. Préparer signatures de distribution, sources correspondantes et procédure

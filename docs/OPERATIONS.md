@@ -46,10 +46,12 @@ résolu est fixé à 5.5.21. Le script place l'APK dans `dist/android/`.
 
 ### Pilote Android
 
-APK actuel : `apisnixphone-android-debug-6.2.7-apisnix.2.apk`.
+APK actuel : `apisnixphone-android-debug-6.2.7-apisnix.3.apk`.
 Il est signé avec une clé de développement locale. Le logo et les couleurs
 APISNIX sont intégrés ; certains écrans secondaires restent à revoir.
-Les appels réels et l’affichage sur appareil ne sont pas encore validés.
+Franck a essayé le pilote précédent et signalé un ajout erroné de `+237`.
+Le correctif `.3` et sa migration doivent encore être essayés sur son téléphone.
+Voir [NUMEROTATION_ANDROID.md](NUMEROTATION_ANDROID.md).
 
 Pour le test, transférer le fichier au téléphone
 Android 9 ou supérieur, l'ouvrir et autoriser cette source d'installation si
@@ -58,6 +60,26 @@ Autoriser le microphone ; les autres permissions dépendent des fonctions utilis
 
 L'APK inclut ARM 32 et 64 bits, pas de x86. La signature et le manifeste ont été
 vérifiés ; cela ne valide ni l'interface ni les appels sur téléphone.
+
+### Mise à jour Android `.3` — chiffres saisis conservés
+
+- Fichier : `dist/android/apisnixphone-android-debug-6.2.7-apisnix.3.apk`.
+- Taille : 133 229 927 octets (~127 Mio).
+- SHA-256 : `c5fb9aac821e43ad9b1df248741a8f32aa1afd73ec41777953506c3c527f2488`.
+- `versionCode=602008`, contre `602007` pour le pilote `.2` ; même application
+  `com.apisnix.phone` et même certificat de développement, comparé et vérifié.
+- Compilation Kotlin/Java et assemblage réussis le 16 septembre ; signature
+  APK v2 valide, nom et architectures ARM 32/64 vérifiés dans le paquet.
+
+Installer par-dessus l'ancien APK, sans désinstaller ni effacer les données.
+La première ouverture désactive l'ajout automatique d'indicatif sur les comptes
+existants. Retaper un numéro au clavier pour le test : les anciens appels déjà
+stockés en `+237…` ne sont pas réécrits. Vérifier le numéro, l'audio et le
+raccrochage avec une destination de test autorisée. Aucun changement du serveur.
+
+Le pilote `.2` reste conservé pour comparaison. Son numéro de version étant
+inférieur, une réinstallation directe par-dessus `.3` peut être refusée ; ne
+pas désinstaller automatiquement et perdre les données pour forcer un retour.
 
 ### Signature de diffusion future
 

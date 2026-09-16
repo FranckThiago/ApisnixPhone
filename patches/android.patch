@@ -1,5 +1,5 @@
 diff --git a/app/build.gradle.kts b/app/build.gradle.kts
-index 3371bc8..040b328 100644
+index 3371bc8..5e5b575 100644
 --- a/app/build.gradle.kts
 +++ b/app/build.gradle.kts
 @@ -3,8 +3,6 @@ import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
@@ -24,16 +24,18 @@ index 3371bc8..040b328 100644
  } catch (e: Exception) {
      println("Git not found [$e], using $gitVersion")
  }
-+gitVersion = "$gitVersion-apisnix.2"
++gitVersion = "$gitVersion-apisnix.3"
  println("Computed git version: $gitVersion")
  
  configurations {
-@@ -107,7 +106,7 @@ android {
+@@ -106,8 +105,8 @@ android {
+         applicationId = packageName
          minSdk = 28
          targetSdk = 37
-         versionCode = 602007 // 6.02.007
+-        versionCode = 602007 // 6.02.007
 -        versionName = "6.2.7"
-+        versionName = "6.2.7-apisnix.2"
++        versionCode = 602008 // APISNIX revision 3, newer than the first test APK
++        versionName = "6.2.7-apisnix.3"
  
          manifestPlaceholders["appAuthRedirectScheme"] = packageName
  
@@ -138,8 +140,72 @@ index 558f8c7..7d24e55 100644
  disable_ringing=0
  
  [audio]
+diff --git a/app/src/main/java/org/linphone/core/CoreContext.kt b/app/src/main/java/org/linphone/core/CoreContext.kt
+index 185ea34..2eece68 100644
+--- a/app/src/main/java/org/linphone/core/CoreContext.kt
++++ b/app/src/main/java/org/linphone/core/CoreContext.kt
+@@ -780,6 +780,19 @@ class CoreContext
+                 core.logCollectionUploadServerUrl = "https://files.linphone.org/http-file-transfer-server/hft.php"
+             }
+ 
++            if (oldVersion < 602008) { // APISNIX 6.2.7-apisnix.3
++                // Earlier APISNIX builds inferred the dial plan from the mobile network.
++                // Migrate saved accounts once; keep credentials and any later explicit opt-in.
++                for (account in core.accountList) {
++                    if (account.params.useInternationalPrefixForCallsAndChats) {
++                        val params = account.params.clone()
++                        params.useInternationalPrefixForCallsAndChats = false
++                        account.params = params
++                    }
++                }
++                Log.i("$TAG APISNIX accounts now keep dialed numbers without adding a country prefix")
++            }
++
+             corePreferences.linphoneConfigurationVersion = currentVersion
+             Log.w(
+                 "$TAG Core configuration updated to version [${corePreferences.linphoneConfigurationVersion}]"
+diff --git a/app/src/main/java/org/linphone/ui/assistant/fragment/ThirdPartySipAccountLoginFragment.kt b/app/src/main/java/org/linphone/ui/assistant/fragment/ThirdPartySipAccountLoginFragment.kt
+index b828482..e5df118 100644
+--- a/app/src/main/java/org/linphone/ui/assistant/fragment/ThirdPartySipAccountLoginFragment.kt
++++ b/app/src/main/java/org/linphone/ui/assistant/fragment/ThirdPartySipAccountLoginFragment.kt
+@@ -20,10 +20,8 @@
+ package org.linphone.ui.assistant.fragment
+ 
+ import android.Manifest
+-import android.content.Context
+ import android.content.Intent
+ import android.os.Bundle
+-import android.telephony.TelephonyManager
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+@@ -46,7 +44,6 @@ import org.linphone.ui.GenericFragment
+ import org.linphone.ui.assistant.viewmodel.ThirdPartySipAccountLoginViewModel
+ import org.linphone.ui.sso.SingleSignOnActivity
+ import org.linphone.utils.DialogUtils
+-import org.linphone.utils.PhoneNumberUtils
+ 
+ @UiThread
+ class ThirdPartySipAccountLoginFragment : GenericFragment() {
+@@ -165,15 +162,7 @@ class ThirdPartySipAccountLoginFragment : GenericFragment() {
+             }
+         }
+ 
+-        val telephonyManager = requireContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+-        val countryIso = telephonyManager.networkCountryIso
+-        coreContext.postOnCoreThread {
+-            val dialPlan = PhoneNumberUtils.getDeviceDialPlan(countryIso)
+-            if (dialPlan != null) {
+-                viewModel.internationalPrefix.postValue(dialPlan.countryCallingCode)
+-                viewModel.internationalPrefixIsoCountryCode.postValue(dialPlan.isoCountryCode)
+-            }
+-        }
++        // APISNIX routes the number entered by the user, independently of the SIM country.
+     }
+ 
+     private fun goBack() {
 diff --git a/app/src/main/java/org/linphone/ui/assistant/viewmodel/ThirdPartySipAccountLoginViewModel.kt b/app/src/main/java/org/linphone/ui/assistant/viewmodel/ThirdPartySipAccountLoginViewModel.kt
-index c67f88f..b1979e7 100644
+index c67f88f..c8e9cc3 100644
 --- a/app/src/main/java/org/linphone/ui/assistant/viewmodel/ThirdPartySipAccountLoginViewModel.kt
 +++ b/app/src/main/java/org/linphone/ui/assistant/viewmodel/ThirdPartySipAccountLoginViewModel.kt
 @@ -146,6 +146,9 @@ class ThirdPartySipAccountLoginViewModel
@@ -169,7 +235,17 @@ index c67f88f..b1979e7 100644
                  null,
                  null,
                  domainAddress?.domain ?: domainValue
-@@ -311,8 +315,9 @@ class ThirdPartySipAccountLoginViewModel
+@@ -279,6 +283,9 @@ class ThirdPartySipAccountLoginViewModel
+             accountParams.serverAddress = proxyServerAddress
+             Log.i("$TAG Is outbound proxy enabled ? [${accountParams.isOutboundProxyEnabled}]")
+ 
++            // Do not rewrite national numbers or internal extensions using a country prefix.
++            // The existing account setting remains available for an explicit opt-in.
++            accountParams.useInternationalPrefixForCallsAndChats = false
+             val prefix = internationalPrefix.value.orEmpty().trim()
+             val isoCountryCode = internationalPrefixIsoCountryCode.value.orEmpty()
+             if (prefix.isNotEmpty()) {
+@@ -311,8 +318,9 @@ class ThirdPartySipAccountLoginViewModel
  
      @UiThread
      private fun isLoginButtonEnabled(): Boolean {

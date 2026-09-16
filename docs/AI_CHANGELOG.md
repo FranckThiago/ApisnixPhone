@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-16 — Correction de l’indicatif Android et état Apple
+
+- Signalement de Franck : Android remplace un numéro national par `+237…`.
+  Cause retrouvée dans la détection du pays réseau de l'assistant SIP tiers
+  et l'option de formatage activée par défaut dans le moteur.
+- Pilote `6.2.7-apisnix.3`, code `602008` : détection retirée, option désactivée
+  pour les nouveaux comptes et migration unique des comptes enregistrés.
+  Identifiants, transport et historique conservés ; aucun changement Asterisk.
+- Compilation Kotlin/Java et APK réussis, signature v2 valide, certificat égal
+  au pilote `.2`, manifeste et ARM 32/64 vérifiés. Patch exporté et contrôle
+  inverse d'application réussi. Pas d'appareil Android pour un nouvel appel.
+- README, architecture, état, opérations et NUMEROTATION_ANDROID mis à jour.
+  PLATEFORMES_APPLE consigne l'environnement vérifié, les bases et prérequis :
+  aucun paquet Apple produit ; compte développeur demandé à Franck.
+
 ## 2026-09-16 — Téléphone Windows vertical
 
 - Premier pilote Windows confirmé fonctionnel par Franck ; demande explicite
