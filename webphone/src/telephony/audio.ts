@@ -125,6 +125,29 @@ export class Ringer {
   }
 }
 
+let chimeContext: AudioContext | undefined;
+
+/** A short, soft cue: two rising notes when the line is ready, two falling ones when it is lost. */
+export function chime(kind: 'ready' | 'lost', volume: number) {
+  if (typeof AudioContext === 'undefined' || volume <= 0) return;
+  const context = (chimeContext ??= new AudioContext());
+  if (context.state === 'suspended') void context.resume().catch(() => undefined);
+  const notes = kind === 'ready' ? [587, 880] : [523, 349];
+  notes.forEach((frequency, index) => {
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = frequency;
+    const start = context.currentTime + index * 0.13;
+    envelope.gain.setValueAtTime(0, start);
+    envelope.gain.linearRampToValueAtTime(0.12 * volume, start + 0.02);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.32);
+    oscillator.connect(envelope).connect(context.destination);
+    oscillator.start(start);
+    oscillator.stop(start + 0.34);
+  });
+}
+
 export function microphoneErrorMessage(error: unknown): string {
   const name = error instanceof DOMException ? error.name : '';
   if (name === 'NotAllowedError' || name === 'SecurityError') return 'Le microphone est bloqué. Autorisez-le dans la barre d’adresse du navigateur, puis réessayez.';

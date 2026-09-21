@@ -53,6 +53,8 @@ export interface Preferences {
   /** Microphone sensitivity, 0–200 %. */
   micGain: number;
   ringtone: boolean;
+  /** Short cues when the line becomes ready or is lost. */
+  lineSounds: boolean;
   echoCancellation: boolean;
   noiseSuppression: boolean;
   inputDevice: string;
@@ -72,6 +74,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   volume: 80,
   micGain: 100,
   ringtone: true,
+  lineSounds: true,
   echoCancellation: true,
   noiseSuppression: true,
   inputDevice: 'default',

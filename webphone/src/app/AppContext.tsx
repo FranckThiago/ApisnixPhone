@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { parseDialInput } from '../domain/numbers';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence, persistChoice } from '../storage/persistence';
+import { chime } from '../telephony/audio';
 import { DemoPhoneController } from '../telephony/DemoPhoneController';
 import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
 import { SipPhoneController } from '../telephony/SipPhoneController';
@@ -92,6 +93,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (error && error !== lastError.current && connection === 'ready') notify(error, 'danger');
     lastError.current = error;
   }), [notify]);
+
+  // Hearing that the line is ready (or lost) spares a look at the screen, as agents are used to.
+  const wasReady = useRef(false);
+  useEffect(() => phone.subscribe(() => {
+    const isReady = phone.getSnapshot().connection === 'ready';
+    if (isReady === wasReady.current) return;
+    const { lineSounds, volume } = store.getSnapshot().preferences;
+    // Signing out on purpose is silent; only a line that drops by itself is announced.
+    if (lineSounds && (isReady || phone.getSnapshot().connection === 'reconnecting')) chime(isReady ? 'ready' : 'lost', volume / 100);
+    wasReady.current = isReady;
+  }), []);
 
   // Volume, microphone sensitivity and devices follow the settings live, even during a call.
   useEffect(() => {

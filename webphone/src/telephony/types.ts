@@ -22,6 +22,8 @@ export interface CallSnapshot {
   answeredAt?: number;
   endedAt?: number;
   outcome?: CallOutcome;
+  /** Why the call could not take place, in plain words (blocked microphone…). */
+  failure?: string;
   dtmf: string;
 }
 
@@ -38,6 +40,8 @@ export interface PhoneSnapshot {
   error?: string;
   /** The browser refused to play the remote sound until the person interacts. */
   audioBlocked?: boolean;
+  /** The server stopped checking on this browser: the line was most likely opened somewhere else. */
+  lineTaken?: boolean;
 }
 
 export interface Credentials {
@@ -66,6 +70,8 @@ export interface PhoneController {
   applyAudio(settings: AudioSettings): void;
   /** Called from a click: lets the browser play the remote sound it had blocked. */
   resumeAudio(): void;
+  /** Registers again from this browser, on the person's explicit request. */
+  retakeLine(): void;
 }
 
 export interface AudioSettings {

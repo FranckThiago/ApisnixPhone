@@ -35,7 +35,7 @@ function harness(lineFree = true) {
     acquireLine: async () => (lineFree ? released : null),
   };
   const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws' }, environment);
-  return { phone, manager, released, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
+  return { phone, manager, released, environment, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
 }
 
 async function ready(h: ReturnType<typeof harness>) {
@@ -191,5 +191,49 @@ describe('SIP controller', () => {
     expect(h.manager.unregister).toHaveBeenCalled();
     expect(h.released).toHaveBeenCalled();
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'offline', call: null, account: null });
+  });
+});
+
+describe('SIP controller — microphone and shared line', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('says why a call failed when the microphone is blocked', async () => {
+    let microphone!: () => Promise<MediaStream>;
+    const h = harness();
+    const original = h.environment.createManager;
+    h.environment.createManager = (config, credentials, delegate, mic, audio) => { microphone = mic; return original(config, credentials, delegate, mic, audio); };
+    vi.stubGlobal('navigator', { mediaDevices: { getUserMedia: async () => { throw new DOMException('denied', 'NotAllowedError'); } } });
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    await microphone().catch(() => undefined);
+    h.delegate.onCallHangup(session('out'));
+    const snapshot = h.phone.getSnapshot();
+    expect(snapshot.call).toMatchObject({ phase: 'ended', outcome: 'failed' });
+    expect(snapshot.call?.failure).toMatch(/microphone est bloqué/i);
+    expect(snapshot.error).toMatch(/microphone est bloqué/i);
+    vi.unstubAllGlobals();
+  });
+
+  it('warns when the server stops checking on this browser, never before knowing the pace, and recovers', async () => {
+    const h = harness();
+    await ready(h);
+    await vi.advanceTimersByTimeAsync(600_000);
+    expect(h.phone.getSnapshot().lineTaken).toBeFalsy();
+    h.delegate.onServerPing();
+    await vi.advanceTimersByTimeAsync(60_000);
+    h.delegate.onServerPing();
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(h.phone.getSnapshot().lineTaken).toBe(true);
+    h.delegate.onServerPing();
+    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    await vi.advanceTimersByTimeAsync(200_000);
+    expect(h.phone.getSnapshot().lineTaken).toBe(true);
+    h.phone.retakeLine();
+    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    expect(h.manager.register).toHaveBeenCalledTimes(2);
   });
 });

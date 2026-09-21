@@ -1,4 +1,4 @@
-import { BellRing, Database, Headphones, Info, Palette, PhoneIncoming } from 'lucide-react';
+import { BellRing, Database, Headphones, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { applyTheme } from '../../app/theme';
@@ -19,7 +19,7 @@ function Toggle({ label, hint, checked, onChange }: { label: string; hint?: stri
 }
 
 export function Settings() {
-  const { store, notify, simulateIncoming } = useApp();
+  const { store, notify, simulateIncoming, logout, phone } = useApp();
   const { preferences, calls, contacts } = useData();
   const { account, demo } = usePhone();
   const profile = account ? `${account.domain}:${account.username}` : '';
@@ -33,6 +33,7 @@ export function Settings() {
         <Section icon={<Headphones size={18} />} title="Audio">
           <AudioSettings />
           <Toggle label="Sonnerie" hint="Jouée pour un appel entrant." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
+          <Toggle label="Sons de la ligne" hint="Deux notes quand la ligne est prête, deux autres si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
           <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
           <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
         </Section>
@@ -80,6 +81,11 @@ export function Settings() {
         <Section icon={<Info size={18} />} title="Compte">
           <dl className="about"><div><dt>Identifiant</dt><dd>{account?.username}</dd></div><div><dt>Mode</dt><dd>{demo ? 'Démonstration' : 'Ligne réelle'}</dd></div>
             <div><dt>Version</dt><dd>ApisnixPhone Web 0.1.0</dd></div></dl>
+          <button type="button" className="ghost danger" onClick={() => {
+            const call = phone.getSnapshot().call;
+            if (call && call.phase !== 'ended' && !window.confirm('Un appel est en cours. Se déconnecter y mettra fin.')) return;
+            void logout();
+          }}><LogOut size={16} /> Se déconnecter</button>
         </Section>
       </div>
     </div>

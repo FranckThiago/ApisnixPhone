@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : premier appel réel et corrections de l'essai
+
+- Franck se connecte avec le compte pilote et appelle un mobile ; contrôles
+  Asterisk en lecture seule conformes (WSS, numéro exact, routage, µ-law, MP3).
+  Résultats et ce qui reste à essayer dans PROJECT_STATE ; détails serveur dans
+  le dépôt privé.
+- Corrigé d'après ses retours : raison d'un échec micro affichée, déconnexion
+  toujours accessible, mise en page Safari (clavier, hauteur), alerte rouge quand
+  la ligne est ouverte sur un autre appareil — il avait choisi l'avertissement
+  plutôt qu'une coupure ; le poste averti est celui qui ne reçoit plus les
+  appels, seul cas détectable depuis un navigateur. Sons de ligne prête/perdue,
+  qu'il comparait à l'annonce de VICIdial. Agent utilisateur `ApisnixPhoneWeb`.
+- 30 tests, lint, typage, build. Procédure d'hébergement et avis sur le
+  sous-domaine ajoutés à OPERATIONS ; aucun déploiement.
+
 ## 2026-09-21 — ApisnixPhone Web : pastille des rappels et poste pilote prêt
 
 - Retour de Franck : la pastille des Rappels était rouge. La règle jaune était

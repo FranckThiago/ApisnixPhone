@@ -83,6 +83,25 @@ Franck a ensuite appliqué lui-même cette surcharge sur un second compte de tes
 désormais pilote : contrôle en lecture seule conforme (WS/WSS, chiffrement, RTCP
 mux, contexte et limite d'appel conservés). L'essai réel reste à faire.
 
+**Premier essai réel le 21 septembre au soir**, par Franck sur le compte pilote,
+observé côté Asterisk en lecture seule : enregistrement en WSS depuis le
+navigateur (Safari, thème sombre), appel sortant vers un mobile décroché plus de
+six minutes, numéro reçu identique à la saisie, routage d'origine respecté après
+le contexte d'enregistrement, G.711 µ-law, MP3 de 388 s produit. Franck confirme
+le micro muet. **Non essayés : attente/reprise, DTMF, appel entrant, réseau
+client.** Relevé : environ 7 % de paquets perdus dans le sens navigateur →
+serveur sur sa connexion, à surveiller. Défauts remontés et corrigés : aucun
+message quand le micro est refusé (SIP.js termine l'appel sans le dire ; la
+raison est maintenant captée, affichée dans la carte d'appel et en
+notification), bouton de déconnexion invisible sous Safari (hauteur de page
+corrigée, bouton ajouté dans la barre du haut et dans Réglages), clavier décalé
+sous Safari. Deux appareils peuvent s'enregistrer sur un même compte et Asterisk
+ne sert que le dernier : le poste qui a perdu la ligne l'apprend désormais en
+constatant l'arrêt des contrôles périodiques du PBX et affiche une alerte rouge
+avec « Reprendre la ligne ici » — mécanisme testé en simulation seulement. Deux
+notes signalent la ligne prête ou perdue (désactivable). Hébergement : procédure
+et nom conseillé dans OPERATIONS, rien de déployé.
+
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
 maintenant ceux non consultés et s'efface à l'ouverture du Journal. Toasts

@@ -25,8 +25,9 @@ const CONNECTION: Record<ConnectionState, [string, 'ok' | 'wait' | 'bad']> = {
 };
 
 export function ConnectionPill() {
-  const { connection, demo } = usePhone();
+  const { connection, demo, lineTaken } = usePhone();
   const [label, tone] = CONNECTION[connection];
+  if (lineTaken && connection === 'ready') return <span className="pill pill-bad"><i aria-hidden="true" />Ligne ouverte ailleurs</span>;
   return <span className={`pill pill-${tone}`}><i aria-hidden="true" />{demo && connection === 'ready' ? 'Démo · ligne prête' : label}</span>;
 }
 
@@ -160,6 +161,7 @@ function WrapUp({ call }: { call: CallSnapshot }) {
 
   return (
     <div className="wrapup">
+      {call.failure && <p className="call-failure" role="alert">{call.failure}</p>}
       <p className={`outcome outcome-${call.outcome}`}>{OUTCOME_LABELS[call.outcome ?? 'failed']}{talked ? ` · ${formatDuration(talked)}` : ''}</p>
       {record && (
         <>

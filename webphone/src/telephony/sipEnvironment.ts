@@ -21,6 +21,8 @@ export const browserSipEnvironment: SipEnvironment = {
         // In memory for this session only.
         authorizationPassword: credentials.password,
         contactParams: { transport: 'wss' },
+        // Recognisable in the PBX's peer list and in supervision.
+        userAgentString: 'ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2',
         logBuiltinEnabled: false,
         logConfiguration: false,
         // The microphone goes through the application's gain chain.
@@ -32,6 +34,13 @@ export const browserSipEnvironment: SipEnvironment = {
         },
       },
     });
+    // SIP.js answers the PBX's OPTIONS checks by itself and tells nobody: watch them go by.
+    const transport = manager.userAgent.transport;
+    const forward = transport.onMessage;
+    transport.onMessage = message => {
+      if (message.startsWith('OPTIONS ')) delegate.onServerPing();
+      forward?.(message);
+    };
     return manager as unknown as Manager;
   },
 

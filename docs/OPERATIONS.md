@@ -308,3 +308,55 @@ Pour finaliser la distribution après ces pilotes : terminer l'identité,
 l'aide/confidentialité, les essais, la signature, les sources correspondantes
 et le canal de mise à jour. La demande de publication du 17 septembre porte
 sur les fichiers actuels, sans présenter ces validations comme terminées.
+
+## ApisnixPhone Web — construire et héberger
+
+Application statique : l'hébergement sert des fichiers, il ne transporte ni la
+signalisation ni l'audio, qui vont du navigateur au PBX (WSS 8089, RTP).
+
+```sh
+cd webphone
+npm ci
+VITE_APP_MODE=live VITE_SIP_DOMAIN=apisnix-crm.com \
+  VITE_SIP_WSS_URL=wss://apisnix-crm.com:8089/ws npm run build
+```
+
+Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
+secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
+variables, le build est une démonstration.
+
+Hébergement proposé, **non réalisé** : Hermes, derrière le Caddy existant, à côté
+de la supervision et sans la modifier ; dossier versionné
+`/srv/apisnixphone/releases/<version>/` et lien `current`. HTTPS est obligatoire :
+hors `localhost`, un navigateur refuse le microphone sans lui. Nom conseillé :
+`phone.apisnix-crm.com` plutôt que `sip.` — un nom `sip.*` désigne d'ordinaire un
+serveur SIP, attire les robots qui sondent ces noms et laisserait croire que la
+téléphonie passe par cette machine. Bloc Caddy de départ :
+
+```
+phone.apisnix-crm.com {
+    root * /srv/apisnixphone/current
+    encode zstd gzip
+    try_files {path} /index.html
+    file_server
+    @assets path /assets/*
+    header @assets Cache-Control "public, max-age=31536000, immutable"
+    header /index.html Cache-Control "no-cache"
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+        Permissions-Policy "microphone=(self), camera=(), geolocation=()"
+        Content-Security-Policy "default-src 'self'; connect-src 'self' wss://apisnix-crm.com:8089; img-src 'self' data:; style-src 'self' 'unsafe-inline'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'"
+    }
+}
+```
+
+`style-src 'unsafe-inline'` est requis par les styles calculés (avatars, niveau
+du micro). À vérifier au premier déploiement : CSP sans erreur console,
+microphone demandé, enregistrement WSS depuis cette origine. Retour arrière :
+repointer `current` sur la release précédente. Ne jamais publier pendant les
+heures d'appel une version que personne n'a essayée : une page rechargée perd
+sa ligne et son appel. DNS, Caddy et Hermes relèvent du dépôt privé et de ses
+procédures ; rien n'y a été modifié pour ce projet.
+

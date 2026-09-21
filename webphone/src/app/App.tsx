@@ -1,4 +1,4 @@
-import { AlarmClock, BookUser, History, LogOut, Moon, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun, WifiOff } from 'lucide-react';
+import { AlarmClock, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun, WifiOff } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
@@ -44,7 +44,7 @@ function useShortcuts() {
 
 function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
-  const { account, call, demo, connection } = usePhone();
+  const { account, call, demo, connection, lineTaken } = usePhone();
   const { preferences, calls, callbacks } = useData();
   useShortcuts();
   const now = useNow();
@@ -100,6 +100,10 @@ function Workspace() {
   }, [ringingIn, demo, preferences.notifications, call?.remoteName, call?.dialTarget]);
   const dark = document.documentElement.dataset.theme === 'dark';
   const inCall = call && call.phase !== 'ended';
+  const signOut = () => {
+    if (inCall && !window.confirm('Un appel est en cours. Se déconnecter y mettra fin.')) return;
+    void logout();
+  };
 
   return (
     <div className={'shell' + (view === 'phone' ? ' show-phone' : '')}>
@@ -121,10 +125,7 @@ function Workspace() {
         <div className="sidebar-foot">
           <Avatar name={account?.username} size={34} />
           <span className="account"><b>{account?.username}</b><small>{demo ? 'Démonstration' : account?.domain}</small></span>
-          <button type="button" className="icon-button on-dark" aria-label="Se déconnecter" title="Se déconnecter" onClick={() => {
-            if (inCall && !window.confirm('Un appel est en cours. Se déconnecter y mettra fin.')) return;
-            void logout();
-          }}><LogOut size={17} /></button>
+          <button type="button" className="icon-button on-dark" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={17} /></button>
         </div>
       </nav>
 
@@ -136,7 +137,16 @@ function Workspace() {
           <button type="button" className="icon-button" aria-label={dark ? 'Thème clair' : 'Thème sombre'} onClick={() => {
             const theme = dark ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme);
           }}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
+          {/* Always within reach, whatever the height of the window. */}
+          <button type="button" className="icon-button" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={18} /></button>
         </header>
+        {lineTaken && connection === 'ready' && (
+          <div className="line-alert" role="alert">
+            <ShieldAlert size={22} aria-hidden="true" />
+            <p><b>Cette ligne est ouverte sur un autre appareil.</b> Les appels entrants n’arrivent plus ici : ils sonnent sur l’autre poste. Déconnectez l’autre appareil, ou reprenez la ligne sur celui-ci.</p>
+            <button type="button" onClick={() => phone.retakeLine()}>Reprendre la ligne ici</button>
+          </div>
+        )}
         {connection !== 'ready' && (
           <p className="line-banner" role="status"><WifiOff size={16} /> {connection === 'reconnecting' ? 'Connexion perdue : reconnexion en cours… Les appels sont indisponibles.' : 'Ligne en cours d’enregistrement…'}</p>
         )}

@@ -156,4 +156,5 @@ export class DemoPhoneController implements PhoneController {
     if (!settings.ringtone) this.ringer.stop();
   }
   resumeAudio() {}
+  retakeLine() {}
 }

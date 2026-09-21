@@ -20,6 +20,8 @@ export interface ManagerDelegate {
   onCallAnswered(session: ManagedSession): void;
   onCallHangup(session: ManagedSession): void;
   onCallHold(session: ManagedSession, held: boolean): void;
+  /** The server's periodic check (SIP OPTIONS) reached this browser. */
+  onServerPing(): void;
 }
 
 export interface Manager {
@@ -56,6 +58,7 @@ export interface SipEnvironment {
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 480: 'no-answer', 487: 'cancelled' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
+const PING_WATCH = 10_000;
 
 /**
  * SIP.js behind the application's contract. A connected WebSocket is not a
@@ -73,6 +76,10 @@ export class SipPhoneController implements PhoneController {
   private rejection?: CallOutcome;
   private localHangup = false;
   private dtmfQueue: Promise<void> = Promise.resolve();
+  private micFailure?: string;
+  private lastPing = 0;
+  private pingInterval = 0;
+  private pingWatch?: ReturnType<typeof setInterval>;
   private remoteAudio?: HTMLAudioElement;
   private ringer = new Ringer();
   private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, echoCancellation: true, noiseSuppression: true };
@@ -112,7 +119,7 @@ export class SipPhoneController implements PhoneController {
       this.releaseLine = release;
       this.remoteAudio ??= this.environment.createRemoteAudio();
       this.applyAudio(this.audio);
-      this.manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.delegate, () => this.mic.open(), this.remoteAudio);
+      this.manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.delegate, () => this.openMicrophone(), this.remoteAudio);
       this.update({ account: { username, domain: this.config.domain } });
       await this.manager.connect();
     } catch {
@@ -152,7 +159,23 @@ export class SipPhoneController implements PhoneController {
         this.update({ connection: 'network-error', account: null, error: 'Connexion perdue. Vérifiez votre réseau, puis reconnectez-vous.' });
       }, RECONNECT_GRACE);
     },
-    onRegistered: () => { if (this.wanted) this.update({ connection: 'ready', error: undefined }); },
+    onRegistered: () => {
+      if (!this.wanted) return;
+      this.lastPing = 0;
+      this.update({ connection: 'ready', error: undefined, lineTaken: false });
+      this.watchPings();
+    },
+    // The PBX checks the registered contact at a regular pace. It only checks ONE contact per account:
+    // when the checks stop while we are connected, another device registered on this account and receives the calls.
+    onServerPing: () => {
+      const now = Date.now();
+      if (this.lastPing) {
+        const gap = now - this.lastPing;
+        this.pingInterval = this.pingInterval ? Math.min(this.pingInterval, gap) : gap;
+      }
+      this.lastPing = now;
+      if (this.snapshot.lineTaken) this.update({ lineTaken: false });
+    },
     onUnregistered: () => { if (this.wanted && this.snapshot.connection === 'ready') this.update({ connection: 'registering' }); },
     onCallCreated: session => { this.session = session; },
     onCallReceived: session => {
@@ -179,11 +202,42 @@ export class SipPhoneController implements PhoneController {
     onCallHold: (_session, held) => this.updateCall({ phase: held ? 'held' : 'active', holdPending: false }),
   };
 
+  /** SIP.js ends the call without saying why when the microphone fails: keep the reason ourselves. */
+  private async openMicrophone() {
+    this.micFailure = undefined;
+    try {
+      return await this.mic.open();
+    } catch (error) {
+      this.micFailure = microphoneErrorMessage(error);
+      throw error;
+    }
+  }
+
+  private watchPings() {
+    clearInterval(this.pingWatch);
+    this.pingWatch = setInterval(() => {
+      // Never guess: at least two checks must have been seen to know their pace.
+      if (this.snapshot.connection !== 'ready' || !this.pingInterval || this.snapshot.lineTaken) return;
+      if (Date.now() - this.lastPing > this.pingInterval * 2.5 + 10_000) this.update({ lineTaken: true });
+    }, PING_WATCH);
+  }
+
+  retakeLine() {
+    if (this.snapshot.connection !== 'ready' || !this.manager) return;
+    this.lastPing = Date.now();
+    this.update({ lineTaken: false });
+    this.delegate.onServerConnect();
+  }
+
   private finish(outcome: CallOutcome) {
     this.ringer.stop();
     this.mic.close();
     this.session = undefined;
-    this.updateCall({ phase: 'ended', outcome, endedAt: Date.now(), holdPending: false });
+    const failure = this.micFailure;
+    this.micFailure = undefined;
+    this.updateCall({ phase: 'ended', outcome: failure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
+    // Said out loud as well: a failed call must never leave the person wondering why.
+    if (failure) this.update({ error: failure });
     if (this.snapshot.audioBlocked) this.update({ audioBlocked: false });
   }
 
@@ -194,6 +248,8 @@ export class SipPhoneController implements PhoneController {
   private async teardown() {
     this.wanted = false;
     clearTimeout(this.reconnectTimer);
+    clearInterval(this.pingWatch);
+    this.lastPing = this.pingInterval = 0;
     this.ringer.stop();
     this.mic.close();
     const manager = this.manager;
@@ -210,7 +266,7 @@ export class SipPhoneController implements PhoneController {
   async disconnect() {
     if (this.session && this.manager) await this.manager.hangup(this.session).catch(() => undefined);
     await this.teardown();
-    this.update({ connection: 'offline', account: null, call: null, error: undefined });
+    this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false });
   }
 
   call(rawInput: string, dialTarget: string, remoteName?: string) {
