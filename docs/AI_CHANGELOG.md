@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : un compte sur deux appareils, sans va-et-vient
+
+- Essai de Franck avec deux navigateurs sur le même compte : son confirmé bon,
+  alerte de ligne prise confirmée en réel, mais reprise de ligne alternée toutes
+  les quelques minutes, appel décroché classé en échec à la coupure du socket,
+  attente bloquée sur réseau instable, carte de fin d'appel débordante.
+- Le poste qui perd la ligne se met en pause : socket fermé avant l'arrêt de
+  SIP.js pour qu'aucune désinscription ne parte (vérifié dans le code de la
+  bibliothèque : `stop()` désinscrit si le transport est ouvert). Reprise sur
+  demande seulement. Issue réelle conservée pour un appel interrompu, délai de
+  garde sur l'attente, grille de la carte d'appel corrigée.
+- 33 tests, lint, typage, build ; guide et PDF mis à jour. Non vérifié en réel.
+
 ## 2026-09-21 — ApisnixPhone Web : son des appels entrants et reconnexion après actualisation
 
 - Essai réel de Franck : entrant, attente et DTMF validés ; sonnerie muette,

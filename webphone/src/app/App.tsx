@@ -140,14 +140,14 @@ function Workspace() {
           {/* Always within reach, whatever the height of the window. */}
           <button type="button" className="icon-button sign-out" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={18} /></button>
         </header>
-        {lineTaken && connection === 'ready' && (
+        {lineTaken && (
           <div className="line-alert" role="alert">
             <ShieldAlert size={22} aria-hidden="true" />
-            <p><b>Cette ligne est ouverte sur un autre appareil.</b> Les appels entrants n’arrivent plus ici : ils sonnent sur l’autre poste. Déconnectez l’autre appareil, ou reprenez la ligne sur celui-ci.</p>
+            <p><b>Cette ligne est ouverte sur un autre appareil.</b> Ce poste est en pause : il ne reçoit plus les appels et ne peut plus en passer. Un compte ne fonctionne que sur un appareil à la fois. Reprenez la ligne ici, et c’est l’autre appareil qui sera mis en pause.</p>
             <button type="button" onClick={() => phone.retakeLine()}>Reprendre la ligne ici</button>
           </div>
         )}
-        {connection !== 'ready' && (
+        {connection !== 'ready' && !lineTaken && (
           <p className="line-banner" role="status"><WifiOff size={16} /> {connection === 'reconnecting' ? 'Connexion perdue : reconnexion en cours… Les appels sont indisponibles.' : 'Ligne en cours d’enregistrement…'}</p>
         )}
         {/* Visible from every view on narrow screens: hanging up is never hidden behind navigation. */}

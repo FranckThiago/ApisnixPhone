@@ -40,6 +40,11 @@ export interface Manager {
   mute(session: ManagedSession): void;
   unmute(session: ManagedSession): void;
   sendDTMF(session: ManagedSession, tone: string): Promise<void>;
+  /**
+   * Leaves without un-registering. The PBX keeps ONE contact per account: an un-REGISTER from
+   * the device that lost the line would disconnect the device that now holds it.
+   */
+  dropSilently(): Promise<void>;
 }
 
 export interface SipConfig {
@@ -59,6 +64,7 @@ export interface SipEnvironment {
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 480: 'no-answer', 487: 'cancelled' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
 const PING_WATCH = 10_000;
+const HOLD_PATIENCE = 8000;
 
 /**
  * SIP.js behind the application's contract. A connected WebSocket is not a
@@ -77,10 +83,14 @@ export class SipPhoneController implements PhoneController {
   private localHangup = false;
   private dtmfQueue: Promise<void> = Promise.resolve();
   private micFailure?: string;
+  private interruption?: string;
   private lastPing = 0;
   private pingInterval = 0;
   private pingWatch?: ReturnType<typeof setInterval>;
   private quietTimer?: ReturnType<typeof setTimeout>;
+  private holdTimer?: ReturnType<typeof setTimeout>;
+  /** Memory only, for « Reprendre la ligne ici »; cleared on sign-out. Never written anywhere. */
+  private credentials?: Credentials;
   private remoteAudio?: HTMLAudioElement;
   private ringer = new Ringer();
   private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, echoCancellation: true, noiseSuppression: true };
@@ -109,6 +119,7 @@ export class SipPhoneController implements PhoneController {
     const username = credentials.username.trim();
     if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: 'Saisissez votre identifiant et votre mot de passe.' });
     this.wanted = true;
+    this.credentials = { username, password: credentials.password };
     // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
     // Without it the first incoming call is silent, because nothing was clicked just before the sound starts.
     this.remoteAudio ??= this.environment.createRemoteAudio();
@@ -154,7 +165,12 @@ export class SipPhoneController implements PhoneController {
     onServerDisconnect: () => {
       if (!this.wanted) return;
       // A dropped call is never resumed or redialled automatically.
-      if (this.snapshot.call && this.snapshot.call.phase !== 'ended') this.finish('failed');
+      const call = this.snapshot.call;
+      if (call && call.phase !== 'ended') {
+        // A conversation that took place stays « answered »; only say how it ended.
+        this.interruption = 'Appel interrompu : la connexion au serveur a été perdue.';
+        this.finish(call.answeredAt ? 'answered' : 'failed');
+      }
       this.update({ connection: 'reconnecting', error: undefined });
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = setTimeout(() => {
@@ -208,6 +224,7 @@ export class SipPhoneController implements PhoneController {
     },
     // Only the far end's confirmation changes what the screen says.
     onCallHold: (_session, held) => {
+      clearTimeout(this.holdTimer);
       this.updateCall({ phase: held ? 'held' : 'active', holdPending: false });
       this.quietRemote(false);
     },
@@ -229,15 +246,36 @@ export class SipPhoneController implements PhoneController {
     this.pingWatch = setInterval(() => {
       // Never guess: at least two checks must have been seen to know their pace.
       if (this.snapshot.connection !== 'ready' || !this.pingInterval || this.snapshot.lineTaken) return;
-      if (Date.now() - this.lastPing > this.pingInterval * 2.5 + 10_000) this.update({ lineTaken: true });
+      if (Date.now() - this.lastPing <= this.pingInterval * 2.5 + 10_000) return;
+      // Never in the middle of a conversation: the call in progress is still ours.
+      if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+      void this.stepAside();
     }, PING_WATCH);
   }
 
+  /**
+   * Another device registered on this account. Renewing our registration would steal the line
+   * back every few minutes and the two devices would take turns for ever: stop instead, quietly,
+   * and let the person decide.
+   */
+  private async stepAside() {
+    this.wanted = false;
+    clearInterval(this.pingWatch);
+    clearTimeout(this.reconnectTimer);
+    const manager = this.manager;
+    this.manager = undefined;
+    this.update({ connection: 'other-tab-active', lineTaken: true, error: undefined });
+    await manager?.dropSilently().catch(() => undefined);
+    this.releaseLine?.();
+    this.releaseLine = undefined;
+  }
+
   retakeLine() {
-    if (this.snapshot.connection !== 'ready' || !this.manager) return;
-    this.lastPing = Date.now();
+    const credentials = this.credentials;
+    if (!this.snapshot.lineTaken || !credentials) return;
+    this.lastPing = this.pingInterval = 0;
     this.update({ lineTaken: false });
-    this.delegate.onServerConnect();
+    void this.connect(credentials);
   }
 
   private finish(outcome: CallOutcome) {
@@ -246,9 +284,11 @@ export class SipPhoneController implements PhoneController {
     this.session = undefined;
     clearTimeout(this.quietTimer);
     if (this.remoteAudio) this.remoteAudio.muted = false;
-    const failure = this.micFailure;
-    this.micFailure = undefined;
-    this.updateCall({ phase: 'ended', outcome: failure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
+    const micFailure = this.micFailure;
+    const failure = micFailure ?? this.interruption;
+    this.micFailure = this.interruption = undefined;
+    clearTimeout(this.holdTimer);
+    this.updateCall({ phase: 'ended', outcome: micFailure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
     // Said out loud as well: a failed call must never leave the person wondering why.
     if (failure) this.update({ error: failure });
     if (this.snapshot.audioBlocked) this.update({ audioBlocked: false });
@@ -296,6 +336,7 @@ export class SipPhoneController implements PhoneController {
   async disconnect() {
     if (this.session && this.manager) await this.manager.hangup(this.session).catch(() => undefined);
     await this.teardown();
+    this.credentials = undefined;
     this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false });
   }
 
@@ -359,6 +400,14 @@ export class SipPhoneController implements PhoneController {
     if (!call || call.holdPending || !this.session || !this.manager || call.phase !== (held ? 'active' : 'held')) return;
     this.updateCall({ holdPending: true });
     this.quietRemote(true);
+    // An unanswered request must not leave the button stuck on « Patientez… ».
+    clearTimeout(this.holdTimer);
+    this.holdTimer = setTimeout(() => {
+      if (!this.snapshot.call?.holdPending) return;
+      this.updateCall({ holdPending: false });
+      this.quietRemote(false);
+      this.update({ error: 'Le serveur n’a pas confirmé. Votre connexion semble instable : réessayez.' });
+    }, HOLD_PATIENCE);
     (held ? this.manager.hold(this.session) : this.manager.unhold(this.session)).catch(() => {
       this.updateCall({ holdPending: false });
       this.quietRemote(false);

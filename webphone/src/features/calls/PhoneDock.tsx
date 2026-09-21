@@ -27,7 +27,7 @@ const CONNECTION: Record<ConnectionState, [string, 'ok' | 'wait' | 'bad']> = {
 export function ConnectionPill() {
   const { connection, demo, lineTaken } = usePhone();
   const [label, tone] = CONNECTION[connection];
-  if (lineTaken && connection === 'ready') return <span className="pill pill-bad"><i aria-hidden="true" />Ligne ouverte ailleurs</span>;
+  if (lineTaken) return <span className="pill pill-bad"><i aria-hidden="true" />Ligne ouverte ailleurs</span>;
   return <span className={`pill pill-${tone}`}><i aria-hidden="true" />{demo && connection === 'ready' ? 'Démo · ligne prête' : label}</span>;
 }
 

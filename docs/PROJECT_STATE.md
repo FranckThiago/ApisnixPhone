@@ -122,6 +122,23 @@ ses contrôles périodiques ne semblent donc pas aboutir au navigateur ; l'alert
 « ligne ouverte ailleurs », qui en dépend, ne se déclenchera probablement pas
 en l'état — elle ne peut pas non plus donner de fausse alerte.
 
+Troisième essai de Franck (Chrome et Safari sur le même compte) : **le son
+passe bien** — sonnerie, voix du correspondant et carillon sont donc confirmés —
+et **l'alerte « ligne ouverte ailleurs » s'est déclenchée en réel**, ce qui
+prouve que les contrôles du PBX atteignent le navigateur (l'état UNKNOWN noté
+plus haut n'était pas le signe redouté). Défauts observés et corrigés : les deux
+navigateurs se reprenaient la ligne à tour de rôle à chaque renouvellement
+d'inscription ; le poste qui perd la ligne **se met maintenant en pause sans se
+désinscrire** (une désinscription couperait l'autre poste, Asterisk ne gardant
+qu'un contact par compte) et n'y revient que sur « Reprendre la ligne ici »,
+identifiants gardés en mémoire à cette seule fin ; jamais pendant une
+conversation. La connexion du second navigateur a fait fermer le socket du
+premier par Asterisk : l'appel décroché était classé « Échec », il reste
+« Répondu » avec la mention de l'interruption. Attente restée sur « Patientez… »
+une quinzaine de secondes sur un réseau instable : délai de garde de 8 s avec
+message. Carte de fin d'appel qui débordait à droite en fenêtre moyenne.
+**Ces derniers correctifs ne sont vérifiés qu'en simulation.**
+
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
 maintenant ceux non consultés et s'efface à l'ouverture du Journal. Toasts

@@ -184,7 +184,9 @@ Raccrocher. Les Favoris s'ouvrent depuis la page Contacts.
 
 | Ce que vous voyez | Ce que cela signifie | Que faire |
 | --- | --- | --- |
-| Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte est connecté ailleurs : **les appels entrants sonnent sur l'autre poste, plus sur celui-ci**. | Déconnectez l'autre appareil, ou cliquez **Reprendre la ligne ici**. Un compte = un seul poste à la fois. |
+| Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte vient d'être connecté ailleurs. **Ce poste se met en pause** (en deux à trois minutes) : il ne reçoit plus d'appels et ne peut plus en passer. Un appel en cours n'est pas interrompu par cette pause. | **Un compte = un seul appareil à la fois.** Cliquez **Reprendre la ligne ici** pour récupérer la ligne : c'est alors l'autre appareil qui passera en pause. Si ce n'est pas vous, prévenez votre administrateur. |
+| « Appel interrompu : la connexion au serveur a été perdue » | La liaison a coupé pendant l'appel (réseau, ou compte ouvert sur un autre appareil). | Vérifiez votre réseau et rappelez ; l'appel n'est jamais rappelé automatiquement. |
+| Le bouton Attente affiche « Patientez… » puis un message | Le serveur n'a pas confirmé, signe d'une connexion instable. | Réessayez ; si cela se répète, changez de réseau. |
 | « Le microphone est bloqué » | Le navigateur n'a pas l'autorisation. | Cliquez sur l'icône à gauche de l'adresse de la page, autorisez le microphone, rechargez. |
 | « Aucun microphone trouvé » | Casque débranché ou non reconnu. | Rebranchez-le, puis vérifiez Réglages → Audio. |
 | Bouton « Activer le son » pendant un appel | Le navigateur a bloqué le son. | Cliquez sur le bouton. |

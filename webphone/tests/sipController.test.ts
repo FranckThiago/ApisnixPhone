@@ -28,6 +28,7 @@ function harness(lineFree = true) {
     mute: vi.fn(),
     unmute: vi.fn(),
     sendDTMF: vi.fn(async () => undefined),
+    dropSilently: vi.fn(async () => undefined),
   };
   const environment: SipEnvironment = {
     createManager: (_config, _credentials, given) => { delegate = given; return manager; },
@@ -175,7 +176,9 @@ describe('SIP controller', () => {
     await vi.advanceTimersByTimeAsync(0);
     h.delegate.onCallAnswered(session('out'));
     h.delegate.onServerDisconnect(new Error('lost'));
-    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'reconnecting', call: { phase: 'ended', outcome: 'failed' } });
+    // The conversation took place: it stays answered, with the reason it stopped.
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'reconnecting', call: { phase: 'ended', outcome: 'answered' } });
+    expect(h.phone.getSnapshot().call?.failure).toMatch(/interrompu/);
     await vi.advanceTimersByTimeAsync(20000);
     expect(h.phone.getSnapshot().connection).toBe('network-error');
     expect(h.manager.call).toHaveBeenCalledTimes(1);
@@ -216,25 +219,58 @@ describe('SIP controller — microphone and shared line', () => {
     vi.unstubAllGlobals();
   });
 
-  it('warns when the server stops checking on this browser, never before knowing the pace, and recovers', async () => {
+  it('steps aside without un-registering when another device takes the line, and only retakes it on request', async () => {
     const h = harness();
     await ready(h);
     await vi.advanceTimersByTimeAsync(600_000);
+    // The pace of the PBX's checks is unknown: never guess.
     expect(h.phone.getSnapshot().lineTaken).toBeFalsy();
     h.delegate.onServerPing();
     await vi.advanceTimersByTimeAsync(60_000);
     h.delegate.onServerPing();
     await vi.advanceTimersByTimeAsync(120_000);
-    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
     await vi.advanceTimersByTimeAsync(60_000);
-    expect(h.phone.getSnapshot().lineTaken).toBe(true);
-    h.delegate.onServerPing();
-    expect(h.phone.getSnapshot().lineTaken).toBe(false);
-    await vi.advanceTimersByTimeAsync(200_000);
-    expect(h.phone.getSnapshot().lineTaken).toBe(true);
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'other-tab-active', lineTaken: true, account: { username: 'alice' } });
+    expect(h.manager.dropSilently).toHaveBeenCalledTimes(1);
+    // An un-REGISTER would disconnect the device that now holds the line.
+    expect(h.manager.unregister).not.toHaveBeenCalled();
+    // No tug of war: nothing happens until the person asks.
+    await vi.advanceTimersByTimeAsync(3_600_000);
+    expect(h.manager.register).toHaveBeenCalledTimes(1);
     h.phone.retakeLine();
-    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onRegistered();
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
     expect(h.manager.register).toHaveBeenCalledTimes(2);
+  });
+
+  it('never steps aside in the middle of a conversation', async () => {
+    const h = harness();
+    await ready(h);
+    h.delegate.onServerPing();
+    await vi.advanceTimersByTimeAsync(60_000);
+    h.delegate.onServerPing();
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    await vi.advanceTimersByTimeAsync(400_000);
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', call: { phase: 'active' } });
+    h.delegate.onCallHangup(session('out'));
+    await vi.advanceTimersByTimeAsync(15_000);
+    expect(h.phone.getSnapshot().lineTaken).toBe(true);
+  });
+
+  it('gives up waiting for a hold confirmation that never comes', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    h.phone.setHeld(true);
+    await vi.advanceTimersByTimeAsync(9000);
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'active', holdPending: false });
+    expect(h.phone.getSnapshot().error).toMatch(/confirmé/);
   });
 });
 

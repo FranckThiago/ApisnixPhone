@@ -41,7 +41,12 @@ export const browserSipEnvironment: SipEnvironment = {
       if (message.startsWith('OPTIONS ')) delegate.onServerPing();
       forward?.(message);
     };
-    return manager as unknown as Manager;
+    const dropSilently = async () => {
+      // Socket first: SIP.js un-registers while stopping, and that must not reach the PBX.
+      await transport.disconnect().catch(() => undefined);
+      await manager.disconnect().catch(() => undefined);
+    };
+    return Object.assign(manager, { dropSilently }) as unknown as Manager;
   },
 
   createRemoteAudio() {
