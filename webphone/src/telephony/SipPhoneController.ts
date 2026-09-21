@@ -65,6 +65,8 @@ const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603:
 const RECONNECT_GRACE = 3 * 4000 + 6000;
 const PING_WATCH = 10_000;
 const HOLD_PATIENCE = 8000;
+/** chan_sip checks a registered contact every 60 s unless configured otherwise. */
+const DEFAULT_PING_PACE = 60_000;
 
 /**
  * SIP.js behind the application's contract. A connected WebSocket is not a
@@ -244,9 +246,10 @@ export class SipPhoneController implements PhoneController {
   private watchPings() {
     clearInterval(this.pingWatch);
     this.pingWatch = setInterval(() => {
-      // Never guess: at least two checks must have been seen to know their pace.
-      if (this.snapshot.connection !== 'ready' || !this.pingInterval || this.snapshot.lineTaken) return;
-      if (Date.now() - this.lastPing <= this.pingInterval * 2.5 + 10_000) return;
+      // One check proves the PBX does check this browser; a second one refines the pace.
+      // A device replaced seconds after signing in only ever sees the first.
+      if (this.snapshot.connection !== 'ready' || !this.lastPing || this.snapshot.lineTaken) return;
+      if (Date.now() - this.lastPing <= (this.pingInterval || DEFAULT_PING_PACE) * 2 + 5000) return;
       // Never in the middle of a conversation: the call in progress is still ours.
       if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
       void this.stepAside();

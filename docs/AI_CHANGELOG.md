@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : détection de ligne prise dès la première interrogation
+
+- Essai de Franck : deux navigateurs connectés à 17 s d'intervalle, aucun ne se
+  met en pause après 4 minutes. Journal Asterisk (lecture seule) : le second
+  tient la ligne. Cause : la détection exigeait deux interrogations du PBX pour
+  en connaître le rythme ; un poste remplacé aussitôt n'en voit qu'une. Une
+  seule suffit désormais, avec le rythme chan_sip par défaut de 60 s, et la
+  pause intervient après environ deux minutes de silence.
+- Franck précise l'intention : empêcher le partage d'identifiants entre
+  plusieurs personnes ; la coupure du poste remplacé est donc voulue.
+- Carillon non entendu sous Safari : la sortie audio y passe aussi par l'état
+  « interrupted » ; réveil sur tout état non actif et notes programmées
+  seulement une fois la sortie active. À confirmer par Franck. 33 tests.
+
 ## 2026-09-21 — ApisnixPhone Web : un compte sur deux appareils, sans va-et-vient
 
 - Essai de Franck avec deux navigateurs sur le même compte : son confirmé bon,

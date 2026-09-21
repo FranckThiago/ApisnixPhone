@@ -223,14 +223,13 @@ describe('SIP controller — microphone and shared line', () => {
     const h = harness();
     await ready(h);
     await vi.advanceTimersByTimeAsync(600_000);
-    // The pace of the PBX's checks is unknown: never guess.
+    // No check ever seen: the PBX may not check this browser at all, never guess.
     expect(h.phone.getSnapshot().lineTaken).toBeFalsy();
+    // A single check is enough: a device replaced seconds after signing in never sees a second one.
     h.delegate.onServerPing();
-    await vi.advanceTimersByTimeAsync(60_000);
-    h.delegate.onServerPing();
-    await vi.advanceTimersByTimeAsync(120_000);
+    await vi.advanceTimersByTimeAsync(110_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
-    await vi.advanceTimersByTimeAsync(60_000);
+    await vi.advanceTimersByTimeAsync(30_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'other-tab-active', lineTaken: true, account: { username: 'alice' } });
     expect(h.manager.dropSilently).toHaveBeenCalledTimes(1);
     // An un-REGISTER would disconnect the device that now holds the line.

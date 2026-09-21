@@ -97,7 +97,8 @@ let sharedContext: AudioContext | undefined;
 function soundContext(): AudioContext | undefined {
   if (typeof AudioContext === 'undefined') return undefined;
   sharedContext ??= new AudioContext();
-  if (sharedContext.state === 'suspended') void sharedContext.resume().catch(() => undefined);
+  // Safari also reports « interrupted »: anything but running needs a nudge.
+  if (sharedContext.state !== 'running') void sharedContext.resume().catch(() => undefined);
   return sharedContext;
 }
 
@@ -110,7 +111,7 @@ function keepSoundAwake() {
   if (keepAwake || typeof document === 'undefined') return;
   keepAwake = true;
   const wake = () => {
-    if (sharedContext?.state === 'suspended') void sharedContext.resume().catch(() => undefined);
+    if (sharedContext && sharedContext.state !== 'running') void sharedContext.resume().catch(() => undefined);
     for (const audio of locked) void audio.play().then(() => locked.delete(audio)).catch(() => undefined);
   };
   document.addEventListener('pointerdown', wake, true);
@@ -185,6 +186,11 @@ export class Ringer {
 export function chime(kind: 'ready' | 'lost', volume: number) {
   const context = soundContext();
   if (!context || volume <= 0) return;
+  // Notes scheduled on a sleeping output are lost on Safari: wait for it to run.
+  if (context.state !== 'running') {
+    void context.resume().then(() => { if (context.state === 'running') chime(kind, volume); }).catch(() => undefined);
+    return;
+  }
   const notes = kind === 'ready' ? [523.25, 659.25, 783.99] : [659.25, 440];
   notes.forEach((frequency, index) => {
     const start = context.currentTime + index * 0.42;
