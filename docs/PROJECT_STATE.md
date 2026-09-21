@@ -11,7 +11,9 @@ redirection HTTPS, en-têtes de sécurité, cache des assets et repli SPA valid�
 Démonstration ni erreur console/CSP. Asterisk accepte la nouvelle origine WSS
 (HTTP 101, sous-protocole sip), sans inscription ni appel de l'agent.
 
-**Essai de Franck depuis cette URL publique encore attendu** : Ligne prête,
+**Essai de Franck depuis cette URL publique en cours** : enregistrement WSS
+et appel entrant décroché observés côté serveur ; retour audio/sortant encore
+attendu. À confirmer : Ligne prête,
 micro, appel sortant et entrant, puis pause du poste remplacé entre deux
 navigateurs. Les essais antérieurs depuis localhost ne valident pas ces
 conditions sur la nouvelle URL. Aucun changement PBX ou de compte pendant
