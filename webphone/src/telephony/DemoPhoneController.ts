@@ -1,5 +1,6 @@
 import type { CallOutcome } from '../domain/types';
-import type { CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
+import { Ringer } from './audio';
+import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /**
  * Same events as the real controller, without any network: it never opens a
@@ -12,6 +13,8 @@ export class DemoPhoneController implements PhoneController {
   private listeners = new Set<() => void>();
   private timers = new Set<ReturnType<typeof setTimeout>>();
   private sequence = 0;
+  private ringer = new Ringer();
+  private ringtone = { enabled: true, volume: 0.8 };
 
   getSnapshot = () => this.snapshot;
 
@@ -59,6 +62,7 @@ export class DemoPhoneController implements PhoneController {
 
   async disconnect() {
     this.clearTimers();
+    this.ringer.stop();
     this.update({ connection: 'offline', account: null, call: null, error: undefined });
   }
 
@@ -87,6 +91,7 @@ export class DemoPhoneController implements PhoneController {
       call: { id, direction: 'inbound', rawInput: dialTarget, dialTarget, remoteName, phase: 'ringing-in',
               muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' },
     });
+    if (this.ringtone.enabled) this.ringer.start(this.ringtone.volume);
     this.later(20000, () => {
       if (this.snapshot.call?.id === id && this.snapshot.call.phase === 'ringing-in') this.finish(id, 'missed');
     });
@@ -95,6 +100,7 @@ export class DemoPhoneController implements PhoneController {
 
   answer() {
     const call = this.snapshot.call;
+    this.ringer.stop();
     if (call?.phase === 'ringing-in') this.updateCall(call.id, { phase: 'active', answeredAt: Date.now() });
   }
 
@@ -114,6 +120,7 @@ export class DemoPhoneController implements PhoneController {
     const call = this.snapshot.call;
     if (!call || call.id !== id || call.phase === 'ended') return;
     this.clearTimers();
+    this.ringer.stop();
     this.updateCall(id, { phase: 'ended', outcome, endedAt: Date.now(), holdPending: false });
   }
 
@@ -144,5 +151,9 @@ export class DemoPhoneController implements PhoneController {
 
   async setInputDevice() {}
   async setOutputDevice() {}
-  applyAudio() {}
+  applyAudio(settings: AudioSettings) {
+    this.ringtone = { enabled: settings.ringtone, volume: settings.volume / 100 };
+    if (!settings.ringtone) this.ringer.stop();
+  }
+  resumeAudio() {}
 }

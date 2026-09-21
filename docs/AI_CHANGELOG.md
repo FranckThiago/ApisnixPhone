@@ -1,5 +1,23 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : préparation du pilote et corrections d'interface
+
+- Franck fournit un compte de test et demande le lot 5. Configuration locale du
+  mode réel créée hors Git. Audit en lecture seule du poste pilote : pas encore
+  compatible navigateur (UDP, sans chiffrement). Sauvegarde de ses réglages sur
+  le serveur ; **l'ajout des capacités WebRTC n'a pas été appliqué**, l'écriture
+  en production ayant été refusée par le garde-fou de la session. Aucun secret
+  écrit dans un fichier ; l'agent ne saisit pas le mot de passe à la place de Franck.
+- Bug signalé par Franck : pastille des appels manqués qui ne s'effaçait pas.
+  Corrigée, avec `missedSeenAt` dans les préférences. Toasts fermables.
+- Relecture du plan demandée par Franck : espace de travail conservé pendant une
+  reconnexion, données de session préservées, appel entrant mis au premier
+  plan, titre d'onglet, notification d'appel entrant, sonnerie en démo, bouton
+  « Activer le son ». 28 tests, lint, typage et build réussis ; pastille et appel
+  entrant vérifiés dans le navigateur en démonstration.
+- Restent non faits : transfert, tonalité de retour d'appel locale, export de
+  diagnostic, Playwright, zoom 125/150 % et contrastes mesurés.
+
 ## 2026-09-21 — ApisnixPhone Web : adaptateur SIP.js, rappels et retours de Franck
 
 - Lot 4 demandé par Franck : `SipPhoneController` sur `Web.SessionManager` de

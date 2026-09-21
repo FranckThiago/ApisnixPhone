@@ -31,6 +31,9 @@ interface AppValue {
   setPaletteOpen(open: boolean): void;
   toasts: Toast[];
   notify(message: string, tone?: Toast['tone']): void;
+  dismissToast(id: number): void;
+  /** True between a successful sign-in and the sign-out, even while the line reconnects. */
+  sessionOpen: boolean;
   /** Journal entry written for the call currently in wrap-up, if any. */
   wrapUpRecordId: string | null;
   simulateIncoming(): void;
@@ -54,6 +57,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [wrapUpRecordId, setWrapUpRecordId] = useState<string | null>(null);
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const [sessionOpen, setSessionOpen] = useState(false);
   const recorded = useRef(new Set<string>());
   const toastId = useRef(0);
   const incomingIndex = useRef(0);
@@ -63,6 +67,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setToasts(current => [...current.slice(-2), { id, message, tone }]);
     setTimeout(() => setToasts(current => current.filter(toast => toast.id !== id)), 4200);
   }, []);
+
+  const dismissToast = useCallback((id: number) => setToasts(current => current.filter(toast => toast.id !== id)), []);
 
   // The journal only holds calls this browser really observed, written once when they end.
   useEffect(() => phone.subscribe(() => {
@@ -119,9 +125,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const profile = `${account.domain}:${account.username}`;
     await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
     store.setPreferences({ theme: storedTheme() });
+    setSessionOpen(true);
   }, []);
 
+  // The line gave up (network lost for good, registration refused): back to sign-in, data kept for the same account.
+  useEffect(() => phone.subscribe(() => { if (!phone.getSnapshot().account) setSessionOpen(false); }), []);
+
+  // An incoming call brings the phone forward, whatever was on screen.
+  const ringing = useRef<string | null>(null);
+  useEffect(() => phone.subscribe(() => {
+    const call = phone.getSnapshot().call;
+    if (call?.phase === 'ringing-in' && ringing.current !== call.id) { ringing.current = call.id; setView('phone'); }
+  }), []);
+
   const logout = useCallback(async () => {
+    setSessionOpen(false);
     await phone.disconnect();
     store.close();
     recorded.current.clear();
@@ -143,8 +161,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AppValue>(() => ({
     phone, store, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
-    toasts, notify, wrapUpRecordId, simulateIncoming, selectedContactId, openContact,
-  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, wrapUpRecordId, simulateIncoming, selectedContactId, openContact]);
+    toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact,
+  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

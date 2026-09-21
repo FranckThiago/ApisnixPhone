@@ -168,7 +168,7 @@ export class SipPhoneController implements PhoneController {
       this.ringer.stop();
       // Talk time starts here, never at the ringing or early media.
       this.updateCall({ phase: 'active', answeredAt: Date.now() });
-      void this.remoteAudio?.play().catch(() => this.update({ error: 'Le son est bloqué par le navigateur. Cliquez dans la page pour l’activer.' }));
+      void this.remoteAudio?.play().catch(() => this.update({ audioBlocked: true }));
     },
     onCallHangup: () => {
       const call = this.snapshot.call;
@@ -184,6 +184,11 @@ export class SipPhoneController implements PhoneController {
     this.mic.close();
     this.session = undefined;
     this.updateCall({ phase: 'ended', outcome, endedAt: Date.now(), holdPending: false });
+    if (this.snapshot.audioBlocked) this.update({ audioBlocked: false });
+  }
+
+  resumeAudio() {
+    void this.remoteAudio?.play().then(() => this.update({ audioBlocked: false })).catch(() => undefined);
   }
 
   private async teardown() {

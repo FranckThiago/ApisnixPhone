@@ -68,7 +68,29 @@ le mode par défaut, avec données fictives et mention permanente. Aucun accès
 serveur ni déploiement. Restent les lots 5 (pilote réel, compte et destination à
 désigner) et 6 (hébergement HTTPS).
 
-Vérifié : typage, lint, 27 tests (numéros, contrôleurs démo et SIP, stockage,
+Lot 5 engagé le 21 septembre au soir : Franck désigne un compte de test et
+autorise la préparation du serveur. `webphone/.env.local` (ignoré par Git,
+sans mot de passe) pointe vers le WSS existant. Lecture seule du PBX : le poste
+pilote est un poste SIP manuel, UDP seulement, sans chiffrement, avec son
+contexte d'enregistrement ; **il ne peut donc pas encore s'enregistrer depuis un
+navigateur**. La surcharge WebRTC à lui ajouter (lui seul, modèle, contexte,
+limite d'appel et `is_webphone=N` conservés) est préparée, ses réglages actuels
+sont sauvegardés sur le serveur, mais **l'écriture n'a pas été faite** : le
+garde-fou de la session de l'agent l'a refusée. Détails dans le dépôt privé.
+Aucun enregistrement SIP ni appel réel depuis l'application à ce jour. Le mot de
+passe se saisit par Franck dans l'écran de connexion ; l'agent ne le saisit pas.
+
+Corrections du même soir, après relecture du plan : la pastille des appels
+manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
+maintenant ceux non consultés et s'efface à l'ouverture du Journal. Toasts
+fermables au clic. En ligne réelle, l'espace de travail reste affiché pendant
+une reconnexion, avec un bandeau, et les données de session survivent à une
+reconnexion du même compte. Un appel entrant amène le téléphone au premier
+plan, change le titre de l'onglet et, si autorisé, notifie quand la page est
+en arrière-plan. Sonnerie aussi en démonstration. Bouton « Activer le son » si
+le navigateur bloque la lecture.
+
+Vérifié : typage, lint, 28 tests (numéros, contrôleurs démo et SIP, stockage,
 rappels), build,
 et parcours dans le navigateur intégré à 1440, 1024 et 375 px, thèmes clair et
 sombre, sans erreur console. Non vérifié : zoom 125/150 %, mesure des

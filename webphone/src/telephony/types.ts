@@ -36,6 +36,8 @@ export interface PhoneSnapshot {
   account: Account | null;
   call: CallSnapshot | null;
   error?: string;
+  /** The browser refused to play the remote sound until the person interacts. */
+  audioBlocked?: boolean;
 }
 
 export interface Credentials {
@@ -62,6 +64,8 @@ export interface PhoneController {
   setOutputDevice(deviceId: string): Promise<void>;
   /** Everything the user tuned for sound; applied live, even during a call. */
   applyAudio(settings: AudioSettings): void;
+  /** Called from a click: lets the browser play the remote sound it had blocked. */
+  resumeAudio(): void;
 }
 
 export interface AudioSettings {

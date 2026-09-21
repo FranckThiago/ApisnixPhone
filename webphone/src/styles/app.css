@@ -279,7 +279,9 @@ input[type=range] { accent-color: var(--brand); }
 
 /* ---------- Toasts ---------- */
 .toasts { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: grid; gap: 8px; z-index: 50; pointer-events: none; }
-.toast { padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 13px; color: #fff; background: var(--navy); box-shadow: var(--shadow-lg); border-left: 4px solid var(--yellow); animation: rise .2s ease-out; }
+.toast { pointer-events: auto; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 13px; color: #fff; background: var(--navy); box-shadow: var(--shadow-lg); border-left: 4px solid var(--yellow); animation: rise .2s ease-out; }
+.toast span { opacity: .6; font-size: 17px; line-height: 1; } .toast:hover span { opacity: 1; }
+.line-banner { display: flex; align-items: center; gap: 9px; margin: 0 28px 8px; padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 13px; background: var(--yellow-soft); color: var(--text); border-left: 3px solid var(--yellow-strong); }
 .toast-danger { border-left-color: var(--danger); } .toast-success { border-left-color: #16bd84; }
 
 /* ---------- Login ---------- */

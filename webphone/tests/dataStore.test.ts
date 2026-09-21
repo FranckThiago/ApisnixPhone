@@ -68,3 +68,15 @@ describe('data store', () => {
     expect(store.getSnapshot().contacts).toHaveLength(0);
   });
 });
+
+describe('session continuity', () => {
+  it('keeps the session data when the same profile signs in again, and replaces it for another one', async () => {
+    const store = new DataStore();
+    await store.open('pbx:alice', false);
+    store.saveContact({ name: 'Camille', numbers: [{ label: '', value: '0612345678' }], favorite: false });
+    await store.open('pbx:alice', false);
+    expect(store.getSnapshot().contacts).toHaveLength(1);
+    await store.open('pbx:bob', false);
+    expect(store.getSnapshot().contacts).toHaveLength(0);
+  });
+});

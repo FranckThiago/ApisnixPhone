@@ -188,6 +188,7 @@ function WrapUp({ call }: { call: CallSnapshot }) {
 
 function CallCard({ call }: { call: CallSnapshot }) {
   const { phone } = useApp();
+  const { audioBlocked } = usePhone();
   const { contacts } = useData();
   const [keypad, setKeypad] = useState(false);
   const info = describeNumber(call.dialTarget);
@@ -211,6 +212,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
         <h2>{name ?? info.display}</h2>
         <p className="call-number"><Flag info={info} size={18} />{name ? info.display : countryLabel(info)}</p>
         <p className="call-status" role="status" aria-live="polite">{status}</p>
+        {audioBlocked && live && <button type="button" className="done" onClick={() => phone.resumeAudio()}>Activer le son</button>}
         {call.dtmf && <p className="dtmf" aria-label="Touches envoyées">{call.dtmf}</p>}
       </div>
 

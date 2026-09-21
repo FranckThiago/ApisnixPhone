@@ -60,6 +60,8 @@ export interface Preferences {
   notifications: boolean;
   /** « Conserver sur cet appareil » : off on a first visit. */
   persist: boolean;
+  /** Missed calls older than this were already looked at: they no longer raise the badge. */
+  missedSeenAt: number;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -74,6 +76,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   outputDevice: 'default',
   notifications: false,
   persist: false,
+  missedSeenAt: 0,
 };
 
 export const CALL_TAGS = ['Intéressé', 'À rappeler', 'Rendez-vous', 'Pas intéressé', 'Mauvais numéro', 'Messagerie'] as const;

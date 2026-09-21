@@ -1,4 +1,4 @@
-import { AlarmClock, BookUser, History, LogOut, Moon, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun } from 'lucide-react';
+import { AlarmClock, BookUser, History, LogOut, Moon, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun, WifiOff } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
@@ -10,7 +10,6 @@ import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { Settings } from '../features/settings/Settings';
-import { dayKey } from '../domain/format';
 import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
 import { applyTheme, storedTheme } from './theme';
@@ -45,7 +44,7 @@ function useShortcuts() {
 
 function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
-  const { account, call, demo } = usePhone();
+  const { account, call, demo, connection } = usePhone();
   const { preferences, calls, callbacks } = useData();
   useShortcuts();
   const now = useNow();
@@ -74,7 +73,24 @@ function Workspace() {
     }
   }, [dueCallbacks, now, notify, preferences.notifications, demo]);
 
-  const missedToday = calls.filter(item => item.outcome === 'missed' && dayKey(item.startedAt) === dayKey(now)).length;
+  // The badge counts missed calls not looked at yet; opening the journal is looking at them.
+  const unseenMissed = calls.filter(item => item.outcome === 'missed' && item.startedAt > preferences.missedSeenAt).length;
+  useEffect(() => {
+    if (view === 'journal' && unseenMissed > 0) store.setPreferences({ missedSeenAt: Date.now() });
+  }, [view, unseenMissed, store]);
+
+  // The tab title tells what is happening when the page is in the background.
+  const ringingIn = call?.phase === 'ringing-in';
+  useEffect(() => {
+    document.title = ringingIn ? 'Appel entrant… · ApisnixPhone' : call && call.phase !== 'ended' ? 'En appel · ApisnixPhone'
+      : unseenMissed ? `(${unseenMissed}) ApisnixPhone` : 'ApisnixPhone';
+  }, [ringingIn, call, unseenMissed]);
+  useEffect(() => {
+    if (!ringingIn || demo || !preferences.notifications || !document.hidden || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    const notification = new Notification('Appel entrant', { body: call?.remoteName ?? call?.dialTarget ?? '', tag: 'apisnixphone-incoming' });
+    notification.onclick = () => window.focus();
+    return () => notification.close();
+  }, [ringingIn, demo, preferences.notifications, call?.remoteName, call?.dialTarget]);
   const dark = document.documentElement.dataset.theme === 'dark';
   const inCall = call && call.phase !== 'ended';
 
@@ -91,7 +107,7 @@ function Workspace() {
             <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
               aria-current={view === key ? 'page' : undefined} onClick={() => setView(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{label}</span>
-              {key === 'journal' && missedToday > 0 && <i className="badge" aria-label={`${missedToday} appels manqués aujourd’hui`}>{missedToday}</i>}
+              {key === 'journal' && unseenMissed > 0 && <i className="badge" aria-label={`${unseenMissed} appels manqués non consultés`}>{unseenMissed}</i>}
               {key === 'callbacks' && dueCallbacks.length > 0 && <i className="badge badge-yellow" aria-label={`${dueCallbacks.length} rappels à faire`}>{dueCallbacks.length}</i>}</button></li>
           ))}
         </ul>
@@ -114,15 +130,19 @@ function Workspace() {
             const theme = dark ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme);
           }}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
         </header>
+        {connection !== 'ready' && (
+          <p className="line-banner" role="status"><WifiOff size={16} /> {connection === 'reconnecting' ? 'Connexion perdue : reconnexion en cours… Les appels sont indisponibles.' : 'Ligne en cours d’enregistrement…'}</p>
+        )}
         {/* Visible from every view on narrow screens: hanging up is never hidden behind navigation. */}
         {inCall && view !== 'phone' && (
           <div className="call-banner" role="status">
-            <button type="button" onClick={() => setView('phone')}><Phone size={16} /> Appel en cours · {call.remoteName ?? call.dialTarget}</button>
+            <button type="button" onClick={() => setView('phone')}><Phone size={16} /> {ringingIn ? 'Appel entrant' : 'Appel en cours'} · {call.remoteName ?? call.dialTarget}</button>
             <button type="button" className="banner-hangup" aria-label="Raccrocher" onClick={() => phone.hangup()}><PhoneOff size={16} /></button>
           </div>
         )}
         <div className="content">
-          {view === 'journal' && <Journal />}
+          {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
+          {(view === 'journal' || view === 'phone') && <Journal />}
           {view === 'contacts' && <Contacts />}
           {view === 'favorites' && <Contacts favoritesOnly />}
           {view === 'callbacks' && <Callbacks />}
@@ -137,7 +157,8 @@ function Workspace() {
 }
 
 export function App() {
-  const { connection, account } = usePhone();
+  const { account } = usePhone();
+  const { sessionOpen } = useApp();
   useEffect(() => {
     applyTheme(storedTheme());
     // « Système » keeps following the computer when it switches between day and night.
@@ -146,5 +167,6 @@ export function App() {
     media.addEventListener('change', follow);
     return () => media.removeEventListener('change', follow);
   }, []);
-  return <>{connection === 'ready' && account ? <Workspace /> : <Login />}<Toasts /></>;
+  // The workspace stays while the line reconnects; only a closed session returns to sign-in.
+  return <>{sessionOpen && account ? <Workspace /> : <Login />}<Toasts /></>;
 }

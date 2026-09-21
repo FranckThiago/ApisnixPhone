@@ -38,6 +38,8 @@ export class DataStore {
   };
 
   async open(profile: string, persist: boolean, seed?: AppData) {
+    // Signing in again after a network failure must not wipe what this session holds in memory.
+    if (this.profile === profile) return;
     this.profile = profile;
     let loaded: AppData | null = null;
     if (persist && this.persistence) loaded = await this.persistence.load(profile).catch(() => null);
