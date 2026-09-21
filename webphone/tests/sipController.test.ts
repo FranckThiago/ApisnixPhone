@@ -30,6 +30,7 @@ function harness(lineFree = true) {
     sendDTMF: vi.fn(async () => undefined),
     dropSilently: vi.fn(async () => undefined),
     holdsLine: vi.fn(async (): Promise<boolean | null> => true),
+    sentAudioPackets: vi.fn(async (): Promise<number | null> => 250),
   };
   const environment: SipEnvironment = {
     createManager: (_config, _credentials, given) => { delegate = given; return manager; },
@@ -276,6 +277,22 @@ describe('SIP controller — microphone and shared line', () => {
     await vi.advanceTimersByTimeAsync(9000);
     expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'active', holdPending: false });
     expect(h.phone.getSnapshot().error).toMatch(/confirmé/);
+  });
+});
+
+describe('one-way audio', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('tells the person when their voice does not leave the browser', async () => {
+    const h = harness();
+    await ready(h);
+    h.manager.sentAudioPackets.mockResolvedValue(0);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    await vi.advanceTimersByTimeAsync(5500);
+    expect(h.phone.getSnapshot().error).toMatch(/ne vous entend pas/);
   });
 });
 

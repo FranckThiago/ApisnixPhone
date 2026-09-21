@@ -66,7 +66,15 @@ export const browserSipEnvironment: SipEnvironment = {
       await transport.disconnect().catch(() => undefined);
       await manager.disconnect().catch(() => undefined);
     };
-    return Object.assign(manager, { dropSilently, holdsLine }) as unknown as Manager;
+    const sentAudioPackets = async (session: unknown) => {
+      const handler = (session as { sessionDescriptionHandler?: { peerConnection?: RTCPeerConnection } }).sessionDescriptionHandler;
+      const stats = await handler?.peerConnection?.getStats();
+      if (!stats) return null;
+      let packets: number | null = null;
+      stats.forEach(report => { if (report.type === 'outbound-rtp' && report.kind === 'audio') packets = (packets ?? 0) + (report.packetsSent ?? 0); });
+      return packets;
+    };
+    return Object.assign(manager, { dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {

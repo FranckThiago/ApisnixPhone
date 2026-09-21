@@ -1,5 +1,31 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : voix non transmise sur le site déployé
+
+- Premier essai de Franck sur phone.apisnix-crm.com (déployé par l'autre agent) :
+  il entend son correspondant, qui ne l'entend pas. Asterisk, en lecture seule :
+  0 paquet RTP reçu du navigateur en 2 min 24, 7 068 envoyés. La chaîne de
+  sensibilité du micro créait sa propre sortie audio sans clic récent ; restée
+  endormie, elle ne produisait aucune trame, donc aucun paquet.
+- Correctif : la chaîne réutilise la sortie déverrouillée à la connexion ; si
+  elle ne tourne pas, le micro brut est envoyé (la sensibilité est sacrifiée,
+  pas la voix). Contrôle 5 s après le décroché : si aucun paquet audio n'est
+  parti, un message le dit. 34 tests. **À redéployer et à confirmer en réel.**
+
+## 2026-09-21 — Publication HTTPS d'ApisnixPhone Web
+
+- Release `20260921-webphone-1`, source `d9b9da4`, publiée en mode réel sur
+  https://phone.apisnix-crm.com. Build isolé depuis Git : 33 tests, typage,
+  lint, compilation réussis ; aucune donnée de compte dans la release.
+- DNS dédié et bloc Caddy ajouté sans modifier les sites existants. Correction
+  du bloc de référence : ordre `route` explicite pour appliquer `no-cache`
+  après le repli vers index.html. HTTPS, redirection, cache et en-têtes validés.
+- Navigateur intégré : logo, connexion réelle, aucune erreur console/CSP.
+  Nouvelle origine WSS acceptée en 101 sans inscription ni appel.
+- Aucun changement PBX, compte, pare-feu ou lien d'accueil. Aucun rollback.
+  Essai utilisateur depuis l'URL publique attendu. OPERATIONS, PROJECT_STATE
+  et lot 6 du WEBPHONE_PLAN actualisés ; détails privés dans le dépôt de gestion.
+
 ## 2026-09-21 — ApisnixPhone Web : qui tient la ligne, demandé au PBX plutôt que deviné
 
 - Essai de Franck : pause et reprise de ligne confirmées en réel, puis fausse

@@ -1,5 +1,23 @@
 # État du projet
 
+## Publication HTTPS du 21 septembre 2026
+
+**ApisnixPhone Web est en ligne sur https://phone.apisnix-crm.com/**,
+release `20260921-webphone-1`, issue du commit `d9b9da4`, en mode réel.
+33 tests, typage, lint et build réussis sur Node 22/npm 10 depuis une archive
+Git isolée, sans fichier d'environnement local. Certificat public vérifié,
+redirection HTTPS, en-têtes de sécurité, cache des assets et repli SPA validés.
+Écran de connexion et logo contrôlés dans le navigateur intégré, sans mention
+Démonstration ni erreur console/CSP. Asterisk accepte la nouvelle origine WSS
+(HTTP 101, sous-protocole sip), sans inscription ni appel de l'agent.
+
+**Essai de Franck depuis cette URL publique encore attendu** : Ligne prête,
+micro, appel sortant et entrant, puis pause du poste remplacé entre deux
+navigateurs. Les essais antérieurs depuis localhost ne valident pas ces
+conditions sur la nouvelle URL. Aucun changement PBX ou de compte pendant
+la publication. Procédure et retour ciblé dans [OPERATIONS.md](OPERATIONS.md).
+Les paragraphes historiques ci-dessous relatent les étapes précédentes.
+
 Mis à jour le 21 septembre 2026.
 
 Publication Git préparée le 21 septembre à la demande de Franck : plan web,
@@ -151,6 +169,14 @@ négatives consécutives sont exigées ; une réponse absente ou illisible ne
 déclenche jamais rien. **Non encore vérifié en réel** : que ce chan_sip répond
 bien à cette consultation en listant le contact ; s'il ne le fait pas, il n'y
 aura simplement plus d'alerte, sans fausse pause.
+
+Application déployée le 21 septembre au soir sur `phone.apisnix-crm.com` par un
+autre agent (détails dans le dépôt privé). Premier essai de Franck depuis ce
+site : **voix non transmise** (0 paquet audio reçu par Asterisk), réception
+correcte. Cause et correctif dans le journal ; **la version corrigée doit être
+reconstruite, redéployée et réessayée**. La version en ligne à cet instant est
+donc défectueuse pour l'émission de la voix dès que la chaîne audio du
+navigateur reste endormie.
 
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte

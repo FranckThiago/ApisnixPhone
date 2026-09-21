@@ -325,7 +325,7 @@ Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
 secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
 variables, le build est une démonstration.
 
-Hébergement retenu par Franck le 21 septembre, **non réalisé** : Hermes, derrière le Caddy existant, à côté
+Hébergement réalisé le 21 septembre, release **20260921-webphone-1** : Hermes, derrière le Caddy existant, à côté
 de la supervision et sans la modifier ; dossier versionné
 `/srv/apisnixphone/releases/<version>/` et lien `current`. HTTPS est obligatoire :
 hors `localhost`, un navigateur refuse le microphone sans lui. Nom validé :
@@ -335,13 +335,16 @@ téléphonie passe par cette machine. Bloc Caddy de départ :
 
 ```
 phone.apisnix-crm.com {
+    bind 0.0.0.0
     root * /srv/apisnixphone/current
     encode zstd gzip
-    try_files {path} /index.html
-    file_server
-    @assets path /assets/*
-    header @assets Cache-Control "public, max-age=31536000, immutable"
-    header /index.html Cache-Control "no-cache"
+    route {
+        try_files {path} /index.html
+        @assets path /assets/*
+        header @assets Cache-Control "public, max-age=31536000, immutable"
+        header /index.html Cache-Control "no-cache"
+        file_server
+    }
     header {
         Strict-Transport-Security "max-age=31536000"
         X-Content-Type-Options "nosniff"
@@ -353,10 +356,44 @@ phone.apisnix-crm.com {
 ```
 
 `style-src 'unsafe-inline'` est requis par les styles calculés (avatars, niveau
-du micro). À vérifier au premier déploiement : CSP sans erreur console,
-microphone demandé, enregistrement WSS depuis cette origine. Retour arrière :
-repointer `current` sur la release précédente. Ne jamais publier pendant les
-heures d'appel une version que personne n'a essayée : une page rechargée perd
-sa ligne et son appel. DNS, Caddy et Hermes relèvent du dépôt privé et de ses
-procédures ; rien n'y a été modifié pour ce projet.
+du micro). Le bloc `route` garantit que `try_files` précède les règles de cache :
+`/`, `/index.html` et les routes de repli portent `no-cache`, les assets
+empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
+Version active : `20260921-webphone-1`, source `d9b9da4`. Archive de release :
+SHA-256 `c7a63248526b0786d3fa0576d2e419bbfe948f45d56961830866dc7debbec9c4`.
+Installation sous `/srv/apisnixphone/releases/20260921-webphone-1/`, lien
+`/srv/apisnixphone/current`, fichiers appartenant à root, lisibles mais non
+inscriptibles par Caddy. Aucun service applicatif, base ou secret d'hébergement.
+Les sauvegardes et détails d'infrastructure restent dans le dépôt privé.
+
+Contrôlé : 33 tests, typage, lint, build live ; WSS attendu dans le bundle,
+aucun identifiant pilote ni fichier `.env`, `.local` ou source map dans la
+release. HTTPS public 200, HTTP 308, en-têtes ci-dessus, assets immuables,
+index et repli SPA 200 sans cache ; empreinte du JS servi identique au build.
+Logo et connexion live visibles, console/CSP sans erreur. WSS vers le PBX
+avec l'origine publique accepté (101, sip), sans inscription. Essai de Franck
+depuis cette URL encore attendu ; aucun mot de passe saisi par l'agent.
+
+### Publier une release suivante
+
+1. Inspecter Git et choisir le commit validé ; construire dans un dossier
+   isolé avec seulement les trois variables publiques ci-dessus, après
+   `npm ci`, typage, lint et tests. Contrôler les fichiers et calculer le SHA-256.
+2. Faire essayer la version avant publication pendant les heures d'appel.
+   Une actualisation perd la ligne et tout appel en cours.
+3. Relever la cible réelle de `current`. Transférer dans un nouveau dossier
+   versionné, vérifier l'empreinte, les droits de lecture Caddy et l'absence
+   d'écriture par Caddy ; basculer le lien atomiquement. Aucun rechargement
+   Caddy requis si le bloc ne change pas.
+4. Vérifier HTTPS, assets, cache, interface live et essai pilote. En cas de
+   défaut, remettre atomiquement le lien sur la release précédente.
+
+### Retrait ciblé du premier déploiement
+
+Aucune release antérieure du téléphone n'existe. Pour le retirer, enlever
+uniquement le bloc entre `# APISNIX PHONE début` et `# APISNIX PHONE fin`,
+valider puis recharger Caddy gracieusement. Garder les fichiers ; ne jamais
+restaurer tout le Caddyfile ni toucher aux autres sites. Le DNS se retire
+seulement sur demande et après contrôle de sa valeur. Aucun lien vers le
+téléphone n'a été ajouté sur l'accueil CRM.

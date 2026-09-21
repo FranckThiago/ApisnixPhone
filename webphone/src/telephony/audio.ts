@@ -17,6 +17,8 @@ export class MicPipeline {
   private destination?: MediaStreamAudioDestinationNode;
   private source?: MediaStreamAudioSourceNode;
   private input?: MediaStream;
+  /** True when the raw microphone is sent because the gain chain could not run. */
+  bypassed = false;
 
   constructor(private settings: MicSettings) {}
 
@@ -28,8 +30,20 @@ export class MicPipeline {
   /** Asks for the microphone; rejects with the browser's error when refused or missing. */
   async open(): Promise<MediaStream> {
     const input = await navigator.mediaDevices.getUserMedia(this.constraints());
-    this.context ??= new AudioContext();
-    if (this.context.state === 'suspended') await this.context.resume().catch(() => undefined);
+    // The output unlocked at sign-in is reused: a context created here, without a recent click, may stay
+    // asleep, and a sleeping chain produces no audio at all — the far end would hear nothing.
+    this.context ??= soundContext() ?? new AudioContext();
+    if (this.context.state !== 'running') await this.context.resume().catch(() => undefined);
+    if (this.context.state !== 'running') {
+      // Being heard matters more than the sensitivity setting: send the microphone as it is.
+      this.input?.getTracks().forEach(track => track.stop());
+      this.source?.disconnect();
+      this.source = undefined;
+      this.input = input;
+      this.bypassed = true;
+      return input;
+    }
+    this.bypassed = false;
     this.gainNode ??= this.context.createGain();
     this.destination ??= this.context.createMediaStreamDestination();
     this.gainNode.gain.value = this.settings.gain / 100;
@@ -59,7 +73,7 @@ export class MicPipeline {
   async switchDevice(deviceId: string) {
     const previous = this.settings.deviceId;
     this.settings.deviceId = deviceId;
-    if (!this.context || !this.input) return;
+    if (!this.context || !this.input || this.bypassed) return;
     try {
       this.attach(await navigator.mediaDevices.getUserMedia(this.constraints()));
     } catch (error) {

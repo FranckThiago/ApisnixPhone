@@ -45,6 +45,8 @@ export interface Manager {
   dropSilently(): Promise<void>;
   /** True when the PBX says this browser holds the account, false when another device does, null when unknown. */
   holdsLine(): Promise<boolean | null>;
+  /** Audio packets sent so far on this call, or null when the browser cannot tell. */
+  sentAudioPackets(session: ManagedSession): Promise<number | null>;
 }
 
 export interface SipConfig {
@@ -199,6 +201,14 @@ export class SipPhoneController implements PhoneController {
       // Talk time starts here, never at the ringing or early media.
       this.updateCall({ phase: 'active', answeredAt: Date.now() });
       void this.remoteAudio?.play().catch(() => this.update({ audioBlocked: true }));
+      // One-way audio must never go unnoticed: check that our voice really leaves the browser.
+      const session = this.session, manager = this.manager;
+      if (session && manager) setTimeout(() => {
+        if (this.session !== session || this.snapshot.call?.phase !== 'active' || this.snapshot.call.muted) return;
+        void manager.sentAudioPackets(session).then(packets => {
+          if (packets === 0 && this.session === session) this.update({ error: 'Votre correspondant ne vous entend pas : votre micro n’émet rien. Raccrochez, vérifiez le micro dans Réglages, puis rappelez.' });
+        }).catch(() => undefined);
+      }, 5000);
       // Safety net: SIP.js starts the sound itself and stays quiet when the browser refuses.
       setTimeout(() => {
         if (this.snapshot.call?.phase === 'active' && this.remoteAudio?.paused) this.update({ audioBlocked: true });
