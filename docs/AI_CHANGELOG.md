@@ -1,5 +1,22 @@
 # Journal des changements
 
+## 2026-09-21 — Release 2 publiée pour rétablir l'émission de voix
+
+- Source c3ecac7, release `20260921-webphone-2`, bascule 23:12:20 Douala.
+  34 tests, typage, lint, build live isolé réussis ; contrôles d'archive sans
+  secret ni donnée pilote. Aucun appel web au contrôle préalable.
+- Seuls fichiers statiques et lien current changés. Version 1 intacte,
+  Caddy/DNS/PBX/supervision inchangés, aucun reload. Contrôles HTTPS,
+  cache, en-têtes, SPA, JS servi et navigateur intégrés réussis.
+- Micro direct à 100 %, chaîne optionnelle avec repli, contrôle d'émission
+  audio et consultation du contact SIP inclus. Essai réel échoué : Franck n'est
+  toujours pas entendu malgré 6575 paquets reçus en 2 min 53 (21,18 % de pertes
+  signalées), bonne version chargée et micro non muet dans l'interface.
+- Retour prescrit vers release 1 à 23:17:20 Douala, sans recharger l'onglet
+  utilisateur ni couper l'appel. Cette version conserve son défaut connu :
+  ne pas diffuser aux clients. Cause restante non établie, test A/B reporté.
+  OPERATIONS/PROJECT_STATE/lot 6 actualisés.
+
 ## 2026-09-21 — ApisnixPhone Web : chaîne de sensibilité du micro activée seulement sur demande
 
 - Franck propose de retirer le réglage s'il pose problème. Choix retenu : à

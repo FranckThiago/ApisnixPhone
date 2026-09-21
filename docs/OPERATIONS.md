@@ -325,7 +325,7 @@ Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
 secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
 variables, le build est une démonstration.
 
-Hébergement réalisé le 21 septembre, release **20260921-webphone-1** : Hermes, derrière le Caddy existant, à côté
+Hébergement réalisé le 21 septembre, release servie après retour **20260921-webphone-1** : Hermes, derrière le Caddy existant, à côté
 de la supervision et sans la modifier ; dossier versionné
 `/srv/apisnixphone/releases/<version>/` et lien `current`. HTTPS est obligatoire :
 hors `localhost`, un navigateur refuse le microphone sans lui. Nom validé :
@@ -360,20 +360,28 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260921-webphone-1`, source `d9b9da4`. Archive de release :
+Version servie après retour : `20260921-webphone-1`, source `d9b9da4`. Archive de release :
 SHA-256 `c7a63248526b0786d3fa0576d2e419bbfe948f45d56961830866dc7debbec9c4`.
 Installation sous `/srv/apisnixphone/releases/20260921-webphone-1/`, lien
 `/srv/apisnixphone/current`, fichiers appartenant à root, lisibles mais non
 inscriptibles par Caddy. Aucun service applicatif, base ou secret d'hébergement.
 Les sauvegardes et détails d'infrastructure restent dans le dépôt privé.
 
-Contrôlé : 33 tests, typage, lint, build live ; WSS attendu dans le bundle,
+Contrôlé sur la release 1 : 33 tests, typage, lint, build live ; WSS attendu dans le bundle,
 aucun identifiant pilote ni fichier `.env`, `.local` ou source map dans la
 release. HTTPS public 200, HTTP 308, en-têtes ci-dessus, assets immuables,
 index et repli SPA 200 sans cache ; empreinte du JS servi identique au build.
 Logo et connexion live visibles, console/CSP sans erreur. WSS vers le PBX
 avec l'origine publique accepté (101, sip), sans inscription. Essai de Franck
-depuis cette URL encore attendu ; aucun mot de passe saisi par l'agent.
+sur la release 2 terminé en échec audio ; aucun mot de passe saisi par l'agent.
+
+La release 2 `c3ecac7` reste conservée dans
+`/srv/apisnixphone/releases/20260921-webphone-2/`, archive SHA-256
+`81d44df2854c7c3f75916a7f705967fac8516f69a57110af689b5a574f14f09f`.
+34 tests et contrôles de déploiement réussis, mais essai voix échoué malgré
+6575 paquets reçus côté Asterisk (21,18 % de pertes signalées). Retour à la
+release 1 à 23:17:20 Douala. **Aucune de ces releases n'est validée pour
+l'émission de voix chez Franck ; ne pas diffuser aux clients.**
 
 ### Publier une release suivante
 
@@ -389,9 +397,15 @@ depuis cette URL encore attendu ; aucun mot de passe saisi par l'agent.
 4. Vérifier HTTPS, assets, cache, interface live et essai pilote. En cas de
    défaut, remettre atomiquement le lien sur la release précédente.
 
-### Retrait ciblé du premier déploiement
+### Retour ciblé et retrait complet
 
-Aucune release antérieure du téléphone n'existe. Pour le retirer, enlever
+Pour retirer la release 2, repointer atomiquement `current` vers
+`/srv/apisnixphone/releases/20260921-webphone-1/`, sans recharger Caddy.
+Attention : cette release antérieure a le défaut de voix connu ; prévenir
+Franck que le site n'est pas validé pour émettre et ne pas le diffuser aux
+clients. Retour effectué à 23:17:20 Douala après l’essai échoué de la release 2.
+
+Pour un retrait complet de l'hébergement, enlever
 uniquement le bloc entre `# APISNIX PHONE début` et `# APISNIX PHONE fin`,
 valider puis recharger Caddy gracieusement. Garder les fichiers ; ne jamais
 restaurer tout le Caddyfile ni toucher aux autres sites. Le DNS se retire

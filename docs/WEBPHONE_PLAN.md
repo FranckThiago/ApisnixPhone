@@ -528,7 +528,7 @@ composants suffisent. Aucun secret ou client réel dans les fixtures.
 | 3 | Domaine numéros, stockage, contrôleur démo et transitions | Tests ciblés ; aucune communication PBX pendant la QA |
 | 4 | Adaptateur SIP.js et gestion audio | Enregistrement et appels prêts à être essayés, secrets en mémoire |
 | 5 | Pilote autorisé et disponible | Audio, DTMF, attente, règles métier et enregistrements réellement vérifiés |
-| 6 | Release HTTPS et validation finale | Publiée le 21 septembre : `20260921-webphone-1` sur https://phone.apisnix-crm.com ; HTTPS/cache/CSP/WSS vérifiés, essai utilisateur public en attente ; reprise dans OPERATIONS.md |
+| 6 | Release HTTPS et validation finale | Publiée le 21 septembre : `20260921-webphone-1` servie après retour de la release 2 ; HTTPS/cache/CSP/WSS vérifiés, voix non validée, ne pas diffuser aux clients ; reprise dans OPERATIONS.md |
 
 Les lots 1–4 peuvent démarrer sans connaître le compte pilote ni l'URL publique.
 Ne pas laisser ces deux choix bloquer le travail d'interface. Ne pas annoncer

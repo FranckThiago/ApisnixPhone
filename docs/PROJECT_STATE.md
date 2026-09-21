@@ -2,22 +2,38 @@
 
 ## Publication HTTPS du 21 septembre 2026
 
-**ApisnixPhone Web est en ligne sur https://phone.apisnix-crm.com/**,
-release `20260921-webphone-1`, issue du commit `d9b9da4`, en mode réel.
-33 tests, typage, lint et build réussis sur Node 22/npm 10 depuis une archive
-Git isolée, sans fichier d'environnement local. Certificat public vérifié,
-redirection HTTPS, en-têtes de sécurité, cache des assets et repli SPA validés.
-Écran de connexion et logo contrôlés dans le navigateur intégré, sans mention
-Démonstration ni erreur console/CSP. Asterisk accepte la nouvelle origine WSS
-(HTTP 101, sous-protocole sip), sans inscription ni appel de l'agent.
+**Version servie après retour : 20260921-webphone-1**, source **d9b9da4**, sur
+https://phone.apisnix-crm.com/. La release 2 (c3ecac7) a été publiée à
+23:12:20 Africa/Douala (22:12:20 UTC),
+après contrôle de l'absence d'appel ApisnixPhoneWeb. 34 tests, typage, lint et
+build live isolé réussis. Fichiers statiques et lien current seuls modifiés ;
+Caddy, DNS, PBX et supervision inchangés. Les deux releases sont conservées.
 
-**Essai de Franck depuis cette URL publique en cours** : enregistrement WSS
-et appel entrant décroché observés côté serveur ; retour audio/sortant encore
-attendu. À confirmer : Ligne prête,
-micro, appel sortant et entrant, puis pause du poste remplacé entre deux
-navigateurs. Les essais antérieurs depuis localhost ne valident pas ces
-conditions sur la nouvelle URL. Aucun changement PBX ou de compte pendant
-la publication. Procédure et retour ciblé dans [OPERATIONS.md](OPERATIONS.md).
+Le premier essai de la release 1 avait révélé un défaut bloquant : le
+correspondant n'entendait pas l'utilisateur, aucun RTP reçu côté Asterisk.
+La release 2 transmet le micro directement à 100 %, n'active la chaîne de
+sensibilité que si le réglage change et prévoit le repli vers le micro brut.
+Micro/sensibilité modifiés pendant un appel : effet à l'appel suivant.
+Elle contient aussi la consultation du contact SIP pour détecter une ligne
+remplacée et l'alerte à cinq secondes si aucun paquet audio n'est émis.
+
+HTTPS, redirection, cache index/assets, en-têtes, repli SPA, JS servi identique
+au build et connexion live/logo sans erreur console/CSP contrôlés.
+**Retour effectué à 23:17:20 Africa/Douala (22:17:20 UTC)** vers
+`20260921-webphone-1` après échec de l'essai de voix de la release 2.
+Franck n'est toujours pas entendu. Contrairement à la release 1, Asterisk a
+bien reçu **6575 paquets** sur la release 2 en 2 min 53 (8349 envoyés), avec
+**21,18 % de pertes signalées en réception**. Le navigateur utilisait bien
+`index-5mH053Gu.js` et le bouton Muet était désactivé. Ces observations ne
+prouvent pas que les paquets contenaient une voix audible et n'identifient pas
+la cause restante. La voix dans les deux sens reste non validée.
+
+**Ne pas diffuser aux clients** : la release 1 rétablie possède le défaut de
+voix connu. Aucun onglet utilisateur rechargé ni appel coupé par ce retour ;
+l'onglet resté ouvert peut encore exécuter la release 2 jusqu'au rechargement.
+Les deux releases restent conservées. Aucun PBX, DNS ou Caddy modifié.
+
+Procédure, empreinte et retour ciblé dans [OPERATIONS.md](OPERATIONS.md).
 Les paragraphes historiques ci-dessous relatent les étapes précédentes.
 
 Mis à jour le 21 septembre 2026.
@@ -175,10 +191,9 @@ aura simplement plus d'alerte, sans fausse pause.
 Application déployée le 21 septembre au soir sur `phone.apisnix-crm.com` par un
 autre agent (détails dans le dépôt privé). Premier essai de Franck depuis ce
 site : **voix non transmise** (0 paquet audio reçu par Asterisk), réception
-correcte. Cause et correctif dans le journal ; **la version corrigée doit être
-reconstruite, redéployée et réessayée**. La version en ligne à cet instant est
-donc défectueuse pour l'émission de la voix dès que la chaîne audio du
-navigateur reste endormie.
+correcte. Ce constat concerne la release 1. **Correctif c3ecac7 publié dans
+20260921-webphone-2** ; réception RTP reçu confirmé, mais voix toujours inaudible selon Franck ; retour à la
+release 1 exécuté (état courant en tête de ce document).
 
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
