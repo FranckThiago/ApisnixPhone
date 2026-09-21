@@ -9,8 +9,10 @@ existant, avec une interface APISNIX complète et sans installateur Windows.
 
 ## État actuel
 
-- **Web PC** : recherche et [plan de réalisation](docs/WEBPHONE_PLAN.md)
-  préparés, avec une [maquette navigable](docs/design/webphone-maquette.html).
+- **Web PC** : interface ApisnixPhone Web construite dans `webphone/` et
+  utilisable en **mode démonstration** (aucun appel réel, adaptateur SIP.js à
+  faire). [Plan de réalisation](docs/WEBPHONE_PLAN.md) et
+  [maquette d'origine](docs/design/webphone-maquette.html).
   Interface inspirée de Ringover/Kavkom, journal, contacts, drapeaux et panneau
   d'appel. L'application SIP reste à développer ; aucun déploiement serveur.
 - **Android** : APK de test `6.2.7-apisnix.3` compilé. Il corrige l’indicatif
@@ -54,4 +56,4 @@ reconstruction sont dans `patches/`, avec leurs références dans
 `sources.lock.json`. Voir les procédures avant de recréer un dossier existant.
 Les licences et crédits Linphone sont conservés ; la distribution des binaires
 nécessitera aussi la mise à disposition des sources correspondantes.
-Le nouveau code web sera créé dans `webphone/`, hors des checkouts natifs ignorés.
+Le code web se trouve dans `webphone/`, hors des checkouts natifs ignorés.

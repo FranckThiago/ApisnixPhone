@@ -17,3 +17,8 @@ apps/
 .env
 .env.*
 !.env.example
+
+# ApisnixPhone Web
+webphone/node_modules/
+webphone/coverage/
+.claude/

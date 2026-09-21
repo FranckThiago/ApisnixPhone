@@ -18,7 +18,7 @@ apisnix-crm.com — Asterisk
 La signalisation SIP et le média audio sont deux flux distincts, gérés par le
 moteur existant. Aucun serveur intermédiaire APISNIX supplémentaire n'a été créé.
 
-## Application web PC prévue
+## Application web PC
 
 Le [plan web du 18 septembre](WEBPHONE_PLAN.md) décrit un troisième client,
 indépendant des adaptations Linphone : SPA statique React/TypeScript/Vite,
@@ -29,10 +29,18 @@ si demandé. Aucun mot de passe SIP persistant dans l'application.
 
 Le contrôleur téléphonique reste actif pendant la navigation entre les vues.
 Une implémentation démo sans réseau permet les tests d'interface. Les sources
-seront créées dans `webphone/`, car `apps/` reste ignoré pour les checkouts
-natifs. À cette date, seuls le plan et la maquette sont livrés ; ce client
-web n'est pas encore implémenté ou déployé. Les versions proposées, capacités
-et validations restantes figurent dans le plan, référence de ce périmètre.
+sont dans `webphone/`, car `apps/` reste ignoré pour les checkouts natifs.
+
+État au 21 septembre : l'interface et ses couches sont implémentées, **seul le
+contrôleur de démonstration existe**. `src/telephony/types.ts` porte le contrat
+`PhoneController` ; `DemoPhoneController` n'ouvre aucun WebSocket et ne demande
+jamais le micro. L'adaptateur SIP.js (lot 4) implémentera le même contrat ;
+sip.js n'est pas encore une dépendance. `src/domain/numbers.ts` sépare saisie,
+numéro composé et métadonnées d'affichage. `src/storage/` garde les données en
+mémoire et n'écrit dans IndexedDB qu'après le choix « Conserver sur cet
+appareil ». `src/app/AppContext.tsx` monte un contrôleur unique hors des vues et
+inscrit au journal les seuls appels observés. Rien n'est déployé. Capacités et
+validations restantes : voir le plan, référence de ce périmètre.
 
 ## Sources de référence
 

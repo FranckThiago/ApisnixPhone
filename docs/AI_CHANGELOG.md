@@ -1,5 +1,24 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : interface construite en mode démonstration
+
+- Demande de Franck : la meilleure interface de téléphonie à partir du plan et
+  de la maquette, avec davantage de jaune APISNIX, carte blanche. Références
+  consultées : Aircall (actions en appel, notes, tags, raccourcis), OpenPhone/Quo,
+  Dialpad, Ringover et Kavkom déjà cités dans le plan.
+- `webphone/` créé : React 19, TypeScript 6, Vite 8, lucide-react,
+  libphonenumber-js, country-flag-icons, Vitest ; versions du plan installées et
+  figées avec lockfile, `@eslint/js` 10.0.1 ajouté car requis par la configuration.
+- Couches : contrat `PhoneController` et contrôleur de démonstration sans réseau,
+  domaine des numéros (chiffres jamais réécrits), stockage mémoire avec IndexedDB
+  sur choix explicite, contexte applicatif à contrôleur unique, écrans Journal,
+  Contacts, Favoris, Réglages, Connexion, panneau d'appel et palette de commandes.
+- Vérifications : typecheck, lint, 13 tests, build, parcours visuel à trois
+  largeurs et deux thèmes. Logo copié intact depuis `branding/`, favicons depuis
+  le dossier de Franck. `.gitignore` : `webphone/node_modules/`, `.claude/`.
+- **Aucun appel réel, WebSocket, micro, accès serveur ni déploiement.** Suite :
+  lot 4, adaptateur SIP.js. État et limites dans PROJECT_STATE et le plan.
+
 ## 2026-09-21 — Publication de la préparation web et nouvelle règle Git
 
 - Franck demande de retirer la règle de confirmation des commits/push et de

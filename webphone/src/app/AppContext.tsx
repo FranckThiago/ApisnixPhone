@@ -1,0 +1,133 @@
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { parseDialInput } from '../domain/numbers';
+import { DataStore, findContact } from '../storage/DataStore';
+import { indexedDbPersistence, persistChoice } from '../storage/persistence';
+import { DemoPhoneController } from '../telephony/DemoPhoneController';
+import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
+import type { Credentials } from '../telephony/types';
+import { storedTheme } from './theme';
+
+export type View = 'journal' | 'contacts' | 'favorites' | 'settings' | 'phone';
+
+export interface Toast {
+  id: number;
+  message: string;
+  tone: 'info' | 'success' | 'danger';
+}
+
+interface AppValue {
+  phone: DemoPhoneController;
+  store: DataStore;
+  view: View;
+  setView(view: View): void;
+  dial: string;
+  setDial(value: string): void;
+  placeCall(rawInput: string): void;
+  login(credentials: Credentials): Promise<void>;
+  logout(): Promise<void>;
+  paletteOpen: boolean;
+  setPaletteOpen(open: boolean): void;
+  toasts: Toast[];
+  notify(message: string, tone?: Toast['tone']): void;
+  /** Journal entry written for the call currently in wrap-up, if any. */
+  wrapUpRecordId: string | null;
+  simulateIncoming(): void;
+  selectedContactId: string | null;
+  openContact(id: string | null): void;
+}
+
+const AppContext = createContext<AppValue | null>(null);
+
+// One controller for the whole page life: it must survive every view change.
+const phone = new DemoPhoneController();
+const store = new DataStore(typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence);
+
+export function AppProvider({ children }: { children: ReactNode }) {
+  const [view, setView] = useState<View>('journal');
+  const [dial, setDial] = useState('');
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [wrapUpRecordId, setWrapUpRecordId] = useState<string | null>(null);
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
+  const recorded = useRef(new Set<string>());
+  const toastId = useRef(0);
+  const incomingIndex = useRef(0);
+
+  const notify = useCallback((message: string, tone: Toast['tone'] = 'info') => {
+    const id = ++toastId.current;
+    setToasts(current => [...current.slice(-2), { id, message, tone }]);
+    setTimeout(() => setToasts(current => current.filter(toast => toast.id !== id)), 4200);
+  }, []);
+
+  // The journal only holds calls this browser really observed, written once when they end.
+  useEffect(() => phone.subscribe(() => {
+    const call = phone.getSnapshot().call;
+    if (!call) return setWrapUpRecordId(null);
+    if (call.phase !== 'ended' || recorded.current.has(call.id) || !call.outcome || !call.endedAt) return;
+    recorded.current.add(call.id);
+    const record = store.addCall({
+      direction: call.direction, dialTarget: call.dialTarget, remoteName: call.remoteName,
+      startedAt: call.startedAt, answeredAt: call.answeredAt, endedAt: call.endedAt, outcome: call.outcome,
+    });
+    setWrapUpRecordId(record.id);
+  }), []);
+
+  const placeCall = useCallback((rawInput: string) => {
+    const input = parseDialInput(rawInput);
+    const state = phone.getSnapshot();
+    if (!input.valid) return notify(input.reason === 'empty' ? 'Saisissez un numéro à appeler.' : 'Ce numéro contient des caractères non autorisés.', 'danger');
+    if (state.connection !== 'ready') return notify('La ligne n’est pas connectée.', 'danger');
+    if (state.call) return notify('Un appel est déjà en cours.', 'danger');
+    const contact = findContact(store.getSnapshot().contacts, input.dialTarget);
+    phone.call(rawInput, input.dialTarget, contact?.name);
+    setDial('');
+  }, [notify]);
+
+  const login = useCallback(async (credentials: Credentials) => {
+    await phone.connect(credentials);
+    const { account, connection } = phone.getSnapshot();
+    if (connection !== 'ready' || !account) return;
+    const profile = `${account.domain}:${account.username}`;
+    await store.open(profile, persistChoice.get(profile), demoSeed());
+    store.setPreferences({ theme: storedTheme() });
+  }, []);
+
+  const logout = useCallback(async () => {
+    await phone.disconnect();
+    store.close();
+    recorded.current.clear();
+    setView('journal');
+    setDial('');
+    setSelectedContactId(null);
+  }, []);
+
+  const simulateIncoming = useCallback(() => {
+    const caller = DEMO_CALLERS[incomingIndex.current++ % DEMO_CALLERS.length]!;
+    const contact = findContact(store.getSnapshot().contacts, caller[0]);
+    if (!phone.simulateIncoming(caller[0], contact?.name)) notify('Terminez l’appel en cours avant d’en simuler un autre.', 'danger');
+  }, [notify]);
+
+  const openContact = useCallback((id: string | null) => {
+    setSelectedContactId(id);
+    if (id) setView('contacts');
+  }, []);
+
+  const value = useMemo<AppValue>(() => ({
+    phone, store, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
+    toasts, notify, wrapUpRecordId, simulateIncoming, selectedContactId, openContact,
+  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, wrapUpRecordId, simulateIncoming, selectedContactId, openContact]);
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useApp(): AppValue {
+  const value = useContext(AppContext);
+  if (!value) throw new Error('AppProvider is missing');
+  return value;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const usePhone = () => useSyncExternalStore(phone.subscribe, phone.getSnapshot);
+// eslint-disable-next-line react-refresh/only-export-components
+export const useData = () => useSyncExternalStore(store.subscribe, store.getSnapshot);

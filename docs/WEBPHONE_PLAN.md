@@ -2,7 +2,8 @@
 
 **Référence produit et technique préparée le 18 septembre 2026.**
 Début de réalisation envisagé le 19 septembre, sur demande de Franck.
-Statut : recherche et design préparés ; application téléphonique web **à développer**.
+Statut au 21 septembre : **lots 1 à 3 réalisés dans `webphone/` (interface
+complète en mode démonstration)** ; lots 4 à 6 à faire — aucun appel réel possible.
 
 ## 1. Reprendre dans une nouvelle conversation
 
@@ -27,9 +28,10 @@ le dépôt privé. L'audit est daté ; vérifier l'état réel avant une future 
 rendu et les tests, puis préparer le pilote réel. Ne pas relancer une étude
 EXE/MSI, de nouveaux certificats, un remplacement de PBX ou un CRM complet.
 
-Le code web n'existe pas encore : « lancer le build » signifie commencer la
-réalisation décrite ici, pas exécuter un compilateur sur une application terminée.
-Les commandes de la section 13 sont celles à mettre en place dans ce travail.
+Le code web existe dans `webphone/` et les commandes de la section 13
+fonctionnent. La prochaine étape est le lot 4 : un `SipPhoneController`
+implémentant le contrat de `src/telephony/types.ts`, puis le choix du contrôleur
+selon `VITE_APP_MODE`. sip.js n'est pas encore installé ; l'ajouter en 0.21.2 figé.
 
 ## 2. Demande confirmée et choix retenus
 
@@ -598,6 +600,15 @@ pendant la recherche : ils ne sont pas requis pour construire et montrer
 l'interface. Pas de renouvellement de certificat exigé comme préalable.
 
 ## 16. Livraison et reprise après chaque lot
+
+**Lots 1 à 3 livrés le 21 septembre** dans `webphone/`. Écarts assumés par
+rapport à ce plan : thème sombre et palette de commandes ajoutés (carte blanche
+de Franck) ; bouton Appeler vert et Raccrocher rouge, le bleu restant la couleur
+d'action générale ; jaune `#FFD21F` plus proche du logo que le `#F4C543` proposé ;
+tests Playwright et `@playwright/test` non installés, parcours vérifiés à la main
+dans le navigateur intégré ; préparation audio réelle, notifications réelles,
+Web Lock et statistiques étendues reportés au lot 4, car ils n'ont de sens
+qu'avec une vraie ligne. Détail des vérifications : PROJECT_STATE.
 
 **Préparation livrée le 18 septembre :** ce plan et la maquette HTML autonome.
 Rendu examiné à 1280×720, 1024×768 et 390×844 dans le navigateur intégré ;

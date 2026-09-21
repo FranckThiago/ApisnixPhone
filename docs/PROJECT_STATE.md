@@ -32,7 +32,31 @@ ne compile pas les clients natifs et ne déploie aucun service.
 
 ## Résultat réel
 
-### Webphone PC — dossier prêt pour le développement
+### Webphone PC — interface construite en mode démonstration
+
+Le 21 septembre, à la demande de Franck (« la meilleure interface de
+téléphonie », carte blanche, davantage de jaune APISNIX), les lots 1 à 3 du plan
+sont réalisés dans `webphone/` : connexion, journal par jour avec filtres,
+recherche, détail, notes et tags, contacts et fiche avec derniers échanges,
+favoris, réglages, thème clair/sombre, palette de commandes (Ctrl/⌘ K),
+raccourcis M/H/chiffres, panneau d'appel persistant (sortant, entrant, muet,
+attente confirmée, DTMF, fin d'appel qualifiée), bandeau d'appel sur petit
+écran. Le jaune du monogramme signe l'interface : soulignés, navigation active,
+anneau d'appel, focus, favoris, tags.
+
+**Ce n'est pas encore un téléphone** : seul le contrôleur de démonstration
+existe, avec des données fictives et la mention « Démonstration » permanente.
+Aucun WebSocket, micro, appel réel, accès serveur ni déploiement. Restent les
+lots 4 (adaptateur SIP.js, audio, verrou d'onglet), 5 (pilote réel) et 6
+(hébergement HTTPS). Périphériques audio et notifications sont donc des
+réglages d'interface sans effet réel pour l'instant.
+
+Vérifié : typage, lint, 13 tests métier (numéros, contrôleur, stockage), build,
+et parcours dans le navigateur intégré à 1440, 1024 et 375 px, thèmes clair et
+sombre, sans erreur console. Non vérifié : zoom 125/150 %, mesure des
+contrastes, lecteur d'écran, persistance IndexedDB dans un vrai navigateur.
+
+#### Préparation du 18 septembre
 
 Franck choisit une véritable interface d'appels APISNIX, inspirée de
 Ringover/Kavkom : espace de travail clair et coloré, journal, contacts, favoris,

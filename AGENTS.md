@@ -6,8 +6,11 @@
   parmi `docs/ARCHITECTURE.md` et `docs/OPERATIONS.md`.
 - Téléphone web PC : lire `docs/WEBPHONE_PLAN.md`, référence du périmètre,
   du design, des fonctions, des réglages et de l'ordre de réalisation.
-  Sa maquette est `docs/design/webphone-maquette.html`. Le code web est à
-  créer dans `webphone/` ; ne pas confondre la maquette avec un client SIP livré.
+  Sa maquette est `docs/design/webphone-maquette.html`. Le code web est dans
+  `webphone/` (React/TypeScript/Vite) : interface complète en mode démonstration,
+  **sans adaptateur SIP.js ni appel réel à ce jour**. Commandes depuis `webphone/` :
+  `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
+  `npm run test -- --run`, `npm run build`.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord
   le dépôt privé `FranckThiago/Gestion_CRM-APISNIX` : `AGENTS.md`, puis
