@@ -32,12 +32,26 @@ export interface CallRecord {
   tags: string[];
 }
 
+/** A promise to call someone back, kept on this device like the rest of the data. */
+export interface Callback {
+  id: string;
+  /** Exactly as it will be dialled. */
+  number: string;
+  name?: string;
+  dueAt: number;
+  note?: string;
+  createdAt: number;
+  doneAt?: number;
+}
+
 export type Theme = 'light' | 'dark' | 'system';
 
 export interface Preferences {
   theme: Theme;
   density: 'comfortable' | 'compact';
   volume: number;
+  /** Microphone sensitivity, 0–200 %. */
+  micGain: number;
   ringtone: boolean;
   echoCancellation: boolean;
   noiseSuppression: boolean;
@@ -49,9 +63,10 @@ export interface Preferences {
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
-  theme: 'light',
+  theme: 'system',
   density: 'comfortable',
   volume: 80,
+  micGain: 100,
   ringtone: true,
   echoCancellation: true,
   noiseSuppression: true,

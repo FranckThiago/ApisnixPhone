@@ -5,6 +5,7 @@ import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
 import { MAX_AGE_DAYS, MAX_CALLS } from '../../storage/DataStore';
 import { persistChoice } from '../../storage/persistence';
+import { AudioSettings } from './AudioSettings';
 
 function Section({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
   return <section className="panel settings-section"><h2>{icon}{title}</h2>{children}</section>;
@@ -30,16 +31,10 @@ export function Settings() {
         <p className="lead">Audio, apparence et données conservées sur cet appareil.</p></div></header>
       <div className="settings-grid">
         <Section icon={<Headphones size={18} />} title="Audio">
-          {demo && <p className="callout">Démonstration : aucun microphone n’est demandé et aucun périphérique réel n’est utilisé.</p>}
-          <label className="setting"><span><b>Microphone</b><small>Périphérique du système par défaut.</small></span>
-            <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}><option value="default">Micro du système</option></select></label>
-          <label className="setting"><span><b>Casque / sortie</b><small>Le choix dépend du navigateur ; sinon la sortie du système est utilisée.</small></span>
-            <select value={preferences.outputDevice} onChange={event => set({ outputDevice: event.target.value })}><option value="default">Sortie du système</option></select></label>
-          <label className="setting"><span><b>Volume d’écoute</b><small>{preferences.volume} % — distinct du volume de l’ordinateur.</small></span>
-            <input type="range" min={0} max={100} value={preferences.volume} onChange={event => set({ volume: Number(event.target.value) })} /></label>
+          <AudioSettings />
           <Toggle label="Sonnerie" hint="Jouée pour un appel entrant." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
           <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
-          <Toggle label="Réduction de bruit" hint="Selon le matériel ; sans garantie sur tous les casques." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
+          <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
         </Section>
 
         <Section icon={<Palette size={18} />} title="Apparence">

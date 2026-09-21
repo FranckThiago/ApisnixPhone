@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
+import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
 import { dayKey, fold, formatDay, formatDuration, formatLongDuration, formatTime } from '../../domain/format';
 import { countryLabel, describeNumber } from '../../domain/numbers';
@@ -131,6 +132,8 @@ export function Journal() {
                         <textarea className="note" rows={2} maxLength={500} placeholder="Ajouter une note…" aria-label="Note de l’appel"
                           value={call.note ?? ''} onChange={event => store.updateCall(call.id, { note: event.target.value })} />
                         <div className="detail-actions">
+                          <CallbackScheduler number={call.dialTarget} name={name}
+                            onScheduled={() => { if (!call.tags.includes('À rappeler')) store.updateCall(call.id, { tags: [...call.tags, 'À rappeler'] }); }} />
                           {contact ? <button type="button" className="ghost" onClick={() => openContact(contact.id)}>Voir la fiche</button>
                             : <button type="button" className="ghost" onClick={() => {
                               const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: 'Principal', value: call.dialTarget }], favorite: false });

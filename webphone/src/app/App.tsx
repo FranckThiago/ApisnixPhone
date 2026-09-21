@@ -1,11 +1,12 @@
-import { BookUser, History, LogOut, Moon, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun } from 'lucide-react';
-import { useEffect } from 'react';
+import { AlarmClock, BookUser, History, LogOut, Moon, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
 import { Toasts } from '../components/Toasts';
 import { Avatar } from '../components/Avatar';
 import { Login } from '../features/auth/Login';
 import { ConnectionPill, PhoneDock } from '../features/calls/PhoneDock';
+import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { Settings } from '../features/settings/Settings';
@@ -14,8 +15,10 @@ import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
 import { applyTheme, storedTheme } from './theme';
 
+// On a narrow screen the phone sits in the middle of this list, as the main action.
 const NAV: Array<[View, string, typeof History]> = [
-  ['journal', 'Journal', History], ['contacts', 'Contacts', BookUser], ['favorites', 'Favoris', Star], ['settings', 'Réglages', SettingsIcon],
+  ['journal', 'Journal', History], ['contacts', 'Contacts', BookUser], ['phone', 'Téléphone', Phone],
+  ['callbacks', 'Rappels', AlarmClock], ['favorites', 'Favoris', Star], ['settings', 'Réglages', SettingsIcon],
 ];
 
 function useShortcuts() {
@@ -41,9 +44,9 @@ function useShortcuts() {
 }
 
 function Workspace() {
-  const { view, setView, logout, setPaletteOpen, store, phone } = useApp();
+  const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
   const { account, call, demo } = usePhone();
-  const { preferences, calls } = useData();
+  const { preferences, calls, callbacks } = useData();
   useShortcuts();
   const now = useNow();
 
@@ -54,6 +57,22 @@ function Workspace() {
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
   }, [phone]);
+
+  // A callback that comes due is announced once: in the page, and by the system when the person allowed it.
+  const announced = useRef(new Set<string>());
+  const dueCallbacks = callbacks.filter(callback => !callback.doneAt && callback.dueAt <= now);
+  useEffect(() => {
+    for (const callback of dueCallbacks) {
+      if (announced.current.has(callback.id)) continue;
+      announced.current.add(callback.id);
+      // Already late when the page opened: the badge is enough, no burst of alerts.
+      if (now - callback.dueAt > 90_000) continue;
+      const label = callback.name ?? callback.number;
+      notify(`C’est l’heure de rappeler ${label}.`);
+      if (preferences.notifications && !demo && typeof Notification !== 'undefined' && Notification.permission === 'granted')
+        new Notification('Rappel ApisnixPhone', { body: `Rappeler ${label}${callback.note ? ` — ${callback.note}` : ''}` });
+    }
+  }, [dueCallbacks, now, notify, preferences.notifications, demo]);
 
   const missedToday = calls.filter(item => item.outcome === 'missed' && dayKey(item.startedAt) === dayKey(now)).length;
   const dark = document.documentElement.dataset.theme === 'dark';
@@ -69,10 +88,12 @@ function Workspace() {
         <p className="nav-caption">Espace d’appels</p>
         <ul>
           {NAV.map(([key, label, Icon]) => (
-            <li key={key}><button type="button" className={'nav-item' + (view === key ? ' active' : '')} aria-current={view === key ? 'page' : undefined} onClick={() => setView(key)}>
-              <Icon size={19} /><span>{label}</span>{key === 'journal' && missedToday > 0 && <i className="badge" aria-label={`${missedToday} appels manqués aujourd’hui`}>{missedToday}</i>}</button></li>
+            <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
+              aria-current={view === key ? 'page' : undefined} onClick={() => setView(key)}>
+              <Icon size={key === 'phone' ? 24 : 19} /><span>{label}</span>
+              {key === 'journal' && missedToday > 0 && <i className="badge" aria-label={`${missedToday} appels manqués aujourd’hui`}>{missedToday}</i>}
+              {key === 'callbacks' && dueCallbacks.length > 0 && <i className="badge badge-yellow" aria-label={`${dueCallbacks.length} rappels à faire`}>{dueCallbacks.length}</i>}</button></li>
           ))}
-          <li className="nav-phone"><button type="button" className={'nav-item' + (view === 'phone' ? ' active' : '')} onClick={() => setView('phone')}><Phone size={19} /><span>Téléphone</span></button></li>
         </ul>
         <div className="sidebar-foot">
           <Avatar name={account?.username} size={34} />
@@ -104,6 +125,7 @@ function Workspace() {
           {view === 'journal' && <Journal />}
           {view === 'contacts' && <Contacts />}
           {view === 'favorites' && <Contacts favoritesOnly />}
+          {view === 'callbacks' && <Callbacks />}
           {view === 'settings' && <Settings />}
         </div>
       </div>
@@ -116,6 +138,13 @@ function Workspace() {
 
 export function App() {
   const { connection, account } = usePhone();
-  useEffect(() => applyTheme(storedTheme()), []);
+  useEffect(() => {
+    applyTheme(storedTheme());
+    // « Système » keeps following the computer when it switches between day and night.
+    const media = matchMedia('(prefers-color-scheme: dark)');
+    const follow = () => { if (storedTheme() === 'system') applyTheme('system'); };
+    media.addEventListener('change', follow);
+    return () => media.removeEventListener('change', follow);
+  }, []);
   return <>{connection === 'ready' && account ? <Workspace /> : <Login />}<Toasts /></>;
 }

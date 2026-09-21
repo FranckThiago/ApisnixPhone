@@ -24,6 +24,17 @@
   --shadow-sm: 0 1px 2px rgb(16 24 64 / 5%), 0 1px 1px rgb(16 24 64 / 3%);
   --shadow-md: 0 10px 30px -12px rgb(16 24 64 / 18%), 0 2px 6px rgb(16 24 64 / 5%);
   --shadow-lg: 0 30px 80px -20px rgb(8 12 40 / 45%);
+  /* The menu follows the theme: light on a light page, navy at night. */
+  --side-bg: linear-gradient(180deg, #ffffff, #f7f8fd);
+  --side-border: var(--border);
+  --side-text: #4b5776;
+  --side-strong: var(--text);
+  --side-caption: #8f99b0;
+  --side-hover: #f0f2fb;
+  --side-active: linear-gradient(90deg, var(--brand-soft), #f6f7ff);
+  --side-active-text: var(--brand);
+  --side-icon-active: var(--brand);
+  --side-sub: var(--brand);
   --radius: 14px;
   --radius-sm: 10px;
   --row: 62px;
@@ -51,6 +62,16 @@
   --warning: #ffcf5c;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
   --shadow-md: 0 12px 32px -12px rgb(0 0 0 / 60%);
+  --side-bg: radial-gradient(120% 60% at 0% 0%, #1b2a8a55, transparent 60%), radial-gradient(90% 40% at 100% 100%, #ffd21f14, transparent 70%), var(--navy);
+  --side-border: transparent;
+  --side-text: #c5ccea;
+  --side-strong: #ffffff;
+  --side-caption: #7e89b8;
+  --side-hover: rgb(255 255 255 / 7%);
+  --side-active: linear-gradient(90deg, rgb(255 255 255 / 13%), rgb(255 255 255 / 5%));
+  --side-active-text: #ffffff;
+  --side-icon-active: var(--yellow);
+  --side-sub: var(--yellow);
   color-scheme: dark;
 }
 

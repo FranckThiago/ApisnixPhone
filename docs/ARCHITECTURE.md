@@ -31,12 +31,21 @@ Le contrôleur téléphonique reste actif pendant la navigation entre les vues.
 Une implémentation démo sans réseau permet les tests d'interface. Les sources
 sont dans `webphone/`, car `apps/` reste ignoré pour les checkouts natifs.
 
-État au 21 septembre : l'interface et ses couches sont implémentées, **seul le
-contrôleur de démonstration existe**. `src/telephony/types.ts` porte le contrat
-`PhoneController` ; `DemoPhoneController` n'ouvre aucun WebSocket et ne demande
-jamais le micro. L'adaptateur SIP.js (lot 4) implémentera le même contrat ;
-sip.js n'est pas encore une dépendance. `src/domain/numbers.ts` sépare saisie,
-numéro composé et métadonnées d'affichage. `src/storage/` garde les données en
+État au 21 septembre : l'interface, ses couches et les deux contrôleurs sont
+implémentés ; **aucun appel réel n'a encore été passé**. `src/telephony/types.ts`
+porte le contrat `PhoneController`. `DemoPhoneController` n'ouvre aucun WebSocket
+et ne demande jamais le micro. `SipPhoneController` adapte `Web.SessionManager`
+de SIP.js 0.21.2 avec les options du plan (une session, pas de boucle de
+REGISTER, DTMF RTP, journaux SIP coupés, mot de passe en mémoire) ;
+`sipEnvironment.ts` charge SIP.js à la demande, crée l'élément audio hors des
+vues et tient un Web Lock par compte. Le contrôleur est choisi au chargement :
+`VITE_APP_MODE=live` avec `VITE_SIP_DOMAIN` et `VITE_SIP_WSS_URL`, sinon démo.
+`audio.ts` fait passer le micro par une chaîne Web Audio (périphérique → gain →
+piste envoyée) : sensibilité et changement de micro agissent en cours d'appel
+sans renégociation ; la sonnerie est générée, sans fichier audio.
+`src/domain/numbers.ts` sépare saisie, numéro composé et métadonnées
+d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés, stockés avec
+les autres données locales. `src/storage/` garde les données en
 mémoire et n'écrit dans IndexedDB qu'après le choix « Conserver sur cet
 appareil ». `src/app/AppContext.tsx` monte un contrôleur unique hors des vues et
 inscrit au journal les seuls appels observés. Rien n'est déployé. Capacités et

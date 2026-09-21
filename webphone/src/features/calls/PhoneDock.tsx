@@ -1,8 +1,10 @@
-import { Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, Volume2, X } from 'lucide-react';
+import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, Volume2, X } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
+import { CallbackScheduler } from '../callbacks/CallbackScheduler';
+import { formatDue, groupCallbacks } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
 import { formatDuration } from '../../domain/format';
@@ -103,15 +105,37 @@ function Dialer() {
           <Phone size={20} /> Appeler <Kbd>↵</Kbd>
         </button>
       </section>
+      <DueCallbacks />
       <section className="dock-card audio-card" aria-label="Audio">
         <Headphones size={20} aria-hidden="true" />
-        <div><b>Votre audio</b><small>Casque de démonstration</small></div>
+        <div><b>Volume d’écoute</b><small>{preferences.volume} %</small></div>
         <label className="volume"><Volume2 size={16} aria-hidden="true" />
           <input type="range" min={0} max={100} value={preferences.volume} aria-label="Volume d’écoute"
             onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
         </label>
       </section>
     </>
+  );
+}
+
+/** The next promises to keep, right under the keypad. */
+function DueCallbacks() {
+  const { placeCall, setView } = useApp();
+  const { callbacks } = useData();
+  const now = useNow();
+  const groups = groupCallbacks(callbacks, now);
+  const next = [...groups.overdue, ...groups.today].slice(0, 2);
+  if (!next.length) return null;
+  return (
+    <section className="dock-card due-card" aria-label="Rappels à faire">
+      <header><AlarmClock size={17} aria-hidden="true" /><b>Rappels</b><button type="button" onClick={() => setView('callbacks')}>Tout voir</button></header>
+      <ul>{next.map(callback => (
+        <li key={callback.id} className={callback.dueAt <= now ? 'overdue' : ''}>
+          <span><b>{callback.name ?? callback.number}</b><small>{callback.dueAt <= now ? 'À faire maintenant' : formatDue(callback.dueAt, now)}{callback.note ? ` · ${callback.note}` : ''}</small></span>
+          <button type="button" className="row-call always" aria-label={`Appeler ${callback.name ?? callback.number}`} onClick={() => placeCall(callback.number)}><Phone size={16} /></button>
+        </li>))}
+      </ul>
+    </section>
   );
 }
 
@@ -150,6 +174,9 @@ function WrapUp({ call }: { call: CallSnapshot }) {
             value={record.note ?? ''} onChange={event => store.updateCall(record.id, { note: event.target.value })} />
         </>
       )}
+      {/* Scheduling from a call also tags it, so the journal tells the same story. */}
+      <CallbackScheduler number={call.rawInput} name={contact?.name ?? call.remoteName} tone="dark"
+        onScheduled={() => { if (record && !record.tags.includes('À rappeler')) store.updateCall(record.id, { tags: [...record.tags, 'À rappeler'] }); }} />
       <div className="wrapup-actions">
         <button type="button" className="ghost-light" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> Rappeler</button>
         {!contact && <button type="button" className="ghost-light" onClick={addContact}><UserPlus size={16} /> Ajouter</button>}

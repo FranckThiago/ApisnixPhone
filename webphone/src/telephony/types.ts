@@ -60,4 +60,16 @@ export interface PhoneController {
   sendDtmf(tone: string): void;
   setInputDevice(deviceId: string): Promise<void>;
   setOutputDevice(deviceId: string): Promise<void>;
+  /** Everything the user tuned for sound; applied live, even during a call. */
+  applyAudio(settings: AudioSettings): void;
+}
+
+export interface AudioSettings {
+  /** Listening volume of this application, 0–100; not the computer's volume. */
+  volume: number;
+  /** Microphone sensitivity, 0–200 %, 100 = unchanged. */
+  micGain: number;
+  ringtone: boolean;
+  echoCancellation: boolean;
+  noiseSuppression: boolean;
 }

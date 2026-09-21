@@ -2,8 +2,9 @@
 
 **Référence produit et technique préparée le 18 septembre 2026.**
 Début de réalisation envisagé le 19 septembre, sur demande de Franck.
-Statut au 21 septembre : **lots 1 à 3 réalisés dans `webphone/` (interface
-complète en mode démonstration)** ; lots 4 à 6 à faire — aucun appel réel possible.
+Statut au 21 septembre : **lots 1 à 4 réalisés dans `webphone/`** (interface
+complète, démonstration par défaut, adaptateur SIP.js testé en simulation) ;
+lots 5 et 6 à faire — **aucun appel réel n'a encore été passé**.
 
 ## 1. Reprendre dans une nouvelle conversation
 
@@ -29,9 +30,12 @@ rendu et les tests, puis préparer le pilote réel. Ne pas relancer une étude
 EXE/MSI, de nouveaux certificats, un remplacement de PBX ou un CRM complet.
 
 Le code web existe dans `webphone/` et les commandes de la section 13
-fonctionnent. La prochaine étape est le lot 4 : un `SipPhoneController`
-implémentant le contrat de `src/telephony/types.ts`, puis le choix du contrôleur
-selon `VITE_APP_MODE`. sip.js n'est pas encore installé ; l'ajouter en 0.21.2 figé.
+fonctionnent. La prochaine étape est le lot 5 : créer `webphone/.env.local`
+(ignoré par Git) avec `VITE_APP_MODE=live`, `VITE_SIP_DOMAIN` et
+`VITE_SIP_WSS_URL` pris dans la fiche privée, puis dérouler la section 14 avec
+le compte et la destination autorisés. Points à regarder en premier : le `+` et
+le `#` dans l'URI (`#` est envoyé `%23`, le reste tel quel), les codes de refus
+réellement renvoyés, et la chaîne micro Web Audio sur un vrai casque.
 
 ## 2. Demande confirmée et choix retenus
 
@@ -277,7 +281,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Réglage utilisateur | Valeur initiale / règle |
 | --- | --- |
 | Langue | Français |
-| Apparence | Claire ; thème sombre ultérieur si demandé |
+| Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
 | Densité | Confortable ; compacte possible sur petits écrans |
 | Micro | Périphérique système ; choix explicite possible |
 | Sortie / casque | Sortie système ; choix seulement si API et permission disponibles |
@@ -391,9 +395,15 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
    silencieusement `00` en `+`, ni un numéro national en international.
 4. Utiliser libphonenumber-js pour **afficher** pays/indicatif ; ne pas remplacer
    `dialTarget` par sa propriété normalisée `.number`.
-5. Sans indication fiable, afficher un globe et « Pays non déterminé ».
-   Pour +1 ou d'autres indicatifs partagés, attendre assez de chiffres ; ne pas
-   supposer États-Unis. Extensions internes : pas de faux drapeau.
+5. Règles d'affichage demandées par Franck le 21 septembre, sans effet sur les
+   chiffres composés : un numéro commençant par `0` (hors `00`) est lu comme
+   national **France** (`NATIONAL_COUNTRY` dans `numbers.ts`) ; `1` suivi d'un
+   indicatif régional (2–9) est lu comme Amérique du Nord, avec ou sans `+`.
+   Le **Canada** est reconnu par la liste d'indicatifs fournie par Franck
+   (`CANADIAN_AREA_CODES`, qui inclut à sa demande 600 et 888) ; les autres
+   indicatifs donnent les États-Unis, sauf pays du plan +1 connu des métadonnées
+   (Caraïbes). Avant trois chiffres d'indicatif : Canada. `1001` et les numéros
+   courts restent « Numéro interne » ; sinon globe et « Pays non déterminé ».
 6. Un choix explicite dans un sélecteur d'indicatif peut insérer ce préfixe en
    le montrant ; le simple changement de langue/région ne modifie jamais la saisie.
 7. Filtrer les caractères de contrôle et les URL SIP arbitraires ; construire
@@ -600,6 +610,12 @@ pendant la recherche : ils ne sont pas requis pour construire et montrer
 l'interface. Pas de renouvellement de certificat exigé comme préalable.
 
 ## 16. Livraison et reprise après chaque lot
+
+**Lot 4 livré le 21 septembre**, avec les retours de Franck : adaptateur SIP.js,
+sensibilité du micro, rappels planifiés (non prévus au plan initial), règles de
+pays ci-dessus, thème Système par défaut, menu qui suit le thème, bouton
+Téléphone central sur mobile. Non fait : transfert (`VITE_ENABLE_TRANSFER` sans
+effet), tonalité de retour d'appel locale, export de diagnostic, Playwright.
 
 **Lots 1 à 3 livrés le 21 septembre** dans `webphone/`. Écarts assumés par
 rapport à ce plan : thème sombre et palette de commandes ajoutés (carte blanche

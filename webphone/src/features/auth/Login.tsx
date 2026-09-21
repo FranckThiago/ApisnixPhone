@@ -34,6 +34,7 @@ export function Login() {
             <span className="password"><input type={visible ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" maxLength={256} required />
               <button type="button" className="icon-button" aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span></label>
           {error && <p className="form-error" role="alert">{error}</p>}
+          {connection === 'other-tab-active' && <p className="fine">Fermez l’autre onglet ApisnixPhone, puis reconnectez-vous ici.</p>}
           <button type="submit" className="primary big" disabled={busy}>{busy ? (connection === 'connecting' ? 'Connexion…' : 'Enregistrement de la ligne…') : <>Se connecter <ArrowRight size={18} /></>}</button>
           <p className="fine">Le domaine est préconfiguré par APISNIX. Besoin d’aide ? Contactez votre administrateur.</p>
         </form>

@@ -44,14 +44,32 @@ attente confirmée, DTMF, fin d'appel qualifiée), bandeau d'appel sur petit
 écran. Le jaune du monogramme signe l'interface : soulignés, navigation active,
 anneau d'appel, focus, favoris, tags.
 
-**Ce n'est pas encore un téléphone** : seul le contrôleur de démonstration
-existe, avec des données fictives et la mention « Démonstration » permanente.
-Aucun WebSocket, micro, appel réel, accès serveur ni déploiement. Restent les
-lots 4 (adaptateur SIP.js, audio, verrou d'onglet), 5 (pilote réel) et 6
-(hébergement HTTPS). Périphériques audio et notifications sont donc des
-réglages d'interface sans effet réel pour l'instant.
+Le même jour, lot 4 et retours de Franck : adaptateur SIP.js 0.21.2
+(`SipPhoneController`), choisi par `VITE_APP_MODE=live` ; chaîne micro avec
+**sensibilité réglable** (0–200 %) et changement de micro en cours d'appel,
+volume d'écoute, choix de sortie si le navigateur le permet, test du micro avec
+niveau, sonnerie générée, verrou d'un seul onglet par compte. **Rappels
+planifiés** : depuis la fin d'appel, le journal ou une fiche ; vue Rappels,
+carte sous le clavier, pastille, alerte à l'échéance, clôture automatique quand
+le numéro a été joint. Affichage des pays selon ses règles : `0…` = France,
+`1` + indicatif = Amérique du Nord, Canada distingué des États-Unis par sa liste
+d'indicatifs ; `1001` reste un poste interne ; les chiffres composés ne changent
+jamais. Thème « Système » par défaut, menu clair en thème clair, bouton
+Téléphone vert central dans la barre mobile.
 
-Vérifié : typage, lint, 13 tests métier (numéros, contrôleur, stockage), build,
+**Aucun appel réel n'a encore été passé.** L'adaptateur est vérifié par 11 tests
+avec un faux gestionnaire SIP et par un essai du mode réel vers une adresse
+locale inexistante (SIP.js chargé, échec de connexion clair et sans boucle, mot
+de passe absent des stockages). Ne sont donc **pas prouvés** : enregistrement sur
+le PBX, audio dans les deux sens, DTMF, attente/reprise, codes de refus réels,
+traitement du `+` et du `#` par Asterisk, sensibilité et changement de micro sur
+un vrai casque, comportement derrière un réseau client. La démonstration reste
+le mode par défaut, avec données fictives et mention permanente. Aucun accès
+serveur ni déploiement. Restent les lots 5 (pilote réel, compte et destination à
+désigner) et 6 (hébergement HTTPS).
+
+Vérifié : typage, lint, 27 tests (numéros, contrôleurs démo et SIP, stockage,
+rappels), build,
 et parcours dans le navigateur intégré à 1440, 1024 et 375 px, thèmes clair et
 sombre, sans erreur console. Non vérifié : zoom 125/150 %, mesure des
 contrastes, lecteur d'écran, persistance IndexedDB dans un vrai navigateur.

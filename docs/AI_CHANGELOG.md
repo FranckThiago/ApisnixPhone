@@ -1,5 +1,24 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : adaptateur SIP.js, rappels et retours de Franck
+
+- Lot 4 demandé par Franck : `SipPhoneController` sur `Web.SessionManager` de
+  SIP.js 0.21.2 (dépendance figée), liaison navigateur chargée à la demande,
+  Web Lock par compte, contrôleur choisi par `VITE_APP_MODE`. Chaîne micro Web
+  Audio pour la **sensibilité du micro** qu'il a demandée, test du micro,
+  périphériques réels, sonnerie générée.
+- **Rappels planifiés**, qu'il signalait comme oubliés : domaine, stockage
+  (données anciennes sans rappels acceptées), vue, planificateur, alertes.
+- Règles de pays à l'affichage selon ses consignes (0 = France, 1 = Amérique du
+  Nord, liste d'indicatifs canadiens fournie) ; chiffres composés inchangés.
+- Interface : thème Système par défaut, menu clair en thème clair (il restait
+  sombre), bouton Téléphone vert central sur mobile, Favoris accessible depuis
+  Contacts sur petit écran.
+- Vérifications : typecheck, lint, 27 tests dont 11 sur l'adaptateur avec un faux
+  gestionnaire, build, parcours visuel, essai du mode réel vers une adresse
+  locale inexistante. **Aucun appel réel, aucun accès au PBX, aucun déploiement** :
+  ce qui reste à prouver est listé dans PROJECT_STATE. Suite : lot 5, pilote.
+
 ## 2026-09-21 — ApisnixPhone Web : interface construite en mode démonstration
 
 - Demande de Franck : la meilleure interface de téléphonie à partir du plan et

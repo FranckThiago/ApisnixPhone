@@ -2,6 +2,7 @@ import { ArrowDownLeft, ArrowUpRight, Building2, Pencil, Phone, PhoneMissed, Plu
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
+import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
 import { fold, formatDay, formatDuration, formatTime } from '../../domain/format';
 import { countryLabel, describeNumber, parseDialInput } from '../../domain/numbers';
@@ -84,6 +85,7 @@ function Detail({ contact, onEdit }: { contact: Contact; onEdit(): void }) {
           );
         })}
       </ul>
+      {contact.numbers[0] && <CallbackScheduler number={contact.numbers[0].value} name={contact.name} />}
       {contact.note && <p className="contact-note">{contact.note}</p>}
       <h3>Derniers échanges</h3>
       {history.length === 0 ? <p className="muted">Aucun appel avec ce contact depuis ce navigateur.</p> : (
@@ -102,7 +104,7 @@ function Detail({ contact, onEdit }: { contact: Contact; onEdit(): void }) {
 }
 
 export function Contacts({ favoritesOnly = false }: { favoritesOnly?: boolean }) {
-  const { selectedContactId, openContact, placeCall } = useApp();
+  const { selectedContactId, openContact, placeCall, setView } = useApp();
   const { contacts } = useData();
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<Contact | 'new' | null>(null);
@@ -125,7 +127,11 @@ export function Contacts({ favoritesOnly = false }: { favoritesOnly?: boolean })
         <div><p className="eyebrow">{favoritesOnly ? 'Vos raccourcis' : 'Votre carnet'}</p>
           <h1><span className="swoosh">{favoritesOnly ? 'Favoris' : 'Contacts'}</span></h1>
           <p className="lead">{favoritesOnly ? 'Les personnes que vous appelez le plus, à un clic.' : 'Enregistrés sur cet appareil, jamais importés automatiquement.'}</p></div>
-        <button type="button" className="primary" onClick={() => setEditing('new')}><Plus size={17} /> Nouveau contact</button>
+        <div className="head-actions">
+          {/* Favourites leave the bottom bar on a narrow screen, so they stay one tap away from here. */}
+          <button type="button" className="ghost only-narrow" onClick={() => setView(favoritesOnly ? 'contacts' : 'favorites')}><Star size={16} /> {favoritesOnly ? 'Tous les contacts' : 'Favoris'}</button>
+          <button type="button" className="primary" onClick={() => setEditing('new')}><Plus size={17} /> Nouveau contact</button>
+        </div>
       </header>
 
       {favoritesOnly ? (

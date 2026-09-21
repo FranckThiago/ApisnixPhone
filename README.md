@@ -10,8 +10,8 @@ existant, avec une interface APISNIX complète et sans installateur Windows.
 ## État actuel
 
 - **Web PC** : interface ApisnixPhone Web construite dans `webphone/` et
-  utilisable en **mode démonstration** (aucun appel réel, adaptateur SIP.js à
-  faire). [Plan de réalisation](docs/WEBPHONE_PLAN.md) et
+  utilisable en **mode démonstration**. L'adaptateur SIP.js est écrit et testé
+  en simulation, mais n'a encore passé aucun appel réel (pilote à faire). [Plan de réalisation](docs/WEBPHONE_PLAN.md) et
   [maquette d'origine](docs/design/webphone-maquette.html).
   Interface inspirée de Ringover/Kavkom, journal, contacts, drapeaux et panneau
   d'appel. L'application SIP reste à développer ; aucun déploiement serveur.

@@ -11,8 +11,9 @@ export function applyTheme(theme: Theme) {
 export function storedTheme(): Theme {
   try {
     const value = localStorage.getItem(THEME_KEY);
-    return value === 'dark' || value === 'system' ? value : 'light';
+    // Follows the computer by default; an explicit choice is remembered.
+    return value === 'dark' || value === 'light' ? value : 'system';
   } catch {
-    return 'light';
+    return 'system';
   }
 }

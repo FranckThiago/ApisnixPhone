@@ -4,10 +4,12 @@ import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence, persistChoice } from '../storage/persistence';
 import { DemoPhoneController } from '../telephony/DemoPhoneController';
 import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
-import type { Credentials } from '../telephony/types';
+import { SipPhoneController } from '../telephony/SipPhoneController';
+import { browserSipEnvironment, sipConfigFromEnv } from '../telephony/sipEnvironment';
+import type { Credentials, PhoneController } from '../telephony/types';
 import { storedTheme } from './theme';
 
-export type View = 'journal' | 'contacts' | 'favorites' | 'settings' | 'phone';
+export type View = 'journal' | 'contacts' | 'favorites' | 'callbacks' | 'settings' | 'phone';
 
 export interface Toast {
   id: number;
@@ -16,7 +18,7 @@ export interface Toast {
 }
 
 interface AppValue {
-  phone: DemoPhoneController;
+  phone: PhoneController;
   store: DataStore;
   view: View;
   setView(view: View): void;
@@ -39,7 +41,10 @@ interface AppValue {
 const AppContext = createContext<AppValue | null>(null);
 
 // One controller for the whole page life: it must survive every view change.
-const phone = new DemoPhoneController();
+// `live` needs the public connection settings; anything else is the demonstration, which never touches the network.
+const sipConfig = sipConfigFromEnv(import.meta.env);
+const demoPhone = sipConfig ? null : new DemoPhoneController();
+const phone: PhoneController = demoPhone ?? new SipPhoneController(sipConfig!, browserSipEnvironment);
 const store = new DataStore(typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence);
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -70,7 +75,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
       startedAt: call.startedAt, answeredAt: call.answeredAt, endedAt: call.endedAt, outcome: call.outcome,
     });
     setWrapUpRecordId(record.id);
-  }), []);
+    // Reaching the person fulfils the callbacks promised for that number.
+    if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify('Rappel effectué : il a été marqué comme fait.', 'success');
+  }), [notify]);
+
+  // Problems reported by the line (microphone refused, hold rejected…) are said once, in plain words.
+  const lastError = useRef<string | undefined>(undefined);
+  useEffect(() => phone.subscribe(() => {
+    const { error, connection } = phone.getSnapshot();
+    if (error && error !== lastError.current && connection === 'ready') notify(error, 'danger');
+    lastError.current = error;
+  }), [notify]);
+
+  // Volume, microphone sensitivity and devices follow the settings live, even during a call.
+  useEffect(() => {
+    let previous = store.getSnapshot().preferences;
+    const apply = (initial: boolean) => {
+      const next = store.getSnapshot().preferences;
+      phone.applyAudio({ volume: next.volume, micGain: next.micGain, ringtone: next.ringtone, echoCancellation: next.echoCancellation, noiseSuppression: next.noiseSuppression });
+      if (initial || next.inputDevice !== previous.inputDevice) void phone.setInputDevice(next.inputDevice);
+      if (initial || next.outputDevice !== previous.outputDevice) void phone.setOutputDevice(next.outputDevice);
+      previous = next;
+    };
+    apply(true);
+    return store.subscribe(() => apply(false));
+  }, []);
 
   const placeCall = useCallback((rawInput: string) => {
     const input = parseDialInput(rawInput);
@@ -88,7 +117,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const { account, connection } = phone.getSnapshot();
     if (connection !== 'ready' || !account) return;
     const profile = `${account.domain}:${account.username}`;
-    await store.open(profile, persistChoice.get(profile), demoSeed());
+    await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
     store.setPreferences({ theme: storedTheme() });
   }, []);
 
@@ -104,7 +133,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const simulateIncoming = useCallback(() => {
     const caller = DEMO_CALLERS[incomingIndex.current++ % DEMO_CALLERS.length]!;
     const contact = findContact(store.getSnapshot().contacts, caller[0]);
-    if (!phone.simulateIncoming(caller[0], contact?.name)) notify('Terminez l’appel en cours avant d’en simuler un autre.', 'danger');
+    if (demoPhone && !demoPhone.simulateIncoming(caller[0], contact?.name)) notify('Terminez l’appel en cours avant d’en simuler un autre.', 'danger');
   }, [notify]);
 
   const openContact = useCallback((id: string | null) => {

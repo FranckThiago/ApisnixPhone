@@ -1,19 +1,20 @@
 import { fold } from '../domain/format';
 import { parseDialInput } from '../domain/numbers';
-import { DEFAULT_PREFERENCES, type CallRecord, type Contact, type Preferences } from '../domain/types';
+import { DEFAULT_PREFERENCES, type Callback, type CallRecord, type Contact, type Preferences } from '../domain/types';
 import type { Persistence } from './persistence';
 
 export interface AppData {
   schema: 1;
   contacts: Contact[];
   calls: CallRecord[];
+  callbacks: Callback[];
   preferences: Preferences;
 }
 
 export const MAX_CALLS = 1000;
 export const MAX_AGE_DAYS = 90;
 
-export const emptyData = (): AppData => ({ schema: 1, contacts: [], calls: [], preferences: { ...DEFAULT_PREFERENCES } });
+export const emptyData = (): AppData => ({ schema: 1, contacts: [], calls: [], callbacks: [], preferences: { ...DEFAULT_PREFERENCES } });
 
 const uuid = () => globalThis.crypto.randomUUID();
 
@@ -40,7 +41,8 @@ export class DataStore {
     this.profile = profile;
     let loaded: AppData | null = null;
     if (persist && this.persistence) loaded = await this.persistence.load(profile).catch(() => null);
-    this.data = loaded?.schema === 1 ? { ...loaded, preferences: { ...DEFAULT_PREFERENCES, ...loaded.preferences, persist: true } }
+    // Data saved before callbacks existed simply has none.
+    this.data = loaded?.schema === 1 ? { ...loaded, callbacks: loaded.callbacks ?? [], preferences: { ...DEFAULT_PREFERENCES, ...loaded.preferences, persist: true } }
       : { ...(seed ?? emptyData()), preferences: { ...(seed?.preferences ?? DEFAULT_PREFERENCES), persist } };
     this.prune();
     this.emit(false);
@@ -86,6 +88,27 @@ export class DataStore {
 
   removeCall(id: string) {
     this.commit({ calls: this.data.calls.filter(call => call.id !== id) });
+  }
+
+  scheduleCallback(input: Pick<Callback, 'number' | 'dueAt'> & Partial<Pick<Callback, 'name' | 'note'>>): Callback {
+    const callback: Callback = { ...input, id: uuid(), createdAt: Date.now() };
+    this.commit({ callbacks: [...this.data.callbacks, callback] });
+    return callback;
+  }
+
+  updateCallback(id: string, patch: Partial<Pick<Callback, 'dueAt' | 'note' | 'doneAt'>>) {
+    this.commit({ callbacks: this.data.callbacks.map(callback => (callback.id === id ? { ...callback, ...patch } : callback)) });
+  }
+
+  removeCallback(id: string) {
+    this.commit({ callbacks: this.data.callbacks.filter(callback => callback.id !== id) });
+  }
+
+  /** The person was reached: every pending callback for that exact number is fulfilled. */
+  completeCallbacksFor(dialTarget: string, now = Date.now()): number {
+    const matches = this.data.callbacks.filter(callback => !callback.doneAt && parseDialInput(callback.number).dialTarget === dialTarget);
+    if (matches.length) this.commit({ callbacks: this.data.callbacks.map(callback => (matches.includes(callback) ? { ...callback, doneAt: now } : callback)) });
+    return matches.length;
   }
 
   saveContact(input: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }): Contact {

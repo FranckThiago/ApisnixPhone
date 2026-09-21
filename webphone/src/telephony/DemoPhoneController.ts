@@ -144,4 +144,5 @@ export class DemoPhoneController implements PhoneController {
 
   async setInputDevice() {}
   async setOutputDevice() {}
+  applyAudio() {}
 }

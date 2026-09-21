@@ -29,14 +29,23 @@ describe('display metadata', () => {
     expect(describeNumber('00237699000102')).toMatchObject({ country: 'CM', display: '00237699000102' });
   });
 
-  it('does not guess a country for a shared code, a national or an internal number', () => {
-    expect(describeNumber('+1').country).toBeUndefined();
-    expect(describeNumber('+12').country).toBeUndefined();
-    expect(describeNumber('+14165550100').country).toBe('CA');
-    expect(describeNumber('0699000102').kind).toBe('national');
-    expect(describeNumber('0699000102').country).toBeUndefined();
+  it('reads a leading 0 as France and a leading 1 as North America, Canada told apart from the USA', () => {
+    expect(describeNumber('0612345678')).toMatchObject({ kind: 'national', country: 'FR', display: '0612345678' });
+    expect(describeNumber('06').country).toBe('FR');
+    for (const target of ['1514', '15145550100', '+15145550100', '0015145550100', '18195550100', '14165550100']) expect(describeNumber(target).country).toBe('CA');
+    for (const target of ['1212', '12125550100', '+12125550100', '13055550100']) expect(describeNumber(target).country).toBe('US');
+    expect(describeNumber('+18095550100').country).toBe('DO');
+    expect(describeNumber('+1').country).toBe('CA');
+    expect(describeNumber('15145550100').display).toBe('15145550100');
+  });
+
+  it('does not guess a country for an extension, a service code or an unknown plan', () => {
+    expect(describeNumber('1001').kind).toBe('internal');
+    expect(describeNumber('1001').country).toBeUndefined();
     expect(describeNumber('8523').kind).toBe('internal');
     expect(describeNumber('8523').country).toBeUndefined();
+    expect(describeNumber('699000102').kind).toBe('national');
+    expect(describeNumber('699000102').country).toBeUndefined();
     expect(describeNumber('*72#').kind).toBe('unknown');
   });
 });

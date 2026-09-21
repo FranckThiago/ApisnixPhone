@@ -1,4 +1,4 @@
-import { BookUser, History, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
+import { AlarmClock, BookUser, History, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../app/AppContext';
 import { applyTheme } from '../app/theme';
@@ -40,6 +40,7 @@ export function CommandPalette() {
     const actions: Command[] = [
       { id: 'journal', icon: <History size={18} />, label: 'Ouvrir le journal', run: () => setView('journal') },
       { id: 'contacts', icon: <BookUser size={18} />, label: 'Ouvrir les contacts', run: () => setView('contacts') },
+      { id: 'callbacks', icon: <AlarmClock size={18} />, label: 'Ouvrir les rappels', run: () => setView('callbacks') },
       { id: 'favorites', icon: <Star size={18} />, label: 'Ouvrir les favoris', run: () => setView('favorites') },
       { id: 'settings', icon: <SettingsIcon size={18} />, label: 'Ouvrir les réglages', run: () => setView('settings') },
       { id: 'theme', icon: <Moon size={18} />, label: preferences.theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre',

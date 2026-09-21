@@ -8,7 +8,8 @@
   du design, des fonctions, des réglages et de l'ordre de réalisation.
   Sa maquette est `docs/design/webphone-maquette.html`. Le code web est dans
   `webphone/` (React/TypeScript/Vite) : interface complète en mode démonstration,
-  **sans adaptateur SIP.js ni appel réel à ce jour**. Commandes depuis `webphone/` :
+  démonstration par défaut, adaptateur SIP.js écrit et testé en simulation,
+  **jamais essayé sur le PBX : aucun appel réel à ce jour**. Commandes depuis `webphone/` :
   `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
   `npm run test -- --run`, `npm run build`.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,

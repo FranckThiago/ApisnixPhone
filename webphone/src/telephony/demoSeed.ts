@@ -50,7 +50,12 @@ export function demoSeed(now = Date.now()): AppData {
   // An unknown number, to show the « add to contacts » path.
   calls.splice(3, 0, { id: 'demo-call-x', direction: 'inbound', outcome: 'answered', dialTarget: '+221300000001', tags: [],
                        startedAt: now - 98 * 60_000, answeredAt: now - 98 * 60_000 + 5000, endedAt: now - 96 * 60_000 });
-  return { schema: 1, contacts, calls, preferences: { ...DEFAULT_PREFERENCES } };
+  const callbacks = [
+    { id: 'demo-cb-0', number: '+237 600 00 00 01', name: 'Nadia Essomba', dueAt: now - 20 * 60_000, note: 'N’a pas répondu ce matin.', createdAt: now - 171 * 60_000 },
+    { id: 'demo-cb-1', number: '+33 1 00 00 00 01', name: 'Camille Martin', dueAt: now + 95 * 60_000, note: 'Confirmer le devis.', createdAt: now - 18 * 60_000 },
+    { id: 'demo-cb-2', number: '+1 416 555 0100', name: 'Marc Tremblay', dueAt: now + 26 * 3_600_000, createdAt: now - 236 * 60_000 },
+  ];
+  return { schema: 1, contacts, calls, callbacks, preferences: { ...DEFAULT_PREFERENCES } };
 }
 
 export const DEMO_CALLERS: Array<[string, string?]> = [['+33100000002', undefined], ['+221300000001', undefined], ['+2250000000002', undefined]];
