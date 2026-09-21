@@ -68,8 +68,9 @@ small { font-size: 12px; color: var(--muted); }
 .nav-item.active { background: var(--side-active); color: var(--side-active-text); font-weight: 650; }
 .nav-item.active::before { content: ""; position: absolute; left: -12px; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--yellow); box-shadow: 0 0 14px var(--yellow); }
 .nav-item.active svg { color: var(--side-icon-active); }
-.badge-yellow { background: var(--yellow); color: var(--on-yellow); }
 .badge { margin-left: auto; min-width: 20px; padding: 1px 6px; border-radius: 999px; font: 700 11px/18px var(--font); text-align: center; background: var(--danger); color: #fff; }
+/* Declared after .badge so the yellow really wins over the red. */
+.badge.badge-yellow { background: var(--yellow); color: var(--on-yellow); box-shadow: 0 0 0 1px var(--yellow-strong); }
 .nav-phone { display: none; } .only-narrow { display: none !important; }
 .sidebar-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; border-top: 1px solid color-mix(in srgb, var(--side-text) 18%, transparent); }
 .account { min-width: 0; flex: 1; } .account b { display: block; color: var(--side-strong); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .account small { color: var(--side-caption); }

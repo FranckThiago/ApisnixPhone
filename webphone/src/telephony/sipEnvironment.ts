@@ -25,9 +25,11 @@ export const browserSipEnvironment: SipEnvironment = {
         logConfiguration: false,
         // The microphone goes through the application's gain chain.
         sessionDescriptionHandlerFactory: Web.defaultSessionDescriptionHandlerFactory(() => microphone()),
-        ...(config.iceServers?.length
-          ? { sessionDescriptionHandlerFactoryOptions: { peerConnectionConfiguration: { iceServers: [{ urls: config.iceServers }] } } }
-          : {}),
+        sessionDescriptionHandlerFactoryOptions: {
+          // Audio goes through the PBX's public address: do not hold the call back waiting for every ICE candidate.
+          iceGatheringTimeout: 2000,
+          ...(config.iceServers?.length ? { peerConnectionConfiguration: { iceServers: [{ urls: config.iceServers }] } } : {}),
+        },
       },
     });
     return manager as unknown as Manager;

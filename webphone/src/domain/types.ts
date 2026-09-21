@@ -62,6 +62,8 @@ export interface Preferences {
   persist: boolean;
   /** Missed calls older than this were already looked at: they no longer raise the badge. */
   missedSeenAt: number;
+  /** Same idea for callbacks that came due: opening « Rappels » acknowledges them. */
+  callbacksSeenAt: number;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -77,6 +79,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   notifications: false,
   persist: false,
   missedSeenAt: 0,
+  callbacksSeenAt: 0,
 };
 
 export const CALL_TAGS = ['Intéressé', 'À rappeler', 'Rendez-vous', 'Pas intéressé', 'Mauvais numéro', 'Messagerie'] as const;

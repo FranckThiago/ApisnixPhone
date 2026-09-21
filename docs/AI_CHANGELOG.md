@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : pastille des rappels et poste pilote prêt
+
+- Retour de Franck : la pastille des Rappels était rouge. La règle jaune était
+  déclarée avant la règle générale et perdait ; corrigée. Elle suit maintenant
+  la même logique que les appels manqués : elle annonce les rappels arrivés à
+  échéance depuis la dernière ouverture de la vue (`callbacksSeenAt`), la carte
+  sous le clavier continuant de montrer ce qui reste à faire.
+- Collecte ICE bornée à 2 s pour ne pas retarder l'envoi des appels.
+- Franck a appliqué lui-même la surcharge WebRTC sur un autre compte de test ;
+  contrôle en lecture seule : WS/WSS autorisés, chiffrement et RTCP mux actifs,
+  contexte d'enregistrement et limite d'appel conservés. Détails dans le dépôt
+  privé. **Aucun enregistrement ni appel réel depuis l'application à ce stade** :
+  la connexion se fait par Franck, l'agent ne saisit pas de mot de passe.
+
 ## 2026-09-21 — ApisnixPhone Web : préparation du pilote et corrections d'interface
 
 - Franck fournit un compte de test et demande le lot 5. Configuration locale du

@@ -79,6 +79,9 @@ sont sauvegardés sur le serveur, mais **l'écriture n'a pas été faite** : le
 garde-fou de la session de l'agent l'a refusée. Détails dans le dépôt privé.
 Aucun enregistrement SIP ni appel réel depuis l'application à ce jour. Le mot de
 passe se saisit par Franck dans l'écran de connexion ; l'agent ne le saisit pas.
+Franck a ensuite appliqué lui-même cette surcharge sur un second compte de test,
+désormais pilote : contrôle en lecture seule conforme (WS/WSS, chiffrement, RTCP
+mux, contexte et limite d'appel conservés). L'essai réel reste à faire.
 
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte

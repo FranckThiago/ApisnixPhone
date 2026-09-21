@@ -79,6 +79,13 @@ function Workspace() {
     if (view === 'journal' && unseenMissed > 0) store.setPreferences({ missedSeenAt: Date.now() });
   }, [view, unseenMissed, store]);
 
+  // Same for callbacks: the badge announces those that came due since « Rappels » was last opened.
+  // The card under the keypad keeps showing them until they are really done.
+  const unseenDue = dueCallbacks.filter(callback => callback.dueAt > preferences.callbacksSeenAt).length;
+  useEffect(() => {
+    if (view === 'callbacks' && unseenDue > 0) store.setPreferences({ callbacksSeenAt: Date.now() });
+  }, [view, unseenDue, store]);
+
   // The tab title tells what is happening when the page is in the background.
   const ringingIn = call?.phase === 'ringing-in';
   useEffect(() => {
@@ -108,7 +115,7 @@ function Workspace() {
               aria-current={view === key ? 'page' : undefined} onClick={() => setView(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{label}</span>
               {key === 'journal' && unseenMissed > 0 && <i className="badge" aria-label={`${unseenMissed} appels manqués non consultés`}>{unseenMissed}</i>}
-              {key === 'callbacks' && dueCallbacks.length > 0 && <i className="badge badge-yellow" aria-label={`${dueCallbacks.length} rappels à faire`}>{dueCallbacks.length}</i>}</button></li>
+              {key === 'callbacks' && unseenDue > 0 && <i className="badge badge-yellow" aria-label={`${unseenDue} nouveaux rappels à faire`}>{unseenDue}</i>}</button></li>
           ))}
         </ul>
         <div className="sidebar-foot">
