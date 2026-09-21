@@ -33,7 +33,7 @@ export function Settings() {
         <Section icon={<Headphones size={18} />} title="Audio">
           <AudioSettings />
           <Toggle label="Sonnerie" hint="Jouée pour un appel entrant." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
-          <Toggle label="Sons de la ligne" hint="Deux notes quand la ligne est prête, deux autres si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
+          <Toggle label="Sons de la ligne" hint="Carillon d’annonce quand la ligne est prête, deux notes descendantes si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
           <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
           <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
         </Section>

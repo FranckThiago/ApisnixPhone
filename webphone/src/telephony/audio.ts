@@ -127,24 +127,31 @@ export class Ringer {
 
 let chimeContext: AudioContext | undefined;
 
-/** A short, soft cue: two rising notes when the line is ready, two falling ones when it is lost. */
+/**
+ * Public-address chime, like the one before an airport announcement: three bell
+ * notes for a line that is ready, two falling ones for a line that dropped.
+ * Generated on the fly, about 2.5 s, no audio file.
+ */
 export function chime(kind: 'ready' | 'lost', volume: number) {
   if (typeof AudioContext === 'undefined' || volume <= 0) return;
   const context = (chimeContext ??= new AudioContext());
   if (context.state === 'suspended') void context.resume().catch(() => undefined);
-  const notes = kind === 'ready' ? [587, 880] : [523, 349];
+  const notes = kind === 'ready' ? [523.25, 659.25, 783.99] : [659.25, 440];
   notes.forEach((frequency, index) => {
-    const oscillator = context.createOscillator();
-    const envelope = context.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = frequency;
-    const start = context.currentTime + index * 0.13;
-    envelope.gain.setValueAtTime(0, start);
-    envelope.gain.linearRampToValueAtTime(0.12 * volume, start + 0.02);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.32);
-    oscillator.connect(envelope).connect(context.destination);
-    oscillator.start(start);
-    oscillator.stop(start + 0.34);
+    const start = context.currentTime + index * 0.42;
+    // A bell is a fundamental plus quieter, faster-fading overtones.
+    for (const [ratio, level, decay] of [[1, 0.2, 1.7], [2, 0.07, 1.0], [3.01, 0.03, 0.6]] as const) {
+      const oscillator = context.createOscillator();
+      const envelope = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = frequency * ratio;
+      envelope.gain.setValueAtTime(0, start);
+      envelope.gain.linearRampToValueAtTime(level * volume, start + 0.012);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, start + decay);
+      oscillator.connect(envelope).connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + decay + 0.05);
+    }
   });
 }
 

@@ -45,6 +45,7 @@ de Franck pendant ses essais :
 ## Documentation
 
 - [État du projet, limites et prochaines étapes](docs/PROJECT_STATE.md)
+- [ApisnixPhone Web : guide d'utilisation illustré](docs/GUIDE_UTILISATEUR.md)
 - [Webphone PC : plan, design, fonctions, réglages et reprise](docs/WEBPHONE_PLAN.md)
 - [Architecture et versions](docs/ARCHITECTURE.md)
 - [Reconstruction, installation et validation](docs/OPERATIONS.md)

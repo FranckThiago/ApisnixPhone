@@ -325,11 +325,11 @@ Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
 secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
 variables, le build est une démonstration.
 
-Hébergement proposé, **non réalisé** : Hermes, derrière le Caddy existant, à côté
+Hébergement retenu par Franck le 21 septembre, **non réalisé** : Hermes, derrière le Caddy existant, à côté
 de la supervision et sans la modifier ; dossier versionné
 `/srv/apisnixphone/releases/<version>/` et lien `current`. HTTPS est obligatoire :
-hors `localhost`, un navigateur refuse le microphone sans lui. Nom conseillé :
-`phone.apisnix-crm.com` plutôt que `sip.` — un nom `sip.*` désigne d'ordinaire un
+hors `localhost`, un navigateur refuse le microphone sans lui. Nom validé :
+`phone.apisnix-crm.com`, préféré à `sip.` — un nom `sip.*` désigne d'ordinaire un
 serveur SIP, attire les robots qui sondent ces noms et laisserait croire que la
 téléphonie passe par cette machine. Bloc Caddy de départ :
 

@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, ChevronDown, Clock3, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -67,7 +67,7 @@ export function Journal() {
       <header className="page-head">
         <div><p className="eyebrow">Votre téléphonie, simplement</p><h1><span className="swoosh">Journal</span> d’appels</h1>
           <p className="lead">Retrouvez vos échanges et reprenez la conversation.</p></div>
-        <span className="scope" title="Seuls les appels passés depuis ce navigateur apparaissent ici.">Ce navigateur{demo ? ' · données fictives' : ''}</span>
+        <span className="scope" title="Ce journal contient les appels passés et reçus depuis ce navigateur, sur cet appareil. Les appels faits depuis un autre poste ou un autre téléphone avec le même compte n’y figurent pas."><Info size={14} /> Appels de cet appareil uniquement{demo ? ' · données fictives' : ''}</span>
       </header>
 
       <section className="stats" aria-label="Aujourd’hui sur ce navigateur">

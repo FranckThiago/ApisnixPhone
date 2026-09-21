@@ -73,7 +73,8 @@ small { font-size: 12px; color: var(--muted); }
 .badge.badge-yellow { background: var(--yellow); color: var(--on-yellow); box-shadow: 0 0 0 1px var(--yellow-strong); }
 .nav-phone { display: none; } .only-narrow { display: none !important; }
 .sidebar-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; border-top: 1px solid color-mix(in srgb, var(--side-text) 18%, transparent); }
-.account { min-width: 0; flex: 1; } .account b { display: block; color: var(--side-strong); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .account small { color: var(--side-caption); }
+.account { min-width: 0; flex: 1; } .account b { display: block; color: var(--side-strong); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .account small { display: block; color: var(--side-caption); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-button.sign-out { color: var(--danger); background: var(--danger-soft); } .icon-button.sign-out:hover { background: var(--danger); color: #fff; }
 
 .main { grid-area: main; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; padding: 14px 28px; }
@@ -88,7 +89,7 @@ small { font-size: 12px; color: var(--muted); }
 h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750; margin: 4px 0 6px; }
 .lead { color: var(--muted); }
 .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.scope { font-size: 12px; color: var(--muted); padding: 6px 10px; border-radius: 8px; border: 1px dashed var(--border); }
+.scope { display: inline-flex; align-items: center; gap: 6px; cursor: help; font-size: 12px; color: var(--muted); padding: 6px 10px; border-radius: 8px; border: 1px dashed var(--border); }
 
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }

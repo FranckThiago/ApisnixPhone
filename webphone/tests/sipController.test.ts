@@ -237,3 +237,20 @@ describe('SIP controller — microphone and shared line', () => {
     expect(h.manager.register).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('sign-in', () => {
+  it('resolves connect() before the registration is accepted: callers must wait for the final state', async () => {
+    const h = harness();
+    await h.phone.connect({ username: 'alice', password: 'fictional' });
+    // This is the state a first click used to act upon.
+    expect(h.phone.getSnapshot().connection).toBe('registering');
+    const settled = new Promise<string>(resolve => {
+      const stop = h.phone.subscribe(() => {
+        const state = h.phone.getSnapshot().connection;
+        if (state !== 'connecting' && state !== 'registering') { stop(); resolve(state); }
+      });
+    });
+    h.delegate.onRegistered();
+    expect(await settled).toBe('ready');
+  });
+});

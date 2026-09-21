@@ -12,6 +12,9 @@
   **jamais essayé sur le PBX : aucun appel réel à ce jour**. Commandes depuis `webphone/` :
   `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
   `npm run test -- --run`, `npm run build`.
+  Le guide client est `docs/GUIDE_UTILISATEUR.md` ; après un changement visible,
+  régénérer ses captures avec `node scripts/guide-screenshots.mjs` (serveur de
+  démonstration sur le port 5185) et relire le texte concerné.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord
   le dépôt privé `FranckThiago/Gestion_CRM-APISNIX` : `AGENTS.md`, puis

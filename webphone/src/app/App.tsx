@@ -124,8 +124,8 @@ function Workspace() {
         </ul>
         <div className="sidebar-foot">
           <Avatar name={account?.username} size={34} />
-          <span className="account"><b>{account?.username}</b><small>{demo ? 'Démonstration' : account?.domain}</small></span>
-          <button type="button" className="icon-button on-dark" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={17} /></button>
+          <span className="account" title={account?.domain}><b>{account?.username}</b><small>{demo ? 'Démonstration' : 'Ligne connectée'}</small></span>
+          <button type="button" className="icon-button sign-out" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={17} /></button>
         </div>
       </nav>
 
@@ -138,7 +138,7 @@ function Workspace() {
             const theme = dark ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme);
           }}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
           {/* Always within reach, whatever the height of the window. */}
-          <button type="button" className="icon-button" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={18} /></button>
+          <button type="button" className="icon-button sign-out" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={18} /></button>
         </header>
         {lineTaken && connection === 'ready' && (
           <div className="line-alert" role="alert">

@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : connexion en un clic, carillon et guide illustré
+
+- Bug signalé par Franck : il fallait cliquer deux fois sur Se connecter. En
+  ligne réelle, `connect()` rend la main dès que le socket est ouvert ;
+  l'ouverture de session n'attendait pas l'acceptation de l'enregistrement.
+  Elle attend maintenant l'état final. La démonstration masquait le défaut.
+- À sa demande : carillon d'annonce de type aéroport (trois notes de cloche
+  générées, environ 2,5 s) pour la ligne prête ; bouton de déconnexion rouge et
+  pied de menu sans retour à la ligne ; libellé « Ce navigateur », qu'il ne
+  comprenait pas, remplacé par « Appels de cet appareil uniquement » avec
+  explication ; nom `phone.apisnix-crm.com` validé, rien de déployé.
+- Guide d'utilisation client `docs/GUIDE_UTILISATEUR.md` avec 17 captures
+  produites par `webphone/scripts/guide-screenshots.mjs` (Chrome sans interface,
+  démonstration, données fictives). 31 tests, lint, typage et build réussis.
+
 ## 2026-09-21 — ApisnixPhone Web : premier appel réel et corrections de l'essai
 
 - Franck se connecte avec le compte pilote et appelle un mobile ; contrôles

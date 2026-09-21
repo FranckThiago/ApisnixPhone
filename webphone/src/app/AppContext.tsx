@@ -132,6 +132,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: Credentials) => {
     await phone.connect(credentials);
+    // The real line answers in two steps: the socket opens, then the PBX accepts the registration.
+    // Wait for the final word, otherwise the first click leaves the person on the sign-in screen.
+    await new Promise<void>(resolve => {
+      const settled = () => !['connecting', 'registering'].includes(phone.getSnapshot().connection);
+      if (settled()) return resolve();
+      const stop = phone.subscribe(() => { if (settled()) { stop(); resolve(); } });
+    });
     const { account, connection } = phone.getSnapshot();
     if (connection !== 'ready' || !account) return;
     const profile = `${account.domain}:${account.username}`;
