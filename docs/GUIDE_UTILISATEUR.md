@@ -186,7 +186,7 @@ Raccrocher. Les Favoris s'ouvrent depuis la page Contacts.
 
 | Ce que vous voyez | Ce que cela signifie | Que faire |
 | --- | --- | --- |
-| Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte vient d'être connecté ailleurs. **Ce poste se met en pause** (en deux à trois minutes) : il ne reçoit plus d'appels et ne peut plus en passer. Un appel en cours n'est pas interrompu par cette pause. | **Un compte = un seul appareil à la fois.** Cliquez **Reprendre la ligne ici** pour récupérer la ligne : c'est alors l'autre appareil qui passera en pause. Si ce n'est pas vous, prévenez votre administrateur. |
+| Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte vient d'être connecté ailleurs. **Ce poste se met en pause** (en une à deux minutes) : il ne reçoit plus d'appels et ne peut plus en passer. Un appel en cours n'est pas interrompu par cette pause. | **Un compte = un seul appareil à la fois.** Cliquez **Reprendre la ligne ici** pour récupérer la ligne : c'est alors l'autre appareil qui passera en pause. Si ce n'est pas vous, prévenez votre administrateur. |
 | « Appel interrompu : la connexion au serveur a été perdue » | La liaison a coupé pendant l'appel (réseau, ou compte ouvert sur un autre appareil). | Vérifiez votre réseau et rappelez ; l'appel n'est jamais rappelé automatiquement. |
 | Le bouton Attente affiche « Patientez… » puis un message | Le serveur n'a pas confirmé, signe d'une connexion instable. | Réessayez ; si cela se répète, changez de réseau. |
 | « Le microphone est bloqué » | Le navigateur n'a pas l'autorisation. | Cliquez sur l'icône à gauche de l'adresse de la page, autorisez le microphone, rechargez. |

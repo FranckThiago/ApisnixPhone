@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : qui tient la ligne, demandé au PBX plutôt que deviné
+
+- Essai de Franck : pause et reprise de ligne confirmées en réel, puis fausse
+  pause du poste légitime. Journal Asterisk (lecture seule) : poste déclaré
+  UNREACHABLE alors qu'il tenait l'inscription ; l'arrêt des OPTIONS n'est donc
+  pas un signal fiable de remplacement.
+- Détection par silence supprimée. Consultation de l'inscription par REGISTER
+  sans Contact toutes les 45 s, comparaison exacte du contact, deux réponses
+  négatives de suite, jamais pendant un appel, rien sur réponse inconnue.
+  33 tests. À confirmer en réel par Franck.
+
 ## 2026-09-21 — ApisnixPhone Web : l'interrogation reçue avant la confirmation n'est plus oubliée
 
 - Essai de Franck : deux navigateurs, aucun bandeau après six minutes. Asterisk

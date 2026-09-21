@@ -29,6 +29,7 @@ function harness(lineFree = true) {
     unmute: vi.fn(),
     sendDTMF: vi.fn(async () => undefined),
     dropSilently: vi.fn(async () => undefined),
+    holdsLine: vi.fn(async (): Promise<boolean | null> => true),
   };
   const environment: SipEnvironment = {
     createManager: (_config, _credentials, given) => { delegate = given; return manager; },
@@ -219,18 +220,22 @@ describe('SIP controller — microphone and shared line', () => {
     vi.unstubAllGlobals();
   });
 
-  it('steps aside without un-registering when another device takes the line, and only retakes it on request', async () => {
+  it('asks the PBX who holds the account and steps aside only on a certain answer, without un-registering', async () => {
     const h = harness();
     await ready(h);
+    // Unknown answers and our own contact never pause anything, however long it lasts.
+    h.manager.holdsLine.mockResolvedValue(null);
     await vi.advanceTimersByTimeAsync(600_000);
-    // No check ever seen: the PBX may not check this browser at all, never guess.
-    expect(h.phone.getSnapshot().lineTaken).toBeFalsy();
-    // A single check is enough, even when it arrives just before the registration is confirmed, as chan_sip does.
-    h.delegate.onServerPing();
-    h.delegate.onRegistered();
-    await vi.advanceTimersByTimeAsync(110_000);
+    h.manager.holdsLine.mockResolvedValue(true);
+    await vi.advanceTimersByTimeAsync(600_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
-    await vi.advanceTimersByTimeAsync(30_000);
+    // One odd answer is not enough…
+    h.manager.holdsLine.mockResolvedValueOnce(false);
+    await vi.advanceTimersByTimeAsync(45_000);
+    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    // …two in a row are: another device holds the account.
+    h.manager.holdsLine.mockResolvedValue(false);
+    await vi.advanceTimersByTimeAsync(90_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'other-tab-active', lineTaken: true, account: { username: 'alice' } });
     expect(h.manager.dropSilently).toHaveBeenCalledTimes(1);
     // An un-REGISTER would disconnect the device that now holds the line.
@@ -238,6 +243,7 @@ describe('SIP controller — microphone and shared line', () => {
     // No tug of war: nothing happens until the person asks.
     await vi.advanceTimersByTimeAsync(3_600_000);
     expect(h.manager.register).toHaveBeenCalledTimes(1);
+    h.manager.holdsLine.mockResolvedValue(true);
     h.phone.retakeLine();
     await vi.advanceTimersByTimeAsync(0);
     h.delegate.onRegistered();
@@ -248,16 +254,15 @@ describe('SIP controller — microphone and shared line', () => {
   it('never steps aside in the middle of a conversation', async () => {
     const h = harness();
     await ready(h);
-    h.delegate.onServerPing();
-    await vi.advanceTimersByTimeAsync(60_000);
-    h.delegate.onServerPing();
+    h.manager.holdsLine.mockResolvedValue(false);
     h.phone.call('x', '+33100000001');
     await vi.advanceTimersByTimeAsync(0);
     h.delegate.onCallAnswered(session('out'));
     await vi.advanceTimersByTimeAsync(400_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', call: { phase: 'active' } });
     h.delegate.onCallHangup(session('out'));
-    await vi.advanceTimersByTimeAsync(15_000);
+    h.phone.dismiss();
+    await vi.advanceTimersByTimeAsync(50_000);
     expect(h.phone.getSnapshot().lineTaken).toBe(true);
   });
 

@@ -139,6 +139,19 @@ une quinzaine de secondes sur un réseau instable : délai de garde de 8 s avec
 message. Carte de fin d'appel qui débordait à droite en fenêtre moyenne.
 **Ces derniers correctifs ne sont vérifiés qu'en simulation.**
 
+Essais suivants de Franck, 22 h 30–22 h 50 : la mise en pause du poste remplacé
+et « Reprendre la ligne ici » **fonctionnent en réel** et Asterisk ne montre plus
+de va-et-vient. Mais le poste légitime s'est ensuite mis en pause à tort : le
+PBX l'a déclaré injoignable quelques minutes (connexion instable), ses contrôles
+périodiques ont cessé et la détection par silence a conclu à un remplacement.
+**Mécanisme remplacé** : toutes les 45 s, le navigateur demande au PBX qui tient
+le compte (REGISTER de consultation, sans Contact, qui ne modifie rien) et compare
+le contact renvoyé au sien, qui porte un identifiant aléatoire. Deux réponses
+négatives consécutives sont exigées ; une réponse absente ou illisible ne
+déclenche jamais rien. **Non encore vérifié en réel** : que ce chan_sip répond
+bien à cette consultation en listant le contact ; s'il ne le fait pas, il n'y
+aura simplement plus d'alerte, sans fausse pause.
+
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
 maintenant ceux non consultés et s'efface à l'ouverture du Journal. Toasts

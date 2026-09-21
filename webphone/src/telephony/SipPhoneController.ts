@@ -20,8 +20,6 @@ export interface ManagerDelegate {
   onCallAnswered(session: ManagedSession): void;
   onCallHangup(session: ManagedSession): void;
   onCallHold(session: ManagedSession, held: boolean): void;
-  /** The server's periodic check (SIP OPTIONS) reached this browser. */
-  onServerPing(): void;
 }
 
 export interface Manager {
@@ -45,6 +43,8 @@ export interface Manager {
    * the device that lost the line would disconnect the device that now holds it.
    */
   dropSilently(): Promise<void>;
+  /** True when the PBX says this browser holds the account, false when another device does, null when unknown. */
+  holdsLine(): Promise<boolean | null>;
 }
 
 export interface SipConfig {
@@ -63,10 +63,9 @@ export interface SipEnvironment {
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 480: 'no-answer', 487: 'cancelled' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
-const PING_WATCH = 10_000;
+/** How often the PBX is asked who holds the account: quick enough to stop shared credentials, light for the server. */
+const LINE_CHECK = 45_000;
 const HOLD_PATIENCE = 8000;
-/** chan_sip checks a registered contact every 60 s unless configured otherwise. */
-const DEFAULT_PING_PACE = 60_000;
 
 /**
  * SIP.js behind the application's contract. A connected WebSocket is not a
@@ -86,12 +85,7 @@ export class SipPhoneController implements PhoneController {
   private dtmfQueue: Promise<void> = Promise.resolve();
   private micFailure?: string;
   private interruption?: string;
-  private lastPing = 0;
-  /** True once the PBX was seen checking this browser: without it, silence means nothing. */
-  private pingsSeen = false;
-  private lastRealPing = 0;
-  private pingInterval = 0;
-  private pingWatch?: ReturnType<typeof setInterval>;
+  private lineWatch?: ReturnType<typeof setInterval>;
   private quietTimer?: ReturnType<typeof setTimeout>;
   private holdTimer?: ReturnType<typeof setTimeout>;
   /** Memory only, for « Reprendre la ligne ici »; cleared on sign-out. Never written anywhere. */
@@ -186,24 +180,8 @@ export class SipPhoneController implements PhoneController {
     },
     onRegistered: () => {
       if (!this.wanted) return;
-      // Being accepted proves we hold the line right now. The PBX's first check often arrives just BEFORE
-      // this confirmation: forgetting it here left a replaced device believing it had never been checked.
-      this.lastPing = Date.now();
       this.update({ connection: 'ready', error: undefined, lineTaken: false });
-      this.watchPings();
-    },
-    // The PBX checks the registered contact at a regular pace. It only checks ONE contact per account:
-    // when the checks stop while we are connected, another device registered on this account and receives the calls.
-    onServerPing: () => {
-      const now = Date.now();
-      // The pace is measured between two real checks only, never from the registration time.
-      if (this.pingsSeen && this.lastRealPing) {
-        const gap = now - this.lastRealPing;
-        this.pingInterval = this.pingInterval ? Math.min(this.pingInterval, gap) : gap;
-      }
-      this.pingsSeen = true;
-      this.lastPing = this.lastRealPing = now;
-      if (this.snapshot.lineTaken) this.update({ lineTaken: false });
+      this.watchLine();
     },
     onUnregistered: () => { if (this.wanted && this.snapshot.connection === 'ready') this.update({ connection: 'registering' }); },
     onCallCreated: session => { this.session = session; },
@@ -250,17 +228,26 @@ export class SipPhoneController implements PhoneController {
     }
   }
 
-  private watchPings() {
-    clearInterval(this.pingWatch);
-    this.pingWatch = setInterval(() => {
-      // One check proves the PBX does check this browser; a second one refines the pace.
-      // A device replaced seconds after signing in only ever sees the first.
-      if (this.snapshot.connection !== 'ready' || !this.pingsSeen || this.snapshot.lineTaken) return;
-      if (Date.now() - this.lastPing <= (this.pingInterval || DEFAULT_PING_PACE) * 2 + 5000) return;
-      // Never in the middle of a conversation: the call in progress is still ours.
-      if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
-      void this.stepAside();
-    }, PING_WATCH);
+  /**
+   * The PBX keeps one device per account. Rather than guessing from silence (its periodic checks also
+   * stop for ordinary network reasons, which once paused the legitimate device), ask it and compare.
+   */
+  private watchLine() {
+    clearInterval(this.lineWatch);
+    let strikes = 0;
+    this.lineWatch = setInterval(() => {
+      const manager = this.manager;
+      if (this.snapshot.connection !== 'ready' || !manager || this.snapshot.lineTaken) return;
+      void manager.holdsLine().then(holds => {
+        if (manager !== this.manager) return;
+        strikes = holds === false ? strikes + 1 : 0;
+        // Two consecutive answers, so one odd reply during a re-registration changes nothing.
+        if (strikes < 2) return;
+        // Never in the middle of a conversation: the call in progress is still ours.
+        if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+        void this.stepAside();
+      }).catch(() => undefined);
+    }, LINE_CHECK);
   }
 
   /**
@@ -270,7 +257,7 @@ export class SipPhoneController implements PhoneController {
    */
   private async stepAside() {
     this.wanted = false;
-    clearInterval(this.pingWatch);
+    clearInterval(this.lineWatch);
     clearTimeout(this.reconnectTimer);
     const manager = this.manager;
     this.manager = undefined;
@@ -283,7 +270,6 @@ export class SipPhoneController implements PhoneController {
   retakeLine() {
     const credentials = this.credentials;
     if (!this.snapshot.lineTaken || !credentials) return;
-    this.lastPing = this.pingInterval = 0;
     this.update({ lineTaken: false });
     void this.connect(credentials);
   }
@@ -328,10 +314,7 @@ export class SipPhoneController implements PhoneController {
   private async teardown() {
     this.wanted = false;
     clearTimeout(this.reconnectTimer);
-    clearInterval(this.pingWatch);
-    this.lastPing = this.pingInterval = 0;
-    this.pingsSeen = false;
-    this.lastRealPing = 0;
+    clearInterval(this.lineWatch);
     this.ringer.stop();
     this.mic.close();
     const manager = this.manager;

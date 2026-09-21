@@ -3,7 +3,7 @@ import type { Manager, SipEnvironment } from './SipPhoneController';
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
 export const browserSipEnvironment: SipEnvironment = {
   async createManager(config, credentials, delegate, microphone, remoteAudio) {
-    const { Web } = await import('sip.js');
+    const { Web, UserAgent } = await import('sip.js');
     const manager = new Web.SessionManager(config.wssUrl, {
       aor: `sip:${credentials.username}@${config.domain}`,
       delegate,
@@ -34,19 +34,39 @@ export const browserSipEnvironment: SipEnvironment = {
         },
       },
     });
-    // SIP.js answers the PBX's OPTIONS checks by itself and tells nobody: watch them go by.
     const transport = manager.userAgent.transport;
-    const forward = transport.onMessage;
-    transport.onMessage = message => {
-      if (message.startsWith('OPTIONS ')) delegate.onServerPing();
-      forward?.(message);
-    };
+    /**
+     * Asks the PBX which device holds the account: a REGISTER without Contact is a query (RFC 3261 §10.2.3),
+     * it changes nothing and the answer lists the registered contact. Ours carries a random user part,
+     * so the comparison is exact. null = no usable answer: never conclude anything from it.
+     */
+    const holdsLine = () => new Promise<boolean | null>(resolve => {
+      const server = UserAgent.makeURI(`sip:${config.domain}`);
+      const account = UserAgent.makeURI(`sip:${credentials.username}@${config.domain}`);
+      const mine = manager.userAgent.contact.uri.user;
+      if (!server || !account || !mine || !transport.isConnected()) return resolve(null);
+      const timer = setTimeout(() => resolve(null), 8000);
+      const settle = (value: boolean | null) => { clearTimeout(timer); resolve(value); };
+      try {
+        const core = manager.userAgent.userAgentCore;
+        core.request(core.makeOutgoingRequestMessage('REGISTER', server, account, account, {}), {
+          onAccept: response => {
+            const contacts = response.message.getHeaders('contact');
+            // No contact at all: nobody is registered, which is not « someone else ».
+            settle(contacts.length ? contacts.some(contact => contact.includes(`sip:${mine}@`)) : null);
+          },
+          onReject: () => settle(null),
+        });
+      } catch {
+        settle(null);
+      }
+    });
     const dropSilently = async () => {
       // Socket first: SIP.js un-registers while stopping, and that must not reach the PBX.
       await transport.disconnect().catch(() => undefined);
       await manager.disconnect().catch(() => undefined);
     };
-    return Object.assign(manager, { dropSilently }) as unknown as Manager;
+    return Object.assign(manager, { dropSilently, holdsLine }) as unknown as Manager;
   },
 
   createRemoteAudio() {
