@@ -1,5 +1,5 @@
 import type { CallOutcome } from '../domain/types';
-import { MicPipeline, microphoneErrorMessage, Ringer } from './audio';
+import { MicPipeline, microphoneErrorMessage, primeElement, Ringer } from './audio';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /** The part of SIP.js `Web.SessionManager` this application relies on. */
@@ -80,6 +80,7 @@ export class SipPhoneController implements PhoneController {
   private lastPing = 0;
   private pingInterval = 0;
   private pingWatch?: ReturnType<typeof setInterval>;
+  private quietTimer?: ReturnType<typeof setTimeout>;
   private remoteAudio?: HTMLAudioElement;
   private ringer = new Ringer();
   private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, echoCancellation: true, noiseSuppression: true };
@@ -108,6 +109,10 @@ export class SipPhoneController implements PhoneController {
     const username = credentials.username.trim();
     if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: 'Saisissez votre identifiant et votre mot de passe.' });
     this.wanted = true;
+    // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
+    // Without it the first incoming call is silent, because nothing was clicked just before the sound starts.
+    this.remoteAudio ??= this.environment.createRemoteAudio();
+    if (this.remoteAudio) primeElement(this.remoteAudio);
     this.update({ connection: 'connecting', error: undefined });
     try {
       // One registration per browser: a second tab must not silently take the line.
@@ -117,7 +122,6 @@ export class SipPhoneController implements PhoneController {
         return this.update({ connection: 'other-tab-active', error: 'Cette ligne est déjà ouverte dans un autre onglet de ce navigateur.' });
       }
       this.releaseLine = release;
-      this.remoteAudio ??= this.environment.createRemoteAudio();
       this.applyAudio(this.audio);
       this.manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.delegate, () => this.openMicrophone(), this.remoteAudio);
       this.update({ account: { username, domain: this.config.domain } });
@@ -192,6 +196,10 @@ export class SipPhoneController implements PhoneController {
       // Talk time starts here, never at the ringing or early media.
       this.updateCall({ phase: 'active', answeredAt: Date.now() });
       void this.remoteAudio?.play().catch(() => this.update({ audioBlocked: true }));
+      // Safety net: SIP.js starts the sound itself and stays quiet when the browser refuses.
+      setTimeout(() => {
+        if (this.snapshot.call?.phase === 'active' && this.remoteAudio?.paused) this.update({ audioBlocked: true });
+      }, 1200);
     },
     onCallHangup: () => {
       const call = this.snapshot.call;
@@ -199,7 +207,10 @@ export class SipPhoneController implements PhoneController {
       this.finish(call.answeredAt ? 'answered' : this.rejection ?? (call.direction === 'inbound' ? (this.localHangup ? 'declined' : 'missed') : this.localHangup ? 'cancelled' : 'failed'));
     },
     // Only the far end's confirmation changes what the screen says.
-    onCallHold: (_session, held) => this.updateCall({ phase: held ? 'held' : 'active', holdPending: false }),
+    onCallHold: (_session, held) => {
+      this.updateCall({ phase: held ? 'held' : 'active', holdPending: false });
+      this.quietRemote(false);
+    },
   };
 
   /** SIP.js ends the call without saying why when the microphone fails: keep the reason ourselves. */
@@ -233,12 +244,31 @@ export class SipPhoneController implements PhoneController {
     this.ringer.stop();
     this.mic.close();
     this.session = undefined;
+    clearTimeout(this.quietTimer);
+    if (this.remoteAudio) this.remoteAudio.muted = false;
     const failure = this.micFailure;
     this.micFailure = undefined;
     this.updateCall({ phase: 'ended', outcome: failure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
     // Said out loud as well: a failed call must never leave the person wondering why.
     if (failure) this.update({ error: failure });
     if (this.snapshot.audioBlocked) this.update({ audioBlocked: false });
+  }
+
+  /**
+   * The audio is renegotiated when a call is held or resumed, and the first packets can come out
+   * as a short burst of noise. The far end is silenced for that instant, then faded back in.
+   */
+  private quietRemote(quiet: boolean) {
+    const audio = this.remoteAudio;
+    if (!audio) return;
+    clearTimeout(this.quietTimer);
+    if (quiet) {
+      audio.muted = true;
+      // Never stay silent if the confirmation does not come.
+      this.quietTimer = setTimeout(() => { audio.muted = false; }, 4000);
+    } else {
+      this.quietTimer = setTimeout(() => { audio.muted = false; }, 350);
+    }
   }
 
   resumeAudio() {
@@ -328,8 +358,10 @@ export class SipPhoneController implements PhoneController {
     const call = this.snapshot.call;
     if (!call || call.holdPending || !this.session || !this.manager || call.phase !== (held ? 'active' : 'held')) return;
     this.updateCall({ holdPending: true });
+    this.quietRemote(true);
     (held ? this.manager.hold(this.session) : this.manager.unhold(this.session)).catch(() => {
       this.updateCall({ holdPending: false });
+      this.quietRemote(false);
       this.update({ error: held ? 'La mise en attente a été refusée.' : 'La reprise de l’appel a échoué.' });
     });
   }

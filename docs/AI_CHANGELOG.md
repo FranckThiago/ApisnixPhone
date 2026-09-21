@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : son des appels entrants et reconnexion après actualisation
+
+- Essai réel de Franck : entrant, attente et DTMF validés ; sonnerie muette,
+  premier correspondant inaudible, carillon absent, bruit à la reprise d'attente.
+  Diagnostic dans le code de SIP.js : lecture du son distant hors clic, refus
+  silencieux. Déverrouillage audio au clic de connexion, réveil sur interaction,
+  filet « Activer le son », coupure brève pendant la renégociation d'attente.
+  Journaux Asterisk consultés en lecture seule : rien de lié à ces appels.
+- Actualisation de page : reconnexion par le gestionnaire de mots de passe du
+  navigateur (Credential Management), sans stockage applicatif du secret ;
+  écart assumé et documenté par rapport à « mémoire de session uniquement ».
+- Franck a proposé que l'agent saisisse le mot de passe : refusé, règle non
+  négociable de l'agent ; les essais restent faits par lui. 31 tests, lint,
+  typage, build. Correctifs audio à confirmer en réel.
+
 ## 2026-09-21 — ApisnixPhone Web : guide PDF, carillon en ligne réelle, raccourci K
 
 - Franck demande un PDF du guide à envoyer aux clients :

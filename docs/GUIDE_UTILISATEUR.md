@@ -16,9 +16,11 @@ fictifs. Version décrite : ApisnixPhone Web 0.1.0.
 
 ## 1. Se connecter
 
-Saisissez votre identifiant et votre mot de passe, puis **Se connecter**. Votre
-mot de passe n'est jamais enregistré : il vous sera redemandé à la prochaine
-ouverture de la page.
+Saisissez votre identifiant et votre mot de passe, puis **Se connecter**.
+ApisnixPhone n'enregistre jamais votre mot de passe. Votre navigateur peut vous
+proposer de le retenir : si vous acceptez, une actualisation de la page vous
+reconnecte toute seule (Chrome, Edge) ou préremplit le formulaire (Safari).
+**Refusez sur un ordinateur partagé.**
 
 ![Écran de connexion](guide/01-connexion.png)
 
@@ -192,7 +194,8 @@ Raccrocher. Les Favoris s'ouvrent depuis la page Contacts.
 
 ## Bon à savoir
 
-- Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**.
+- Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**. Hors
+  appel, une actualisation vous reconnecte si votre navigateur a retenu l'accès.
 - Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la personne.
 - Un numéro commençant par `0` est lu comme un numéro français ; `1` suivi d'un
   indicatif, comme un numéro d'Amérique du Nord (Canada ou États-Unis).

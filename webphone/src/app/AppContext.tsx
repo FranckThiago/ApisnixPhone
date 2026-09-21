@@ -8,6 +8,7 @@ import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
 import { SipPhoneController } from '../telephony/SipPhoneController';
 import { browserSipEnvironment, sipConfigFromEnv } from '../telephony/sipEnvironment';
 import type { Credentials, PhoneController } from '../telephony/types';
+import { forgetSilentAccess } from '../features/auth/credentials';
 import { storedTheme } from './theme';
 
 export type View = 'journal' | 'contacts' | 'favorites' | 'callbacks' | 'settings' | 'phone';
@@ -26,7 +27,8 @@ interface AppValue {
   dial: string;
   setDial(value: string): void;
   placeCall(rawInput: string): void;
-  login(credentials: Credentials): Promise<void>;
+  /** Resolves to true once the line is registered and the session is open. */
+  login(credentials: Credentials): Promise<boolean>;
   logout(): Promise<void>;
   paletteOpen: boolean;
   setPaletteOpen(open: boolean): void;
@@ -140,11 +142,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const stop = phone.subscribe(() => { if (settled()) { stop(); resolve(); } });
     });
     const { account, connection } = phone.getSnapshot();
-    if (connection !== 'ready' || !account) return;
+    if (connection !== 'ready' || !account) return false;
     const profile = `${account.domain}:${account.username}`;
     await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
     store.setPreferences({ theme: storedTheme() });
     setSessionOpen(true);
+    return true;
   }, []);
 
   // The line gave up (network lost for good, registration refused): back to sign-in, data kept for the same account.
@@ -159,6 +162,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     setSessionOpen(false);
+    // An explicit sign-out must not be undone by the browser signing back in on the next reload.
+    void forgetSilentAccess();
     await phone.disconnect();
     store.close();
     recorded.current.clear();

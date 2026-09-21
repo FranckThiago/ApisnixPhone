@@ -101,6 +101,34 @@ function soundContext(): AudioContext | undefined {
   return sharedContext;
 }
 
+let keepAwake = false;
+// Elements the browser refused to start: a sign-in without a click (after a reload) cannot unlock them yet.
+const locked = new Set<HTMLAudioElement>();
+
+/** Browsers may put the sound output back to sleep after a while: any click or key wakes it up again. */
+function keepSoundAwake() {
+  if (keepAwake || typeof document === 'undefined') return;
+  keepAwake = true;
+  const wake = () => {
+    if (sharedContext?.state === 'suspended') void sharedContext.resume().catch(() => undefined);
+    for (const audio of locked) void audio.play().then(() => locked.delete(audio)).catch(() => undefined);
+  };
+  document.addEventListener('pointerdown', wake, true);
+  document.addEventListener('keydown', wake, true);
+}
+
+/**
+ * Unlocks a media element from a click, so the far end's voice can start later without one.
+ * It plays a silent stream now; SIP.js swaps in the real one when the call connects.
+ */
+export function primeElement(audio: HTMLAudioElement) {
+  const context = soundContext();
+  if (!context || audio.srcObject) return;
+  audio.srcObject = context.createMediaStreamDestination().stream;
+  keepSoundAwake();
+  void audio.play().catch(() => { locked.add(audio); });
+}
+
 /**
  * Browsers only let a page make sound right after a click. The real line takes a
  * few seconds to register, by which time that permission is gone: call this from
@@ -109,6 +137,7 @@ function soundContext(): AudioContext | undefined {
 export function primeAudio() {
   const context = soundContext();
   if (!context) return;
+  keepSoundAwake();
   // A silent blip is what actually unlocks the output on Safari.
   const source = context.createBufferSource();
   source.buffer = context.createBuffer(1, 1, 22050);

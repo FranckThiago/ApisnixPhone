@@ -102,6 +102,26 @@ avec « Reprendre la ligne ici » — mécanisme testé en simulation seulement.
 notes signalent la ligne prête ou perdue (désactivable). Hébergement : procédure
 et nom conseillé dans OPERATIONS, rien de déployé.
 
+Second essai réel de Franck, même soir : **appel entrant, attente/reprise et
+clavier DTMF fonctionnent**. Défauts relevés : sonnerie muette, correspondant
+inaudible au premier appel entrant (puis de façon intermittente) alors que lui
+était entendu, carillon absent, bruit bref à la première reprise d'attente. Cause
+commune des trois premiers : le navigateur ne laisse jouer un son que juste
+après un clic, et SIP.js lance la voix distante sans clic récent, en taisant le
+refus. Correctif : élément audio, carillon et sonnerie déverrouillés dès le clic
+de connexion, réveil à chaque interaction, bouton « Activer le son » si la voix
+reste bloquée. Pour le bruit : son distant coupé un instant pendant la
+renégociation ; aucune erreur SRTP liée à ces appels dans les journaux Asterisk.
+**Ces correctifs audio ne sont pas encore confirmés en réel.** Actualiser la
+page déconnectait et obligeait à ressaisir : l'application ne stocke toujours
+pas le mot de passe, mais propose de l'enregistrer dans le gestionnaire du
+navigateur (Chrome, Edge), qui reconnecte après une actualisation ; ailleurs, le
+remplissage automatique du formulaire fait l'affaire. Une déconnexion volontaire
+désactive cette reconnexion. À noter : le PBX affiche ce poste en état UNKNOWN,
+ses contrôles périodiques ne semblent donc pas aboutir au navigateur ; l'alerte
+« ligne ouverte ailleurs », qui en dépend, ne se déclenchera probablement pas
+en l'état — elle ne peut pas non plus donner de fausse alerte.
+
 Corrections du même soir, après relecture du plan : la pastille des appels
 manqués comptait tous ceux du jour et ne s'effaçait jamais ; elle compte
 maintenant ceux non consultés et s'efface à l'ouverture du Journal. Toasts

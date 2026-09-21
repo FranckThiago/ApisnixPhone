@@ -294,7 +294,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Reconnexion réseau | Bornée ; pas de nouvelle tentative après rejet définitif d'identifiants |
 | Pays par défaut | Aucun préfixe ajouté automatiquement |
 | Historique persistant | Choix explicite « Conserver sur cet appareil », désactivé sur la première visite |
-| Mot de passe mémorisé | Aucun stockage applicatif persistant ; mémoire de la session uniquement |
+| Mot de passe mémorisé | Aucun stockage applicatif ; depuis le 21 septembre, enregistrement **proposé par le navigateur** dans son propre gestionnaire (Chrome, Edge) pour reconnecter après une actualisation, désactivé par une déconnexion volontaire |
 | Journaux techniques | Désactivés par défaut ; diagnostic expurgé sur action utilisateur |
 | Transfert | Masqué tant que non validé pour le pilote |
 
