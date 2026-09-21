@@ -92,14 +92,37 @@ export class MicPipeline {
   }
 }
 
+let sharedContext: AudioContext | undefined;
+
+function soundContext(): AudioContext | undefined {
+  if (typeof AudioContext === 'undefined') return undefined;
+  sharedContext ??= new AudioContext();
+  if (sharedContext.state === 'suspended') void sharedContext.resume().catch(() => undefined);
+  return sharedContext;
+}
+
+/**
+ * Browsers only let a page make sound right after a click. The real line takes a
+ * few seconds to register, by which time that permission is gone: call this from
+ * the sign-in click so the chime and the ringtone can play later.
+ */
+export function primeAudio() {
+  const context = soundContext();
+  if (!context) return;
+  // A silent blip is what actually unlocks the output on Safari.
+  const source = context.createBufferSource();
+  source.buffer = context.createBuffer(1, 1, 22050);
+  source.connect(context.destination);
+  source.start();
+}
+
 /** A generated two-tone ring: no audio file to ship, stops instantly. */
 export class Ringer {
-  private context?: AudioContext;
   private timer?: ReturnType<typeof setInterval>;
 
   start(volume: number) {
-    if (this.timer || typeof AudioContext === 'undefined') return;
-    const context = (this.context ??= new AudioContext());
+    const context = soundContext();
+    if (this.timer || !context) return;
     const burst = () => {
       if (context.state === 'suspended') void context.resume().catch(() => undefined);
       for (const [frequency, offset] of [[740, 0], [587, 0.22]] as const) {
@@ -125,17 +148,14 @@ export class Ringer {
   }
 }
 
-let chimeContext: AudioContext | undefined;
-
 /**
  * Public-address chime, like the one before an airport announcement: three bell
  * notes for a line that is ready, two falling ones for a line that dropped.
  * Generated on the fly, about 2.5 s, no audio file.
  */
 export function chime(kind: 'ready' | 'lost', volume: number) {
-  if (typeof AudioContext === 'undefined' || volume <= 0) return;
-  const context = (chimeContext ??= new AudioContext());
-  if (context.state === 'suspended') void context.resume().catch(() => undefined);
+  const context = soundContext();
+  if (!context || volume <= 0) return;
   const notes = kind === 'ready' ? [523.25, 659.25, 783.99] : [659.25, 440];
   notes.forEach((frequency, index) => {
     const start = context.currentTime + index * 0.42;

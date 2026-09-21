@@ -1,6 +1,7 @@
 import { ArrowRight, Eye, EyeOff, Headphones, ShieldCheck, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useApp, usePhone } from '../../app/AppContext';
+import { primeAudio } from '../../telephony/audio';
 
 export function Login() {
   const { login } = useApp();
@@ -23,7 +24,7 @@ export function Login() {
         </ul>
       </section>
       <section className="login-form">
-        <form onSubmit={event => { event.preventDefault(); if (!busy) void login({ username, password }); }}>
+        <form onSubmit={event => { event.preventDefault(); if (busy) return; primeAudio(); void login({ username, password }); }}>
           <img src="/apisnix-mark.png" alt="APISNIX" width={56} height={56} className="login-mark" />
           <p className="eyebrow">ApisnixPhone</p>
           <h1>Bon retour parmi nous</h1>

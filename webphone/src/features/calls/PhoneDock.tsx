@@ -1,5 +1,5 @@
 import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, Volume2, X } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
@@ -198,6 +198,16 @@ function CallCard({ call }: { call: CallSnapshot }) {
   // The remote identity is untrusted: React renders it as text, never as markup.
   const name = contact?.name ?? call.remoteName;
   const live = call.phase === 'active' || call.phase === 'held';
+  // « K » opens and closes the in-call keypad, like the hint on the button says.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (event.key.toLowerCase() !== 'k' || event.metaKey || event.ctrlKey || event.altKey || target?.closest('input, textarea, select, dialog')) return;
+      if (call.phase === 'active') setKeypad(open => !open);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [call.phase]);
   const seconds = useSeconds(call.answeredAt, call.endedAt);
   const ringing = call.phase === 'dialing' || call.phase === 'ringing-out' || call.phase === 'ringing-in';
   const status = call.phase === 'dialing' ? 'Connexion…' : call.phase === 'ringing-out' ? 'Ça sonne…'

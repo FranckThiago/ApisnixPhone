@@ -49,7 +49,8 @@ async function shot(name, selector) {
   await sleep(450);
   let clip;
   if (selector) {
-    const box = await run(`const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height };`);
+    // A stretched column is cropped to what it really contains.
+    const box = await run(`const el = document.querySelector(${JSON.stringify(selector)}); const r = el.getBoundingClientRect(); const last = el.lastElementChild?.getBoundingClientRect(); const bottom = last && el.classList.contains('dock') ? Math.min(r.bottom, last.bottom) : r.bottom; return { x: r.x, y: r.y, width: r.width, height: bottom - r.y };`);
     clip = { x: Math.max(0, box.x - 12), y: Math.max(0, box.y - 12), width: box.width + 24, height: box.height + 24, scale: 1 };
   }
   const { data } = await send('Page.captureScreenshot', { format: 'png', clip });

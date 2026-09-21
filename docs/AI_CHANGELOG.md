@@ -1,5 +1,23 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : guide PDF, carillon en ligne réelle, raccourci K
+
+- Franck demande un PDF du guide à envoyer aux clients :
+  `docs/ApisnixPhone-Guide-utilisateur.pdf` (17 pages, couverture APISNIX),
+  produit par `webphone/scripts/build-guide-pdf.mjs` depuis le Markdown et les
+  captures ; le relire page par page après chaque régénération.
+- Il n'entendait pas le carillon en ligne réelle alors qu'il sonnait en
+  démonstration : l'enregistrement réel dure quelques secondes et le navigateur
+  ne permet un son que juste après un clic. L'audio est maintenant déverrouillé
+  dès le clic sur Se connecter, avec un contexte audio partagé par le carillon
+  et la sonnerie. **Non réentendu par l'agent : à confirmer par Franck.**
+- Pastille d'état qui pouvait être coupée sur mobile : la barre du haut ne
+  rétrécit plus que le champ de recherche. Vérifié à 375 px.
+- Oubli repéré en écrivant le guide : le raccourci K affiché sur le bouton
+  Clavier n'était pas branché. Il l'est. Franck indique que la connexion en un
+  clic fonctionnait déjà chez lui ; la correction d'attente est conservée, car
+  le défaut dépend de la vitesse de réponse du PBX.
+
 ## 2026-09-21 — ApisnixPhone Web : connexion en un clic, carillon et guide illustré
 
 - Bug signalé par Franck : il fallait cliquer deux fois sur Se connecter. En

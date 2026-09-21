@@ -64,7 +64,9 @@ sonnerie. Avant, le bouton rouge indique **Annuler**.
 
 ## 4. Pendant l'appel
 
-![Appel en cours](guide/05-en-appel.png)
+| Appel en cours | Micro coupé, appel en attente |
+| --- | --- |
+| ![Appel en cours](guide/05-en-appel.png) | ![Micro coupé et appel en attente](guide/06-muet-attente.png) |
 
 | Bouton | Raccourci | Effet |
 | --- | --- | --- |
@@ -72,8 +74,6 @@ sonnerie. Avant, le bouton rouge indique **Annuler**.
 | **Attente** | `H` | Met le correspondant en attente ; **Reprendre** le récupère. L'écran change quand la mise en attente est confirmée. |
 | **Clavier** | `K`, ou les chiffres | Envoie des touches à un serveur vocal (« tapez 1… »). |
 | **Raccrocher** | — | Termine l'appel. |
-
-![Micro coupé et appel en attente](guide/06-muet-attente.png)
 
 Les raccourcis ne fonctionnent pas pendant que vous écrivez dans un champ, et la
 touche Échap ne raccroche jamais.
