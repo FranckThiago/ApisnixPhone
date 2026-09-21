@@ -225,8 +225,9 @@ describe('SIP controller — microphone and shared line', () => {
     await vi.advanceTimersByTimeAsync(600_000);
     // No check ever seen: the PBX may not check this browser at all, never guess.
     expect(h.phone.getSnapshot().lineTaken).toBeFalsy();
-    // A single check is enough: a device replaced seconds after signing in never sees a second one.
+    // A single check is enough, even when it arrives just before the registration is confirmed, as chan_sip does.
     h.delegate.onServerPing();
+    h.delegate.onRegistered();
     await vi.advanceTimersByTimeAsync(110_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
     await vi.advanceTimersByTimeAsync(30_000);

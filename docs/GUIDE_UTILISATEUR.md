@@ -8,7 +8,9 @@ fictifs. Version décrite : ApisnixPhone Web 0.1.0.
 
 ## Avant de commencer
 
-- Un ordinateur avec **Chrome, Edge ou Safari** à jour, et une connexion stable.
+- Un ordinateur avec **Chrome ou Edge** à jour, et une connexion stable. Safari
+  fonctionne pour appeler, mais il est déconseillé : les sons d'annonce n'y sont
+  pas fiables.
 - Un **casque avec micro** : c'est lui qui fait la qualité de vos appels.
 - Votre **identifiant** et votre **mot de passe**, remis par votre administrateur.
 - Gardez l'onglet ouvert et l'ordinateur éveillé : si la page est fermée ou le

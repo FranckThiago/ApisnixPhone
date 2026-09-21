@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : l'interrogation reçue avant la confirmation n'est plus oubliée
+
+- Essai de Franck : deux navigateurs, aucun bandeau après six minutes. Asterisk
+  interroge le poste à l'inscription, souvent juste avant de la confirmer ; la
+  confirmation remettait le repère à zéro et le poste remplacé croyait n'avoir
+  jamais été interrogé. La confirmation vaut désormais preuve de tenue de
+  ligne, et le rythme ne se mesure qu'entre deux vraies interrogations.
+- Safari : carillon toujours muet ; Franck déconseille ce navigateur à ses
+  clients et demande de ne pas insister. Guide mis à jour.
+- Alerte de partage d'identifiants préparée dans la supervision (dépôt privé),
+  sans blocage, à sa demande. 33 tests ici, 90 côté supervision.
+
 ## 2026-09-21 — ApisnixPhone Web : détection de ligne prise dès la première interrogation
 
 - Essai de Franck : deux navigateurs connectés à 17 s d'intervalle, aucun ne se
