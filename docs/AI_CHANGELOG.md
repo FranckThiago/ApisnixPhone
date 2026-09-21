@@ -1,5 +1,73 @@
 # Journal des changements
 
+## 2026-09-21 — Publication de la préparation web et nouvelle règle Git
+
+- Franck demande de retirer la règle de confirmation des commits/push et de
+  publier les travaux. Instructions globales et AGENTS du projet actualisés ;
+  le plan reprend le workflow de publication après validation.
+- Plan, maquette et documents de reprise regroupés dans le dépôt softphone
+  public. La supervision et les détails d'exploitation restent dans le dépôt
+  privé Gestion_CRM-APISNIX ; archives locales et secrets restent exclus.
+- Contrôle des liens, syntaxe de la maquette et contenu destiné à Git.
+  Aucun build natif, changement serveur, migration ou déploiement dans cette
+  publication documentaire. Authentification Git reliée au compte CLI existant.
+
+## 2026-09-18 — Plan et maquette du webphone PC
+
+- Recherche demandée par Franck pour démarrer le développement dans une
+  nouvelle conversation : références Ringover/Kavkom, API navigateur,
+  SIP.js 0.21.2 et contraintes de réutilisation du WebRTC existant.
+- WEBPHONE_PLAN devient la référence produit/technique : écrans, tokens,
+  fonctions et réglages, données locales, numérotation préservée, architecture,
+  versions, lots de réalisation, pilote et critères d'acceptation.
+- Maquette HTML autonome ajoutée : journal, contacts, favoris, réglages et
+  appel simulé. Rendu contrôlé à 1280, 1024 et 390 px, navigation pendant
+  l'appel, commandes simulées et syntaxe JavaScript vérifiés. Aucun appel réel.
+- README, AGENTS, état et architecture reliés au plan. Détails d'exploitation
+  conservés dans le dépôt privé ; aucun secret ou journal client ajouté ici.
+- Application web à développer dans webphone/. Pas d'accès ou modification
+  serveur pendant cette préparation, migration, déploiement, commit ou push.
+
+## 2026-09-17 — Signature Windows reportée
+
+- Franck demande de garder le chantier de signature pour plus tard et de
+  revenir à la supervision SIP. État, opérations et fiche de signature
+  actualisés pour la reprise ; aucune activation Azure ou dépense.
+- Le pilote de supervision répond toujours sur le Mac, page de connexion
+  vérifiée dans le navigateur intégré. Son exploitation reste documentée
+  dans le dépôt privé Gestion_CRM-APISNIX. Aucun changement de production.
+
+## 2026-09-17 — Diagnostic des alertes Windows et préparation de la signature
+
+- Après signalement SmartScreen et 360, contrôle du SHA-256 du paquet `.2`,
+  lecture des tables de certificats PE et extraction sans exécution de
+  l'application et de la DLL graphique. Installateur/application non signés ;
+  certificats Microsoft présents dans la DLL. Aucune conclusion de faux positif
+  ni validation antivirus/Windows tirée de cette seule inspection.
+- Choix de Franck : signature APISNIX, entreprise française. Proposition
+  Microsoft Artifact Signing Basic, conditions et tarif officiels vérifiés.
+  Accord sur l'abonnement et validation d'identité restent à obtenir.
+- Fiche SIGNATURE_WINDOWS ajoutée, état et opérations actualisés avec limites,
+  procédure OIDC proposée, ordre de signature/packaging et contrôles à réaliser.
+  Aucun code de signature activé, achat, build, certificat créé ou paquet publié.
+  Aucun accès production ni migration. Documentation conservée localement,
+  sans commit ni push.
+
+## 2026-09-17 — Téléchargements sur l'accueil APISNIX CRM
+
+- À la demande de Franck, APK Android `.3` et Windows compact `.2` publiés
+  derrière deux boutons sombres sous le formulaire de contact de l'accueil.
+  Fichiers identiques aux builds existants ; signature de développement Android
+  et installateur Windows non signé conservés. Nouveaux essais toujours attendus.
+- Tailles et SHA-256 des fichiers publics contrôlés. Android téléchargé depuis
+  le bouton et empreinte cliente vérifiée ; Windows servi en HTTP 200 avec sa
+  taille complète, sans comparaison d'une copie locale par ce navigateur.
+  Rendu des boutons vérifié sur ordinateur et mobile.
+- README, état et opérations actualisés avec les liens et les limites.
+  Sources du fragment web, sauvegardes et procédure de retrait maintenues dans
+  le dépôt privé Gestion_CRM-APISNIX. Aucune compilation, migration, modification
+  du moteur SIP ou redémarrage Asterisk. Aucun commit ni push.
+
 ## 2026-09-16 — Installateur Windows compact disponible
 
 - Run `35115685999` réussi sur le commit `a8c5171` : SDK, client et paquet
@@ -46,6 +114,139 @@
   appel, anti-double-clic, clavier, effacement, retour à l'appel et DTMF.
   Syntaxe des QML et application inverse du patch contrôlées. La compilation
   Windows et le test réel de cette nouvelle interface restent à effectuer.
+
+## 2026-09-16 — Séparation du référentiel de gestion CRM
+
+- À la demande de Franck, mémoire d'exploitation transférée dans le dépôt
+  privé distinct `FranckThiago/Gestion_CRM-APISNIX`, pour reprise Mac/Hermes.
+- AGENTS.md et les sources d'état/exploitation renvoient à ce référentiel.
+  L'ancienne mémoire privée locale reste une archive, sans publication ici.
+- Les corrections commerciales et règles de comptes sont détaillées dans
+  le dépôt privé. Aucun changement du code softphone, aucun commit ni push
+  de ce dépôt public pendant cette séparation.
+
+## 2026-09-16 — Compréhension des clients et abonnements, sans correction
+
+- Consultation en lecture seule de six groupes VICIdial et de la source
+  commerciale dans Google Sheets. Nombres de lignes, offres, comptes et
+  exceptions documentés exclusivement dans la mémoire privée hors Git.
+- Consigne précisée : comprendre l'existant avant de ranger avec Franck.
+  Correction d'affectations précédemment autorisée mise en attente avant
+  toute écriture. Historique des comptes réutilisés conservé sur sa décision.
+- Index, modèles, procédure de réaffectation, état et journal actualisés.
+  Aucun changement serveur, de facturation ou du classeur, aucune migration.
+- Après explications du propriétaire, comparaison étendue aux clients actifs.
+  Précédence des sources, anciens parcs, identifiants réutilisés, exceptions
+  commerciales et questions restantes documentés en privé. Supervision SIP
+  conservée comme suite du projet ; aucun déploiement pendant cette lecture.
+
+## 2026-09-16 — Mémoire d'exploitation et suspensions commerciales
+
+- Demande de Franck : mémoire durable pour les futurs agents. Références de
+  phones/users, groupe de supervision, workflow SQL et mécanismes de copie
+  vérifiés en base et dans le code installé, puis documentés en privé sous
+  docs/production-privee/. Index de lecture ajouté à AGENTS.md et exclusion Git.
+- Une incompatibilité de modèle peut être une suspension commerciale volontaire.
+  Deux phones suspendus sur demande explicite ; mots de passe conservés,
+  sauvegarde protégée, exactement deux sections SIP modifiées, peers absents
+  après prise en compte du rechargement. Pas de changement du modèle partagé,
+  du dialplan ou de Fail2ban. Le filtre actif peut aussi bannir un peer inconnu.
+- Compte administrateur dédié créé sur demande avec les droits du compte de
+  référence : 127 champs comparés, affectations de campagnes/groupes entrants
+  reprises, identité et secret propres. Accès protégé local hors Git ; aucun
+  nouveau phone et aucun secret dans les reçus/documentations. Connexion web
+  non validée dans le navigateur intégré.
+- Droits étendus de superviseur, héritages de groupes entrants et risque de
+  visibilité de l'ancien historique identifiés ; aucun changement de ces
+  règles sans choix métier. Pas de purge, migration ou redémarrage Asterisk.
+- État et opérations actualisés. La mémoire privée est accessible aux nouvelles
+  conversations de ce projet ; hors projet son chemin doit être fourni.
+
+## 2026-09-16 — Affectation de 26 postes après validation des enregistrements
+
+- Franck a confirmé les appels/enregistrements du pilote ; présence de MP3
+  non vides vérifiée sur le serveur. Affectation des 26 postes demandés aux
+  contextes adaptés à leurs routes, par surcharge individuelle.
+- Deux postes avaient un modèle PJSIP incompatible avec leur protocole SIP.
+  Modèles remplacés par ceux de leur groupe après confirmation explicite.
+- Phone Context limité à 20 caractères : correction des valeurs tronquées
+  vers des contextes restrictifs de repli, noms complets dans Conf Override.
+  Aucune migration de schéma ni modification des modèles partagés.
+- Sauvegardes protégées, génération VICIdial native et rechargement SIP sans
+  redémarrage. Exactement 26 sections générées modifiées ; 26 contextes et
+  attributions au compte vérifiés dans Asterisk. Dialplan inchangé.
+- État, opérations, étude et guide local actualisés ; note privée et retour
+  arrière conservés hors dépôt public. Aucun nettoyage audio ni collecteur
+  de supervision ajouté. Les appels réels de chacun des postes restent à
+  éprouver ; le contrôle de configuration ne remplace pas ces essais.
+
+## 2026-09-16 — Installation des quatre variantes d'enregistrement
+
+- Intervention programmée et autorisée : sauvegarde protégée, ajout des quatre
+  contextes et rechargement du dialplan. Pas de redémarrage ni nouvel accès.
+- Treize vérifications de résolution des routes réussies ; contextes originaux,
+  premier pilote, configuration SIP et fichier principal inchangés.
+- Aucun appel du pilote depuis son activation retrouvé dans les journaux ciblés.
+  Aucun nouveau poste affecté avant validation du MP3 réel ; test utilisateur
+  demandé et suivi automatique mis en pause pour éviter les répétitions.
+- État, étude, opérations et guide local actualisés. Note d'intervention hors
+  Git ; sauvegardes et enregistrements non copiés localement. Diff contrôlé.
+- Aucune suppression audio, migration, modification réseau ou plateforme déployée.
+
+## 2026-09-15 — Guide pour reproduire l'enregistrement par contexte
+
+- Demande de Franck : comprendre et reproduire le correctif sur quatre autres
+  contextes existants. Inspection en lecture seule de leurs règles réelles.
+- Guide et fragment de quatre contextes préparés localement hors Git, avec
+  correspondances, activation par Conf Override, contrôles et retour arrière.
+  Motifs autorisés, refus et messagerie préservés ; journal adapté aux branches.
+- Étude actualisée, diff documentaire contrôlé. Aucune modification serveur
+  pendant cette préparation ; variantes non chargées, appels non testés.
+
+## 2026-09-15 — Correctif d'enregistrement appliqué au poste pilote
+
+- Accord explicite de Franck pour un poste. Sauvegardes protégées côté serveur,
+  ajout d'un contexte dédié et surcharge propre au poste ; modèle partagé et
+  routage restrictif d'origine conservés.
+- Génération native VICIdial, contrôle des sections SIP puis rechargement SIP.
+  Une seule section modifiée ; contexte effectif et état connecté vérifiés.
+  Pas de redémarrage, d'appel lancé, de nettoyage ou de compte supplémentaire.
+- Étude et état mis à jour. Détails opérationnels et retour arrière conservés
+  hors Git ; aucune sauvegarde sensible copiée localement. Diff contrôlé.
+- Validation restante : appel utilisateur, journal, MP3 et affichage dans les
+  statistiques. Aucun déploiement de la plateforme de supervision.
+
+## 2026-09-15 — Diagnostic d'enregistrements absents sur le poste pilote
+
+- Comparaison en lecture seule de la fiche, du modèle SIP, du contexte chargé,
+  des journaux en base et du filtre de la page de statistiques.
+- Cause identifiée : le modèle impose un contexte restrictif sans enregistrement,
+  malgré `defaultlog` dans la fiche. Préparation locale d'un correctif isolé
+  préservant les restrictions, avec procédure de validation et retour arrière.
+- Détails et configuration proposée sous `.work/recording-pilot/`, exclus de Git.
+  Étude mise à jour. Aucune modification de production ni appel lancé.
+
+## 2026-09-15 — Audit serveur en lecture seule
+
+- SSH autorisé par Franck. Configuration réelle du contexte d'enregistrement,
+  scripts audio, tâches de nettoyage et interface de supervision inspectés.
+- Chaîne native disponible ; absence de règle à trois mois dans les emplacements
+  examinés et présence de MP3 anciens. Aucun nettoyage ou compte ajouté.
+- Note détaillée locale dans `.work/audits/`, hors dépôt public ; étude et état
+  actualisés. Aucun secret ni fichier audio conservé, aucun appel lancé.
+- Diff documentaire contrôlé. Ni migration, ni rechargement, ni installation,
+  ni changement de configuration serveur ; validation par un pilote à faire.
+
+## 2026-09-15 — Recherche sur la supervision des postes SIP
+
+- Besoin précisé : état technique des postes, appels, statistiques et fichiers
+  audio ; préserver le VICIdial actif, sans suivi de présence humaine.
+- Lecture des forums VICIdial et de la documentation Asterisk dans le navigateur
+  intégré. Piste `defaultlog` décrite par l'équipe VICIdial et exemple
+  communautaire de liste des postes identifiés, avec leurs limites.
+- Ajout de `SUPERVISION_ASTERISK_VICIDIAL.md` et mise à jour de l'état du projet.
+  Proposition seulement : aucune modification applicative, migration ou action
+  serveur. Aucun test téléphonique réalisé. Documentation relue et diff contrôlé.
 
 ## 2026-09-15 — Cadrage du softphone APISNIX
 

@@ -1,5 +1,31 @@
 # Construction et validation
 
+## Téléchargements publics — 17 septembre 2026
+
+À la demande de Franck, deux boutons sous le formulaire de contact de
+[l'accueil APISNIX CRM](https://apisnix-crm.com/#apisnix-downloads) distribuent
+les paquets actuels :
+
+| Plateforme | Lien direct | Taille |
+| --- | --- | --- |
+| Android `.3` | [APK](https://apisnix-crm.com/downloads/ApisnixPhone-Android-6.2.7-apisnix.3.apk) | 133 229 927 octets |
+| Windows compact `.2` | [EXE x64](https://apisnix-crm.com/downloads/ApisnixPhone-Windows-6.2.2-apisnix.2-x64.exe) | 157 022 414 octets |
+
+Les fichiers sont identiques aux paquets locaux décrits plus bas ; seules les
+copies publiques ont des noms plus lisibles. Leurs SHA-256 figurent aussi dans
+[SHA256SUMS.txt](https://apisnix-crm.com/downloads/SHA256SUMS.txt).
+Signature Android de développement et absence de signature Windows conservées.
+Les versions restent en cours d'essai ; aucun lancement automatique de logiciel
+ni changement Asterisk n'est associé aux boutons.
+
+Le lien « Code source et licences » pointe sur la révision publique
+`2b31cd214ffd03deca0177fa2101a6e29eff6968`, contenant les adaptations des deux
+versions et les scripts de reconstruction. Voir NOTICE.md pour la livraison
+des sources correspondantes de tous les composants. L'exploitation de l'accueil,
+ses sauvegardes et le retrait des boutons sont documentés exclusivement dans
+`docs/TELECHARGEMENTS_SOFTPHONES.md` du dépôt privé Gestion_CRM-APISNIX.
+Publier les prochaines versions sous de nouveaux noms avant de changer les liens.
+
 ## Recréer les sources
 
 Depuis la racine, avec Python 3 et Git :
@@ -157,6 +183,23 @@ d’appel restent à tester sur le nouveau pilote.
 Le poste de test n’a besoin que de l’installateur ; la signature Windows de
 diffusion reste à organiser.
 
+### Signature Windows et alertes de sécurité
+
+Depuis le signalement du 17 septembre, suivre
+[SIGNATURE_WINDOWS.md](SIGNATURE_WINDOWS.md) pour le diagnostic et la future
+signature sous l'identité APISNIX. Les tables de certificats de l'installateur
+`.2` et de l'application extraite sont vides. La DLL graphique signalée contient
+des certificats Microsoft, sans validation complète de confiance effectuée ici.
+
+Microsoft Artifact Signing Basic est proposé pour l'entreprise française ;
+accord sur la dépense, abonnement et validation d'identité encore nécessaires.
+Le workflow actuel produit toujours des pilotes non signés. La future chaîne
+devra signer les binaires applicatifs avant packaging, puis l'installateur,
+vérifier l'horodatage et calculer les nouveaux hashes avant publication.
+Aucun fichier public n'a été remplacé pendant ce diagnostic.
+Franck reporte ensuite le chantier de signature au profit de la supervision
+SIP : procédure conservée pour plus tard, aucune activation Azure à poursuivre.
+
 ### Premier pilote Windows conservé
 
 - Fichier : `dist/windows/ApisnixPhone-6.2.2-win64.exe`.
@@ -233,9 +276,35 @@ pas été consignés. Android et le nouveau format compact restent à tester.
 
 ## Production et retour arrière
 
-Aucun changement de serveur, donnée, routage, DNS ou pare-feu effectué. Aucune
-migration. Les applications de test sont distinctes du Linphone standard par
+Pour une intervention serveur, commencer par
+le dépôt privé `FranckThiago/Gestion_CRM-APISNIX`, son AGENTS.md puis
+`docs/TABLEAU_DE_BORD.md`. Il décrit les modèles fonctionnels, les suspensions commerciales,
+le workflow de réaffectation, les comptes d'administration et leurs mécanismes
+d'accès protégés. L'ancien dossier `docs/production-privee/` est une archive
+locale ; maintenir désormais les procédures dans le dépôt privé de gestion.
+Les détails ne sont pas destinés au dépôt public. La copie
+native d'un user ou d'une campagne peut reprendre des affectations et des
+droits ; changer seulement le nom ne suffit pas à isoler un nouveau client.
+
+La construction des softphones ne nécessite pas de modification du PBX.
+Des interventions d'enregistrement séparées ont ensuite été autorisées : un
+poste pilote activé, quatre contextes supplémentaires chargés, puis 26 postes
+affectés après validation des enregistrements du pilote. Deux postes ont
+ensuite été suspendus pour motif commercial sur demande de Franck ; leurs
+modèles SIP fonctionnels sont conservés dans la procédure de réactivation. Voir
+[l'état de la supervision](SUPERVISION_ASTERISK_VICIDIAL.md). Les sauvegardes
+restent protégées sur le serveur et les procédures détaillées hors dépôt.
+Pour les postes avec modèle SIP, Conf Override porte le contexte effectif.
+Phone Context est limité à 20 caractères dans la base actuelle : conserver
+un contexte restrictif de repli valide si le nom complet dépasse cette limite.
+Toujours contrôler le résultat dans Asterisk après génération native et
+rechargement SIP. Le retour arrière restaure les champs sauvegardés des seuls
+postes concernés, y compris le modèle s'il a été modifié, puis suit la même
+génération et vérification ; ne pas supprimer les enregistrements.
+Aucun changement DNS/pare-feu ni migration de schéma. Les applications de test sont distinctes du Linphone standard par
 leur identifiant. Pour arrêter le pilote, fermer/désinstaller ApisnixPhone et
 réutiliser le softphone habituel avec les accès existants, sans changement du PBX.
-Avant une diffusion commerciale : terminer l'identité, l'aide/confidentialité,
-les essais, la signature, les sources correspondantes et le canal de mise à jour.
+Pour finaliser la distribution après ces pilotes : terminer l'identité,
+l'aide/confidentialité, les essais, la signature, les sources correspondantes
+et le canal de mise à jour. La demande de publication du 17 septembre porte
+sur les fichiers actuels, sans présenter ces validations comme terminées.

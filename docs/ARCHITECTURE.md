@@ -18,6 +18,22 @@ apisnix-crm.com — Asterisk
 La signalisation SIP et le média audio sont deux flux distincts, gérés par le
 moteur existant. Aucun serveur intermédiaire APISNIX supplémentaire n'a été créé.
 
+## Application web PC prévue
+
+Le [plan web du 18 septembre](WEBPHONE_PLAN.md) décrit un troisième client,
+indépendant des adaptations Linphone : SPA statique React/TypeScript/Vite,
+SIP.js et WebRTC du navigateur. Signalisation WSS et audio DTLS-SRTP vers le
+PBX existant ; pas de remplacement du webphone VICIdial ni de moteur serveur.
+Journal et contacts locaux en V1, raccordement à un historique central séparé
+si demandé. Aucun mot de passe SIP persistant dans l'application.
+
+Le contrôleur téléphonique reste actif pendant la navigation entre les vues.
+Une implémentation démo sans réseau permet les tests d'interface. Les sources
+seront créées dans `webphone/`, car `apps/` reste ignoré pour les checkouts
+natifs. À cette date, seuls le plan et la maquette sont livrés ; ce client
+web n'est pas encore implémenté ou déployé. Les versions proposées, capacités
+et validations restantes figurent dans le plan, référence de ce périmètre.
+
 ## Sources de référence
 
 | Composant | Base | Référence |

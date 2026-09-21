@@ -1,11 +1,19 @@
 # État du projet
 
-Mis à jour le 15 septembre 2026.
+Mis à jour le 21 septembre 2026.
+
+Publication Git préparée le 21 septembre à la demande de Franck : plan web,
+maquette et documentation de reprise. La nouvelle règle est de committer et
+pousser les travaux validés sans reconfirmation, avec contrôle du périmètre
+et des secrets. L'application web reste à développer ; cette publication
+ne compile pas les clients natifs et ne déploie aucun service.
 
 ## Besoins confirmés
 
 - Nom commercial choisi : **ApisnixPhone**, sous la marque APISNIX.
-- Windows prioritaire, Android ensuite ; les interfaces peuvent être différentes.
+- Clients natifs : Windows prioritaire, Android ensuite ; les interfaces peuvent être différentes.
+- Nouvelle direction PC du 18 septembre : application web indépendante,
+  WebRTC existant, navigateur ouvert et PC éveillé acceptés ; voir le plan web.
 - Appels SIP, principalement sortants. Pas de plateforme CRM à reconstruire.
 - Serveur Asterisk `apisnix-crm.com`, comptes créés par Franck dans `phones`.
   Il s'agit des clients Asterisk directs, pas d'une intégration VICIdial spécifique.
@@ -23,6 +31,101 @@ Mis à jour le 15 septembre 2026.
 - Intérêt pour Mac et iPhone ; la réalisation initiale reste Windows/Android.
 
 ## Résultat réel
+
+### Webphone PC — dossier prêt pour le développement
+
+Franck choisit une véritable interface d'appels APISNIX, inspirée de
+Ringover/Kavkom : espace de travail clair et coloré, journal, contacts, favoris,
+drapeaux et panneau d'appel persistant. La référence complète est
+[WEBPHONE_PLAN.md](WEBPHONE_PLAN.md), avec une
+[maquette interactive locale](design/webphone-maquette.html), des données
+fictives et un appel simulé. Recherche officielle SIP.js/API navigateur,
+versions, écrans, fonctions, réglages, architecture, étapes et critères de
+validation consignés. AGENTS.md oriente les nouvelles conversations vers ce plan.
+
+Le code applicatif sera créé dans `webphone/` : React/TypeScript/Vite et SIP.js,
+avec développement en démo avant raccordement. L'application n'est pas encore
+construite, aucun appel réel n'a été testé depuis cette maquette. Son rendu et
+les principales interactions ont été contrôlés dans le navigateur intégré.
+
+La pile WebRTC actuellement utilisée par VICIdial est conservée. L'audit privé
+du 18 septembre confirme TLS/WSS et Franck confirme les appels en production ;
+aucun remplacement ou renouvellement de certificat n'est un préalable au
+développement. Préserver les contextes, restrictions, enregistrements,
+suspensions et le critère `is_webphone=N` des postes manuels supervisés.
+L'audit et les détails serveur restent dans Gestion_CRM-APISNIX.
+
+Le compte pilote, la destination d'essai et l'hébergement HTTPS sont à choisir
+avant les essais réels et le déploiement ; ils ne bloquent pas l'interface.
+Aucun accès ou changement serveur pendant la préparation du plan et de la
+maquette, aucune migration, aucun commit ni push. Les clients natifs restent
+disponibles dans leur état précédent.
+
+### Extension de périmètre à l'étude : supervision
+
+Les paragraphes suivants conservent l'historique initial de cette extension.
+Son état actuel et son exploitation sur Hermes font désormais autorité dans
+le dépôt privé Gestion_CRM-APISNIX, `docs/SUPERVISION_TECHNIQUE.md` ; ne pas
+reprendre les mentions historiques « aucun service déployé » comme état courant.
+
+Franck souhaite aussi superviser les postes SIP directs, y compris ceux créés
+dans `phones` sur un serveur VICIdial : connexion, appels en cours, journal,
+compteurs et enregistrements téléchargeables par équipe. Pas de suivi de
+présence humaine. Condition explicite : préserver le VICIdial actif.
+La [recherche documentation et forums](SUPERVISION_ASTERISK_VICIDIAL.md)
+identifie la piste native `defaultlog` pour les enregistrements et un
+collecteur séparé pour les états. Aucun collecteur de supervision déployé.
+
+Inspection SSH en lecture seule ensuite autorisée et effectuée : contexte natif
+et traitement MP3 présents ; rétention à trois mois non retrouvée. Aucun appel
+de test ni changement serveur pendant cet audit. Détails opérationnels
+conservés localement hors Git.
+
+À la suite d'un essai signalé sans enregistrement, un modèle SIP imposant son
+contexte restrictif a été identifié. Correctif autorisé et appliqué à un seul
+poste pilote : enregistrement natif avant renvoi au routage original, sans
+changer les restrictions. Sauvegardes serveur et contexte effectif vérifiés.
+Aucun service de supervision déployé.
+
+Le 16 septembre, les quatre variantes supplémentaires autorisées ont été
+installées et chargées, avec sauvegarde et vérification des routes. Franck a
+ensuite confirmé le bon fonctionnement des enregistrements du pilote ; des
+MP3 non vides ont aussi été vérifiés sur le serveur. Sur sa demande, 26 postes
+supplémentaires ont reçu leur contexte d'enregistrement par Conf Override.
+Deux modèles de poste différents ont été remplacés par ceux de leur groupe
+SIP classique, après confirmation. Le champ Phone Context est limité à
+20 caractères : pour les noms trop longs, il conserve le routage restrictif
+de repli et Conf Override porte le nom complet. Les 26 contextes effectifs et
+l'attribution au compte ont été vérifiés dans Asterisk après rechargement SIP,
+sans redémarrage. Cela ne remplace pas un essai réel sur chacun des 26 postes.
+Le suivi programmé reste en pause ; la suite a été réalisée sur demande directe.
+
+Franck a ensuite précisé que les modèles incompatibles servaient volontairement
+à suspendre les clients impayés. Deux postes ont été remis en suspension sur
+sa demande, sans changement de secrets ; disparition effective des peers
+vérifiée après rechargement. Une configuration atypique ne doit donc jamais
+être corrigée sans vérifier l'intention commerciale. Les références de comptes,
+groupes, copies, suspensions et interventions sont maintenant documentées dans
+le dépôt privé distinct `FranckThiago/Gestion_CRM-APISNIX`, dont l'entrée est
+`docs/TABLEAU_DE_BORD.md`. AGENTS.md dirige les futures tâches serveur vers
+cette mémoire portable ; `docs/production-privee/` reste une archive locale.
+Une consultation des groupes clients et de leur source d'abonnements complète
+désormais cette mémoire privée. Franck demande d'abord de comprendre l'existant,
+puis de ranger pas à pas : aucun nettoyage automatique de comptes, droits,
+affectations ou données. L'historique des identifiants réutilisés reste conservé.
+La comparaison couvre maintenant les clients actifs, leurs offres et leurs
+accès, avec les écarts et les explications métier consignés en privé. Les
+identifiants en production priment sur les anciennes annotations du fichier
+commercial ; les quantités et produits restent la référence de facturation.
+La supervision des postes SIP directs reste la prochaine fonctionnalité demandée.
+Un compte d'administration dédié, aux droits du compte de référence, a été
+créé à la demande explicite de Franck ; droits comparés, secret hors Git.
+L'historique reste conservé lors du recyclage des comptes, sur décision de
+Franck ; une séparation éventuelle reste une évolution future. Les corrections
+ciblées du fichier commercial et les règles de coupure ultérieures sont
+documentées dans le dépôt de gestion, sans données client à publier ici.
+
+### Softphone
 
 La base Linphone a été adaptée dans deux sources officielles verrouillées.
 Le nom, les identifiants applicatifs, la configuration serveur et le formulaire
@@ -80,6 +183,33 @@ existantes. Les protocoles du moteur sont conservés.
   Fichier : `dist/windows/ApisnixPhone-6.2.2-apisnix.2-win64.exe`.
   Premier installateur conservé ; nouvel essai réel de l’interface compacte
   encore requis. Le suivi de compilation est terminé.
+- Le 17 septembre, un client signale SmartScreen (« éditeur inconnu ») et une
+  alerte 360 sur `D3DCompiler_47.dll`. Inspection locale du paquet `.2` :
+  installateur et application interne non signés ; DLL extraite contenant des
+  certificats Microsoft. Cela ne valide pas la confiance Windows ni ne permet
+  de conclure à un faux positif antivirus. Aucun scan Windows exécuté ici.
+- Franck choisit la signature sous l'identité de son entreprise française
+  APISNIX. Option proposée : Microsoft Artifact Signing Basic ; abonnement
+  payant, validation d'identité et accès technique encore à organiser.
+  Aucun certificat APISNIX ni paquet signé produit. Voir
+  [diagnostic et procédure de signature](SIGNATURE_WINDOWS.md).
+- Franck reporte ensuite ce chantier pour reprendre la supervision SIP.
+  Signature Windows en attente ; aucun abonnement ni travail Apple relancé.
+
+### Téléchargements depuis l'accueil APISNIX
+
+Le 17 septembre, Franck demande de rendre les deux paquets actuels disponibles
+aux clients pendant qu'il poursuit ses essais. Deux boutons Android (vert) et
+Windows (bleu) sont publiés sous le formulaire de contact de
+[l'accueil APISNIX CRM](https://apisnix-crm.com/#apisnix-downloads).
+Les noms publics, liens et empreintes sont dans [OPERATIONS.md](OPERATIONS.md).
+
+Android `.3` et Windows compact `.2` sont inchangés : signature de développement
+Android, installateur Windows non signé. La mise à disposition ne remplace pas
+les essais encore attendus. Un lien donne accès aux patches, versions verrouillées,
+scripts et licences du dépôt public. Aucune compilation, migration ou modification
+du moteur SIP dans cette publication. Les sauvegardes et procédures du site sont
+maintenues dans le dépôt privé de gestion CRM.
 
 ### Mac et iPhone
 
@@ -91,7 +221,7 @@ paquet APISNIX iOS créé. Franck confirme ne pas avoir de compte Apple Develope
 et demande de laisser les versions Apple en attente. Aucun achat ni lancement
 de build Apple. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
 
-## Limites avant remise aux clients
+## Validations et distribution : points encore ouverts
 
 1. Contrôler visuellement les écrans sur appareil : logos principaux intégrés,
    couleurs d’accent passées au bleu APISNIX. Les anciens écrans ou ressources
@@ -104,15 +234,21 @@ de build Apple. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
    valide pas ces évolutions ni tous les cas détaillés ci-dessous.
 4. Vérifier connexion Asterisk, audio bidirectionnel, DTMF, casques, erreurs et
    reconnexion réseau avec des comptes de test dédiés.
-5. Préparer signatures de distribution, sources correspondantes et procédure
-   de mise à jour avant une diffusion commerciale. Sources du projet publiables dans le dépôt autorisé ; aucune release binaire.
+5. Préparer les signatures de diffusion finale, la livraison des sources
+   correspondantes de tous les composants et la procédure de mise à jour.
+   Les pilotes actuels sont téléchargeables sur le site à la demande de Franck ;
+   cela ne crée pas de nouvelle signature ni de release GitHub.
 6. Ne pas promettre la réception Android en veille : pas de service push APISNIX
    configuré. Les bibliothèques Firebase restent dans la base mais le projet
    Firebase de démonstration amont a été retiré.
 
 ## Environnement et traçabilité
 
-- Travail local sur macOS ; aucune opération sur Asterisk ou la production.
+- Softphone construit depuis macOS/GitHub. Des interventions Asterisk distinctes
+  ont ensuite été autorisées : audit en lecture, activation d'un poste pilote,
+  puis ajout de quatre contextes et affectation de 26 postes supplémentaires
+  après validation du pilote. Voir l'étude de
+  supervision ; détails et sauvegardes d'exploitation exclus du dépôt public.
 - Racine initialisée en Git ; dépôt public créé :
   https://github.com/FranckThiago/ApisnixPhone. Publication et lancement Windows
   autorisés explicitement par Franck le 15 septembre 2026. `apps/android` et

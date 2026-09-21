@@ -4,9 +4,15 @@ Softphone sous la marque **APISNIX**, basé sur les clients natifs Linphone.
 Priorité aux appels sur Windows, puis Android. Serveur préconfiguré :
 `apisnix-crm.com` ; connexion avec un identifiant et un mot de passe.
 SIP UDP par défaut, autres transports conservés dans les réglages avancés.
+Une application web PC distincte est en préparation pour utiliser le WebRTC
+existant, avec une interface APISNIX complète et sans installateur Windows.
 
 ## État actuel
 
+- **Web PC** : recherche et [plan de réalisation](docs/WEBPHONE_PLAN.md)
+  préparés, avec une [maquette navigable](docs/design/webphone-maquette.html).
+  Interface inspirée de Ringover/Kavkom, journal, contacts, drapeaux et panneau
+  d'appel. L'application SIP reste à développer ; aucun déploiement serveur.
 - **Android** : APK de test `6.2.7-apisnix.3` compilé. Il corrige l’indicatif
   pays ajouté automatiquement, y compris pour les comptes existants. Android 9
   minimum, ARM 32/64 bits ; nouvel essai réel à confirmer. Voir
@@ -27,16 +33,25 @@ L'installateur Windows compact est `dist/windows/ApisnixPhone-6.2.2-apisnix.2-wi
 (environ 150 Mio), non signé. Voir les opérations pour installation,
 empreinte et ancien pilote conservé.
 
+Depuis le 17 septembre, les versions actuelles sont disponibles depuis
+l'[accueil APISNIX CRM](https://apisnix-crm.com/#apisnix-downloads), à la demande
+de Franck pendant ses essais :
+
+- [Télécharger Android](https://apisnix-crm.com/downloads/ApisnixPhone-Android-6.2.7-apisnix.3.apk).
+- [Télécharger Windows](https://apisnix-crm.com/downloads/ApisnixPhone-Windows-6.2.2-apisnix.2-x64.exe).
+
 ## Documentation
 
 - [État du projet, limites et prochaines étapes](docs/PROJECT_STATE.md)
+- [Webphone PC : plan, design, fonctions, réglages et reprise](docs/WEBPHONE_PLAN.md)
 - [Architecture et versions](docs/ARCHITECTURE.md)
 - [Reconstruction, installation et validation](docs/OPERATIONS.md)
 - [Étude des solutions](docs/ETUDE_SOFTPHONE.md)
 - [Journal des changements](docs/AI_CHANGELOG.md)
 
-Les sources de travail sont dans `apps/`. Les modifications conservées pour
+Les sources de travail natives sont dans `apps/`. Les modifications conservées pour
 reconstruction sont dans `patches/`, avec leurs références dans
 `sources.lock.json`. Voir les procédures avant de recréer un dossier existant.
 Les licences et crédits Linphone sont conservés ; la distribution des binaires
 nécessitera aussi la mise à disposition des sources correspondantes.
+Le nouveau code web sera créé dans `webphone/`, hors des checkouts natifs ignorés.
