@@ -528,7 +528,7 @@ composants suffisent. Aucun secret ou client réel dans les fixtures.
 | 3 | Domaine numéros, stockage, contrôleur démo et transitions | Tests ciblés ; aucune communication PBX pendant la QA |
 | 4 | Adaptateur SIP.js et gestion audio | Enregistrement et appels prêts à être essayés, secrets en mémoire |
 | 5 | Pilote autorisé et disponible | Audio, DTMF, attente, règles métier et enregistrements réellement vérifiés |
-| 6 | Release HTTPS et validation finale | Publiée le 21 septembre : `20260921-webphone-2` réactivée à la demande de Franck ; fonctionnement hors navigateur intégré signalé, nouvel essai c3ecac7 attendu ; reprise dans OPERATIONS.md |
+| 6 | Release HTTPS et validation finale | Publiée le 21 septembre : `20260921-webphone-2` réactivée à la demande de Franck ; fonctionnement hors navigateur intégré signalé, WSS et RTP bidirectionnels sans perte vérifiés ; appels entrants/sortants et audio confirmés par Franck ; test A/B distinct ; reprise dans OPERATIONS.md |
 
 Les lots 1–4 peuvent démarrer sans connaître le compte pilote ni l'URL publique.
 Ne pas laisser ces deux choix bloquer le travail d'interface. Ne pas annoncer

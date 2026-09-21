@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 21 septembre 2026 — Clôture du déploiement et contrôle RTP réel
+
+- Release 2 c3ecac7 maintenue. Asterisk en lecture seule à 23:27:46 Douala :
+  WSS/ApisnixPhoneWeb, contexte conservé, 3794 paquets reçus et 3488 envoyés
+  en 1 min 19, zéro perte signalée. Appel entrant décroché dans la supervision.
+- HTTPS/cache/JS/en-têtes/SPA et manifeste revérifiés ; Caddy/supervision actifs,
+  collecteurs frais. Aucun changement PBX/DNS/Caddy, aucun appel par l'agent.
+- Franck confirme les appels entrants et sortants avec audio dans les deux
+  sens hors navigateur intégré. Le test A/B reste distinct.
+  Le transport RTP ne prouve pas seul le contenu audible. Documentation de
+  l'état courant et limites actualisée ; historique des essais conservé.
+
 ## 21 septembre 2026 — Réactivation c3ecac7 pour essai hors navigateur intégré
 
 - Franck signale que la voix fonctionne hors du navigateur intégré Codex et

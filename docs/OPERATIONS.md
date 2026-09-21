@@ -374,15 +374,19 @@ release. HTTPS public 200, HTTP 308, en-têtes ci-dessus, assets immuables,
 index et repli SPA 200 sans cache ; empreinte du JS servi identique au build.
 Logo et connexion live visibles, console/CSP sans erreur. WSS vers le PBX
 avec l'origine publique accepté (101, sip), sans inscription. Essai de Franck
-sur la release 2 terminé en échec audio ; aucun mot de passe saisi par l'agent.
+initial dans le navigateur intégré terminé en échec audio ; aucun mot de
+passe saisi par l'agent.
 
 La release 2 avait été retirée à 23:17:20 après un essai dans le navigateur
 intégré de Codex (voix inaudible malgré réception de paquets RTP). Franck
 signale ensuite un fonctionnement hors de ce navigateur et demande sa remise
 en ligne. Réactivation du même artefact après contrôle du manifeste et absence
 d'appel web ; nouveau JS et cache HTTP vérifiés. L'hypothèse d'un problème
-propre au navigateur intégré reste à confirmer ; nouvel essai de c3ecac7 dans
-le navigateur habituel attendu. Release 1 conservée pour retour ciblé.
+propre au navigateur intégré reste à confirmer. Contrôle Asterisk après
+réactivation : 3794 paquets reçus / 3488 envoyés en 1 min 19, aucune perte
+signalée ; WSS et contexte conservés. Franck signale le fonctionnement hors
+Codex et confirme les appels entrants/sortants avec audio dans les deux sens.
+Le test A/B de cette version reste à réaliser séparément. Release 1 conservée pour retour ciblé.
 
 ### Publier une release suivante
 

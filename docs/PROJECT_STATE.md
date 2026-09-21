@@ -1,5 +1,29 @@
 # État du projet
 
+## État courant — déploiement finalisé, contrôle Asterisk du 21 septembre
+
+**Release active : 20260921-webphone-2 (c3ecac7)** sur
+https://phone.apisnix-crm.com/. Franck confirme **appels sortants et entrants réussis, son dans les deux
+sens**, hors du navigateur intégré de Codex, après réactivation.
+
+À **23:27:46 Africa/Douala (22:27:46 UTC)**, Asterisk confirme le pilote
+inscrit en WSS avec ApisnixPhoneWeb, chiffrement/RTCP mux actifs et contexte
+d'enregistrement conservé. Sur un appel de 1 min 19 : **3794 paquets reçus,
+3488 envoyés, 0 % de pertes signalées dans les deux sens**. L'appel entrant
+est classé décroché dans la supervision. La panne « zéro paquet reçu » n'est
+plus présente sur cet essai. Ces compteurs prouvent le transport ; Franck confirme séparément
+l'audio dans les deux sens ainsi que les appels sortants et entrants :
+« les 2 et c'est top ». Le test A/B de ligne remplacée reste distinct. Aucun enregistrement audio de cet appel
+confirmé à ce contrôle.
+
+Contrôles finaux : manifeste identique, JS servi conforme, HTTPS 200,
+redirection 308, index sans cache, assets immuables, en-têtes et repli SPA
+conformes. Caddy et supervision actifs, collecteurs frais ; aucun changement
+PBX, DNS ou Caddy pendant la réactivation et ces vérifications. Les 34 tests,
+le typage, le lint et le build avaient réussi pour cet artefact inchangé.
+Les échecs historiques dans le navigateur intégré ne permettent pas de
+conclure à un défaut général ; leur cause exacte n'a pas été établie.
+
 ## Release 2 remise en ligne à la demande de Franck
 
 Le 21 septembre à **23:23:45 Africa/Douala (22:23:45 UTC)**,
