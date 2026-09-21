@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 21 septembre 2026 — Réactivation c3ecac7 pour essai hors navigateur intégré
+
+- Franck signale que la voix fonctionne hors du navigateur intégré Codex et
+  demande explicitement de remettre c3ecac7. Release 2 réactivée à 23:23:45
+  Douala ; manifeste intact et zéro appel web au contrôle 23:23:38.
+- Même artefact déjà validé par 34 tests ; seul current change, sans reload
+  Caddy ni onglet, sans mutation PBX/DNS/supervision. HTTPS, JS et cache validés.
+- L'échec précédent est contextualisé au navigateur intégré ; sa cause reste
+  indéterminée. Nouvel essai de Franck dans son navigateur habituel attendu.
+  Sources de vérité actualisées ; historique du retour conservé.
+
 ## 2026-09-21 — Release 2 publiée pour rétablir l'émission de voix
 
 - Source c3ecac7, release `20260921-webphone-2`, bascule 23:12:20 Douala.

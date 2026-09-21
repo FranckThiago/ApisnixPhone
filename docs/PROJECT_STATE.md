@@ -1,8 +1,25 @@
 # État du projet
 
+## Release 2 remise en ligne à la demande de Franck
+
+Le 21 septembre à **23:23:45 Africa/Douala (22:23:45 UTC)**,
+`20260921-webphone-2` (**c3ecac7**) est réactivée. Franck signale que la voix
+fonctionne hors du navigateur intégré de Codex et demande de remettre cette
+version pour réessayer. L'échec précédent concernait son essai dans ce
+navigateur intégré ; il ne permet pas de conclure à un défaut dans tous les
+navigateurs. La cause propre au navigateur intégré reste non établie.
+
+Même release, manifeste SHA-256 revérifié, 34 tests déjà réussis ; aucune
+recompilation ni modification de code. Aucun appel web au contrôle préalable.
+Seul le lien current est basculé, sans recharger un onglet. Caddy, DNS, PBX et
+supervision inchangés. Recharger dans le navigateur habituel pour prendre la
+release 2 ; nouvel essai de cette version par Franck encore attendu.
+
+Les paragraphes suivants conservent l'historique de publication et de retour.
+
 ## Publication HTTPS du 21 septembre 2026
 
-**Version servie après retour : 20260921-webphone-1**, source **d9b9da4**, sur
+**Historique : version servie après le premier retour : 20260921-webphone-1**, source **d9b9da4**, sur
 https://phone.apisnix-crm.com/. La release 2 (c3ecac7) a été publiée à
 23:12:20 Africa/Douala (22:12:20 UTC),
 après contrôle de l'absence d'appel ApisnixPhoneWeb. 34 tests, typage, lint et
