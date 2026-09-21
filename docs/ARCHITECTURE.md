@@ -40,9 +40,9 @@ REGISTER, DTMF RTP, journaux SIP coupés, mot de passe en mémoire) ;
 `sipEnvironment.ts` charge SIP.js à la demande, crée l'élément audio hors des
 vues et tient un Web Lock par compte. Le contrôleur est choisi au chargement :
 `VITE_APP_MODE=live` avec `VITE_SIP_DOMAIN` et `VITE_SIP_WSS_URL`, sinon démo.
-`audio.ts` fait passer le micro par une chaîne Web Audio (périphérique → gain →
-piste envoyée) : sensibilité et changement de micro agissent en cours d'appel
-sans renégociation ; la sonnerie est générée, sans fichier audio.
+`audio.ts` transmet le micro tel quel à 100 % de sensibilité ; une chaîne Web
+Audio (périphérique → gain → piste envoyée) ne s'intercale que si le réglage a
+été déplacé, avec repli sur le micro brut si elle ne démarre pas ; la sonnerie est générée, sans fichier audio.
 `src/domain/numbers.ts` sépare saisie, numéro composé et métadonnées
 d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés, stockés avec
 les autres données locales. `src/storage/` garde les données en

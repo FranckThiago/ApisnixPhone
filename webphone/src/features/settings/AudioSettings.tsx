@@ -49,7 +49,7 @@ function MicTest({ onAllowed }: { onAllowed(): void }) {
     const mic = new MicPipeline({ deviceId: preferences.inputDevice, gain: preferences.micGain,
                                   echoCancellation: preferences.echoCancellation, noiseSuppression: preferences.noiseSuppression });
     try {
-      await mic.open();
+      await mic.open(true);
     } catch (failure) {
       mic.close();
       return setError(microphoneErrorMessage(failure));
@@ -83,12 +83,12 @@ export function AudioSettings() {
   return (
     <>
       {demo && <p className="callout">Démonstration : aucun microphone n’est demandé. Les réglages ci-dessous s’appliqueront à votre ligne réelle.</p>}
-      <label className="setting"><span><b>Microphone</b><small>{devices.inputs.length ? 'Changement possible même pendant un appel.' : 'Micro du système. La liste apparaît après un premier test autorisé.'}</small></span>
+      <label className="setting"><span><b>Microphone</b><small>{devices.inputs.length ? 'Pris en compte à l’appel suivant.' : 'Micro du système. La liste apparaît après un premier test autorisé.'}</small></span>
         <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}>
           <option value="default">Micro du système</option>
           {devices.inputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>Sensibilité du micro</b><small>{preferences.micGain} % — {preferences.micGain === 100 ? 'niveau d’origine' : preferences.micGain > 100 ? 'on vous entend plus fort' : 'on vous entend moins fort'}. Agit en direct pendant l’appel.</small></span>
+      <label className="setting"><span><b>Sensibilité du micro</b><small>{preferences.micGain} % — {preferences.micGain === 100 ? 'niveau d’origine' : preferences.micGain > 100 ? 'on vous entend plus fort' : 'on vous entend moins fort'}. À 100 %, votre micro est transmis tel quel. Un changement fait pendant un appel s’applique à l’appel suivant.</small></span>
         <input type="range" min={0} max={200} step={5} value={preferences.micGain} aria-label="Sensibilité du micro" onChange={event => set({ micGain: Number(event.target.value) })} /></label>
       {!demo && <MicTest onAllowed={refreshDevices} />}
       <label className="setting"><span><b>Casque / sortie</b><small>{sinkSupported ? 'Sortie du système par défaut.' : 'Ce navigateur ne permet pas de choisir : la sortie du système est utilisée.'}</small></span>

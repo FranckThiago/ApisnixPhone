@@ -158,7 +158,7 @@ Entrée pour valider.
 ![Réglages](guide/13-reglages.png)
 
 - **Audio** : choix du micro et du casque, **sensibilité du micro** (si l'on vous
-  entend trop faible ou trop fort — modifiable pendant un appel), **volume
+  entend trop faible ou trop fort — à régler avant l'appel), **volume
   d'écoute**, **Tester le micro** avec une barre de niveau, sonnerie, sons de la
   ligne, annulation d'écho, réduction de bruit.
 - **Apparence** : thème Clair, Sombre ou Système ; densité d'affichage.

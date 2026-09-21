@@ -28,21 +28,18 @@ export class MicPipeline {
   }
 
   /** Asks for the microphone; rejects with the browser's error when refused or missing. */
-  async open(): Promise<MediaStream> {
+  /** `forceChain` is for the settings' level meter, which needs the chain even at 100 %. */
+  async open(forceChain = false): Promise<MediaStream> {
     const input = await navigator.mediaDevices.getUserMedia(this.constraints());
+    // At the original level there is nothing to adjust: the microphone goes straight to the call.
+    // The gain chain is one more thing that can fail, so only those who move the setting go through it.
+    if (this.settings.gain === 100 && !forceChain) return this.direct(input);
     // The output unlocked at sign-in is reused: a context created here, without a recent click, may stay
     // asleep, and a sleeping chain produces no audio at all — the far end would hear nothing.
     this.context ??= soundContext() ?? new AudioContext();
     if (this.context.state !== 'running') await this.context.resume().catch(() => undefined);
-    if (this.context.state !== 'running') {
-      // Being heard matters more than the sensitivity setting: send the microphone as it is.
-      this.input?.getTracks().forEach(track => track.stop());
-      this.source?.disconnect();
-      this.source = undefined;
-      this.input = input;
-      this.bypassed = true;
-      return input;
-    }
+    // Being heard matters more than the sensitivity setting: send the microphone as it is.
+    if (this.context.state !== 'running') return this.direct(input);
     this.bypassed = false;
     this.gainNode ??= this.context.createGain();
     this.destination ??= this.context.createMediaStreamDestination();
@@ -50,6 +47,15 @@ export class MicPipeline {
     this.gainNode.connect(this.destination);
     this.attach(input);
     return this.destination.stream;
+  }
+
+  private direct(input: MediaStream) {
+    this.input?.getTracks().forEach(track => track.stop());
+    this.source?.disconnect();
+    this.source = undefined;
+    this.input = input;
+    this.bypassed = true;
+    return input;
   }
 
   private attach(input: MediaStream) {

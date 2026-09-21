@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-09-21 — ApisnixPhone Web : chaîne de sensibilité du micro activée seulement sur demande
+
+- Franck propose de retirer le réglage s'il pose problème. Choix retenu : à
+  100 %, le micro est transmis directement, sans chaîne Web Audio ; la chaîne ne
+  sert qu'à ceux qui déplacent le réglage, avec repli sur le micro brut si elle
+  ne démarre pas. Contrepartie assumée : un changement de sensibilité ou de micro
+  pendant un appel s'applique à l'appel suivant. 34 tests. À inclure dans la
+  release 20260921-webphone-2.
+
 ## 2026-09-21 — ApisnixPhone Web : voix non transmise sur le site déployé
 
 - Premier essai de Franck sur phone.apisnix-crm.com (déployé par l'autre agent) :
