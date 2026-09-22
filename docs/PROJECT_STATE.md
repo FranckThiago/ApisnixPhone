@@ -1,5 +1,16 @@
 # État du projet
 
+## Diagnostic des refus d'appel SIP — 22 septembre 2026
+
+ApisnixPhone affiche à la fin de l'appel le code et l'explication des refus
+SIP 403, 404, 480, 486, 488 et 503. Le même diagnostic reste dans le détail
+du Journal local si l'appel y est conservé. `480` est classé comme échec
+temporaire, tandis que `486` garde l'issue « Occupé ». Les codes proviennent de
+la réponse reçue par le navigateur ; un appel réel produisant chacun de ces
+refus n'a pas été provoqué. [Guide utilisateur](GUIDE_UTILISATEUR.md#5-à-la-fin-de-lappel).
+Publication Hermes en préparation ; la release active reste `20260922-tab-lock`
+jusqu'à la bascule vérifiée.
+
 ## État courant — release des sons d'appel déployée le 22 septembre
 
 Les appels sortants jouent désormais une tonalité locale « toup toup » dès la

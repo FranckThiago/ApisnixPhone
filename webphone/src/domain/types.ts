@@ -28,6 +28,8 @@ export interface CallRecord {
   answeredAt?: number;
   endedAt: number;
   outcome: CallOutcome;
+  /** Diagnostic shown in this device's journal when an observed call failed. */
+  failure?: string;
   note?: string;
   tags: string[];
 }

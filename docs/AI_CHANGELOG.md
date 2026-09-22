@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 2026-09-22 — Diagnostics des refus SIP en appel sortant
+
+- Les réponses SIP 403, 404, 480, 486, 488 et 503 reçues pendant un appel
+  sortant affichent leur code, leur libellé et une explication française dans
+  la fiche de fin d'appel. Le diagnostic est conservé dans le Journal local.
+  `480` désigne désormais un échec temporaire et `486` reste « Occupé ».
+- La cause SIP est effacée au prochain appel. Deux tests couvrent les six
+  réponses et l'absence de report d'une erreur sur l'appel suivant ; typage,
+  lint et suite complète réussis. Aucun refus réel n'a été provoqué sur le PBX.
+- Guide utilisateur et PDF actualisés ; la publication Hermes est décrite dans
+  [OPERATIONS.md](OPERATIONS.md) une fois contrôlée.
+
 ## 2026-09-22 — Reconnexion immédiate après déconnexion dans le même onglet
 
 - Franck signale que se déconnecter puis se reconnecter aussitôt affiche

@@ -112,7 +112,7 @@ describe('SIP controller', () => {
   });
 
   it('maps refusals to outcomes; an outgoing call is never missed', async () => {
-    for (const [status, outcome] of [[486, 'busy'], [480, 'no-answer'], [603, 'declined'], [503, 'failed']] as const) {
+    for (const [status, outcome] of [[486, 'busy'], [480, 'failed'], [603, 'declined'], [503, 'failed']] as const) {
       const h = harness();
       await ready(h);
       h.phone.call('x', '+33100000001');
@@ -128,6 +128,44 @@ describe('SIP controller', () => {
     h.phone.hangup();
     h.delegate.onCallHangup(session('out'));
     expect(h.phone.getSnapshot().call?.outcome).toBe('cancelled');
+  });
+
+  it('keeps the exact SIP refusal and its meaning on the ended call', async () => {
+    const cases = [
+      [403, 'failed', 'Forbidden — appel interdit par le serveur'],
+      [404, 'failed', 'Not Found — numéro ou destination introuvable'],
+      [480, 'failed', 'Temporarily Unavailable — correspondant temporairement indisponible'],
+      [486, 'busy', 'Busy Here — ligne occupée'],
+      [488, 'failed', 'Not Acceptable Here — média ou codec refusé'],
+      [503, 'failed', 'Service Unavailable — service téléphonique indisponible'],
+    ] as const;
+    for (const [status, outcome, meaning] of cases) {
+      const h = harness();
+      await ready(h);
+      h.phone.call('x', '+33100000001');
+      await vi.advanceTimersByTimeAsync(0);
+      h.invite.onReject(status);
+      h.delegate.onCallHangup(session('out'));
+      expect(h.phone.getSnapshot().call).toMatchObject({
+        phase: 'ended', outcome, failure: `SIP ${status} ${meaning}.`,
+      });
+      expect(h.phone.getSnapshot().error).toBe(`SIP ${status} ${meaning}.`);
+    }
+  });
+
+  it('does not carry a SIP refusal into the next call', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.invite.onReject(403);
+    h.delegate.onCallHangup(session('out'));
+    h.phone.dismiss();
+    h.phone.call('x', '+33100000002');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', outcome: 'answered', failure: undefined });
   });
 
   it('never answers by itself and keeps the remote identity as plain text', async () => {

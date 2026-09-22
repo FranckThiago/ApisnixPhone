@@ -120,6 +120,7 @@ export function Journal() {
                           <div><dt>Numéro composé</dt><dd className="mono">{call.dialTarget}</dd></div>
                           <div><dt>Début</dt><dd>{formatDay(call.startedAt)} à {formatTime(call.startedAt)}</dd></div>
                           <div><dt>Issue observée</dt><dd>{OUTCOME_LABELS[call.outcome]}</dd></div>
+                          {call.failure && <div><dt>Diagnostic</dt><dd>{call.failure}</dd></div>}
                           <div><dt>Conversation</dt><dd>{seconds ? formatDuration(seconds) : '—'}</dd></div>
                         </dl>
                         <div className="tags" role="group" aria-label="Tags de l’appel">

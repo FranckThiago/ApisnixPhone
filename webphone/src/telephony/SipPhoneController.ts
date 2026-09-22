@@ -63,7 +63,15 @@ export interface SipEnvironment {
   acquireLine(name: string): Promise<(() => void | Promise<void>) | null>;
 }
 
-const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 480: 'no-answer', 487: 'cancelled' };
+const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
+const SIP_CALL_FAILURES: Record<number, string> = {
+  403: 'SIP 403 Forbidden — appel interdit par le serveur.',
+  404: 'SIP 404 Not Found — numéro ou destination introuvable.',
+  480: 'SIP 480 Temporarily Unavailable — correspondant temporairement indisponible.',
+  486: 'SIP 486 Busy Here — ligne occupée.',
+  488: 'SIP 488 Not Acceptable Here — média ou codec refusé.',
+  503: 'SIP 503 Service Unavailable — service téléphonique indisponible.',
+};
 const RECONNECT_GRACE = 3 * 4000 + 6000;
 /** How often the PBX is asked who holds the account: quick enough to stop shared credentials, light for the server. */
 const LINE_CHECK = 45_000;
@@ -83,6 +91,7 @@ export class SipPhoneController implements PhoneController {
   private wanted = false;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private rejection?: CallOutcome;
+  private rejectionReason?: string;
   private localHangup = false;
   private dtmfQueue: Promise<void> = Promise.resolve();
   private micFailure?: string;
@@ -191,6 +200,7 @@ export class SipPhoneController implements PhoneController {
     onCallReceived: session => {
       this.session = session;
       this.rejection = undefined;
+      this.rejectionReason = undefined;
       this.localHangup = false;
       const number = session.remoteIdentity.uri.user ?? '';
       this.update({ call: { id: session.id, direction: 'inbound', rawInput: number, dialTarget: number, remoteName: session.remoteIdentity.displayName || undefined,
@@ -297,8 +307,8 @@ export class SipPhoneController implements PhoneController {
     clearTimeout(this.quietTimer);
     if (this.remoteAudio) this.remoteAudio.muted = false;
     const micFailure = this.micFailure;
-    const failure = micFailure ?? this.interruption;
-    this.micFailure = this.interruption = undefined;
+    const failure = micFailure ?? this.interruption ?? this.rejectionReason;
+    this.micFailure = this.interruption = this.rejectionReason = undefined;
     clearTimeout(this.holdTimer);
     this.updateCall({ phase: 'ended', outcome: micFailure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
     // Said out loud as well: a failed call must never leave the person wondering why.
@@ -355,6 +365,7 @@ export class SipPhoneController implements PhoneController {
   call(rawInput: string, dialTarget: string, remoteName?: string) {
     if (this.snapshot.connection !== 'ready' || this.snapshot.call || !this.manager || !/^[+\d*#]+$/.test(dialTarget)) return;
     this.rejection = undefined;
+    this.rejectionReason = undefined;
     this.localHangup = false;
     const id = `sip-${Date.now()}`;
     this.update({ call: { id, direction: 'outbound', rawInput, dialTarget, remoteName, phase: 'dialing', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' }, error: undefined });
@@ -369,7 +380,9 @@ export class SipPhoneController implements PhoneController {
         },
         onReject: response => {
           this.callProgress.stop();
-          this.rejection = REJECTIONS[response.message.statusCode ?? 0] ?? 'failed';
+          const status = response.message.statusCode ?? 0;
+          this.rejection = REJECTIONS[status] ?? 'failed';
+          this.rejectionReason = SIP_CALL_FAILURES[status];
         },
       },
     }).catch(error => {

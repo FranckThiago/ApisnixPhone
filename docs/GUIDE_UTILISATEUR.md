@@ -97,7 +97,24 @@ L'application indique l'issue et la durée. Vous pouvez, en quelques secondes :
 - **Rappeler** tout de suite, **Ajouter** le numéro à vos contacts, ou
   **Terminer**.
 
-Si un appel échoue à cause du micro, un encadré rouge explique quoi faire.
+Si un appel échoue à cause du micro ou si le serveur refuse l'appel, un encadré
+rouge explique la cause. Le code SIP reçu reste consultable dans le détail de
+l'appel du **Journal** sur cet appareil.
+
+### Comprendre un refus SIP
+
+| Code affiché | Signification |
+| --- | --- |
+| SIP 403 Forbidden | Appel interdit par le serveur. |
+| SIP 404 Not Found | Numéro ou destination introuvable. |
+| SIP 480 Temporarily Unavailable | Correspondant temporairement indisponible. |
+| SIP 486 Busy Here | Ligne occupée. |
+| SIP 488 Not Acceptable Here | Média ou codec refusé. |
+| SIP 503 Service Unavailable | Service téléphonique indisponible. |
+
+Ces codes indiquent la réponse reçue par ApisnixPhone ; ils ne désignent pas à
+eux seuls la cause exacte dans la configuration du serveur. Communiquez le code
+à votre administrateur si le problème se répète.
 
 ## 6. Recevoir un appel
 
