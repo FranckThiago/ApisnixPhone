@@ -1,5 +1,5 @@
 import type { CallOutcome } from '../domain/types';
-import { MicPipeline, microphoneErrorMessage, primeElement, Ringer } from './audio';
+import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, Ringer } from './audio';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /** The part of SIP.js `Web.SessionManager` this application relies on. */
@@ -97,7 +97,8 @@ export class SipPhoneController implements PhoneController {
   private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, echoCancellation: true, noiseSuppression: true };
   private mic = new MicPipeline({ deviceId: 'default', gain: 100, echoCancellation: true, noiseSuppression: true });
 
-  constructor(private config: SipConfig, private environment: SipEnvironment) {}
+  constructor(private config: SipConfig, private environment: SipEnvironment,
+              private callProgress: CallProgressSoundPlayer = new CallProgressSounds()) {}
 
   getSnapshot = () => this.snapshot;
 
@@ -198,6 +199,10 @@ export class SipPhoneController implements PhoneController {
     },
     onCallAnswered: () => {
       this.ringer.stop();
+      const call = this.snapshot.call;
+      const outbound = call?.direction === 'outbound' && call.phase !== 'active';
+      this.callProgress.stop();
+      if (outbound) this.callProgress.answered(this.audio.volume / 100);
       // Talk time starts here, never at the ringing or early media.
       this.updateCall({ phase: 'active', answeredAt: Date.now() });
       void this.remoteAudio?.play().catch(() => this.update({ audioBlocked: true }));
@@ -286,6 +291,7 @@ export class SipPhoneController implements PhoneController {
 
   private finish(outcome: CallOutcome) {
     this.ringer.stop();
+    this.callProgress.stop();
     this.mic.close();
     this.session = undefined;
     clearTimeout(this.quietTimer);
@@ -326,6 +332,7 @@ export class SipPhoneController implements PhoneController {
     clearTimeout(this.reconnectTimer);
     clearInterval(this.lineWatch);
     this.ringer.stop();
+    this.callProgress.stop();
     this.mic.close();
     const manager = this.manager;
     this.manager = undefined;
@@ -355,8 +362,15 @@ export class SipPhoneController implements PhoneController {
     const destination = `sip:${dialTarget.replace(/#/g, '%23')}@${this.config.domain}`;
     this.manager.call(destination, undefined, {
       requestDelegate: {
-        onProgress: () => { if (this.snapshot.call?.id === id && this.snapshot.call.phase === 'dialing') this.updateCall({ phase: 'ringing-out' }); },
-        onReject: response => { this.rejection = REJECTIONS[response.message.statusCode ?? 0] ?? 'failed'; },
+        onProgress: () => {
+          if (this.snapshot.call?.id !== id || this.snapshot.call.phase !== 'dialing') return;
+          this.updateCall({ phase: 'ringing-out' });
+          this.callProgress.startRingback(this.audio.volume / 100);
+        },
+        onReject: response => {
+          this.callProgress.stop();
+          this.rejection = REJECTIONS[response.message.statusCode ?? 0] ?? 'failed';
+        },
       },
     }).catch(error => {
       if (this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
@@ -384,6 +398,7 @@ export class SipPhoneController implements PhoneController {
     if (!call || call.phase === 'ended' || call.phase === 'ending') return;
     if (call.phase === 'ringing-in') return this.decline();
     this.localHangup = true;
+    this.callProgress.stop();
     if (!this.session || !this.manager) return this.finish(call.answeredAt ? 'answered' : 'cancelled');
     this.updateCall({ phase: 'ending' });
     this.manager.hangup(this.session).catch(() => this.finish(call.answeredAt ? 'answered' : 'cancelled'));
@@ -449,5 +464,9 @@ export class SipPhoneController implements PhoneController {
     this.mic.setGain(settings.micGain);
     this.mic.update({ echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression });
     if (!settings.ringtone) this.ringer.stop();
+    if (this.snapshot.call?.phase === 'ringing-out') {
+      this.callProgress.stop();
+      this.callProgress.startRingback(settings.volume / 100);
+    }
   }
 }

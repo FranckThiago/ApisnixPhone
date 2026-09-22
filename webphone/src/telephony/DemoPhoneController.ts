@@ -1,5 +1,5 @@
 import type { CallOutcome } from '../domain/types';
-import { Ringer } from './audio';
+import { CallProgressSounds, type CallProgressSoundPlayer, Ringer } from './audio';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /**
@@ -15,6 +15,8 @@ export class DemoPhoneController implements PhoneController {
   private sequence = 0;
   private ringer = new Ringer();
   private ringtone = { enabled: true, volume: 0.8 };
+
+  constructor(private callProgress: CallProgressSoundPlayer = new CallProgressSounds()) {}
 
   getSnapshot = () => this.snapshot;
 
@@ -63,6 +65,7 @@ export class DemoPhoneController implements PhoneController {
   async disconnect() {
     this.clearTimers();
     this.ringer.stop();
+    this.callProgress.stop();
     this.update({ connection: 'offline', account: null, call: null, error: undefined });
   }
 
@@ -74,13 +77,19 @@ export class DemoPhoneController implements PhoneController {
       call: { id, direction: 'outbound', rawInput, dialTarget, remoteName, phase: 'dialing', muted: false,
               holdPending: false, startedAt: Date.now(), dtmf: '' },
     });
-    this.later(800, () => this.updateCall(id, { phase: 'ringing-out' }));
+    this.later(800, () => {
+      this.updateCall(id, { phase: 'ringing-out' });
+      this.callProgress.startRingback(this.ringtone.volume);
+    });
     const last = dialTarget.slice(-1);
     const script: Record<string, [number, CallOutcome]> = { '9': [2600, 'busy'], '8': [9000, 'no-answer'], '7': [1800, 'failed'] };
     const ending = script[last];
     if (ending) this.later(ending[0], () => this.finish(id, ending[1]));
     // Talk time starts at the answer, never at the ringing.
-    else this.later(3400, () => this.updateCall(id, { phase: 'active', answeredAt: Date.now() }));
+    else this.later(3400, () => {
+      this.callProgress.answered(this.ringtone.volume);
+      this.updateCall(id, { phase: 'active', answeredAt: Date.now() });
+    });
   }
 
   /** Demo only: lets the incoming-call screens be tried. */
@@ -121,6 +130,7 @@ export class DemoPhoneController implements PhoneController {
     if (!call || call.id !== id || call.phase === 'ended') return;
     this.clearTimers();
     this.ringer.stop();
+    this.callProgress.stop();
     this.updateCall(id, { phase: 'ended', outcome, endedAt: Date.now(), holdPending: false });
   }
 

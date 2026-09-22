@@ -1,6 +1,16 @@
 # État du projet
 
-## État courant — déploiement finalisé, contrôle Asterisk du 21 septembre
+## État courant — sons de progression d'appel préparés le 22 septembre
+
+Les appels sortants jouent désormais une tonalité locale « toup toup » dès la
+progression SIP indiquant que le correspondant sonne, puis un bref « gling »
+au décroché. La tonalité s'arrête immédiatement au décroché, au refus, à
+l'annulation, à la fin d'appel et à la déconnexion. Les sons sont générés par
+Web Audio, suivent le volume d'écoute et ne modifient ni le média RTP ni le PBX.
+Le même parcours est disponible en démonstration. Vérifications et déploiement
+de cette évolution sont à consigner après validation.
+
+## État précédent — déploiement finalisé, contrôle Asterisk du 21 septembre
 
 **Release active : 20260921-webphone-2 (c3ecac7)** sur
 https://phone.apisnix-crm.com/. Franck confirme **appels sortants et entrants réussis, son dans les deux

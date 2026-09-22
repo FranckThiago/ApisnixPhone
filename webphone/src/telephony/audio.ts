@@ -198,6 +198,82 @@ export class Ringer {
   }
 }
 
+export interface CallProgressSoundPlayer {
+  startRingback(volume: number): void;
+  answered(volume: number): void;
+  stop(): void;
+}
+
+/**
+ * Local feedback for an outbound call. The two short telephone pulses repeat
+ * only while the far end is ringing; a single bright bell confirms the answer.
+ * Everything is generated in the browser, so there is no media file to load.
+ */
+export class CallProgressSounds implements CallProgressSoundPlayer {
+  private timer?: ReturnType<typeof setInterval>;
+  private active = new Set<OscillatorNode>();
+
+  startRingback(volume: number) {
+    const context = soundContext();
+    if (this.timer || !context || volume <= 0) return;
+    const cycle = () => {
+      if (context.state !== 'running') void context.resume().catch(() => undefined);
+      // Two short, rounded pulses: the familiar « toup toup » heard while waiting.
+      for (const offset of [0, 0.38]) {
+        const oscillator = context.createOscillator();
+        const envelope = context.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 440;
+        const start = context.currentTime + offset;
+        envelope.gain.setValueAtTime(0.0001, start);
+        envelope.gain.exponentialRampToValueAtTime(0.13 * volume, start + 0.025);
+        envelope.gain.setValueAtTime(0.13 * volume, start + 0.18);
+        envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
+        oscillator.connect(envelope).connect(context.destination);
+        oscillator.addEventListener('ended', () => this.active.delete(oscillator));
+        this.active.add(oscillator);
+        oscillator.start(start);
+        oscillator.stop(start + 0.3);
+      }
+    };
+    cycle();
+    this.timer = setInterval(cycle, 2600);
+  }
+
+  answered(volume: number) {
+    this.stop();
+    const context = soundContext();
+    if (!context || volume <= 0) return;
+    if (context.state !== 'running') {
+      void context.resume().then(() => { if (context.state === 'running') this.answered(volume); }).catch(() => undefined);
+      return;
+    }
+    const start = context.currentTime;
+    // A compact service-bell « gling »: a clear strike with two quick overtones.
+    for (const [ratio, level, decay] of [[1, 0.18, 0.85], [2.01, 0.08, 0.52], [3.9, 0.035, 0.3]] as const) {
+      const oscillator = context.createOscillator();
+      const envelope = context.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 880 * ratio;
+      envelope.gain.setValueAtTime(0.0001, start);
+      envelope.gain.exponentialRampToValueAtTime(level * volume, start + 0.008);
+      envelope.gain.exponentialRampToValueAtTime(0.0001, start + decay);
+      oscillator.connect(envelope).connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + decay + 0.03);
+    }
+  }
+
+  stop() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = undefined;
+    for (const oscillator of this.active) {
+      try { oscillator.stop(); } catch { /* Already stopped by its envelope. */ }
+    }
+    this.active.clear();
+  }
+}
+
 /**
  * Public-address chime, like the one before an airport announcement: three bell
  * notes for a line that is ready, two falling ones for a line that dropped.

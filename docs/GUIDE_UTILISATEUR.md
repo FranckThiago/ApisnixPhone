@@ -63,8 +63,9 @@ touche **0** du pavé.
 
 ![Appel qui sonne](guide/04-sonnerie.png)
 
-Le chronomètre démarre **quand votre correspondant décroche**, pas pendant la
-sonnerie. Avant, le bouton rouge indique **Annuler**.
+Une tonalité classique « toup toup » accompagne la sonnerie, puis un bref
+« gling » confirme le décroché. Le chronomètre démarre alors, jamais pendant
+l'attente ; avant, le bouton rouge indique **Annuler**.
 
 ## 4. Pendant l'appel
 

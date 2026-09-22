@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SipPhoneController, type ManagedSession, type Manager, type ManagerDelegate, type SipEnvironment } from '../src/telephony/SipPhoneController';
+import type { CallProgressSoundPlayer } from '../src/telephony/audio';
 
 const session = (id: string, user = '', displayName = ''): ManagedSession => ({ id, remoteIdentity: { displayName, uri: { user } } });
 
@@ -37,8 +38,11 @@ function harness(lineFree = true) {
     createRemoteAudio: () => undefined,
     acquireLine: async () => (lineFree ? released : null),
   };
-  const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws' }, environment);
-  return { phone, manager, released, environment, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
+  const callProgress: CallProgressSoundPlayer = {
+    startRingback: vi.fn(), answered: vi.fn(), stop: vi.fn(),
+  };
+  const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws' }, environment, callProgress);
+  return { phone, manager, released, environment, callProgress, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
 }
 
 async function ready(h: ReturnType<typeof harness>) {
@@ -86,9 +90,12 @@ describe('SIP controller', () => {
     await vi.advanceTimersByTimeAsync(0);
     h.invite.onProgress();
     expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ringing-out', dialTarget: '+237699000102' });
+    expect(h.callProgress.startRingback).toHaveBeenCalledWith(0.8);
     expect(h.phone.getSnapshot().call?.answeredAt).toBeUndefined();
     await vi.advanceTimersByTimeAsync(5000);
     h.delegate.onCallAnswered(session('out'));
+    expect(h.callProgress.stop).toHaveBeenCalled();
+    expect(h.callProgress.answered).toHaveBeenCalledWith(0.8);
     const call = h.phone.getSnapshot().call!;
     expect(call.answeredAt! - call.startedAt).toBeGreaterThanOrEqual(5000);
     h.delegate.onCallHangup(session('out'));

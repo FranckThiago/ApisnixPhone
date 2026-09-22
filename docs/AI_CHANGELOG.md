@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-22 — Tonalité d'appel sortant et confirmation de décroché
+
+- Pendant la sonnerie distante d'un appel sortant, le navigateur génère deux
+  impulsions téléphoniques « toup toup » ; un bref son de cloche « gling » joue
+  quand le correspondant décroche. Aucun fichier audio ni changement PBX.
+- La tonalité démarre seulement après la progression SIP et s'arrête au
+  décroché, refus, raccrochage, échec ou déconnexion. Elle suit le volume
+  d'écoute ; le parcours de démonstration reproduit le même comportement.
+- Le contrôleur accepte un lecteur de sons substituable afin de vérifier par
+  test le démarrage, l'arrêt et le gling sans dépendre de l'audio du poste.
+- Guide utilisateur et état du projet actualisés. Validation et publication
+  de la release suivante à compléter après les contrôles.
+
 ## 21 septembre 2026 — Clôture du déploiement et contrôle RTP réel
 
 - Release 2 c3ecac7 maintenue. Asterisk en lecture seule à 23:27:46 Douala :
