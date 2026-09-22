@@ -360,22 +360,25 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260921-webphone-2`, source `c3ecac7`, réactivée à la
-demande de Franck à 23:23:45 Douala le 21 septembre. Archive de release :
-SHA-256 `81d44df2854c7c3f75916a7f705967fac8516f69a57110af689b5a574f14f09f`.
-Installation sous `/srv/apisnixphone/releases/20260921-webphone-2/`, lien
+Version active : `20260922-call-sounds`, source `a757eaf`, déployée à
+11:12:30 Douala le 22 septembre. Elle ajoute la tonalité locale d'appel
+sortant puis le bref gling au décroché, sans fichier audio ni changement PBX.
+Archive de release : SHA-256
+`5c4db9f09610d8ebdf5b41cb23f5c8102883fb8bae0f12f30d247ab500dae09f`.
+Installation sous `/srv/apisnixphone/releases/20260922-call-sounds/`, lien
 `/srv/apisnixphone/current`, fichiers appartenant à root, lisibles mais non
 inscriptibles par Caddy. Aucun service applicatif, base ou secret d'hébergement.
 Les sauvegardes et détails d'infrastructure restent dans le dépôt privé.
 
-Contrôlé sur la release 2 : 34 tests, typage, lint, build live ; WSS attendu dans le bundle,
+Contrôlé sur la release active : 34 tests, typage, lint, build live ; WSS attendu dans le bundle,
 aucun identifiant pilote ni fichier `.env`, `.local` ou source map dans la
 release. HTTPS public 200, HTTP 308, en-têtes ci-dessus, assets immuables,
 index et repli SPA 200 sans cache ; empreinte du JS servi identique au build.
-Logo et connexion live visibles, console/CSP sans erreur. WSS vers le PBX
-avec l'origine publique accepté (101, sip), sans inscription. Essai de Franck
-initial dans le navigateur intégré terminé en échec audio ; aucun mot de
-passe saisi par l'agent.
+Logo et connexion live visibles, console/CSP sans erreur. Zéro appel web actif
+au contrôle préalable ; `current` seul a changé, sans rechargement Caddy.
+Sauvegarde protégée :
+`/root/apisnix-phone-backups/20260922-call-sounds/`. Le timbre et le rythme des
+deux nouveaux sons restent à confirmer par Franck sur un appel réel.
 
 La release 2 avait été retirée à 23:17:20 après un essai dans le navigateur
 intégré de Codex (voix inaudible malgré réception de paquets RTP). Franck
@@ -404,7 +407,13 @@ Le test A/B de cette version reste à réaliser séparément. Release 1 conserv�
 
 ### Retour ciblé et retrait complet
 
-Pour retirer la release 2, repointer atomiquement `current` vers
+Pour retirer seulement les sons d'appel, repointer atomiquement `current` vers
+`/srv/apisnixphone/releases/20260921-webphone-2/`, sans recharger Caddy. Cette
+release précédente conserve la voix validée et n'inclut pas les deux nouveaux
+sons. La sauvegarde et les manifestes sont sous
+`/root/apisnix-phone-backups/20260922-call-sounds/`.
+
+Pour retirer ensuite la release 2 historique, repointer atomiquement `current` vers
 `/srv/apisnixphone/releases/20260921-webphone-1/`, sans recharger Caddy.
 Attention : cette release antérieure a le défaut de voix connu ; prévenir
 Franck que le site n'est pas validé pour émettre et ne pas le diffuser aux

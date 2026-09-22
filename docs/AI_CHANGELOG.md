@@ -10,8 +10,14 @@
   d'écoute ; le parcours de démonstration reproduit le même comportement.
 - Le contrôleur accepte un lecteur de sons substituable afin de vérifier par
   test le démarrage, l'arrêt et le gling sans dépendre de l'audio du poste.
-- Guide utilisateur et état du projet actualisés. Validation et publication
-  de la release suivante à compléter après les contrôles.
+- Typage, lint, 34 tests, build live isolé et démonstration réussis. Guide PDF
+  reconstruit et ses 16 pages contrôlées visuellement.
+- Release `20260922-call-sounds` (`a757eaf`) basculée à 11:12:30 Douala après
+  contrôle de zéro appel web actif. Archive SHA-256
+  `5c4db9f09610d8ebdf5b41cb23f5c8102883fb8bae0f12f30d247ab500dae09f`.
+  JS HTTPS identique au build, cache/en-têtes/SPA et navigateur sans erreur.
+  Release 2 sauvegardée ; aucun PBX, Caddy ou DNS modifié. Essai sonore réel
+  par Franck encore requis pour juger le rythme et le timbre.
 
 ## 21 septembre 2026 — Clôture du déploiement et contrôle RTP réel
 

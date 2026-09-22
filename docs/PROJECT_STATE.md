@@ -1,18 +1,24 @@
 # État du projet
 
-## État courant — sons de progression d'appel préparés le 22 septembre
+## État courant — release des sons d'appel déployée le 22 septembre
 
 Les appels sortants jouent désormais une tonalité locale « toup toup » dès la
 progression SIP indiquant que le correspondant sonne, puis un bref « gling »
 au décroché. La tonalité s'arrête immédiatement au décroché, au refus, à
 l'annulation, à la fin d'appel et à la déconnexion. Les sons sont générés par
 Web Audio, suivent le volume d'écoute et ne modifient ni le média RTP ni le PBX.
-Le même parcours est disponible en démonstration. Vérifications et déploiement
-de cette évolution sont à consigner après validation.
+Le même parcours est disponible en démonstration.
+
+**Release active : `20260922-call-sounds`, source `a757eaf`**, basculée sur
+Hermes à 11:12:30 Africa/Douala après contrôle de zéro appel web actif.
+Typage, lint, 34 tests et build live isolé réussis. Le JS servi correspond au
+build ; HTTPS, cache, en-têtes, repli SPA et écran de connexion contrôlés sans
+erreur console. La release 2 précédente est intacte et sauvegardée pour retour.
+Le rythme et le rendu sonore restent à confirmer par Franck sur un appel réel.
 
 ## État précédent — déploiement finalisé, contrôle Asterisk du 21 septembre
 
-**Release active : 20260921-webphone-2 (c3ecac7)** sur
+**Release précédente : 20260921-webphone-2 (c3ecac7)** sur
 https://phone.apisnix-crm.com/. Franck confirme **appels sortants et entrants réussis, son dans les deux
 sens**, hors du navigateur intégré de Codex, après réactivation.
 
