@@ -16,6 +16,12 @@ build ; HTTPS, cache, en-têtes, repli SPA et écran de connexion contrôlés sa
 erreur console. La release 2 précédente est intacte et sauvegardée pour retour.
 Le rythme et le rendu sonore restent à confirmer par Franck sur un appel réel.
 
+22 septembre, soir : la reconnexion immédiate après une déconnexion dans le
+même onglet renvoyait à tort « ligne déjà ouverte dans un autre onglet » ; la
+libération du verrou d'onglet est désormais attendue avant de passer hors
+ligne, et le message indique d'actualiser la page dans ce cas. Publication de
+cette correction : voir AI_CHANGELOG et OPERATIONS.
+
 ## État précédent — déploiement finalisé, contrôle Asterisk du 21 septembre
 
 **Release précédente : 20260921-webphone-2 (c3ecac7)** sur

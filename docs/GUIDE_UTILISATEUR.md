@@ -34,7 +34,7 @@ choisissez **Autoriser**.
 | --- | --- |
 | Identifiant ou mot de passe refusé | Vérifiez la saisie (majuscules, zéros). L'application ne réessaie pas toute seule. |
 | Connexion au serveur impossible | Vérifiez votre réseau, puis réessayez. |
-| Cette ligne est déjà ouverte dans un autre onglet | Fermez l'autre onglet ApisnixPhone. |
+| Cette ligne est déjà ouverte dans un autre onglet | Fermez l'autre onglet ApisnixPhone. Si vous venez de vous déconnecter dans cet onglet, actualisez la page. |
 
 ## 2. L'écran principal
 

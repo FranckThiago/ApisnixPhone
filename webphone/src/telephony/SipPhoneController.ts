@@ -60,7 +60,7 @@ export interface SipEnvironment {
   createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined): Promise<Manager> | Manager;
   createRemoteAudio(): HTMLAudioElement | undefined;
   /** Resolves to a release function, or null when another tab of this origin holds the line. */
-  acquireLine(name: string): Promise<(() => void) | null>;
+  acquireLine(name: string): Promise<(() => void | Promise<void>) | null>;
 }
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 480: 'no-answer', 487: 'cancelled' };
@@ -79,7 +79,7 @@ export class SipPhoneController implements PhoneController {
   private listeners = new Set<() => void>();
   private manager?: Manager;
   private session?: ManagedSession;
-  private releaseLine?: () => void;
+  private releaseLine?: () => void | Promise<void>;
   private wanted = false;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private rejection?: CallOutcome;
@@ -278,7 +278,7 @@ export class SipPhoneController implements PhoneController {
     this.manager = undefined;
     this.update({ connection: 'other-tab-active', lineTaken: true, error: undefined });
     await manager?.dropSilently().catch(() => undefined);
-    this.releaseLine?.();
+    await this.releaseLine?.();
     this.releaseLine = undefined;
   }
 
@@ -341,7 +341,7 @@ export class SipPhoneController implements PhoneController {
       await manager.unregister().catch(() => undefined);
       await manager.disconnect().catch(() => undefined);
     }
-    this.releaseLine?.();
+    await this.releaseLine?.();
     this.releaseLine = undefined;
   }
 

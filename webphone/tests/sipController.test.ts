@@ -204,6 +204,22 @@ describe('SIP controller', () => {
     expect(h.released).toHaveBeenCalled();
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'offline', call: null, account: null });
   });
+
+  it('waits for the browser lock to be let go before reporting offline, so a sign-in right after works', async () => {
+    const h = harness();
+    let letGo!: () => void;
+    const release = vi.fn(() => new Promise<void>(resolve => { letGo = resolve; }));
+    h.environment.acquireLine = async () => release;
+    await ready(h);
+    let offline = false;
+    const done = h.phone.disconnect().then(() => { offline = true; });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(release).toHaveBeenCalled();
+    expect(offline).toBe(false);
+    letGo();
+    await done;
+    expect(h.phone.getSnapshot().connection).toBe('offline');
+  });
 });
 
 describe('SIP controller — microphone and shared line', () => {

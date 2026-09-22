@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-22 — Reconnexion immédiate après déconnexion dans le même onglet
+
+- Franck signale que se déconnecter puis se reconnecter aussitôt affiche
+  « Cette ligne est déjà ouverte dans un autre onglet » ; une actualisation
+  suffisait. Cause : la déconnexion résolvait la promesse qui tenait le verrou
+  Web Locks sans attendre que le navigateur l'ait effectivement rendu, donc la
+  connexion suivante, lancée dans la foulée, trouvait encore son propre verrou.
+- `sipEnvironment.acquireLine` renvoie une fonction de libération qui attend
+  la fin réelle de `navigator.locks.request` ; le contrôleur l'attend dans
+  `teardown` avant de passer hors ligne. Nouveau test : `disconnect()` ne se
+  termine pas tant que le verrou n'est pas rendu (35 tests).
+- Message de la page de connexion et guide utilisateur complétés : si l'on
+  vient de se déconnecter dans cet onglet, actualiser la page. Guide PDF
+  reconstruit.
+
 ## 2026-09-22 — Tonalité d'appel sortant et confirmation de décroché
 
 - Pendant la sonnerie distante d'un appel sortant, le navigateur génère deux
