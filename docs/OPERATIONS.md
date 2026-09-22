@@ -360,7 +360,17 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260922-call-sounds`, source `a757eaf`, déployée à
+Version active : `20260922-tab-lock`, source `b6be2a4`, déployée le
+22 septembre après-midi : la déconnexion attend la libération du verrou
+d'onglet, ce qui permet une reconnexion immédiate dans le même onglet. Archive
+SHA-256 `4c9b5f98b7338302d8f59365a42301977e0990dcd9602d656d73120ee7c9fc00`,
+266 fichiers, 35 tests, typage, lint et build live isolés ; JS servi contenant
+le nouveau message, index en `no-cache`, écran de connexion sans erreur
+console. Sauvegarde `/root/apisnix-phone-backups/20260922-tab-lock/`
+(archive et cible précédente de `current`). Retour : repointer `current` vers
+`20260922-call-sounds`.
+
+Version précédente : `20260922-call-sounds`, source `a757eaf`, déployée à
 11:12:30 Douala le 22 septembre. Elle ajoute la tonalité locale d'appel
 sortant puis le bref gling au décroché, sans fichier audio ni changement PBX.
 Archive de release : SHA-256

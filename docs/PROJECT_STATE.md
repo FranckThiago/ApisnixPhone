@@ -19,8 +19,8 @@ Le rythme et le rendu sonore restent à confirmer par Franck sur un appel réel.
 22 septembre, soir : la reconnexion immédiate après une déconnexion dans le
 même onglet renvoyait à tort « ligne déjà ouverte dans un autre onglet » ; la
 libération du verrou d'onglet est désormais attendue avant de passer hors
-ligne, et le message indique d'actualiser la page dans ce cas. Publication de
-cette correction : voir AI_CHANGELOG et OPERATIONS.
+ligne, et le message indique d'actualiser la page dans ce cas. **Release
+active : `20260922-tab-lock`, source `b6be2a4`** (voir OPERATIONS).
 
 ## État précédent — déploiement finalisé, contrôle Asterisk du 21 septembre
 

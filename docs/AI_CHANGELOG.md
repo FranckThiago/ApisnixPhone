@@ -14,6 +14,8 @@
 - Message de la page de connexion et guide utilisateur complétés : si l'on
   vient de se déconnecter dans cet onglet, actualiser la page. Guide PDF
   reconstruit.
+- Release `20260922-tab-lock` (`b6be2a4`) basculée sur Hermes ; aucun poste
+  web enregistré au moment de la bascule, JS servi et cache contrôlés.
 
 ## 2026-09-22 — Tonalité d'appel sortant et confirmation de décroché
 
