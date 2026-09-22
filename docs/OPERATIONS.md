@@ -325,7 +325,7 @@ Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
 secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
 variables, le build est une démonstration.
 
-Hébergement réalisé le 21 septembre, release active **20260921-webphone-2** : Hermes, derrière le Caddy existant, à côté
+Hébergement réalisé le 21 septembre : Hermes, derrière le Caddy existant, à côté
 de la supervision et sans la modifier ; dossier versionné
 `/srv/apisnixphone/releases/<version>/` et lien `current`. HTTPS est obligatoire :
 hors `localhost`, un navigateur refuse le microphone sans lui. Nom validé :
@@ -360,7 +360,20 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260922-tab-lock`, source `b6be2a4`, déployée le
+Version active : `20260922-sip-diagnostics`, source `dff2b26`, déployée le
+22 septembre à 21:45 Africa/Douala. Les refus d'appel SIP 403, 404, 480, 486,
+488 et 503 affichent le code et son explication en fin d'appel et dans le
+Journal local. Build isolé depuis Git : typage, lint, 37 tests et build live
+réussis ; 266 fichiers, aucun `.env`, source map ou fichier Apple dans la
+release. Archive ustar SHA-256
+`31bceec5fedd2576b93ec23a08453411281f2e8580369b2d40f71d12d3031d20`.
+Sauvegarde protégée `/root/apisnix-phone-backups/20260922-sip-diagnostics/`
+avec la release précédente et l'ancienne cible de `current`. Bascule atomique
+du lien seule, sans rechargement Caddy. HTTPS 200, HTTP 308, JS servi égal au
+build, cache et navigateur intégré sans erreur contrôlés. Retour : repointer
+`current` vers `20260922-tab-lock`. Aucun refus réel n'a été déclenché.
+
+Version précédente : `20260922-tab-lock`, source `b6be2a4`, déployée le
 22 septembre après-midi : la déconnexion attend la libération du verrou
 d'onglet, ce qui permet une reconnexion immédiate dans le même onglet. Archive
 SHA-256 `4c9b5f98b7338302d8f59365a42301977e0990dcd9602d656d73120ee7c9fc00`,
@@ -380,7 +393,7 @@ Installation sous `/srv/apisnixphone/releases/20260922-call-sounds/`, lien
 inscriptibles par Caddy. Aucun service applicatif, base ou secret d'hébergement.
 Les sauvegardes et détails d'infrastructure restent dans le dépôt privé.
 
-Contrôlé sur la release active : 34 tests, typage, lint, build live ; WSS attendu dans le bundle,
+Contrôlé sur la release `20260922-call-sounds` : 34 tests, typage, lint, build live ; WSS attendu dans le bundle,
 aucun identifiant pilote ni fichier `.env`, `.local` ou source map dans la
 release. HTTPS public 200, HTTP 308, en-têtes ci-dessus, assets immuables,
 index et repli SPA 200 sans cache ; empreinte du JS servi identique au build.

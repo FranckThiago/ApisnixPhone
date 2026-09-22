@@ -1,6 +1,6 @@
 # État du projet
 
-## Diagnostic des refus d'appel SIP — 22 septembre 2026
+## État courant — diagnostics SIP déployés le 22 septembre 2026
 
 ApisnixPhone affiche à la fin de l'appel le code et l'explication des refus
 SIP 403, 404, 480, 486, 488 et 503. Le même diagnostic reste dans le détail
@@ -8,10 +8,13 @@ du Journal local si l'appel y est conservé. `480` est classé comme échec
 temporaire, tandis que `486` garde l'issue « Occupé ». Les codes proviennent de
 la réponse reçue par le navigateur ; un appel réel produisant chacun de ces
 refus n'a pas été provoqué. [Guide utilisateur](GUIDE_UTILISATEUR.md#5-à-la-fin-de-lappel).
-Publication Hermes en préparation ; la release active reste `20260922-tab-lock`
-jusqu'à la bascule vérifiée.
 
-## État courant — release des sons d'appel déployée le 22 septembre
+**Release active : `20260922-sip-diagnostics`, source `dff2b26`** sur Hermes.
+Build isolé, 37 tests, typage et lint réussis ; artefact servi conforme au
+build, HTTPS, cache et écran de connexion vérifiés. La release précédente
+`20260922-tab-lock` est conservée pour retour ciblé. [Preuves et procédure](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+
+## État précédent — sons d'appel déployés le 22 septembre
 
 Les appels sortants jouent désormais une tonalité locale « toup toup » dès la
 progression SIP indiquant que le correspondant sonne, puis un bref « gling »
@@ -20,7 +23,7 @@ l'annulation, à la fin d'appel et à la déconnexion. Les sons sont générés 
 Web Audio, suivent le volume d'écoute et ne modifient ni le média RTP ni le PBX.
 Le même parcours est disponible en démonstration.
 
-**Release active : `20260922-call-sounds`, source `a757eaf`**, basculée sur
+**Release historique : `20260922-call-sounds`, source `a757eaf`**, basculée sur
 Hermes à 11:12:30 Africa/Douala après contrôle de zéro appel web actif.
 Typage, lint, 34 tests et build live isolé réussis. Le JS servi correspond au
 build ; HTTPS, cache, en-têtes, repli SPA et écran de connexion contrôlés sans
@@ -31,7 +34,7 @@ Le rythme et le rendu sonore restent à confirmer par Franck sur un appel réel.
 même onglet renvoyait à tort « ligne déjà ouverte dans un autre onglet » ; la
 libération du verrou d'onglet est désormais attendue avant de passer hors
 ligne, et le message indique d'actualiser la page dans ce cas. **Release
-active : `20260922-tab-lock`, source `b6be2a4`** (voir OPERATIONS).
+historique : `20260922-tab-lock`, source `b6be2a4`** (voir OPERATIONS).
 
 ## État précédent — déploiement finalisé, contrôle Asterisk du 21 septembre
 

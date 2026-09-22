@@ -9,8 +9,11 @@
 - La cause SIP est effacée au prochain appel. Deux tests couvrent les six
   réponses et l'absence de report d'une erreur sur l'appel suivant ; typage,
   lint et suite complète réussis. Aucun refus réel n'a été provoqué sur le PBX.
-- Guide utilisateur et PDF actualisés ; la publication Hermes est décrite dans
-  [OPERATIONS.md](OPERATIONS.md) une fois contrôlée.
+- Guide utilisateur et PDF actualisés. Release `20260922-sip-diagnostics`
+  (`dff2b26`) publiée sur Hermes depuis une archive Git isolée, avec sauvegarde
+  `/root/apisnix-phone-backups/20260922-sip-diagnostics/`. Bascule du lien
+  `current` seule ; HTTPS, JS servi, cache et écran de connexion contrôlés,
+  sans appel de test ni modification PBX/Caddy. Retour non effectué.
 
 ## 2026-09-22 — Reconnexion immédiate après déconnexion dans le même onglet
 
