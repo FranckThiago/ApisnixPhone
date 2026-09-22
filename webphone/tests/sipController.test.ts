@@ -117,8 +117,9 @@ describe('SIP controller', () => {
       await ready(h);
       h.phone.call('x', '+33100000001');
       await vi.advanceTimersByTimeAsync(0);
-      h.invite.onReject(status);
       h.delegate.onCallHangup(session('out'));
+      h.invite.onReject(status);
+      await Promise.resolve();
       expect(h.phone.getSnapshot().call?.outcome).toBe(outcome);
     }
     const h = harness();
@@ -144,8 +145,9 @@ describe('SIP controller', () => {
       await ready(h);
       h.phone.call('x', '+33100000001');
       await vi.advanceTimersByTimeAsync(0);
-      h.invite.onReject(status);
       h.delegate.onCallHangup(session('out'));
+      h.invite.onReject(status);
+      await Promise.resolve();
       expect(h.phone.getSnapshot().call).toMatchObject({
         phase: 'ended', outcome, failure: `SIP ${status} ${meaning}.`,
       });
@@ -158,14 +160,25 @@ describe('SIP controller', () => {
     await ready(h);
     h.phone.call('x', '+33100000001');
     await vi.advanceTimersByTimeAsync(0);
-    h.invite.onReject(403);
     h.delegate.onCallHangup(session('out'));
+    h.invite.onReject(403);
+    await Promise.resolve();
     h.phone.dismiss();
     h.phone.call('x', '+33100000002');
     await vi.advanceTimersByTimeAsync(0);
     h.delegate.onCallAnswered(session('out'));
     h.delegate.onCallHangup(session('out'));
     expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', outcome: 'answered', failure: undefined });
+  });
+
+  it('finishes an outgoing call even when no SIP refusal follows termination', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallHangup(session('out'));
+    await Promise.resolve();
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', outcome: 'failed', failure: undefined });
   });
 
   it('never answers by itself and keeps the remote identity as plain text', async () => {

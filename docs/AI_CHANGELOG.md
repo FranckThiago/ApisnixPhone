@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-09-22 — Ordre réel des callbacks SIP.js corrigé
+
+- SIP.js termine la session avant d'appeler le callback contenant le code de
+  refus de l'INVITE. La clôture d'un appel sortant non répondu attend maintenant
+  la microtâche suivante pour conserver ce code dans la fiche et le Journal.
+- Les tests reproduisent cet ordre pour les six refus, vérifient l'appel
+  suivant et la fin sans code SIP ; typage, lint et 38 tests réussis.
+  Publication de cette correction sur Hermes en préparation.
+
 ## 2026-09-22 — Diagnostics des refus SIP en appel sortant
 
 - Les réponses SIP 403, 404, 480, 486, 488 et 503 reçues pendant un appel

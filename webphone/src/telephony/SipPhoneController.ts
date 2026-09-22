@@ -232,6 +232,14 @@ export class SipPhoneController implements PhoneController {
     onCallHangup: () => {
       const call = this.snapshot.call;
       if (!call || call.phase === 'ended') return;
+      // SIP.js emits Terminated before its INVITE onReject callback. Let that
+      // callback supply the status before recording the finished call.
+      if (call.direction === 'outbound' && !call.answeredAt && !this.localHangup && !this.micFailure && !this.rejection) {
+        queueMicrotask(() => {
+          if (this.snapshot.call?.id === call.id && this.snapshot.call.phase !== 'ended') this.finish(this.rejection ?? 'failed');
+        });
+        return;
+      }
       this.finish(call.answeredAt ? 'answered' : this.rejection ?? (call.direction === 'inbound' ? (this.localHangup ? 'declined' : 'missed') : this.localHangup ? 'cancelled' : 'failed'));
     },
     // Only the far end's confirmation changes what the screen says.

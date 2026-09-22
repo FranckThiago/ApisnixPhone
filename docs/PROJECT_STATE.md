@@ -14,6 +14,11 @@ Build isolé, 37 tests, typage et lint réussis ; artefact servi conforme au
 build, HTTPS, cache et écran de connexion vérifiés. La release précédente
 `20260922-tab-lock` est conservée pour retour ciblé. [Preuves et procédure](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
+Le contrôle de SIP.js a révélé que le callback de fin précède le code de refus
+sur les INVITE rejetés. Une correction de cet ordre a passé 38 tests et attend
+sa publication sur Hermes ; les six messages peuvent manquer dans la release
+active `20260922-sip-diagnostics`.
+
 ## État précédent — sons d'appel déployés le 22 septembre
 
 Les appels sortants jouent désormais une tonalité locale « toup toup » dès la
