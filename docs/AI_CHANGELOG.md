@@ -7,7 +7,11 @@
   la microtâche suivante pour conserver ce code dans la fiche et le Journal.
 - Les tests reproduisent cet ordre pour les six refus, vérifient l'appel
   suivant et la fin sans code SIP ; typage, lint et 38 tests réussis.
-  Publication de cette correction sur Hermes en préparation.
+  Release `20260922-sip-diagnostics-v2` (`a794199`) publiée sur Hermes :
+  archive ustar SHA-256
+  `77da467bfabbf3c08ea369d3ef16a64d28aaaae93fa00e1794d6c348fdfb40f5`,
+  sauvegarde `/root/apisnix-phone-backups/20260922-sip-diagnostics-v2/`.
+  JS public et navigateur intégrés contrôlés ; aucun retour ni appel de test.
 
 ## 2026-09-22 — Diagnostics des refus SIP en appel sortant
 

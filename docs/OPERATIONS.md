@@ -360,7 +360,21 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260922-sip-diagnostics`, source `dff2b26`, déployée le
+Version active : `20260922-sip-diagnostics-v2`, source `a794199`, déployée le
+22 septembre. Elle attend le callback du code SIP après la fin de session
+signalée par SIP.js, pour préserver le diagnostic dans la fiche et le Journal.
+Build Git isolé : typage, lint, 38 tests et build live réussis ; 266 fichiers,
+archive ustar SHA-256
+`77da467bfabbf3c08ea369d3ef16a64d28aaaae93fa00e1794d6c348fdfb40f5`.
+Sauvegarde `/root/apisnix-phone-backups/20260922-sip-diagnostics-v2/` avec la
+release précédente ; bascule atomique du lien seule, sans rechargement Caddy.
+HTTPS et nouvel asset 200, JS servi égal au build (SHA-256
+`d215b6f6d5b3594eb377cf44b2b1140ad6104248653572a089e71eae946bae18`),
+navigateur intégré sans erreur. Retour ciblé si nécessaire : repointer
+`current` vers `20260922-tab-lock`, version fonctionnelle antérieure aux
+diagnostics. Aucun refus réel n'a été provoqué.
+
+Version transitoire : `20260922-sip-diagnostics`, source `dff2b26`, déployée le
 22 septembre à 21:45 Africa/Douala. Les refus d'appel SIP 403, 404, 480, 486,
 488 et 503 affichent le code et son explication en fin d'appel et dans le
 Journal local. Build isolé depuis Git : typage, lint, 37 tests et build live
@@ -371,7 +385,9 @@ Sauvegarde protégée `/root/apisnix-phone-backups/20260922-sip-diagnostics/`
 avec la release précédente et l'ancienne cible de `current`. Bascule atomique
 du lien seule, sans rechargement Caddy. HTTPS 200, HTTP 308, JS servi égal au
 build, cache et navigateur intégré sans erreur contrôlés. Retour : repointer
-`current` vers `20260922-tab-lock`. Aucun refus réel n'a été déclenché.
+`current` vers `20260922-tab-lock`. Le contrôle de SIP.js a ensuite révélé que
+la fin de session précédait le code de refus ; cette version pouvait donc ne
+pas afficher les six diagnostics. Remplacée par la v2, sans retour effectué.
 
 Version précédente : `20260922-tab-lock`, source `b6be2a4`, déployée le
 22 septembre après-midi : la déconnexion attend la libération du verrou
