@@ -314,6 +314,12 @@ sur les fichiers actuels, sans présenter ces validations comme terminées.
 Application statique : l'hébergement sert des fichiers, il ne transporte ni la
 signalisation ni l'audio, qui vont du navigateur au PBX (WSS 8089, RTP).
 
+Fail2ban protège le WSS depuis le 23 septembre 2026 : des échecs d'identification
+répétés depuis une même IP, tous postes du site confondus, bloquent le 8089
+pendant plusieurs jours. Symptôme : le téléphone web ne se connecte plus depuis
+ce site mais fonctionne ailleurs. Seuils et levée ciblée : dépôt privé de gestion,
+`docs/PARE_FEU_ET_FAIL2BAN.md` ; ne pas les publier ici.
+
 ```sh
 cd webphone
 npm ci

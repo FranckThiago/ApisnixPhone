@@ -1,5 +1,12 @@
 # Journal des changements
 
+## 2026-09-23 — Protection Fail2ban du WSS documentée
+
+- Sur le PBX, une jail Fail2ban bloque désormais le WSS 8089 après des échecs
+  répétés ; auparavant, une IP bannie gardait le WSS. `OPERATIONS.md` signale ce
+  blocage possible du téléphone web. Seuils, sauvegarde et retour documentés
+  dans le dépôt privé de gestion (`9b64f76`).
+
 ## 2026-09-22 — Ordre réel des callbacks SIP.js corrigé
 
 - SIP.js termine la session avant d'appeler le callback contenant le code de
