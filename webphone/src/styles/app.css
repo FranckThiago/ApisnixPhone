@@ -319,9 +319,9 @@ input[type=range] { accent-color: var(--brand); }
   .dock { display: none; grid-area: main; padding: 14px; max-width: 460px; width: 100%; justify-self: center; } .shell.show-phone .dock { display: flex; } .shell.show-phone .main { display: none; }
   .sidebar { flex-direction: row; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); } .brand, .sidebar-foot { display: none; }
   .sidebar { overflow: visible; border-right: 0; border-top: 1px solid var(--side-border); box-shadow: 0 -8px 24px -18px rgb(8 12 40 / 40%); }
-  .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } .nav-phone { display: block; } .nav-audio { display: none; } .only-narrow { display: inline-flex !important; }
-  /* The phone is the main action: a raised green button in the middle of the bar. */
-  .nav-phone .nav-item { width: 62px; height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #1fd093, #0b8f63);
+  .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } .nav-phone { display: block; } .only-narrow { display: inline-flex !important; }
+  /* The phone remains the raised green action in the compact bar. */
+  .nav-phone .nav-item { width: min(62px, 100%); height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #1fd093, #0b8f63);
     box-shadow: 0 12px 22px -8px #0b8f63cc, 0 0 0 5px var(--canvas), inset 0 1px 0 rgb(255 255 255 / 35%); transition: transform .15s; }
   .nav-phone .nav-item span { display: none !important; } .nav-phone .nav-item svg, .nav-phone .nav-item.active svg { color: #fff; } .nav-phone .nav-item:active { transform: scale(.94); }
   .nav-phone .nav-item.active { background: linear-gradient(160deg, #1fd093, #0b8f63); box-shadow: 0 12px 22px -8px #0b8f63cc, 0 0 0 5px var(--canvas), 0 0 0 7px var(--yellow); } .nav-phone .nav-item.active::before { display: none; }

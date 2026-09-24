@@ -217,10 +217,11 @@ Entrée pour valider.
 | --- | --- |
 | ![Journal sur mobile](guide/16-mobile-journal.png) | ![Téléphone sur mobile](guide/17-mobile-telephone.png) |
 
-Le menu passe en bas de l'écran, avec le bouton vert **Téléphone** au centre.
+Le menu passe en bas de l'écran, avec le bouton vert **Téléphone** et l'accès
+**Audio** toujours visibles.
 Pendant un appel, un bandeau reste visible sur toutes les pages, avec son bouton
-Raccrocher. Les Favoris et la page Audio s'ouvrent depuis Contacts et depuis la
-recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
+Raccrocher. Les Favoris s'ouvrent depuis Contacts ; la page Audio s'ouvre
+aussi depuis la recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
 
 ## En cas de problème
 

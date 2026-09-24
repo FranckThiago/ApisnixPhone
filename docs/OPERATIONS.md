@@ -389,7 +389,21 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260924-audio-agent`, source `67775d0`, déployée le
+Version active : `20260924-audio-mobile-nav`, publiée le 24 septembre pour
+afficher Audio dans la barre du bas à 920 px et moins. Le CSS public
+`index-Bnz9I4Xn.css` correspond au build (SHA-256
+`a9e473c089302876498fbec4f82f976791ab1e09738774e6c976959b0a00cda6`).
+Archive ustar de 266 fichiers, SHA-256
+`ce475e26db3e7f441a40c2146143f20c869a6a30b47c1d0695dd8cf06cb01341`.
+Ancienne cible et copie protégée dans
+`/root/apisnix-phone-backups/20260924-audio-mobile-nav/` (0700/0600).
+Bascule atomique du lien `current`, sans recharger Caddy ni toucher au PBX ou
+à la supervision. HTTPS 200, Caddy actif et nouveaux fichiers publics vérifiés.
+Retour ciblé : repointer `current` sur `20260924-audio-agent` après contrôle de
+la cible actuelle. La session ouverte avant publication conserve son ancien
+style jusqu'à actualisation, qui déconnecte la ligne.
+
+Version précédente : `20260924-audio-agent`, source `67775d0`, déployée le
 24 septembre. Archive SHA-256
 `7fcf867eb8e7d220f305924abd441253a30763951a9fea3cb09e297064f610b3` ;
 les métadonnées Apple de l'archive macOS ont été retirées du dossier de
@@ -398,9 +412,10 @@ release avant activation (266 fichiers servis). Sauvegarde
 Typage, lint, 43 tests et build live réussis ; HTTPS 200, API 200 JSON, refus
 401 d'un faux mot de passe, JS servi identique au build (SHA-256
 `0fe8de8febf48c7fa10b755dc2ec9ce911f3d2eb1fab25a2583598e59a670325`)
-et écran de connexion contrôlés. Retour : repointer `current` vers
-`20260922-sip-diagnostics-v2`. Un test avec une ligne classée et un
-enregistrement réel reste à faire. Détails PBX, supervision et Caddy dans le
+et écran de connexion contrôlés. Retour historique : repointer `current` vers
+`20260922-sip-diagnostics-v2`. Une session avec ligne classée et cinq fichiers
+listés a ensuite été validée ; lecture et téléchargement restent à essayer.
+Détails PBX, supervision et Caddy dans le
 dépôt privé, `docs/DEPLOIEMENT_AUDIO_AGENT.md`.
 
 Version précédente : `20260922-sip-diagnostics-v2`, source `a794199`, déployée le

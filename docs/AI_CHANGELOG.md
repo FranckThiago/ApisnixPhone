@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-09-24 — Audio visible dans le menu compact
+
+- Le CSS masquait le bouton Audio à 920 px et moins. Le bouton reste visible
+  dans la barre du bas, avec une largeur de Téléphone adaptée aux petits écrans.
+- Session Audio réelle d'un poste classé ouverte dans le navigateur intégré ;
+  cinq fichiers listés sur sept jours. La lecture et le téléchargement ne sont
+  pas encore vérifiés.
+- Captures mobiles et PDF du guide actualisés. Typage, lint, 43 tests et build
+  live réussis ; release `20260924-audio-mobile-nav` publiée sur Hermes.
+  Sauvegarde ciblée, contrôle HTTPS et retour dans OPERATIONS.
+
 ## 2026-09-24 — Audio publié et guide client régénéré
 
 - Release web `20260924-audio-agent` en service sur Hermes après build live,
