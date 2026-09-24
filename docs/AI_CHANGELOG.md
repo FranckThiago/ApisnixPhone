@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-24 — Onglet Audio : l'agent écoute et télécharge ses enregistrements
+
+- Demande de Franck : dans l'interface d'appel, remplacer Favoris par Audio,
+  où l'agent retrouve ses propres enregistrements, en streaming ou en
+  téléchargement, quelques minutes après l'appel ; les favoris passent dans
+  Contacts.
+- Webphone : vue `features/recordings/Recordings.tsx`, client
+  `recordings/client.ts` (source HTTP vers l'accès agent de la supervision,
+  source de démonstration hors ligne), bascule Tous / Favoris dans Contacts,
+  palette enrichie, `VITE_RECORDINGS_URL` (vide = `/api` même origine).
+  5 tests ajoutés (43), lint, typage et build réussis.
+- Prérequis serveur documentés dans OPERATIONS (relais Caddy `/api/*`,
+  `trusted_hosts`) ; rôle agent livré dans le dépôt de gestion (`53a1e2f`).
+  Guide utilisateur : § 8 bis. Captures non régénérées (script absent).
+
 ## 2026-09-23 — Protection Fail2ban du WSS documentée
 
 - Sur le PBX, une jail Fail2ban bloque désormais le WSS 8089 après des échecs

@@ -319,7 +319,7 @@ input[type=range] { accent-color: var(--brand); }
   .dock { display: none; grid-area: main; padding: 14px; max-width: 460px; width: 100%; justify-self: center; } .shell.show-phone .dock { display: flex; } .shell.show-phone .main { display: none; }
   .sidebar { flex-direction: row; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); } .brand, .sidebar-foot { display: none; }
   .sidebar { overflow: visible; border-right: 0; border-top: 1px solid var(--side-border); box-shadow: 0 -8px 24px -18px rgb(8 12 40 / 40%); }
-  .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } .nav-phone { display: block; } .nav-favorites { display: none; } .only-narrow { display: inline-flex !important; }
+  .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } .nav-phone { display: block; } .nav-audio { display: none; } .only-narrow { display: inline-flex !important; }
   /* The phone is the main action: a raised green button in the middle of the bar. */
   .nav-phone .nav-item { width: 62px; height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #1fd093, #0b8f63);
     box-shadow: 0 12px 22px -8px #0b8f63cc, 0 0 0 5px var(--canvas), inset 0 1px 0 rgb(255 255 255 / 35%); transition: transform .15s; }
@@ -339,3 +339,30 @@ input[type=range] { accent-color: var(--brand); }
   .content, .topbar { padding-inline: 14px; } h1 { font-size: 24px; } .search { min-width: 0; flex: 1; } .contact-list { max-height: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- Audio (recordings of the person's own phone) ---------- */
+.access-panel { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 1fr); gap: 24px; padding: 26px; }
+.access-copy { display: grid; gap: 10px; align-content: start; color: var(--muted); } .access-copy svg { color: var(--yellow-strong); } .access-copy h2 { color: var(--text); font-size: 19px; letter-spacing: -.4px; }
+.access-form { display: grid; gap: 12px; align-content: start; padding: 18px; border-radius: var(--radius); background: var(--surface-2); border: 1px solid var(--border); }
+.access-form label { display: grid; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.access-form input { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.access-form input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); }
+.form-error { color: var(--danger); font-size: 13px; }
+.audio-notice { margin: 0; padding: 10px 18px; font-size: 13px; color: var(--text); background: var(--yellow-soft); border-bottom: 1px solid var(--border); }
+.audio-list { list-style: none; margin: 0; padding: 0; }
+.audio-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-height: var(--row); padding: 8px 16px; border-top: 1px solid var(--border); }
+.audio-main { display: flex; flex: 1 1 340px; align-items: center; gap: 12px; min-width: 0; } .audio-main .who { flex: 1; min-width: 0; } .audio-main .where { flex: 0 0 auto; }
+.day-group .audio-row:first-child { border-top: 0; } .audio-row:hover { background: var(--surface-2); }
+.audio-files { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-left: auto; }
+.audio-actions { display: inline-flex; align-items: center; gap: 6px; }
+.audio-length { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 4px; }
+.ghost.active-audio { background: var(--yellow); border-color: var(--yellow-strong); color: var(--on-yellow); }
+a.ghost { text-decoration: none; }
+.audio-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 18px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
+.playing-now { display: inline-flex; align-items: center; gap: 6px; color: var(--text); font-weight: 600; }
+.audio-player { width: 100%; border-radius: 12px; }
+.spin { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 760px) {
+  .access-panel { grid-template-columns: 1fr; }
+  .audio-row .where { display: none; } .audio-row .audio-files { margin-left: 0; justify-content: flex-start; }
+}

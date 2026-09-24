@@ -6,4 +6,6 @@ interface ImportMetaEnv {
   readonly VITE_SIP_WSS_URL?: string;
   /** Optional comma-separated STUN/TURN URLs without credentials. */
   readonly VITE_ICE_SERVERS?: string;
+  /** Base URL of the recordings access (agent API of the supervision). Default `/api`, same origin. */
+  readonly VITE_RECORDINGS_URL?: string;
 }

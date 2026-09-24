@@ -103,8 +103,8 @@ function Detail({ contact, onEdit }: { contact: Contact; onEdit(): void }) {
   );
 }
 
-export function Contacts({ favoritesOnly = false }: { favoritesOnly?: boolean }) {
-  const { selectedContactId, openContact, placeCall, setView } = useApp();
+export function Contacts() {
+  const { selectedContactId, openContact, placeCall, favoritesOnly, setFavoritesOnly } = useApp();
   const { contacts } = useData();
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<Contact | 'new' | null>(null);
@@ -128,8 +128,11 @@ export function Contacts({ favoritesOnly = false }: { favoritesOnly?: boolean })
           <h1><span className="swoosh">{favoritesOnly ? 'Favoris' : 'Contacts'}</span></h1>
           <p className="lead">{favoritesOnly ? 'Les personnes que vous appelez le plus, à un clic.' : 'Enregistrés sur cet appareil, jamais importés automatiquement.'}</p></div>
         <div className="head-actions">
-          {/* Favourites leave the bottom bar on a narrow screen, so they stay one tap away from here. */}
-          <button type="button" className="ghost only-narrow" onClick={() => setView(favoritesOnly ? 'contacts' : 'favorites')}><Star size={16} /> {favoritesOnly ? 'Tous les contacts' : 'Favoris'}</button>
+          {/* Favourites live inside Contacts: one switch between the whole book and the shortcuts. */}
+          <div className="tabs" role="tablist" aria-label="Afficher">
+            <button type="button" role="tab" aria-selected={!favoritesOnly} className={favoritesOnly ? '' : 'active'} onClick={() => setFavoritesOnly(false)}>Tous</button>
+            <button type="button" role="tab" aria-selected={favoritesOnly} className={favoritesOnly ? 'active' : ''} onClick={() => setFavoritesOnly(true)}><Star size={14} /> Favoris</button>
+          </div>
           <button type="button" className="primary" onClick={() => setEditing('new')}><Plus size={17} /> Nouveau contact</button>
         </div>
       </header>

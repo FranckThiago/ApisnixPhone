@@ -361,6 +361,24 @@ phone.apisnix-crm.com {
 }
 ```
 
+Onglet **Audio** (24 septembre, non déployé) : le webphone appelle `/api/*` sur
+sa propre origine (`VITE_RECORDINGS_URL` vide). Pour la mise en service, ajouter
+avant `try_files`, dans le même bloc `route`, un relais vers la supervision de
+Hermes, qui expose l'accès agent :
+
+```
+        handle /api/* {
+            reverse_proxy 127.0.0.1:<port supervision>
+        }
+```
+
+Côté supervision, ajouter `phone.apisnix-crm.com` à `trusted_hosts` de la
+configuration ; les cookies restent propres à chaque nom d'hôte. Aucune
+modification de la CSP : `connect-src 'self'` et `media-src 'self'` couvrent le
+relais. Chaque agent reçoit un accès agent créé dans l'Administration de la
+supervision (rôle « Agent », poste classé). Une autre origine imposerait
+`VITE_RECORDINGS_URL`, CORS avec cookies et une CSP élargie : non retenu.
+
 `style-src 'unsafe-inline'` est requis par les styles calculés (avatars, niveau
 du micro). Le bloc `route` garantit que `try_files` précède les règles de cache :
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets

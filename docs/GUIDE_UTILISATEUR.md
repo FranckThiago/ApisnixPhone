@@ -40,7 +40,7 @@ choisissez **Autoriser**.
 
 ![Journal d'appels](guide/02-journal.png)
 
-- **À gauche**, le menu : Journal, Contacts, Rappels, Favoris, Réglages. Votre
+- **À gauche**, le menu : Journal, Contacts, Rappels, Audio, Réglages. Votre
   compte et le bouton rouge **Se déconnecter** sont en bas ; le même bouton se
   trouve en haut à droite.
 - **Au centre**, la page choisie.
@@ -149,8 +149,28 @@ l'ajoute aux **Favoris**.
 
 ![Favoris](guide/11-favoris.png)
 
-Dans les Favoris, cliquer sur la carte ouvre la fiche ; seul le bouton
-**Appeler** lance l'appel, pour éviter tout appel par erreur.
+Les favoris se trouvent dans la page Contacts : le bouton **Favoris**, à côté
+de **Tous**, n'affiche que vos raccourcis. Cliquer sur une carte ouvre la fiche ;
+seul le bouton **Appeler** lance l'appel, pour éviter tout appel par erreur.
+
+## 8 bis. Audio : vos enregistrements
+
+La page **Audio** rassemble les enregistrements des appels de votre poste,
+réalisés par le serveur. Ils y apparaissent **quelques minutes après la fin de
+l'appel** ; en attendant, la ligne indique « En traitement » et se met à jour
+toute seule.
+
+Cet accès est distinct de la ligne téléphonique : la première fois, saisissez
+l'identifiant et le mot de passe **d'accès aux enregistrements** remis par
+APISNIX (votre identifiant est proposé d'avance). Ensuite, choisissez la
+période — Aujourd'hui, Hier, 7 derniers jours — puis, pour chaque appel :
+
+- **Écouter** lance la lecture dans la page, avec un lecteur en bas de la liste ;
+- **Télécharger** enregistre le fichier audio sur votre appareil.
+
+Vous ne voyez que les enregistrements de votre poste, quel que soit l'appareil
+utilisé pour appeler. **Fermer l'accès** referme cette page ; se déconnecter du
+téléphone la referme aussi.
 
 ## 9. Les rappels
 
@@ -198,7 +218,8 @@ Entrée pour valider.
 
 Le menu passe en bas de l'écran, avec le bouton vert **Téléphone** au centre.
 Pendant un appel, un bandeau reste visible sur toutes les pages, avec son bouton
-Raccrocher. Les Favoris s'ouvrent depuis la page Contacts.
+Raccrocher. Les Favoris et la page Audio s'ouvrent depuis Contacts et depuis la
+recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
 
 ## En cas de problème
 

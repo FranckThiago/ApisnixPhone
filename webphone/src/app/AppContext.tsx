@@ -9,9 +9,11 @@ import { SipPhoneController } from '../telephony/SipPhoneController';
 import { browserSipEnvironment, sipConfigFromEnv } from '../telephony/sipEnvironment';
 import type { Credentials, PhoneController } from '../telephony/types';
 import { forgetSilentAccess } from '../features/auth/credentials';
+import { DemoRecordingsSource, HttpRecordingsSource } from '../recordings/client';
+import type { RecordingsSource } from '../recordings/types';
 import { storedTheme } from './theme';
 
-export type View = 'journal' | 'contacts' | 'favorites' | 'callbacks' | 'settings' | 'phone';
+export type View = 'journal' | 'contacts' | 'audio' | 'callbacks' | 'settings' | 'phone';
 
 export interface Toast {
   id: number;
@@ -22,6 +24,8 @@ export interface Toast {
 interface AppValue {
   phone: PhoneController;
   store: DataStore;
+  /** The recordings of the person's own phone, served by the supervision service. */
+  recordings: RecordingsSource;
   view: View;
   setView(view: View): void;
   dial: string;
@@ -42,6 +46,9 @@ interface AppValue {
   simulateIncoming(): void;
   selectedContactId: string | null;
   openContact(id: string | null): void;
+  /** « Contacts » showing favourites only; set from the palette or the narrow-screen shortcut. */
+  favoritesOnly: boolean;
+  setFavoritesOnly(value: boolean): void;
 }
 
 const AppContext = createContext<AppValue | null>(null);
@@ -52,6 +59,8 @@ const sipConfig = sipConfigFromEnv(import.meta.env);
 const demoPhone = sipConfig ? null : new DemoPhoneController();
 const phone: PhoneController = demoPhone ?? new SipPhoneController(sipConfig!, browserSipEnvironment);
 const store = new DataStore(typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence);
+// Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
+const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, ''));
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<View>('journal');
@@ -61,6 +70,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [wrapUpRecordId, setWrapUpRecordId] = useState<string | null>(null);
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [sessionOpen, setSessionOpen] = useState(false);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const recorded = useRef(new Set<string>());
   const toastId = useRef(0);
   const incomingIndex = useRef(0);
@@ -170,6 +180,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setView('journal');
     setDial('');
     setSelectedContactId(null);
+    setFavoritesOnly(false);
+    // The recordings session belongs to the person, not to the browser left open.
+    void recordings.signOut();
   }, []);
 
   const simulateIncoming = useCallback(() => {
@@ -184,9 +197,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    phone, store, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
-    toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact,
-  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact]);
+    phone, store, recordings, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
+    toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly,
+  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

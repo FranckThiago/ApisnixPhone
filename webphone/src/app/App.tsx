@@ -1,4 +1,4 @@
-import { AlarmClock, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Star, Sun, WifiOff } from 'lucide-react';
+import { AlarmClock, AudioLines, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Sun, WifiOff } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
@@ -9,6 +9,7 @@ import { ConnectionPill, PhoneDock } from '../features/calls/PhoneDock';
 import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
+import { Recordings } from '../features/recordings/Recordings';
 import { Settings } from '../features/settings/Settings';
 import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
@@ -17,7 +18,7 @@ import { applyTheme, storedTheme } from './theme';
 // On a narrow screen the phone sits in the middle of this list, as the main action.
 const NAV: Array<[View, string, typeof History]> = [
   ['journal', 'Journal', History], ['contacts', 'Contacts', BookUser], ['phone', 'Téléphone', Phone],
-  ['callbacks', 'Rappels', AlarmClock], ['favorites', 'Favoris', Star], ['settings', 'Réglages', SettingsIcon],
+  ['callbacks', 'Rappels', AlarmClock], ['audio', 'Audio', AudioLines], ['settings', 'Réglages', SettingsIcon],
 ];
 
 function useShortcuts() {
@@ -161,7 +162,7 @@ function Workspace() {
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
           {(view === 'journal' || view === 'phone') && <Journal />}
           {view === 'contacts' && <Contacts />}
-          {view === 'favorites' && <Contacts favoritesOnly />}
+          {view === 'audio' && <Recordings />}
           {view === 'callbacks' && <Callbacks />}
           {view === 'settings' && <Settings />}
         </div>

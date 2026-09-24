@@ -178,8 +178,8 @@ chaque détail pixel pour pixel après les essais.
 │                  │                                 │ Composer             │
 │ Journal          │ Appels du navigateur             │ Pays + numéro        │
 │ Contacts         │ Résultat · pays · heure · durée  │ Clavier / appeler    │
-│ Favoris          │                                 │                      │
-│                  │ Détail / notes du contact        │ Appel en cours       │
+│ Rappels          │                                 │                      │
+│ Audio            │ Détail / notes du contact        │ Appel en cours       │
 │ Réglages         │                                 │ Identité · durée     │
 │ Aide / profil    │                                 │ Micro / attente / fin│
 └──────────────────┴─────────────────────────────────┴──────────────────────┘
@@ -229,8 +229,9 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 | Préparation audio | Choisir micro/casque, vérifier le niveau micro, écouter un son local sur clic ; état de permission explicite |
 | Journal | Liste recherchable, Tous/Sortants/Entrants/Manqués, date/durée/pays/résultat ; rappel depuis chaque ligne |
 | Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative |
-| Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés, favoris ; pas d'import système automatique |
-| Favoris | Accès rapide aux contacts ; action Appeler distincte pour éviter les appels accidentels |
+| Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés ; pas d'import système automatique. Bascule **Tous / Favoris** dans la page : les favoris n'ont plus d'entrée de menu |
+| Favoris | Vue de Contacts : cartes des raccourcis, action Appeler distincte pour éviter les appels accidentels |
+| Audio | Enregistrements du poste de la personne, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; accès séparé de la ligne SIP (identifiant/mot de passe d'accès aux enregistrements), session de service, jamais de lien public |
 | Disponible | Panneau de composition, état connecté, saisie et collage ; bouton désactivé tant qu'un prérequis manque |
 | Appel sortant | Identité, pays, étapes connexion/sonnerie, Annuler ; le temps de conversation commence au décroché |
 | Appel entrant | Identité/numéro, Accepter/Refuser ; aucune réponse automatique héritée de VICIdial |
@@ -267,7 +268,7 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Statistiques personnelles | V1 limité | Calculées sur le journal local, période et portée affichées |
 | Transfert simple | Pilote complémentaire | SIP REFER supporté par la bibliothèque ; droits et routage vérifiés avant activation |
 | Double appel / transfert accompagné | Suite | Ne pas contourner les limites de ligne actuelles ; deuxième session autorisée et testée |
-| Journal central / enregistrements | Suite | Authentification et isolation par compte, accès serveur dédié ; pas de lien public vers les audios |
+| Journal central / enregistrements | Audio livré (24 septembre) | Onglet Audio du webphone sur l'accès agent de la supervision : session de service par compte, poste isolé côté serveur, `/api` sur la même origine via le reverse proxy ; pas de lien public vers les audios. Journal central complet toujours en suite |
 | Campagnes, robot d'appel, SMS, IA, CRM complet | Hors V1 | Pas de faux module pour imiter les concurrents |
 | Vidéo, caméra, géolocalisation, partage écran | Hors périmètre | Aucune demande de permission correspondante |
 

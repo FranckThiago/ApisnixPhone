@@ -1,4 +1,4 @@
-import { AlarmClock, BookUser, History, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
+import { AlarmClock, AudioLines, BookUser, History, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../app/AppContext';
 import { applyTheme } from '../app/theme';
@@ -11,7 +11,7 @@ interface Command { id: string; icon: ReactNode; label: string; hint?: string; r
 
 /** One field to reach anything: a number to call, a contact, a view or an action. */
 export function CommandPalette() {
-  const { paletteOpen, setPaletteOpen, placeCall, setView, openContact, simulateIncoming, store } = useApp();
+  const { paletteOpen, setPaletteOpen, placeCall, setView, openContact, simulateIncoming, store, setFavoritesOnly } = useApp();
   const { contacts, preferences } = useData();
   const { demo } = usePhone();
   const [query, setQuery] = useState('');
@@ -39,9 +39,10 @@ export function CommandPalette() {
     }
     const actions: Command[] = [
       { id: 'journal', icon: <History size={18} />, label: 'Ouvrir le journal', run: () => setView('journal') },
-      { id: 'contacts', icon: <BookUser size={18} />, label: 'Ouvrir les contacts', run: () => setView('contacts') },
+      { id: 'contacts', icon: <BookUser size={18} />, label: 'Ouvrir les contacts', run: () => { setFavoritesOnly(false); setView('contacts'); } },
       { id: 'callbacks', icon: <AlarmClock size={18} />, label: 'Ouvrir les rappels', run: () => setView('callbacks') },
-      { id: 'favorites', icon: <Star size={18} />, label: 'Ouvrir les favoris', run: () => setView('favorites') },
+      { id: 'favorites', icon: <Star size={18} />, label: 'Ouvrir les favoris', run: () => { setFavoritesOnly(true); setView('contacts'); } },
+      { id: 'audio', icon: <AudioLines size={18} />, label: 'Ouvrir mes enregistrements', run: () => setView('audio') },
       { id: 'settings', icon: <SettingsIcon size={18} />, label: 'Ouvrir les réglages', run: () => setView('settings') },
       { id: 'theme', icon: <Moon size={18} />, label: preferences.theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre',
         run: () => { const theme = preferences.theme === 'dark' ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme); } },
@@ -49,7 +50,7 @@ export function CommandPalette() {
     ];
     const text = query.trim().toLowerCase();
     return [...result, ...actions.filter(action => !text || action.label.toLowerCase().includes(text))];
-  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store]);
+  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store, setFavoritesOnly]);
 
   const active = Math.min(index, Math.max(0, commands.length - 1));
   const run = (command: Command | undefined) => { if (!command) return; setPaletteOpen(false); command.run(); };
