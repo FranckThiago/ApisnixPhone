@@ -36,8 +36,8 @@ export interface RecordingsListing {
 export type Period = 'today' | 'yesterday' | 'week';
 
 /**
- * Access to the recordings of one's own phone. The SIP line proves nothing here:
- * the service authenticates the person itself and serves only their phone.
+ * Access to the recordings of one's own phone. The service has the PBX confirm the
+ * line's credentials itself, then serves only that phone.
  */
 export interface RecordingsSource {
   /** True when this browser holds a valid session on the service. */
