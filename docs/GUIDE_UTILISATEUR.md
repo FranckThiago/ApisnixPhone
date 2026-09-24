@@ -155,6 +155,8 @@ seul le bouton **Appeler** lance l'appel, pour éviter tout appel par erreur.
 
 ## 8 bis. Audio : vos enregistrements
 
+![Enregistrements de la ligne](guide/18-audio.png)
+
 La page **Audio** rassemble les enregistrements des appels de votre poste,
 réalisés par le serveur. Ils y apparaissent **quelques minutes après la fin de
 l'appel** ; en attendant, la ligne indique « En traitement » et se met à jour

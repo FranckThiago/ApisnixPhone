@@ -104,7 +104,7 @@ try {
 
   await run(`__nav('Contacts'); await __wait(400); [...document.querySelectorAll('.contact-row')].find(r => r.textContent.includes('Camille')).click(); await __wait(400);`);
   await shot('10-contacts');
-  await run(`__nav('Favoris'); await __wait(400);`);
+  await run(`__button('Favoris'); await __wait(400);`);
   await shot('11-favoris');
   await run(`__nav('Rappels'); await __wait(400);`);
   await shot('12-rappels');
@@ -117,6 +117,10 @@ try {
   await run(`__nav('Réglages'); await __wait(300); __button('Sombre'); await __wait(300); __nav('Journal'); await __wait(400);`);
   await shot('15-theme-sombre');
   await run(`__nav('Réglages'); await __wait(300); __button('Clair'); await __wait(300); __nav('Journal');`);
+
+  await run(`__nav('Audio'); await __wait(500);`);
+  await shot('18-audio');
+  await run(`__nav('Journal'); await __wait(300);`);
 
   await viewport(390, 844, true);
   await sleep(500);

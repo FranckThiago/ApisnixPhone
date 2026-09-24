@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 2026-09-24 — Audio publié et guide client régénéré
+
+- Release web `20260924-audio-agent` en service sur Hermes après build live,
+  43 tests, typage et lint. Les 266 fichiers servis incluent l'onglet Audio ;
+  le JS public correspond au build. La supervision et les deux passerelles PBX
+  portent le rôle agent et la vérification de la ligne (fiche détaillée dans
+  le dépôt privé). API HTTPS 200 et faux mot de passe refusé ; essai audio
+  avec une ligne valide encore à faire.
+- Guide client : capture de l'onglet Audio ajoutée ; toutes les captures et le
+  PDF ont été régénérés. Le script de captures utilise désormais la bascule
+  Favoris de Contacts.
+
 ## 2026-09-24 — Onglet Audio : l'agent écoute et télécharge ses enregistrements
 
 - Demande de Franck : dans l'interface d'appel, remplacer Favoris par Audio,

@@ -1,6 +1,6 @@
 # État du projet
 
-## État courant — onglet Audio en code, 24 septembre 2026
+## État courant — onglet Audio en service, 24 septembre 2026
 
 ApisnixPhone Web remplace l'entrée de menu Favoris par **Audio** : les
 enregistrements du poste de la personne, listés par période, à écouter dans la
@@ -14,14 +14,15 @@ fait confirmer le mot de passe du poste par le PBX (passerelle en lecture
 seule) et ouvre une session agent liée au poste, sans rien saisir ni stocker.
 En démonstration, une source fictive locale.
 
-Typage, lint, 43 tests (5 nouveaux) et build réussis ; parcours vérifié dans le
-navigateur en démonstration. **Non déployé** : la mise en service demande le
-relais Caddy `/api/*` vers la supervision, `trusted_hosts` côté supervision,
-la release de la supervision portant le rôle agent et la session par ligne,
-la passerelle PBX en mode `verify` et le droit de lecture du mot de passe des
-postes pour son identité SQL (procédure : dépôt privé,
-`docs/DEPLOIEMENT_AUDIO_AGENT.md`). Les captures du guide ne sont pas régénérées : le
-script `scripts/guide-screenshots.mjs` cité par AGENTS.md est absent du dépôt.
+Typage, lint, 43 tests et build live réussis. **Release active :
+`20260924-audio-agent`, source `67775d0`** sur Hermes. Le relais Caddy `/api/*`
+vers la supervision, son hôte de confiance, le rôle agent et la session par
+ligne, ainsi que le mode `verify` et son droit SQL limité sur les deux PBX
+sont en service. HTTPS et JS servi vérifiés, faux mot de passe refusé ; un
+essai avec une ligne valide et l'écoute d'un enregistrement restent à faire
+avec un pilote classé. Procédure et sauvegardes : dépôt privé,
+`docs/DEPLOIEMENT_AUDIO_AGENT.md`. Les captures du guide et son PDF sont
+régénérés, avec l'écran Audio de démonstration.
 
 ## État précédent — diagnostics SIP déployés le 22 septembre 2026
 

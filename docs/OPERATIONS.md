@@ -361,15 +361,14 @@ phone.apisnix-crm.com {
 }
 ```
 
-Onglet **Audio** (24 septembre, non déployé) : le webphone appelle `/api/*` sur
+Onglet **Audio** (24 septembre, en service) : le webphone appelle `/api/*` sur
 sa propre origine (`VITE_RECORDINGS_URL` vide). Pour la mise en service, ajouter
 avant `try_files`, dans le même bloc `route`, un relais vers la supervision de
 Hermes, qui expose l'accès agent :
 
 ```
-        handle /api/* {
-            reverse_proxy 127.0.0.1:<port supervision>
-        }
+        @apisnix_api path /api/*
+        reverse_proxy @apisnix_api 127.0.0.1:8766
 ```
 
 Côté supervision, ajouter `phone.apisnix-crm.com` à `trusted_hosts` de la
@@ -390,7 +389,21 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260922-sip-diagnostics-v2`, source `a794199`, déployée le
+Version active : `20260924-audio-agent`, source `67775d0`, déployée le
+24 septembre. Archive SHA-256
+`7fcf867eb8e7d220f305924abd441253a30763951a9fea3cb09e297064f610b3` ;
+les métadonnées Apple de l'archive macOS ont été retirées du dossier de
+release avant activation (266 fichiers servis). Sauvegarde
+`/root/apisnix-phone-backups/20260924-audio-agent/` avec l'ancienne cible.
+Typage, lint, 43 tests et build live réussis ; HTTPS 200, API 200 JSON, refus
+401 d'un faux mot de passe, JS servi identique au build (SHA-256
+`0fe8de8febf48c7fa10b755dc2ec9ce911f3d2eb1fab25a2583598e59a670325`)
+et écran de connexion contrôlés. Retour : repointer `current` vers
+`20260922-sip-diagnostics-v2`. Un test avec une ligne classée et un
+enregistrement réel reste à faire. Détails PBX, supervision et Caddy dans le
+dépôt privé, `docs/DEPLOIEMENT_AUDIO_AGENT.md`.
+
+Version précédente : `20260922-sip-diagnostics-v2`, source `a794199`, déployée le
 22 septembre. Elle attend le callback du code SIP après la fin de session
 signalée par SIP.js, pour préserver le diagnostic dans la fiche et le Journal.
 Build Git isolé : typage, lint, 38 tests et build live réussis ; 266 fichiers,
