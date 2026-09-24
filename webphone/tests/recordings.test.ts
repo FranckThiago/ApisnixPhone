@@ -46,13 +46,13 @@ describe('recordings client', () => {
   it('opens a session, sends the CSRF token on writes and lists only the agent scope', async () => {
     const { calls, fetchImpl } = fakeService({
       'GET /me': () => me('agent'),
-      'POST /login': init => (JSON.parse(String(init.body)).password === 'good' ? { status: 200, body: { ok: true } } : { status: 401, body: { error: 'Identifiant ou mot de passe incorrect.' } }),
+      'POST /line-session': init => (JSON.parse(String(init.body)).password === 'good' ? { status: 200, body: { ok: true } } : { status: 401, body: { error: 'Identifiant ou mot de passe de la ligne incorrect.' } }),
       'POST /logout': init => ((init.headers as Record<string, string>)['X-CSRF-Token'] === 'token-1' ? { status: 200, body: { ok: true } } : { status: 403, body: { error: 'Accès refusé.' } }),
       'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false } }),
     });
     const source = new HttpRecordingsSource('/api', fetchImpl);
-    await expect(source.signIn('D1001', 'bad')).rejects.toMatchObject({ status: 401, message: 'Identifiant ou mot de passe incorrect.' });
-    const identity = await source.signIn('D1001', 'good');
+    await expect(source.openWithLine('D1001', 'bad')).rejects.toMatchObject({ status: 401, message: 'Identifiant ou mot de passe de la ligne incorrect.' });
+    const identity = await source.openWithLine('D1001', 'good');
     expect(identity).toEqual({ name: 'Nadia', extension: 'D1001', alias: 'Nadia' });
     const listing = await source.list('today');
     expect(listing.calls).toHaveLength(1);
@@ -62,14 +62,14 @@ describe('recordings client', () => {
     expect(source.audioUrl('demo:0', true)).toBe('/api/recordings/demo%3A0/audio?download=1');
     await source.signOut();
     expect(calls.at(-1)!.url).toBe('/api/logout');
-    // The password never travels anywhere but the login request.
+    // The line's password travels once, to the line-session request only.
     expect(calls.filter(call => JSON.stringify(call.init).includes('good'))).toHaveLength(1);
   });
 
   it('refuses a supervisor account and reports a closed session without a password prompt loop', async () => {
-    const { fetchImpl } = fakeService({ 'GET /me': () => me('supervisor', null), 'POST /login': () => ({ status: 200, body: { ok: true } }) });
+    const { fetchImpl } = fakeService({ 'GET /me': () => me('supervisor', null), 'POST /line-session': () => ({ status: 200, body: { ok: true } }) });
     const source = new HttpRecordingsSource('/api', fetchImpl);
-    await expect(source.signIn('sup', 'x')).rejects.toBeInstanceOf(RecordingsError);
+    await expect(source.openWithLine('sup', 'x')).rejects.toBeInstanceOf(RecordingsError);
     const closed = new HttpRecordingsSource('/api', fakeService({ 'GET /me': () => ({ status: 401, body: { error: 'Connectez-vous pour continuer.' } }) }).fetchImpl);
     expect(await closed.session()).toBeNull();
     const down = new HttpRecordingsSource('/api', (async () => { throw new TypeError('network'); }) as unknown as typeof fetch);
@@ -80,7 +80,7 @@ describe('recordings client', () => {
     const now = new Date(2026, 8, 24, 12).getTime();
     const source: RecordingsSource = new DemoRecordingsSource(() => now);
     expect(await source.session()).toBeNull();
-    await source.signIn('demo', 'anything');
+    await source.openWithLine('demo', 'anything');
     const today = await source.list('today');
     const week = await source.list('week');
     expect(today.calls.length).toBeGreaterThan(0);

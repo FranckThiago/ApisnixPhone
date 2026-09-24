@@ -68,7 +68,7 @@ export class HttpRecordingsSource implements RecordingsSource {
     if (!response.ok || body === null || typeof body !== 'object') {
       const message = (body as { error?: string } | null)?.error;
       // A refused sign-in keeps the service's own sentence; an expired session gets a plain invitation.
-      const expired = response.status === 401 && path !== '/login';
+      const expired = response.status === 401 && path !== '/line-session';
       throw new RecordingsError(expired ? 'Connectez-vous pour accéder à vos enregistrements.' : message ?? UNAVAILABLE, response.status);
     }
     return body as T;
@@ -92,8 +92,8 @@ export class HttpRecordingsSource implements RecordingsSource {
     }
   }
 
-  async signIn(username: string, password: string) {
-    await this.request('/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+  async openWithLine(username: string, password: string) {
+    await this.request('/line-session', { method: 'POST', body: JSON.stringify({ username, password }) });
     return this.identity(await this.request<ServiceMe>('/me'));
   }
 
@@ -119,7 +119,7 @@ export class DemoRecordingsSource implements RecordingsSource {
   constructor(private readonly now = () => Date.now()) {}
 
   async session() { return this.open ? this.identity() : null; }
-  async signIn(username: string) { this.open = true; return this.identity(username); }
+  async openWithLine(username: string) { this.open = true; return this.identity(username); }
   async signOut() { this.open = false; }
 
   private identity(username = 'demo'): RecordingsIdentity {

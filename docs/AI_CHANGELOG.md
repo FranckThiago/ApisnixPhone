@@ -14,6 +14,12 @@
 - Prérequis serveur documentés dans OPERATIONS (relais Caddy `/api/*`,
   `trusted_hosts`) ; rôle agent livré dans le dépôt de gestion (`53a1e2f`).
   Guide utilisateur : § 8 bis. Captures non régénérées (script absent).
+- Même jour, à la demande de Franck : plus rien à saisir. Le téléphone ouvre
+  l'accès avec les identifiants de la ligne (`POST /api/line-session`), que la
+  supervision fait confirmer par le PBX en lecture seule ; formulaire retiré,
+  bouton Réessayer en cas d'échec, identifiants gardés en mémoire de session
+  seulement. Déploiement demandé mais bloqué par les permissions de la session
+  (voir PROJECT_STATE).
 
 ## 2026-09-23 — Protection Fail2ban du WSS documentée
 

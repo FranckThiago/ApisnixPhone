@@ -375,9 +375,15 @@ Hermes, qui expose l'accès agent :
 Côté supervision, ajouter `phone.apisnix-crm.com` à `trusted_hosts` de la
 configuration ; les cookies restent propres à chaque nom d'hôte. Aucune
 modification de la CSP : `connect-src 'self'` et `media-src 'self'` couvrent le
-relais. Chaque agent reçoit un accès agent créé dans l'Administration de la
-supervision (rôle « Agent », poste classé). Une autre origine imposerait
-`VITE_RECORDINGS_URL`, CORS avec cookies et une CSP élargie : non retenu.
+relais. L'accès s'ouvre **avec la ligne elle-même** : à la connexion, le
+téléphone envoie l'identifiant et le mot de passe SIP à `POST /api/line-session`
+(HTTPS, même origine) ; la supervision demande au PBX, par la passerelle en
+lecture seule (mode `verify`), si ce poste présente bien son mot de passe, puis
+ouvre une session agent liée au poste. Rien n'est saisi ni stocké ; le poste
+doit être classé dans une équipe et actif. Prérequis PBX et supervision :
+dépôt privé de gestion, `docs/DEPLOIEMENT_AUDIO_AGENT.md`. Une autre origine
+imposerait `VITE_RECORDINGS_URL`, CORS avec cookies et une CSP élargie : non
+retenu.
 
 `style-src 'unsafe-inline'` est requis par les styles calculés (avatars, niveau
 du micro). Le bloc `route` garantit que `try_files` précède les règles de cache :

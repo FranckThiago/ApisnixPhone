@@ -231,7 +231,7 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 | Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative |
 | Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés ; pas d'import système automatique. Bascule **Tous / Favoris** dans la page : les favoris n'ont plus d'entrée de menu |
 | Favoris | Vue de Contacts : cartes des raccourcis, action Appeler distincte pour éviter les appels accidentels |
-| Audio | Enregistrements du poste de la personne, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; accès séparé de la ligne SIP (identifiant/mot de passe d'accès aux enregistrements), session de service, jamais de lien public |
+| Audio | Enregistrements du poste de la personne, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; ouverture automatique avec la ligne (`POST /api/line-session`, vérification du mot de passe par le PBX en lecture seule), session de service, jamais de lien public |
 | Disponible | Panneau de composition, état connecté, saisie et collage ; bouton désactivé tant qu'un prérequis manque |
 | Appel sortant | Identité, pays, étapes connexion/sonnerie, Annuler ; le temps de conversation commence au décroché |
 | Appel entrant | Identité/numéro, Accepter/Refuser ; aucune réponse automatique héritée de VICIdial |

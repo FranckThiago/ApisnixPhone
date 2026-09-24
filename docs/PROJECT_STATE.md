@@ -8,16 +8,19 @@ page ou à télécharger ; un fichier encore en préparation est signalé et la
 liste se rafraîchit seule chaque minute. Les favoris deviennent une bascule
 **Tous / Favoris** dans Contacts (palette : « Ouvrir les favoris », « Ouvrir mes
 enregistrements »). Source des fichiers : l'accès **agent** de la supervision
-(dépôt privé de gestion, commit `53a1e2f`), appelé sur `/api` de la même origine ;
-la personne ouvre cet accès une fois avec l'identifiant et le mot de passe
-d'accès aux enregistrements, distincts de la ligne SIP. En démonstration, une
-source fictive locale.
+(dépôt privé de gestion), appelé sur `/api` de la même origine ; l'accès
+s'ouvre **automatiquement avec la ligne** dès la connexion : la supervision
+fait confirmer le mot de passe du poste par le PBX (passerelle en lecture
+seule) et ouvre une session agent liée au poste, sans rien saisir ni stocker.
+En démonstration, une source fictive locale.
 
 Typage, lint, 43 tests (5 nouveaux) et build réussis ; parcours vérifié dans le
 navigateur en démonstration. **Non déployé** : la mise en service demande le
-relais Caddy `/api/*` vers la supervision, `trusted_hosts` côté supervision et
-la release de la supervision portant le rôle agent (voir OPERATIONS et
-GUIDE_UTILISATEUR § 8 bis). Les captures du guide ne sont pas régénérées : le
+relais Caddy `/api/*` vers la supervision, `trusted_hosts` côté supervision,
+la release de la supervision portant le rôle agent et la session par ligne,
+la passerelle PBX en mode `verify` et le droit de lecture du mot de passe des
+postes pour son identité SQL (procédure : dépôt privé,
+`docs/DEPLOIEMENT_AUDIO_AGENT.md`). Les captures du guide ne sont pas régénérées : le
 script `scripts/guide-screenshots.mjs` cité par AGENTS.md est absent du dépôt.
 
 ## État précédent — diagnostics SIP déployés le 22 septembre 2026

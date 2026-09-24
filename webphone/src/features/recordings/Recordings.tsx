@@ -14,35 +14,20 @@ function message(error: unknown): string {
   return error instanceof RecordingsError ? error.message : 'Le service des enregistrements est momentanément injoignable.';
 }
 
-/** One-time sign-in to the recordings access: a separate account, never the SIP password. */
-function Access({ onOpened }: { onOpened(identity: RecordingsIdentity): void }) {
-  const { recordings } = useApp();
-  const { account, demo } = usePhone();
-  const [username, setUsername] = useState(account?.username ?? '');
-  const [password, setPassword] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
+/** The access could not be opened with the line: say why, offer to try again, never ask for a password. */
+function Unavailable({ message, retrying, onRetry }: { message: string; retrying: boolean; onRetry(): void }) {
   return (
     <section className="panel access-panel">
       <div className="access-copy">
         <KeyRound size={26} aria-hidden="true" />
         <h2>Vos enregistrements d’appels</h2>
         <p>Chaque appel de votre poste est enregistré par le serveur. Quelques minutes après l’appel, l’audio est prêt : vous pouvez l’écouter ici ou le télécharger.</p>
-        <p>Cet accès est distinct de la ligne téléphonique : utilisez l’identifiant et le mot de passe d’accès aux enregistrements remis par APISNIX.{demo ? ' En démonstration, n’importe quel mot de passe ouvre des données fictives.' : ''}</p>
+        <p>L’accès s’ouvre tout seul avec votre ligne : rien à saisir.</p>
       </div>
-      <form className="access-form" onSubmit={async event => {
-        event.preventDefault();
-        setBusy(true); setError('');
-        try { onOpened(await recordings.signIn(username.trim(), password)); }
-        catch (raised) { setError(message(raised)); }
-        finally { setBusy(false); setPassword(''); }
-      }}>
-        <label>Identifiant<input value={username} onChange={event => setUsername(event.target.value)} autoComplete="username" required maxLength={100} /></label>
-        <label>Mot de passe<input type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" required maxLength={256} /></label>
-        {error && <p className="form-error" role="alert">{error}</p>}
-        <button type="submit" className="primary" disabled={busy || !username.trim() || !password}>Ouvrir mes enregistrements</button>
-      </form>
+      <div className="access-form">
+        <p className="form-error" role="alert">{message}</p>
+        <button type="button" className="primary" disabled={retrying} onClick={onRetry}><RefreshCw size={16} className={retrying ? 'spin' : ''} /> {retrying ? 'Ouverture…' : 'Réessayer'}</button>
+      </div>
     </section>
   );
 }
@@ -78,7 +63,7 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
 }
 
 export function Recordings() {
-  const { recordings, notify } = useApp();
+  const { recordings, notify, recordingsAccess, reopenRecordings } = useApp();
   const { demo } = usePhone();
   const { contacts } = useData();
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
@@ -90,12 +75,13 @@ export function Recordings() {
   const [playing, setPlaying] = useState<{ id: string; src: string; label: string } | null>(null);
   const playingId = playing?.id ?? null;
 
-  // Is a session already open on the service? Only then do we ask for anything.
+  // The access was opened with the line at sign-in; here we only read who the service says we are.
   useEffect(() => {
+    if (recordingsAccess.state === 'opening') return;
     let cancelled = false;
     recordings.session().then(found => { if (!cancelled) setIdentity(found); }).catch(raised => { if (!cancelled) { setIdentity(null); setError(message(raised)); } });
     return () => { cancelled = true; };
-  }, [recordings]);
+  }, [recordings, recordingsAccess.state]);
 
   const load = useCallback(async () => {
     if (!identity) return;
@@ -140,8 +126,9 @@ export function Recordings() {
         )}
       </header>
 
-      {identity === undefined ? <div className="panel empty"><AudioLines size={28} /><b>Connexion au service…</b></div>
-        : identity === null ? <>{error && <p className="line-banner" role="status">{error}</p>}<Access onOpened={found => { setIdentity(found); setError(''); }} /></>
+      {identity === undefined || recordingsAccess.state === 'opening' ? <div className="panel empty"><AudioLines size={28} /><b>Ouverture de vos enregistrements…</b></div>
+        : identity === null ? <Unavailable retrying={false} onRetry={() => void reopenRecordings()}
+            message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || 'L’accès aux enregistrements n’est pas ouvert pour cette ligne. Réessayez ; si le problème persiste, contactez APISNIX.'} />
         : (
           <section className="panel">
             <div className="toolbar">

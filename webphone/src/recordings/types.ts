@@ -42,7 +42,8 @@ export type Period = 'today' | 'yesterday' | 'week';
 export interface RecordingsSource {
   /** True when this browser holds a valid session on the service. */
   session(): Promise<RecordingsIdentity | null>;
-  signIn(username: string, password: string): Promise<RecordingsIdentity>;
+  /** Opens the recordings of the line itself: the PBX confirms the line's credentials, nothing else is typed. */
+  openWithLine(username: string, password: string): Promise<RecordingsIdentity>;
   signOut(): Promise<void>;
   list(period: Period): Promise<RecordingsListing>;
   /** Same file, streamed for listening or sent as an attachment for download. */

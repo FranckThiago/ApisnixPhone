@@ -49,7 +49,13 @@ interface AppValue {
   /** « Contacts » showing favourites only; set from the palette or the narrow-screen shortcut. */
   favoritesOnly: boolean;
   setFavoritesOnly(value: boolean): void;
+  /** State of the recordings access opened with the line's own credentials. */
+  recordingsAccess: RecordingsAccess;
+  /** Tries again with the credentials of the current line (kept in memory only). */
+  reopenRecordings(): Promise<void>;
 }
+
+export type RecordingsAccess = { state: 'idle' | 'opening' | 'open' } | { state: 'failed'; message: string };
 
 const AppContext = createContext<AppValue | null>(null);
 
@@ -71,6 +77,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [sessionOpen, setSessionOpen] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [recordingsAccess, setRecordingsAccess] = useState<RecordingsAccess>({ state: 'idle' });
+  // The line's credentials, in memory for this session only: the recordings access reuses them, nothing else.
+  const lineCredentials = useRef<Credentials | null>(null);
   const recorded = useRef(new Set<string>());
   const toastId = useRef(0);
   const incomingIndex = useRef(0);
@@ -142,6 +151,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setDial('');
   }, [notify]);
 
+  const reopenRecordings = useCallback(async () => {
+    const credentials = lineCredentials.current;
+    if (!credentials) return;
+    setRecordingsAccess({ state: 'opening' });
+    try {
+      await recordings.openWithLine(credentials.username, credentials.password);
+      setRecordingsAccess({ state: 'open' });
+    } catch (error) {
+      setRecordingsAccess({ state: 'failed', message: error instanceof Error ? error.message : 'Le service des enregistrements est momentanément injoignable.' });
+    }
+  }, []);
+
   const login = useCallback(async (credentials: Credentials) => {
     await phone.connect(credentials);
     // The real line answers in two steps: the socket opens, then the PBX accepts the registration.
@@ -157,8 +178,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
     store.setPreferences({ theme: storedTheme() });
     setSessionOpen(true);
+    // The line is proven: open its recordings in the background, without asking anything.
+    lineCredentials.current = credentials;
+    void reopenRecordings();
     return true;
-  }, []);
+  }, [reopenRecordings]);
 
   // The line gave up (network lost for good, registration refused): back to sign-in, data kept for the same account.
   useEffect(() => phone.subscribe(() => { if (!phone.getSnapshot().account) setSessionOpen(false); }), []);
@@ -181,6 +205,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setDial('');
     setSelectedContactId(null);
     setFavoritesOnly(false);
+    lineCredentials.current = null;
+    setRecordingsAccess({ state: 'idle' });
     // The recordings session belongs to the person, not to the browser left open.
     void recordings.signOut();
   }, []);
@@ -198,8 +224,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AppValue>(() => ({
     phone, store, recordings, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
-    toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly,
-  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly]);
+    toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
+  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

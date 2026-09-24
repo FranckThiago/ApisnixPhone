@@ -160,17 +160,16 @@ réalisés par le serveur. Ils y apparaissent **quelques minutes après la fin d
 l'appel** ; en attendant, la ligne indique « En traitement » et se met à jour
 toute seule.
 
-Cet accès est distinct de la ligne téléphonique : la première fois, saisissez
-l'identifiant et le mot de passe **d'accès aux enregistrements** remis par
-APISNIX (votre identifiant est proposé d'avance). Ensuite, choisissez la
-période — Aujourd'hui, Hier, 7 derniers jours — puis, pour chaque appel :
+Rien à saisir : l'accès s'ouvre tout seul avec votre ligne, dès votre connexion.
+Si la page indique que l'accès n'a pas pu être ouvert, **Réessayer** suffit en
+général ; sinon, contactez APISNIX. Choisissez ensuite la période —
+Aujourd'hui, Hier, 7 derniers jours — puis, pour chaque appel :
 
 - **Écouter** lance la lecture dans la page, avec un lecteur en bas de la liste ;
 - **Télécharger** enregistre le fichier audio sur votre appareil.
 
 Vous ne voyez que les enregistrements de votre poste, quel que soit l'appareil
-utilisé pour appeler. **Fermer l'accès** referme cette page ; se déconnecter du
-téléphone la referme aussi.
+utilisé pour appeler. Se déconnecter du téléphone referme cet accès.
 
 ## 9. Les rappels
 
