@@ -106,7 +106,7 @@ try {
   await shot('10-contacts');
   await run(`__button('Favoris'); await __wait(400);`);
   await shot('11-favoris');
-  await run(`__nav('Rappels'); await __wait(400);`);
+  await run(`__nav('Journal'); await __wait(150); [...document.querySelectorAll('.journal-sections button')].find(b => b.textContent.includes('Rappels')).click(); await __wait(400);`);
   await shot('12-rappels');
   await run(`__nav('Réglages'); await __wait(400);`);
   await shot('13-reglages');

@@ -227,7 +227,7 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 | --- | --- |
 | Connexion | Logo, identifiant et mot de passe ; domaine préconfiguré ; erreur lisible ; pas de jargon SIP en premier plan |
 | Préparation audio | Choisir micro/casque, vérifier le niveau micro, écouter un son local sur clic ; état de permission explicite |
-| Journal | Liste recherchable, Tous/Sortants/Entrants/Manqués, date/durée/pays/résultat ; rappel depuis chaque ligne |
+| Journal | Onglets Appels / Rappels ; liste d’appels recherchable, Tous/Sortants/Entrants/Manqués, date/durée/pays/résultat ; rappel depuis chaque ligne. Sur écran compact, cinq boutons de navigation gardent Appel au centre |
 | Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative |
 | Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés ; pas d'import système automatique. Bascule **Tous / Favoris** dans la page : les favoris n'ont plus d'entrée de menu |
 | Favoris | Vue de Contacts : cartes des raccourcis, action Appeler distincte pour éviter les appels accidentels |

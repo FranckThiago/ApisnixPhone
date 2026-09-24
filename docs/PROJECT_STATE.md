@@ -1,5 +1,14 @@
 # État du projet
 
+## Rappels dans le Journal — 24 septembre 2026
+
+La navigation compacte contient cinq boutons : Journal, Contacts, Appel au
+centre, Audio et Réglages. Les Rappels sont accessibles par l'onglet en haut du
+Journal, ainsi que par la recherche et le téléphone. La pastille des rappels
+apparaît désormais sur Journal. Release `20260924-journal-rappels` active sur
+Hermes ; typage, lint, 43 tests, build, captures et PDF du guide vérifiés.
+[Publication et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+
 ## Correctif du menu Audio compact — 24 septembre 2026
 
 La barre de navigation à 920 px et moins affiche maintenant **Audio** avec les
@@ -7,7 +16,7 @@ autres pages. La règle CSS le masquait alors que la version Audio était déjà
 chargée ; la palette permettait néanmoins d'ouvrir la page. Le contrôle réel
 avec un poste classé a ouvert sa session Audio et listé cinq enregistrements
 des sept derniers jours ; l'écoute et le téléchargement n'ont pas été essayés.
-Release active `20260924-audio-mobile-nav` sur Hermes. Typage, lint, 43 tests,
+Release précédente `20260924-audio-mobile-nav` sur Hermes. Typage, lint, 43 tests,
 build live et capture du guide vérifiés ; la session ouverte avant publication
 garde son ancien style jusqu'à sa prochaine actualisation. Détails et retour
 dans [OPERATIONS.md](OPERATIONS.md#apisnixphone-web--construire-et-héberger).

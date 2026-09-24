@@ -40,7 +40,8 @@ choisissez **Autoriser**.
 
 ![Journal d'appels](guide/02-journal.png)
 
-- **À gauche**, le menu : Journal, Contacts, Rappels, Audio, Réglages. Votre
+- **À gauche**, le menu : Journal, Contacts, Audio, Réglages. Les Rappels se
+  trouvent dans le Journal, sous l’onglet **Rappels**. Votre
   compte et le bouton rouge **Se déconnecter** sont en bas ; le même bouton se
   trouve en haut à droite.
 - **Au centre**, la page choisie.
@@ -177,6 +178,7 @@ utilisé pour appeler. Se déconnecter du téléphone referme cet accès.
 
 ![Rappels](guide/12-rappels.png)
 
+Ouvrez **Journal**, puis **Rappels** en haut de la page.
 Tout rappel planifié arrive ici, classé : **À faire maintenant**, **Plus tard
 aujourd'hui**, **À venir**. À l'heure prévue, l'application vous prévient et une
 pastille jaune apparaît. Pour chaque rappel : **Appeler**, reporter d'une heure,

@@ -18,7 +18,7 @@ import { applyTheme, storedTheme } from './theme';
 // On a narrow screen the phone sits in the middle of this list, as the main action.
 const NAV: Array<[View, string, typeof History]> = [
   ['journal', 'Journal', History], ['contacts', 'Contacts', BookUser], ['phone', 'Téléphone', Phone],
-  ['callbacks', 'Rappels', AlarmClock], ['audio', 'Audio', AudioLines], ['settings', 'Réglages', SettingsIcon],
+  ['audio', 'Audio', AudioLines], ['settings', 'Réglages', SettingsIcon],
 ];
 
 function useShortcuts() {
@@ -116,11 +116,11 @@ function Workspace() {
         <p className="nav-caption">Espace d’appels</p>
         <ul>
           {NAV.map(([key, label, Icon]) => (
-            <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
-              aria-current={view === key ? 'page' : undefined} onClick={() => setView(key)}>
+            <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key || key === 'journal' && view === 'callbacks' ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
+              aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => setView(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{label}</span>
-              {key === 'journal' && unseenMissed > 0 && <i className="badge" aria-label={`${unseenMissed} appels manqués non consultés`}>{unseenMissed}</i>}
-              {key === 'callbacks' && unseenDue > 0 && <i className="badge badge-yellow" aria-label={`${unseenDue} nouveaux rappels à faire`}>{unseenDue}</i>}</button></li>
+              {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (unseenDue ? ' badge-yellow' : '')}
+                aria-label={`${unseenMissed} appels manqués non consultés, ${unseenDue} nouveaux rappels à faire`}>{unseenMissed + unseenDue}</i>}</button></li>
           ))}
         </ul>
         <div className="sidebar-foot">
@@ -160,6 +160,10 @@ function Workspace() {
         )}
         <div className="content">
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
+          {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label="Journal et rappels">
+            <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> Appels</button>
+            <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> Rappels{unseenDue > 0 && <i className="badge badge-yellow" aria-label={`${unseenDue} nouveaux rappels à faire`}>{unseenDue}</i>}</button>
+          </nav>}
           {(view === 'journal' || view === 'phone') && <Journal />}
           {view === 'contacts' && <Contacts />}
           {view === 'audio' && <Recordings />}

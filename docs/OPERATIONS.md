@@ -389,7 +389,20 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260924-audio-mobile-nav`, publiée le 24 septembre pour
+Version active : `20260924-journal-rappels`, publiée le 24 septembre pour
+ramener la barre compacte à cinq boutons et placer Appel au centre. Rappels
+reste accessible dans Journal, par la palette et depuis le téléphone. Build
+live, typage, lint et 43 tests réussis ; captures et PDF du guide régénérés.
+Archive ustar propre de 266 fichiers, SHA-256
+`d28a4f11204154157589cde0b761a66dc5729256f8973674a87ebad1b0d2f112`.
+Ancienne release et cible protégées dans
+`/root/apisnix-phone-backups/20260924-journal-rappels/`. Lien `current`
+basculé atomiquement ; Caddy actif, HTTPS 200. JS et CSS publics ont la même
+empreinte SHA-256 que le build. Aucun rechargement Caddy, changement PBX ou
+supervision. Retour ciblé : après contrôle de la cible courante, repointer
+`current` vers `20260924-audio-mobile-nav`.
+
+Version précédente : `20260924-audio-mobile-nav`, publiée le 24 septembre pour
 afficher Audio dans la barre du bas à 920 px et moins. Le CSS public
 `index-Bnz9I4Xn.css` correspond au build (SHA-256
 `a9e473c089302876498fbec4f82f976791ab1e09738774e6c976959b0a00cda6`).
