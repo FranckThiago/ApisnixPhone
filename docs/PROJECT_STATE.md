@@ -1,6 +1,6 @@
 # État du projet
 
-## Sons du clavier — 25 septembre 2026, non publiés
+## Sons du clavier — publiés le 25 septembre 2026
 
 Chaque touche du pavé émet une courte tonalité, comme sur un téléphone
 classique : la double fréquence DTMF propre à la touche, environ 150 ms, dès
@@ -9,8 +9,11 @@ appel et pour les chiffres tapés au clavier de l'ordinateur pendant un appel
 (une seule fois si la touche reste enfoncée). Le son est local : ce qui part
 vers le correspondant reste le DTMF de la ligne. Réglage **Sons du clavier**
 (Réglages → Audio), activé par défaut. Typage, lint et 53 tests réussis ;
-démonstration vérifiée dans le navigateur. **Pas encore publié sur Hermes** :
-la release active reste `20260925-sonneries`.
+démonstration vérifiée dans le navigateur. **Release active :
+`20260925-keypad-tones`, source `bf357bd`**, publiée sur Hermes à 23:23:49
+Africa/Douala ; elle inclut aussi le Journal du poste ci-dessous. Fichiers servis
+identiques au build ; un onglet ouvert avant doit être actualisé, ce qui
+reconnecte la ligne. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Journal du poste — 25 septembre 2026
 
@@ -22,7 +25,7 @@ serveur sont en lecture seule ; rappel, ajout de contact et programmation d’un
 rappel restent disponibles. Limite serveur de 500 résultats par requête,
 signalée à l’écran. Aucun changement du PBX ni de la supervision.
 Release `20260925-line-journal` publiée sur Hermes à 14:18:31
-Africa/Douala ; typage, lint, 51 tests, build live, HTTPS et écran de connexion
+Africa/Douala, remplacée à 23:23:49 par `20260925-keypad-tones` qui la contient ; typage, lint, 51 tests, build live, HTTPS et écran de connexion
 contrôlés. Un essai connecté avec `edu001` reste à faire.
 
 

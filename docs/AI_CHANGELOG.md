@@ -1,5 +1,22 @@
 # Journal des changements
 
+## 2026-09-25 — Sons du clavier publiés sur Hermes
+
+- À la demande de Franck, release `20260925-keypad-tones` (source `bf357bd`,
+  qui contient aussi le Journal du poste de `bb0a5d2`) publiée à 23:23:49
+  Africa/Douala. Build isolé : `npm ci` sans vulnérabilité, typage, lint,
+  53 tests, build live ; archive SHA-256
+  `576888b9a64468b1ac5558b83bf56995ea8dada76652bcfb6df75d48810ae7db`.
+- Comparée à `20260925-line-journal` alors en ligne : seuls `index.html`, le JS
+  principal et le module SIP.js changent. Sauvegarde protégée, manifeste
+  contrôlé, bascule atomique sans rechargement Caddy ; fichiers publics
+  identiques au build, `/api/me` anonyme 401, écran de connexion sans erreur.
+- Correction : l'entrée « Sons du clavier » de l'état du projet donnait
+  `20260925-sonneries` comme release active alors que `20260925-line-journal`
+  était déjà publiée.
+- Contrôle des appels web en cours non fait (lecture PBX refusée par les
+  permissions de la session) ; la bascule ne coupe aucun appel.
+
 ## 2026-09-25 — Tonalité sous chaque touche du pavé
 
 - Demande de Franck : un petit son à chaque touche en composant, comme sur les

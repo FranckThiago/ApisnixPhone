@@ -389,7 +389,28 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260925-line-journal`, publiée le 25 septembre à
+Version active : `20260925-keypad-tones`, source `bf357bd`, publiée le
+25 septembre à 23:23:49 Africa/Douala : tonalité DTMF locale sous chaque touche
+du pavé, en plus du Journal du poste de `bb0a5d2`. Build isolé : `npm ci` sans
+vulnérabilité, typage, lint, 53 tests et build live réussis. Archive ustar de
+266 fichiers, SHA-256
+`576888b9a64468b1ac5558b83bf56995ea8dada76652bcfb6df75d48810ae7db`, manifeste
+contrôlé après extraction ; release root 0755/0644, lue par Caddy sans droit
+d'écriture. Face à la release en ligne, seuls `index.html`, le JS principal et
+le module SIP.js changent ; CSS et autres fichiers identiques. Ancienne cible,
+manifestes, archive et reçu protégés dans
+`/root/apisnix-phone-backups/20260925-keypad-tones/`. Bascule atomique de
+`current` depuis `20260925-line-journal`, sans rechargement Caddy. HTTPS 200,
+HTTP 308, index `no-cache` identique au build, assets immuables, repli SPA 200,
+JS `index-DPUJlmWg.js`, CSS et module SIP.js servis identiques au build,
+`/api/me` anonyme 401, supervision 200 ; écran de connexion live sans erreur
+console. Contrôle des appels web en cours non fait (lecture PBX refusée par les
+permissions de la session) : la bascule ne coupe aucun appel, mais un onglet
+resté sur l'écran de connexion depuis avant la bascule doit être actualisé.
+Retour ciblé : après contrôle de la cible courante, repointer `current` vers
+`20260925-line-journal`.
+
+Version précédente : `20260925-line-journal`, publiée le 25 septembre à
 14:18:31 Africa/Douala. Le Journal réel lit par défaut les appels de la ligne
 sur 30 jours via `/api/dashboard` et conserve une vue locale distincte pour
 les notes et tags. Aucun changement du PBX, de la supervision ou de Caddy.
@@ -402,8 +423,8 @@ Ancienne cible et archive protégées dans
 actifs, HTTPS 200, index `no-cache` identique au build par SHA-256 et accès
 anonyme `/api/me` refusé (401). L’écran de connexion s’ouvre dans le navigateur
 intégré ; une session `edu001` connectée n’a pas été essayée, faute de mot de
-passe dans cette session. Retour ciblé : repointer atomiquement `current` vers
-`20260925-sonneries` après contrôle de la cible courante.
+passe dans cette session. Retour historique : repointer atomiquement `current`
+vers `20260925-sonneries`.
 
 Version précédente : `20260925-sonneries`, source `191caa9`, publiée le
 25 septembre à 12:03:31 Africa/Douala pour la bibliothèque de huit sonneries
