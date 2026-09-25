@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-25 — Sonneries publiées sur Hermes
+
+- À la demande de Franck, release `20260925-sonneries` (source `191caa9`)
+  publiée à 12:03:31 Africa/Douala. Build isolé depuis Git : `npm ci` sans
+  vulnérabilité, typage, lint, 50 tests, build live ; 266 fichiers sans
+  fichier caché, `.env` ni source map. Archive SHA-256
+  `c7b9bebd1451408b51c5b631df0fce67f40c2febce92e8742a5255cfa4076a6b`.
+- Hermes vérifié, sauvegarde protégée, extraction contrôlée par manifeste,
+  bascule atomique de `current` depuis `20260924-journal-rappels`, sans
+  rechargement Caddy ni changement PBX, DNS ou supervision. Fichiers publics
+  identiques au build ; en-têtes, repli SPA et écran de connexion contrôlés.
+- Limite : le contrôle des appels web en cours sur le PBX a été refusé par
+  les permissions de la session ; il n'a pas été contourné. La bascule ne
+  coupe aucun appel ; un onglet ouvert avant elle doit être actualisé.
+
 ## 2026-09-25 — Sonneries plus fortes, Clairon refait
 
 - Retour de Franck après écoute : le volume est trop bas partout, les calmes

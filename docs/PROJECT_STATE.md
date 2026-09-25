@@ -1,6 +1,6 @@
 # État du projet
 
-## Bibliothèque de sonneries — 25 septembre 2026, non publiée
+## Bibliothèque de sonneries — publiée le 25 septembre 2026
 
 Réglages → Audio propose huit sonneries d'appel entrant, en deux groupes :
 **calmes** (Classique, Carillon, Marimba, Douce) et **bruyantes** (Rétro,
@@ -13,9 +13,12 @@ basse, toutes les sonneries utilisent presque toute la plage sans saturer
 (+8 à +13 dB, les calmes comprises) et Clairon a été refait, plus aigu et
 doublé d'une octave basse. Démonstration vérifiée dans le navigateur : l'appel
 simulé sonne avec le son choisi et se tait au refus.
-Typage, lint et 50 tests réussis ; guide et PDF mis à jour. **Pas encore publié
-sur Hermes** : la release active reste `20260924-journal-rappels`. Les
-applications Android et Windows ne sont pas concernées.
+Typage, lint et 50 tests réussis ; guide et PDF mis à jour. **Release active :
+`20260925-sonneries`, source `191caa9`**, publiée sur Hermes à 12:03:31
+Africa/Douala ; fichiers servis identiques au build. Un onglet ouvert avant la
+bascule doit être actualisé pour obtenir les sonneries, ce qui reconnecte la
+ligne. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+Les applications Android et Windows ne sont pas concernées.
 
 ## Rappels dans le Journal — 24 septembre 2026
 
@@ -23,7 +26,8 @@ La navigation compacte contient cinq boutons : Journal, Contacts, Appel au
 centre, Audio et Réglages. Les Rappels sont accessibles par l'onglet en haut du
 Journal, ainsi que par la recherche et le téléphone. La pastille des rappels
 apparaît désormais sur Journal. Release `20260924-journal-rappels` active sur
-Hermes ; typage, lint, 43 tests, build, captures et PDF du guide vérifiés.
+Hermes le 24 septembre, remplacée le 25 par `20260925-sonneries` ; typage,
+lint, 43 tests, build, captures et PDF du guide vérifiés.
 [Publication et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Correctif du menu Audio compact — 24 septembre 2026

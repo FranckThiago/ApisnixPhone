@@ -389,7 +389,27 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260924-journal-rappels`, publiée le 24 septembre pour
+Version active : `20260925-sonneries`, source `191caa9`, publiée le
+25 septembre à 12:03:31 Africa/Douala pour la bibliothèque de huit sonneries
+(calmes et bruyantes, niveaux relevés après écoute de Franck). Build isolé :
+`npm ci` sans vulnérabilité, typage, lint, 50 tests et build live réussis.
+Archive ustar de 266 fichiers, SHA-256
+`c7b9bebd1451408b51c5b631df0fce67f40c2febce92e8742a5255cfa4076a6b`, manifeste
+contrôlé après extraction ; release root 0755/0644, lue par Caddy sans droit
+d'écriture. Ancienne cible, manifestes, archive et reçu de bascule protégés
+dans `/root/apisnix-phone-backups/20260925-sonneries/`. Lien `current`
+basculé atomiquement, sans rechargement Caddy. HTTPS 200, HTTP 308, index
+`no-cache` identique au build, assets immuables, repli SPA 200 ; JS
+`index-Iyuyyrmg.js`, CSS et module SIP.js servis identiques au build par
+SHA-256 ; écran de connexion live sans erreur console. Le contrôle des appels
+web en cours sur le PBX n'a pas pu être fait (lecture de production refusée
+par les permissions de la session) : la bascule ne coupe aucun appel, mais un
+onglet resté sur l'écran de connexion depuis avant la bascule doit être
+actualisé avant de se connecter, car le module SIP.js a changé de nom.
+Retour ciblé : après contrôle de la cible courante, repointer `current` vers
+`20260924-journal-rappels`.
+
+Version précédente : `20260924-journal-rappels`, publiée le 24 septembre pour
 ramener la barre compacte à cinq boutons et placer Appel au centre. Rappels
 reste accessible dans Journal, par la palette et depuis le téléphone. Build
 live, typage, lint et 43 tests réussis ; captures et PDF du guide régénérés.
@@ -399,8 +419,8 @@ Ancienne release et cible protégées dans
 `/root/apisnix-phone-backups/20260924-journal-rappels/`. Lien `current`
 basculé atomiquement ; Caddy actif, HTTPS 200. JS et CSS publics ont la même
 empreinte SHA-256 que le build. Aucun rechargement Caddy, changement PBX ou
-supervision. Retour ciblé : après contrôle de la cible courante, repointer
-`current` vers `20260924-audio-mobile-nav`.
+supervision. Retour historique : repointer `current` vers
+`20260924-audio-mobile-nav`.
 
 Version précédente : `20260924-audio-mobile-nav`, publiée le 24 septembre pour
 afficher Audio dans la barre du bas à 920 px et moins. Le CSS public
