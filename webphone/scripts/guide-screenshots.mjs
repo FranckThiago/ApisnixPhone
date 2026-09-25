@@ -110,6 +110,8 @@ try {
   await shot('12-rappels');
   await run(`__nav('Réglages'); await __wait(400);`);
   await shot('13-reglages');
+  await run(`document.querySelector('.ringtones').scrollIntoView({ block: 'center' }); await __wait(200);`);
+  await shot('19-sonneries', '.ringtones');
 
   await run(`__nav('Journal'); await __wait(300); document.querySelector('.palette-trigger').click(); await __wait(300); __type('.palette input', 'cam');`);
   await shot('14-recherche');

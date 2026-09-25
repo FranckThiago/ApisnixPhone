@@ -42,7 +42,9 @@ vues et tient un Web Lock par compte. Le contrôleur est choisi au chargement :
 `VITE_APP_MODE=live` avec `VITE_SIP_DOMAIN` et `VITE_SIP_WSS_URL`, sinon démo.
 `audio.ts` transmet le micro tel quel à 100 % de sensibilité ; une chaîne Web
 Audio (périphérique → gain → piste envoyée) ne s'intercale que si le réglage a
-été déplacé, avec repli sur le micro brut si elle ne démarre pas ; la sonnerie est générée, sans fichier audio.
+été déplacé, avec repli sur le micro brut si elle ne démarre pas ; la sonnerie est générée, sans fichier audio,
+à partir de la bibliothèque `ringtones.ts` (partitions de notes Web Audio, calmes ou bruyantes ; choix
+`ringtoneSound` des préférences, identifiant inconnu ramené à Classique).
 `src/domain/numbers.ts` sépare saisie, numéro composé et métadonnées
 d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés, stockés avec
 les autres données locales. `src/storage/` garde les données en

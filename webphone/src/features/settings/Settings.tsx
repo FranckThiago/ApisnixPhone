@@ -6,6 +6,7 @@ import type { Theme } from '../../domain/types';
 import { MAX_AGE_DAYS, MAX_CALLS } from '../../storage/DataStore';
 import { persistChoice } from '../../storage/persistence';
 import { AudioSettings } from './AudioSettings';
+import { RingtonePicker } from './RingtonePicker';
 
 function Section({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
   return <section className="panel settings-section"><h2>{icon}{title}</h2>{children}</section>;
@@ -32,7 +33,8 @@ export function Settings() {
       <div className="settings-grid">
         <Section icon={<Headphones size={18} />} title="Audio">
           <AudioSettings />
-          <Toggle label="Sonnerie" hint="Jouée pour un appel entrant." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
+          <Toggle label="Sonnerie" hint="Jouée pour un appel entrant, au volume d’écoute." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
+          <RingtonePicker />
           <Toggle label="Sons de la ligne" hint="Carillon d’annonce quand la ligne est prête, deux notes descendantes si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
           <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
           <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />

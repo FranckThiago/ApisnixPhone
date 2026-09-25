@@ -1,3 +1,5 @@
+import { findRingtone, previewSeconds, scheduleRingtone } from './ringtones';
+
 /**
  * Microphone chain: device → gain → the track sent to the call.
  * The sent track never changes, so sensitivity and even the microphone itself
@@ -166,36 +168,53 @@ export function primeAudio() {
   source.start();
 }
 
-/** A generated two-tone ring: no audio file to ship, stops instantly. */
+/** Plays a ringtone of the library in a loop: generated, no audio file to ship, silent at once when stopped. */
 export class Ringer {
   private timer?: ReturnType<typeof setInterval>;
+  private output?: GainNode;
 
-  start(volume: number) {
+  start(volume: number, ringtoneId?: string) {
     const context = soundContext();
     if (this.timer || !context) return;
-    const burst = () => {
-      if (context.state === 'suspended') void context.resume().catch(() => undefined);
-      for (const [frequency, offset] of [[740, 0], [587, 0.22]] as const) {
-        const oscillator = context.createOscillator();
-        const envelope = context.createGain();
-        oscillator.frequency.value = frequency;
-        const start = context.currentTime + offset;
-        envelope.gain.setValueAtTime(0, start);
-        envelope.gain.linearRampToValueAtTime(0.18 * volume, start + 0.03);
-        envelope.gain.linearRampToValueAtTime(0, start + 0.2);
-        oscillator.connect(envelope).connect(context.destination);
-        oscillator.start(start);
-        oscillator.stop(start + 0.22);
-      }
+    const ringtone = findRingtone(ringtoneId);
+    const output = context.createGain();
+    output.gain.value = volume;
+    output.connect(context.destination);
+    this.output = output;
+    const cycle = () => {
+      if (context.state !== 'running') void context.resume().catch(() => undefined);
+      scheduleRingtone(context, output, context.currentTime + 0.02, ringtone);
     };
-    burst();
-    this.timer = setInterval(burst, 1600);
+    cycle();
+    this.timer = setInterval(cycle, ringtone.period * 1000);
   }
 
   stop() {
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
+    const output = this.output;
+    this.output = undefined;
+    if (!output) return;
+    // Notes already scheduled are cut with their output; a few milliseconds of fade avoid a click.
+    output.gain.setTargetAtTime(0, output.context.currentTime, 0.015);
+    setTimeout(() => output.disconnect(), 150);
   }
+}
+
+/** Plays a ringtone for about three seconds, from a click in the settings; returns a way to cut it short. */
+export function previewRingtone(ringtoneId: string, volume: number, onEnd: () => void): () => void {
+  const ringer = new Ringer();
+  ringer.start(volume, ringtoneId);
+  let done = false;
+  const stop = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    ringer.stop();
+    onEnd();
+  };
+  const timer = setTimeout(stop, previewSeconds(findRingtone(ringtoneId)) * 1000);
+  return stop;
 }
 
 export interface CallProgressSoundPlayer {

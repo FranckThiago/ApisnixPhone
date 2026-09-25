@@ -80,6 +80,8 @@ export interface AudioSettings {
   /** Microphone sensitivity, 0–200 %, 100 = unchanged. */
   micGain: number;
   ringtone: boolean;
+  /** Ringtone of the library played for an incoming call. */
+  ringtoneSound: string;
   echoCancellation: boolean;
   noiseSuppression: boolean;
 }

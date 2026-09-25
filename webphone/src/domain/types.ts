@@ -55,6 +55,8 @@ export interface Preferences {
   /** Microphone sensitivity, 0–200 %. */
   micGain: number;
   ringtone: boolean;
+  /** Ringtone of the library; an unknown one falls back to the original. */
+  ringtoneSound: string;
   /** Short cues when the line becomes ready or is lost. */
   lineSounds: boolean;
   echoCancellation: boolean;
@@ -76,6 +78,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   volume: 80,
   micGain: 100,
   ringtone: true,
+  ringtoneSound: 'classique',
   lineSounds: true,
   echoCancellation: true,
   noiseSuppression: true,

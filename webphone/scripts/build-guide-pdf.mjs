@@ -15,7 +15,7 @@ const sleep = ms => new Promise(done => setTimeout(done, ms));
 const escape = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const inline = text => escape(text)
   // Phone-panel captures are tall and narrow: keep them small so the text stays on the same page.
-  .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => `<img class="${/\/07-/.test(src) ? 'tall' : /\/(0[3-69]|16|17)-/.test(src) ? 'portrait' : ''}" src="${pathToFileURL(join(DOCS, src))}" alt="${alt}">`)
+  .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => `<img class="${/\/07-/.test(src) ? 'tall' : /\/(0[3-69]|16|17|19)-/.test(src) ? 'portrait' : ''}" src="${pathToFileURL(join(DOCS, src))}" alt="${alt}">`)
   .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
   .replace(/`([^`]+)`/g, '<code>$1</code>');
 

@@ -131,7 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     let previous = store.getSnapshot().preferences;
     const apply = (initial: boolean) => {
       const next = store.getSnapshot().preferences;
-      phone.applyAudio({ volume: next.volume, micGain: next.micGain, ringtone: next.ringtone, echoCancellation: next.echoCancellation, noiseSuppression: next.noiseSuppression });
+      phone.applyAudio({ volume: next.volume, micGain: next.micGain, ringtone: next.ringtone, ringtoneSound: next.ringtoneSound, echoCancellation: next.echoCancellation, noiseSuppression: next.noiseSuppression });
       if (initial || next.inputDevice !== previous.inputDevice) void phone.setInputDevice(next.inputDevice);
       if (initial || next.outputDevice !== previous.outputDevice) void phone.setOutputDevice(next.outputDevice);
       previous = next;

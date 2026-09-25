@@ -121,7 +121,7 @@ eux seuls la cause exacte dans la configuration du serveur. Communiquez le code
 
 ![Appel entrant](guide/09-appel-entrant.png)
 
-Le téléphone sonne, passe au premier plan et le titre de l'onglet affiche
+Le téléphone sonne avec la sonnerie choisie dans les Réglages, passe au premier plan et le titre de l'onglet affiche
 « Appel entrant… ». Choisissez **Accepter** ou **Refuser** : l'application ne
 répond jamais à votre place. Un appel laissé sans réponse devient **Manqué** et
 une pastille rouge apparaît sur le Journal ; elle s'efface quand vous l'ouvrez.
@@ -202,6 +202,14 @@ Entrée pour valider.
   entend trop faible ou trop fort — à régler avant l'appel), **volume
   d'écoute**, **Tester le micro** avec une barre de niveau, sonnerie, sons de la
   ligne, annulation d'écho, réduction de bruit.
+- **Sonnerie** : huit sons au choix. Les **calmes** (Classique, Carillon,
+  Marimba, Douce) conviennent à un bureau tranquille ou à un casque sur les
+  oreilles ; les **bruyantes** (Rétro, Trille, Alarme, Clairon) s'entendent dans
+  un open space ou casque posé. Touchez un son pour le choisir : il est joué
+  quelques secondes. Le bouton ▶ l'écoute sans le choisir. La sonnerie suit le
+  volume d'écoute ; Classique est celle d'origine.
+
+![Choix de la sonnerie](guide/19-sonneries.png)
 - **Apparence** : thème Clair, Sombre ou Système ; densité d'affichage.
 - **Appels** : notifications du système, à activer si vous travaillez souvent
   dans une autre fenêtre.

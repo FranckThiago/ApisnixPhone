@@ -1,5 +1,19 @@
 # État du projet
 
+## Bibliothèque de sonneries — 25 septembre 2026, non publiée
+
+Réglages → Audio propose huit sonneries d'appel entrant, en deux groupes :
+**calmes** (Classique, Carillon, Marimba, Douce) et **bruyantes** (Rétro,
+Trille, Alarme, Clairon). Choisir un son le joue environ trois secondes ; le
+bouton ▶ l'écoute sans le choisir. Classique, la sonnerie d'origine, reste la
+valeur par défaut. Les sons sont générés par Web Audio (aucun fichier), suivent
+le volume d'écoute et s'arrêtent aussitôt au décroché ou au refus ; le choix est
+une préférence locale (`ringtoneSound`). Démonstration vérifiée dans le
+navigateur : l'appel simulé sonne avec le son choisi et se tait au refus.
+Typage, lint et 50 tests réussis ; guide et PDF mis à jour. **Pas encore publié
+sur Hermes** : la release active reste `20260924-journal-rappels`. Les
+applications Android et Windows ne sont pas concernées.
+
 ## Rappels dans le Journal — 24 septembre 2026
 
 La navigation compacte contient cinq boutons : Journal, Contacts, Appel au

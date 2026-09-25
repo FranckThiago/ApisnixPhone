@@ -1,5 +1,6 @@
 import type { CallOutcome } from '../domain/types';
 import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, Ringer } from './audio';
+import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /** The part of SIP.js `Web.SessionManager` this application relies on. */
@@ -103,7 +104,7 @@ export class SipPhoneController implements PhoneController {
   private credentials?: Credentials;
   private remoteAudio?: HTMLAudioElement;
   private ringer = new Ringer();
-  private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, echoCancellation: true, noiseSuppression: true };
+  private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, ringtoneSound: DEFAULT_RINGTONE, echoCancellation: true, noiseSuppression: true };
   private mic = new MicPipeline({ deviceId: 'default', gain: 100, echoCancellation: true, noiseSuppression: true });
 
   constructor(private config: SipConfig, private environment: SipEnvironment,
@@ -205,7 +206,7 @@ export class SipPhoneController implements PhoneController {
       const number = session.remoteIdentity.uri.user ?? '';
       this.update({ call: { id: session.id, direction: 'inbound', rawInput: number, dialTarget: number, remoteName: session.remoteIdentity.displayName || undefined,
                             phase: 'ringing-in', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' } });
-      if (this.audio.ringtone) this.ringer.start(this.audio.volume / 100);
+      if (this.audio.ringtone) this.ringer.start(this.audio.volume / 100, this.audio.ringtoneSound);
     },
     onCallAnswered: () => {
       this.ringer.stop();

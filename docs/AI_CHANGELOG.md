@@ -1,5 +1,24 @@
 # Journal des changements
 
+## 2026-09-25 — Bibliothèque de sonneries du téléphone web
+
+- Demande de Franck : une petite bibliothèque de sonneries dans ApisnixPhone,
+  avec des sons bruyants et d'autres plus calmes.
+- `telephony/ringtones.ts` décrit huit sonneries comme des partitions de notes
+  jouées par Web Audio : quatre calmes (ondes sinus et triangle) et quatre
+  bruyantes (ondes carrées et en dents de scie, plus perçantes). Pas de fichier
+  audio à livrer ni de licence à gérer. `Ringer` joue le son choisi et coupe
+  désormais sa sortie à l'arrêt, au lieu de laisser finir la note en cours.
+- Préférence `ringtoneSound` (défaut Classique, identique à l'ancienne
+  sonnerie ; identifiant inconnu ramené à Classique), transmise aux
+  contrôleurs réel et de démonstration. `RingtonePicker` dans Réglages → Audio :
+  choix avec écoute, grisé quand la sonnerie est coupée.
+- 7 tests ajoutés (50) : bibliothèque, absence de saturation à plein volume,
+  durée d'écoute, planification et arrêt. Typage, lint réussis ; essai en
+  démonstration dans le navigateur intégré (appel simulé, refus, mobile).
+- Guide : § 6 et § 11, nouvelle capture `19-sonneries.png`, capture Réglages et
+  PDF régénérés. Non publié sur Hermes.
+
 ## 2026-09-24 — Audio visible dans le menu compact
 
 - Le CSS masquait le bouton Audio à 920 px et moins. Le bouton reste visible

@@ -1,5 +1,6 @@
 import type { CallOutcome } from '../domain/types';
 import { CallProgressSounds, type CallProgressSoundPlayer, Ringer } from './audio';
+import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
 /**
@@ -14,7 +15,7 @@ export class DemoPhoneController implements PhoneController {
   private timers = new Set<ReturnType<typeof setTimeout>>();
   private sequence = 0;
   private ringer = new Ringer();
-  private ringtone = { enabled: true, volume: 0.8 };
+  private ringtone = { enabled: true, volume: 0.8, sound: DEFAULT_RINGTONE };
 
   constructor(private callProgress: CallProgressSoundPlayer = new CallProgressSounds()) {}
 
@@ -100,7 +101,7 @@ export class DemoPhoneController implements PhoneController {
       call: { id, direction: 'inbound', rawInput: dialTarget, dialTarget, remoteName, phase: 'ringing-in',
               muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' },
     });
-    if (this.ringtone.enabled) this.ringer.start(this.ringtone.volume);
+    if (this.ringtone.enabled) this.ringer.start(this.ringtone.volume, this.ringtone.sound);
     this.later(20000, () => {
       if (this.snapshot.call?.id === id && this.snapshot.call.phase === 'ringing-in') this.finish(id, 'missed');
     });
@@ -162,7 +163,7 @@ export class DemoPhoneController implements PhoneController {
   async setInputDevice() {}
   async setOutputDevice() {}
   applyAudio(settings: AudioSettings) {
-    this.ringtone = { enabled: settings.ringtone, volume: settings.volume / 100 };
+    this.ringtone = { enabled: settings.ringtone, volume: settings.volume / 100, sound: settings.ringtoneSound };
     if (!settings.ringtone) this.ringer.stop();
   }
   resumeAudio() {}
