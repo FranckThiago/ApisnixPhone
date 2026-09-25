@@ -42,34 +42,39 @@ function bell(at: number, frequency: number, level: number, length: number): Rin
 /** A marimba bar: a round fundamental and the short « tock » of its fourth partial. */
 function marimba(at: number, frequency: number): RingNote[] {
   return [
-    { at, frequency, level: 0.2, length: 0.55, attack: 0.005 },
-    { at, frequency: frequency * 3.93, level: 0.045, length: 0.12, attack: 0.003 },
+    { at, frequency, level: 0.72, length: 0.55, attack: 0.005 },
+    { at, frequency: frequency * 3.93, level: 0.17, length: 0.12, attack: 0.003 },
   ];
 }
 
 /** A soft chord that swells in, lightly strummed. */
 function swell(at: number, frequencies: number[]): RingNote[] {
-  return frequencies.map((frequency, index) => ({ at: at + index * 0.1, frequency, level: 0.075, length: 1.4, type: 'triangle', attack: 0.45, release: 0.8 }));
+  return frequencies.map((frequency, index) => ({ at: at + index * 0.1, frequency, level: 0.29, length: 1.4, type: 'triangle', attack: 0.45, release: 0.8 }));
 }
 
 /** A clapper hammering two bells about 25 times a second, as in an old handset. */
 function hammer(at: number, strikes: number): RingNote[] {
-  return Array.from({ length: strikes }, (_, index) => ({ at: at + index * 0.04, frequency: index % 2 ? 1470 : 1180, level: 0.22, length: 0.25, type: 'square', attack: 0.002 }));
+  return Array.from({ length: strikes }, (_, index) => ({ at: at + index * 0.04, frequency: index % 2 ? 1470 : 1180, level: 0.68, length: 0.25, type: 'square', attack: 0.002 }));
 }
 
 /** Two tones alternating quickly, like an electronic desk phone. */
 function warble(at: number, seconds: number): RingNote[] {
-  return Array.from({ length: Math.round(seconds / 0.05) }, (_, index) => ({ at: at + index * 0.05, frequency: index % 2 ? 1600 : 1250, level: 0.28, length: 0.05, type: 'square', attack: 0.003, release: 0.008 }));
+  return Array.from({ length: Math.round(seconds / 0.05) }, (_, index) => ({ at: at + index * 0.05, frequency: index % 2 ? 1600 : 1250, level: 0.9, length: 0.05, type: 'square', attack: 0.003, release: 0.008 }));
 }
 
 function beep(at: number, frequency: number, length: number, level: number, type: OscillatorType): RingNote {
   return { at, frequency, level, length, type, attack: 0.004, release: 0.02 };
 }
 
+/** A bugle note: a bright sawtooth over a square an octave below, for body and reach. */
+function bugle(at: number, frequency: number, length: number): RingNote[] {
+  return [beep(at, frequency, length, 0.5, 'sawtooth'), beep(at, frequency / 2, length, 0.4, 'square')];
+}
+
 /** The original two-tone ring, kept as the default. */
 const CLASSIQUE: Ringtone = {
   id: 'classique', label: 'Classique', hint: 'Deux notes brèves, la sonnerie d’origine.', loud: false, period: 1.6,
-  notes: [{ at: 0, frequency: 740, level: 0.18, length: 0.22, attack: 0.03 }, { at: 0.22, frequency: 587, level: 0.18, length: 0.22, attack: 0.03 }],
+  notes: [{ at: 0, frequency: 740, level: 0.85, length: 0.22, attack: 0.03 }, { at: 0.22, frequency: 587, level: 0.85, length: 0.22, attack: 0.03 }],
 };
 
 export const DEFAULT_RINGTONE = CLASSIQUE.id;
@@ -78,7 +83,7 @@ export const RINGTONES: readonly Ringtone[] = [
   CLASSIQUE,
   {
     id: 'carillon', label: 'Carillon', hint: 'Quatre notes de cloche, comme une horloge.', loud: false, period: 4,
-    notes: [659.25, 523.25, 587.33, 392].flatMap((frequency, index) => bell(index * 0.5, frequency, 0.16, 1.8)),
+    notes: [659.25, 523.25, 587.33, 392].flatMap((frequency, index) => bell(index * 0.5, frequency, 0.56, 1.8)),
   },
   {
     id: 'marimba', label: 'Marimba', hint: 'Notes boisées, légères et rondes.', loud: false, period: 2.4,
@@ -98,11 +103,12 @@ export const RINGTONES: readonly Ringtone[] = [
   },
   {
     id: 'alarme', label: 'Alarme', hint: 'Bips aigus et rapides, impossibles à manquer.', loud: true, period: 1.2,
-    notes: [0, 0.16, 0.32, 0.48].map(at => beep(at, 1600, 0.1, 0.35, 'square')),
+    notes: [0, 0.16, 0.32, 0.48].map(at => beep(at, 1600, 0.1, 0.92, 'square')),
   },
   {
-    id: 'clairon', label: 'Clairon', hint: 'Fanfare cuivrée qui perce le bruit ambiant.', loud: true, period: 2.2,
-    notes: ([[0, 392, 0.16], [0.18, 523.25, 0.16], [0.36, 659.25, 0.16], [0.54, 783.99, 0.5]] as const).map(([at, frequency, length]) => beep(at, frequency, length, 0.26, 'sawtooth')),
+    id: 'clairon', label: 'Clairon', hint: 'Fanfare aiguë et éclatante qui domine le bruit.', loud: true, period: 2.6,
+    notes: ([[0, 783.99, 0.13], [0.15, 1046.5, 0.13], [0.3, 1318.51, 0.13], [0.45, 1567.98, 0.42], [1, 1318.51, 0.13], [1.15, 1567.98, 0.6]] as const)
+      .flatMap(([at, frequency, length]) => bugle(at, frequency, length)),
   },
 ];
 

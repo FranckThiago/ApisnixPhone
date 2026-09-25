@@ -32,7 +32,8 @@ describe('ringtone library', () => {
     }
   });
 
-  it('falls silent before the next cycle and never distorts at full volume', () => {
+  // The first levels proved too quiet in real use: every ringtone now uses almost the whole range.
+  it('falls silent before the next cycle, rings loud and never distorts at full volume', () => {
     for (const ringtone of RINGTONES) {
       expect(soundLength(ringtone), ringtone.id).toBeLessThan(ringtone.period);
       let loudest = 0;
@@ -40,6 +41,7 @@ describe('ringtone library', () => {
         loudest = Math.max(loudest, ringtone.notes.reduce((sum, note) => sum + envelopeAt(note, t), 0));
       }
       expect(loudest, ringtone.id).toBeLessThan(1);
+      expect(loudest, ringtone.id).toBeGreaterThan(0.8);
     }
   });
 

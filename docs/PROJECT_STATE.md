@@ -8,8 +8,11 @@ Trille, Alarme, Clairon). Choisir un son le joue environ trois secondes ; le
 bouton ▶ l'écoute sans le choisir. Classique, la sonnerie d'origine, reste la
 valeur par défaut. Les sons sont générés par Web Audio (aucun fichier), suivent
 le volume d'écoute et s'arrêtent aussitôt au décroché ou au refus ; le choix est
-une préférence locale (`ringtoneSound`). Démonstration vérifiée dans le
-navigateur : l'appel simulé sonne avec le son choisi et se tait au refus.
+une préférence locale (`ringtoneSound`). Après l'écoute de Franck, jugée trop
+basse, toutes les sonneries utilisent presque toute la plage sans saturer
+(+8 à +13 dB, les calmes comprises) et Clairon a été refait, plus aigu et
+doublé d'une octave basse. Démonstration vérifiée dans le navigateur : l'appel
+simulé sonne avec le son choisi et se tait au refus.
 Typage, lint et 50 tests réussis ; guide et PDF mis à jour. **Pas encore publié
 sur Hermes** : la release active reste `20260924-journal-rappels`. Les
 applications Android et Windows ne sont pas concernées.

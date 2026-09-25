@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-25 — Sonneries plus fortes, Clairon refait
+
+- Retour de Franck après écoute : le volume est trop bas partout, les calmes
+  sont douces mais trop faibles et Clairon n'est pas assez fort.
+- Niveaux relevés pour les huit sonneries, avec un maximum entre 0,84 et 0,94
+  à plein volume, sous le seuil de saturation (+8 à +13 dB selon le son).
+  Les calmes gardent leurs ondes douces.
+- Clairon : fanfare une octave plus haut (sol 5 à sol 6), dents de scie
+  doublées d'une onde carrée une octave plus bas, notes tenues, motif plus
+  long. Il passe du son le plus faible (-16,6 dB efficaces) à -6,3 dB.
+- Test ajouté au garde-fou : chaque sonnerie doit dépasser 0,8 de crête sans
+  atteindre 1. 50 tests, typage et lint réussis ; lecture vérifiée en
+  démonstration. Capture `19-sonneries.png` et PDF du guide régénérés.
+  Non publié sur Hermes.
+
 ## 2026-09-25 — Bibliothèque de sonneries du téléphone web
 
 - Demande de Franck : une petite bibliothèque de sonneries dans ApisnixPhone,
