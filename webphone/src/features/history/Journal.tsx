@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowUpRight, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
@@ -9,6 +9,7 @@ import { dayKey, fold, formatDay, formatDuration, formatLongDuration, formatTime
 import { countryLabel, describeNumber } from '../../domain/numbers';
 import { CALL_TAGS, OUTCOME_LABELS, talkSeconds, type CallRecord } from '../../domain/types';
 import { findContact } from '../../storage/DataStore';
+import type { LineHistory } from '../../recordings/types';
 
 type Filter = 'all' | 'outbound' | 'inbound' | 'missed';
 const FILTERS: Array<[Filter, string]> = [['all', 'Tous'], ['outbound', 'Sortants'], ['inbound', 'Entrants'], ['missed', 'Manqués']];
@@ -21,12 +22,40 @@ function DirectionIcon({ call }: { call: CallRecord }) {
 }
 
 export function Journal() {
-  const { placeCall, store, openContact, notify } = useApp();
-  const { calls, contacts } = useData();
+  const { placeCall, store, openContact, notify, recordings, recordingsAccess, reopenRecordings } = useApp();
+  const { calls: localCalls, contacts } = useData();
   const { demo } = usePhone();
+  const [scope, setScope] = useState<'line' | 'device'>(demo ? 'device' : 'line');
+  const [history, setHistory] = useState<LineHistory | null>(null);
+  const [historyError, setHistoryError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (scope !== 'line' || recordingsAccess.state !== 'open') return;
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      try {
+        const result = await recordings.history(30);
+        if (!cancelled) { setHistory(result); setHistoryError(''); }
+      } catch (error) {
+        if (!cancelled) setHistoryError(error instanceof Error ? error.message : 'Historique du poste indisponible.');
+      } finally { if (!cancelled) setLoading(false); }
+    };
+    void load();
+    const timer = setInterval(() => { if (!document.hidden) void load(); }, 60_000);
+    return () => { cancelled = true; clearInterval(timer); };
+  }, [scope, recordings, recordingsAccess.state, refresh]);
+
+  const calls: CallRecord[] = useMemo(() => scope === 'device' ? localCalls : (history?.calls ?? []).map((call): CallRecord => ({
+    id: call.id, direction: call.direction, dialTarget: call.number, startedAt: call.startedAt,
+    answeredAt: call.answeredAt, endedAt: call.endedAt ?? call.startedAt,
+    outcome: call.outcome, tags: [],
+  })), [scope, localCalls, history]);
 
   const todayKey = dayKey(useNow());
   const today = useMemo(() => calls.filter(call => dayKey(call.startedAt) === todayKey), [calls, todayKey]);
@@ -67,10 +96,25 @@ export function Journal() {
       <header className="page-head">
         <div><p className="eyebrow">Votre téléphonie, simplement</p><h1><span className="swoosh">Journal</span> d’appels</h1>
           <p className="lead">Retrouvez vos échanges et reprenez la conversation.</p></div>
-        <span className="scope" title="Ce journal contient les appels passés et reçus depuis ce navigateur, sur cet appareil. Les appels faits depuis un autre poste ou un autre téléphone avec le même compte n’y figurent pas."><Info size={14} /> Appels de cet appareil uniquement{demo ? ' · données fictives' : ''}</span>
+        <span className="scope" title={scope === 'line' ? 'Appels de votre ligne suivis par le serveur, sur tous les appareils.' : 'Appels observés par ce navigateur uniquement.'}><Info size={14} /> {scope === 'line' ? 'Poste · 30 derniers jours' : 'Cet appareil'}{demo ? ' · données fictives' : ''}</span>
       </header>
 
-      <section className="stats" aria-label="Aujourd’hui sur ce navigateur">
+      {!demo && <div className="tabs" role="tablist" aria-label="Source du journal">
+        <button role="tab" aria-selected={scope === 'line'} className={scope === 'line' ? 'active' : ''} onClick={() => setScope('line')}>Tous les appels du poste</button>
+        <button role="tab" aria-selected={scope === 'device'} className={scope === 'device' ? 'active' : ''} onClick={() => setScope('device')}>Cet appareil</button>
+      </div>}
+      {scope === 'line' && <div className="scope" role="status">
+        {recordingsAccess.state === 'opening' ? 'Ouverture de l’historique du poste…' :
+          recordingsAccess.state === 'failed' ? <>{recordingsAccess.message} <button type="button" className="ghost small" onClick={() => void reopenRecordings()}>Réessayer</button></> :
+          recordingsAccess.state !== 'open' ? 'Connectez la ligne pour voir son historique.' :
+          historyError ? <>{historyError} <button type="button" className="ghost small" onClick={() => setRefresh(value => value + 1)}>Réessayer</button></> :
+          loading && !history ? 'Chargement des appels du poste…' :
+          history?.truncated ? 'Les 500 appels les plus récents sont affichés.' :
+          history?.stale ? 'La liaison avec le journal du serveur est interrompue ; les derniers appels peuvent manquer.' :
+          history?.catchingUp ? 'Import des appels récents en cours.' : 'Historique du poste actualisé automatiquement.'}
+      </div>}
+
+      <section className="stats" aria-label={scope === 'line' ? 'Aujourd’hui sur ce poste' : 'Aujourd’hui sur ce navigateur'}>
         <article><Phone size={18} /><span>Appels aujourd’hui</span><strong>{stats.count}</strong></article>
         <article className="accent"><Clock3 size={18} /><span>Temps en conversation</span><strong>{formatLongDuration(stats.talk)}</strong></article>
         <article><PhoneOutgoing size={18} /><span>Sortants aboutis</span><strong>{stats.reached === null ? '—' : `${stats.reached} %`}</strong></article>
@@ -86,9 +130,9 @@ export function Journal() {
             <input value={query} onChange={event => setQuery(event.target.value)} placeholder="Nom, numéro, pays, tag…" aria-label="Rechercher dans le journal" /></label>
         </div>
 
-        {groups.length === 0 ? (
+        {scope === 'line' && (!history || historyError || recordingsAccess.state !== 'open') ? null : groups.length === 0 ? (
           <div className="empty"><Phone size={28} /><b>{calls.length ? 'Aucun appel ne correspond' : 'Aucun appel pour le moment'}</b>
-            <p>{calls.length ? 'Essayez un autre filtre ou une autre recherche.' : 'Composez un numéro à droite : vos appels apparaîtront ici.'}</p></div>
+            <p>{calls.length ? 'Essayez un autre filtre ou une autre recherche.' : scope === 'line' ? 'Aucun appel suivi pour ce poste sur les 30 derniers jours.' : 'Composez un numéro à droite : vos appels apparaîtront ici.'}</p></div>
         ) : groups.map(group => (
           <div key={group.key} className="day-group">
             <h2 className="day-label">{group.label}<span>{group.calls.length}</span></h2>
@@ -117,31 +161,31 @@ export function Journal() {
                     {open && (
                       <div className="call-detail">
                         <dl>
-                          <div><dt>Numéro composé</dt><dd className="mono">{call.dialTarget}</dd></div>
+                          <div><dt>{call.direction === 'inbound' ? 'Numéro appelant' : 'Numéro composé'}</dt><dd className="mono">{call.dialTarget || 'Inconnu'}</dd></div>
                           <div><dt>Début</dt><dd>{formatDay(call.startedAt)} à {formatTime(call.startedAt)}</dd></div>
                           <div><dt>Issue observée</dt><dd>{OUTCOME_LABELS[call.outcome]}</dd></div>
                           {call.failure && <div><dt>Diagnostic</dt><dd>{call.failure}</dd></div>}
                           <div><dt>Conversation</dt><dd>{seconds ? formatDuration(seconds) : '—'}</dd></div>
                         </dl>
-                        <div className="tags" role="group" aria-label="Tags de l’appel">
+                        {scope === 'device' && <div className="tags" role="group" aria-label="Tags de l’appel">
                           {CALL_TAGS.map(tag => {
                             const active = call.tags.includes(tag);
                             return <button key={tag} type="button" className={'tag' + (active ? ' active' : '')} aria-pressed={active}
                               onClick={() => store.updateCall(call.id, { tags: active ? call.tags.filter(t => t !== tag) : [...call.tags, tag] })}>{tag}</button>;
                           })}
-                        </div>
-                        <textarea className="note" rows={2} maxLength={500} placeholder="Ajouter une note…" aria-label="Note de l’appel"
-                          value={call.note ?? ''} onChange={event => store.updateCall(call.id, { note: event.target.value })} />
+                        </div>}
+                        {scope === 'device' && <textarea className="note" rows={2} maxLength={500} placeholder="Ajouter une note…" aria-label="Note de l’appel"
+                          value={call.note ?? ''} onChange={event => store.updateCall(call.id, { note: event.target.value })} />}
                         <div className="detail-actions">
                           <CallbackScheduler number={call.dialTarget} name={name}
-                            onScheduled={() => { if (!call.tags.includes('À rappeler')) store.updateCall(call.id, { tags: [...call.tags, 'À rappeler'] }); }} />
+                            onScheduled={() => { if (scope === 'device' && !call.tags.includes('À rappeler')) store.updateCall(call.id, { tags: [...call.tags, 'À rappeler'] }); }} />
                           {contact ? <button type="button" className="ghost" onClick={() => openContact(contact.id)}>Voir la fiche</button>
                             : <button type="button" className="ghost" onClick={() => {
                               const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: 'Principal', value: call.dialTarget }], favorite: false });
                               openContact(created.id);
                               notify('Contact créé. Complétez son nom.', 'success');
                             }}><UserPlus size={15} /> Ajouter aux contacts</button>}
-                          <button type="button" className="ghost danger" onClick={() => { store.removeCall(call.id); setOpenId(null); }}><Trash2 size={15} /> Retirer du journal</button>
+                          {scope === 'device' && <button type="button" className="ghost danger" onClick={() => { store.removeCall(call.id); setOpenId(null); }}><Trash2 size={15} /> Retirer du journal</button>}
                         </div>
                       </div>
                     )}

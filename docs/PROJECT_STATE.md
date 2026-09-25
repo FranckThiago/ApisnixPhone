@@ -1,5 +1,19 @@
 # État du projet
 
+## Journal du poste — 25 septembre 2026
+
+Le Journal du téléphone réel lit par défaut les 30 derniers jours de la ligne
+via l’accès agent existant à la supervision. Les appels reçus et émis restent
+visibles après reconnexion ou changement d’appareil, même sans audio. La vue
+**Cet appareil** conserve les appels locaux, notes et tags. Les résultats du
+serveur sont en lecture seule ; rappel, ajout de contact et programmation d’un
+rappel restent disponibles. Limite serveur de 500 résultats par requête,
+signalée à l’écran. Aucun changement du PBX ni de la supervision.
+Release `20260925-line-journal` publiée sur Hermes à 14:18:31
+Africa/Douala ; typage, lint, 51 tests, build live, HTTPS et écran de connexion
+contrôlés. Un essai connecté avec `edu001` reste à faire.
+
+
 ## Bibliothèque de sonneries — publiée le 25 septembre 2026
 
 Réglages → Audio propose huit sonneries d'appel entrant, en deux groupes :

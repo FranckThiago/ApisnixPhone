@@ -265,10 +265,10 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Raccourcis clavier | V1 | Entrée pour appeler seulement depuis la saisie prête ; Échap ferme un panneau, ne raccroche pas par surprise |
 | Un seul onglet actif | V1 | Second onglet informe et ne s'enregistre pas silencieusement |
 | Notifications système | Option V1 | Sur demande explicite, facultatives ; interface utilisable si refus |
-| Statistiques personnelles | V1 limité | Calculées sur le journal local, période et portée affichées |
+| Statistiques personnelles | V1 limité | Calculées sur la vue du Journal choisie, portée affichée |
 | Transfert simple | Pilote complémentaire | SIP REFER supporté par la bibliothèque ; droits et routage vérifiés avant activation |
 | Double appel / transfert accompagné | Suite | Ne pas contourner les limites de ligne actuelles ; deuxième session autorisée et testée |
-| Journal central / enregistrements | Audio livré (24 septembre) | Onglet Audio du webphone sur l'accès agent de la supervision : session de service par compte, poste isolé côté serveur, `/api` sur la même origine via le reverse proxy ; pas de lien public vers les audios. Journal central complet toujours en suite |
+| Journal central / enregistrements | Livrés (24–25 septembre) | Onglets Journal et Audio du webphone sur l'accès agent de la supervision : session de service par compte, poste isolé côté serveur, `/api` sur la même origine via le reverse proxy ; pas de lien public vers les audios. Journal du poste limité à 30 jours et 500 entrées par requête |
 | Campagnes, robot d'appel, SMS, IA, CRM complet | Hors V1 | Pas de faux module pour imiter les concurrents |
 | Vidéo, caméra, géolocalisation, partage écran | Hors périmètre | Aucune demande de permission correspondante |
 
@@ -419,9 +419,14 @@ neutre ; les emoji de drapeaux ne sont pas un rendu fiable sur tous les Windows.
 
 ### V1 sans backend supplémentaire
 
-Journal = appels observés par cette application, pas la totalité de la ligne
-sur tous les appareils. L'écrire dans l'interface (« Ce navigateur ») et sur
-les statistiques. Pas d'invention de coût, d'enregistrement ou de facturation.
+Depuis le 25 septembre, le Journal réel affiche par défaut les appels du poste
+sur 30 jours via la session agent de la supervision (`/api/dashboard`), y
+compris les appels sans audio et ceux d’un autre appareil. L’API borne chaque
+réponse à 500 activités ; la limite et l’état de synchronisation sont montrés.
+La vue **Cet appareil** garde les appels observés localement, leurs notes et
+leurs tags ; elle reste soumise au choix de conservation locale. En
+démonstration, seul le journal local fictif apparaît. Les statistiques portent
+sur la vue affichée. Pas d'invention de coût ou de facturation.
 
 | Donnée | Schéma minimal proposé |
 | --- | --- |

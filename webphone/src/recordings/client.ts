@@ -1,10 +1,10 @@
-import { RecordingsError, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
+import { RecordingsError, type LineCall, type LineHistory, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
 
 type Fetch = typeof fetch;
 
 interface ServiceRecording { id: string; state: string; duration: number | null; created_at: number }
-interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; recordings?: ServiceRecording[] }
-interface ServiceDashboard { journal?: ServiceEntry[]; journal_fresh?: boolean; journal_caught_up?: boolean }
+interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; answered_at?: number | null; ended_at?: number | null; outcome?: string; complete?: number; recordings?: ServiceRecording[] }
+interface ServiceDashboard { journal?: ServiceEntry[]; truncated?: boolean; journal_fresh?: boolean; journal_caught_up?: boolean }
 interface ServiceMe { user: { name: string; role: string }; endpoint: { extension: string; alias: string } | null; csrf: string }
 
 const UNAVAILABLE = 'Le service des enregistrements est momentanément injoignable.';
@@ -42,6 +42,22 @@ export function toRecordedCalls(entries: ServiceEntry[]): RecordedCall[] {
     });
   }
   return calls;
+}
+
+export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
+  return entries.filter(entry => entry.id !== null && (entry.direction === 'inbound' || entry.direction === 'outbound'))
+    .map(entry => {
+      const outcome = entry.complete === 0 ? 'unknown'
+        : entry.outcome === 'ANSWERED' ? 'answered'
+        : entry.direction === 'inbound' && entry.outcome === 'NO_ANSWER' ? 'missed'
+        : entry.outcome === 'NO_ANSWER' ? 'no-answer'
+        : entry.outcome === 'BUSY' ? 'busy'
+        : entry.outcome === 'CANCELLED' ? 'cancelled'
+        : entry.outcome === 'FAILED' ? 'failed' : 'unknown';
+      return { id: entry.entry_id ?? `call:${entry.id}`, number: entry.number ?? '', direction: entry.direction as 'inbound' | 'outbound',
+        startedAt: Math.round(entry.started_at * 1000), answeredAt: entry.answered_at ? Math.round(entry.answered_at * 1000) : undefined,
+        endedAt: entry.ended_at ? Math.round(entry.ended_at * 1000) : undefined, outcome };
+    });
 }
 
 /**
@@ -108,6 +124,16 @@ export class HttpRecordingsSource implements RecordingsSource {
     return { calls: toRecordedCalls(data.journal ?? []), catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
   }
 
+
+  async history(days: number): Promise<LineHistory> {
+    const bounded = Math.min(90, Math.max(1, Math.floor(days)));
+    const to = dayString(Date.now());
+    const from = dayString(Date.now() - (bounded - 1) * 86_400_000);
+    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}`);
+    return { calls: toLineCalls(data.journal ?? []), truncated: data.truncated === true,
+      catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
+  }
+
   audioUrl(fileId: string, download: boolean) {
     return `${this.base}/recordings/${encodeURIComponent(fileId)}/audio${download ? '?download=1' : ''}`;
   }
@@ -140,6 +166,12 @@ export class DemoRecordingsSource implements RecordingsSource {
                files: [{ id: `demo-file-${index}`, state: seconds === null ? 'processing' : 'available', durationSeconds: seconds, createdAt: startedAt }] };
     }).filter(call => { const day = dayString(call.startedAt); return day >= from && day <= to; });
     return { calls, catchingUp: false, stale: false };
+  }
+
+
+  async history(days: number): Promise<LineHistory> {
+    void days;
+    return { calls: [], truncated: false, catchingUp: false, stale: false };
   }
 
   audioUrl() {

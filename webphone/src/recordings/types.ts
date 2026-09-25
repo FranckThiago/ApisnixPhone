@@ -33,6 +33,24 @@ export interface RecordingsListing {
   stale: boolean;
 }
 
+/** A server-observed call of this line; its journal is independent of this browser. */
+export interface LineCall {
+  id: string;
+  number: string;
+  direction: 'outbound' | 'inbound';
+  startedAt: number;
+  answeredAt?: number;
+  endedAt?: number;
+  outcome: 'answered' | 'no-answer' | 'missed' | 'busy' | 'failed' | 'cancelled' | 'unknown';
+}
+
+export interface LineHistory {
+  calls: LineCall[];
+  truncated: boolean;
+  catchingUp: boolean;
+  stale: boolean;
+}
+
 export type Period = 'today' | 'yesterday' | 'week';
 
 /**
@@ -46,6 +64,7 @@ export interface RecordingsSource {
   openWithLine(username: string, password: string): Promise<RecordingsIdentity>;
   signOut(): Promise<void>;
   list(period: Period): Promise<RecordingsListing>;
+  history(days: number): Promise<LineHistory>;
   /** Same file, streamed for listening or sent as an attachment for download. */
   audioUrl(fileId: string, download: boolean): string;
 }

@@ -389,7 +389,23 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260925-sonneries`, source `191caa9`, publiée le
+Version active : `20260925-line-journal`, publiée le 25 septembre à
+14:18:31 Africa/Douala. Le Journal réel lit par défaut les appels de la ligne
+sur 30 jours via `/api/dashboard` et conserve une vue locale distincte pour
+les notes et tags. Aucun changement du PBX, de la supervision ou de Caddy.
+Typage, lint, 51 tests et build live réussis ; guide, captures et PDF
+régénérés. Archive ustar de 268 entrées, SHA-256
+`46054ed68d57b46280bf9353fd2a92e887c5c0a45ae40c2135b9f6718ad61a93`.
+Ancienne cible et archive protégées dans
+`/root/apisnix-phone-backups/20260925-line-journal/`. Bascule atomique de
+`current` après vérification de la cible précédente. Caddy et supervision
+actifs, HTTPS 200, index `no-cache` identique au build par SHA-256 et accès
+anonyme `/api/me` refusé (401). L’écran de connexion s’ouvre dans le navigateur
+intégré ; une session `edu001` connectée n’a pas été essayée, faute de mot de
+passe dans cette session. Retour ciblé : repointer atomiquement `current` vers
+`20260925-sonneries` après contrôle de la cible courante.
+
+Version précédente : `20260925-sonneries`, source `191caa9`, publiée le
 25 septembre à 12:03:31 Africa/Douala pour la bibliothèque de huit sonneries
 (calmes et bruyantes, niveaux relevés après écoute de Franck). Build isolé :
 `npm ci` sans vulnérabilité, typage, lint, 50 tests et build live réussis.

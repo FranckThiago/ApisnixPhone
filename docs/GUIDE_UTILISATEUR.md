@@ -128,17 +128,26 @@ une pastille rouge apparaît sur le Journal ; elle s'efface quand vous l'ouvrez.
 
 ## 7. Le journal d'appels
 
-Vos appels sont regroupés par jour. Filtrez par **Tous / Sortants / Entrants /
-Manqués** ou cherchez un nom, un numéro, un pays ou un tag. Au survol d'une
-ligne, le bouton vert rappelle le numéro. Un clic sur la ligne ouvre le détail :
-numéro composé, dates, tags, note, rappel, ajout aux contacts.
+Sur la ligne réelle, **Tous les appels du poste** affiche par défaut les appels
+des 30 derniers jours suivis par le serveur, y compris ceux passés depuis un
+autre appareil et ceux sans enregistrement audio. L’historique s’actualise
+chaque minute. **Cet appareil** montre les appels observés par ce navigateur ;
+vous y retrouvez vos tags et notes locaux. En démonstration, seul ce journal
+local est affiché.
+
+Les appels sont regroupés par jour. Filtrez par **Tous / Sortants / Entrants /
+Manqués** ou cherchez un nom, un numéro ou un pays. Le bouton de rappel lance
+un nouvel appel ; un clic sur la ligne ouvre le numéro, la date et le résultat.
+Les tags, notes et le retrait du journal sont disponibles dans **Cet appareil**.
+Vous pouvez programmer un rappel ou ajouter un contact depuis les deux vues.
 
 ![Détail d'un appel](guide/08-journal-detail.png)
 
-> **« Appels de cet appareil uniquement »** : ce journal contient les appels
-> passés et reçus **depuis ce navigateur, sur cet ordinateur**. Les appels faits
-> avec le même compte depuis un autre poste ou un autre téléphone n'y figurent
-> pas. Les chiffres du haut de page portent sur ce même journal.
+> **Portée des données :** les chiffres du haut de page suivent la vue choisie.
+> Le serveur affiche au plus 500 appels par requête ; si la limite est atteinte,
+> un message le signale. Les données de **Cet appareil** disparaissent à la
+> déconnexion si vous n’avez pas activé leur conservation ; l’historique du
+> poste reste accessible lors d’une nouvelle connexion.
 
 ## 8. Contacts et favoris
 
@@ -213,7 +222,7 @@ Entrée pour valider.
 - **Apparence** : thème Clair, Sombre ou Système ; densité d'affichage.
 - **Appels** : notifications du système, à activer si vous travaillez souvent
   dans une autre fenêtre.
-- **Données de cet appareil** : par défaut, contacts, notes et journal
+- **Données de cet appareil** : par défaut, contacts, notes et journal local
   disparaissent à la déconnexion. Activez **Conserver sur cet appareil** pour les
   retrouver la prochaine fois. **Ne l'activez pas sur un ordinateur partagé.**
   « Effacer les données de cet appareil » supprime tout ce qui est conservé ici.

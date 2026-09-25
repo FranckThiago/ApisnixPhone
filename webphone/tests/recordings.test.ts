@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DemoRecordingsSource, HttpRecordingsSource, periodBounds, toRecordedCalls } from '../src/recordings/client';
+import { DemoRecordingsSource, HttpRecordingsSource, periodBounds, toLineCalls, toRecordedCalls } from '../src/recordings/client';
 import { RecordingsError, type RecordingsSource } from '../src/recordings/types';
 
 type Call = { url: string; init: RequestInit };
@@ -20,6 +20,16 @@ const me = (role: string, endpoint: object | null = { extension: 'D1001', alias:
   ({ status: 200, body: { user: { name: 'Nadia', role }, endpoint, csrf: 'token-1' } });
 
 describe('recordings client', () => {
+  it('keeps server calls without audio, including inbound caller IDs, but excludes orphan audio', () => {
+    expect(toLineCalls([
+      { entry_id: 'call:4', id: 4, number: '0100000001', direction: 'inbound', started_at: 1700000000, answered_at: 1700000005, ended_at: 1700000030, outcome: 'ANSWERED', complete: 1, recordings: [] },
+      { entry_id: 'call:5', id: 5, number: '0100', direction: 'inbound', started_at: 1700000040, outcome: 'NO_ANSWER', complete: 1, recordings: [] },
+      { entry_id: 'audio:x', id: null, number: '', direction: null, started_at: 1700000050 },
+    ])).toEqual([
+      { id: 'call:4', number: '0100000001', direction: 'inbound', startedAt: 1700000000000, answeredAt: 1700000005000, endedAt: 1700000030000, outcome: 'answered' },
+      { id: 'call:5', number: '0100', direction: 'inbound', startedAt: 1700000040000, answeredAt: undefined, endedAt: undefined, outcome: 'missed' },
+    ]);
+  });
   it('maps the service journal to calls that carry audio, newest first as served', () => {
     const calls = toRecordedCalls([
       { entry_id: 'call:7', id: 7, number: '0100000001', direction: 'outbound', started_at: 1700000000.4,
@@ -48,7 +58,7 @@ describe('recordings client', () => {
       'GET /me': () => me('agent'),
       'POST /line-session': init => (JSON.parse(String(init.body)).password === 'good' ? { status: 200, body: { ok: true } } : { status: 401, body: { error: 'Identifiant ou mot de passe de la ligne incorrect.' } }),
       'POST /logout': init => ((init.headers as Record<string, string>)['X-CSRF-Token'] === 'token-1' ? { status: 200, body: { ok: true } } : { status: 403, body: { error: 'Accès refusé.' } }),
-      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false } }),
+      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, outcome: 'ANSWERED', complete: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false } }),
     });
     const source = new HttpRecordingsSource('/api', fetchImpl);
     await expect(source.openWithLine('D1001', 'bad')).rejects.toMatchObject({ status: 401, message: 'Identifiant ou mot de passe de la ligne incorrect.' });
@@ -57,6 +67,9 @@ describe('recordings client', () => {
     const listing = await source.list('today');
     expect(listing.calls).toHaveLength(1);
     expect(listing.catchingUp).toBe(true);
+    const history = await source.history(30);
+    expect(history.calls).toMatchObject([{ id: 'call:1', number: '0100', outcome: 'answered' }]);
+    expect(history.catchingUp).toBe(true);
     expect(calls.find(call => call.url.includes('/dashboard'))!.url).toMatch(/\/api\/dashboard\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}$/);
     expect(source.audioUrl('demo:0', false)).toBe('/api/recordings/demo%3A0/audio');
     expect(source.audioUrl('demo:0', true)).toBe('/api/recordings/demo%3A0/audio?download=1');

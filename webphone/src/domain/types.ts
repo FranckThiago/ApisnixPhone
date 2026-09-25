@@ -1,5 +1,5 @@
 export type CallDirection = 'outbound' | 'inbound';
-export type CallOutcome = 'answered' | 'no-answer' | 'busy' | 'failed' | 'cancelled' | 'declined' | 'missed';
+export type CallOutcome = 'answered' | 'no-answer' | 'busy' | 'failed' | 'cancelled' | 'declined' | 'missed' | 'unknown';
 
 export interface ContactNumber {
   label: string;
@@ -100,6 +100,7 @@ export const OUTCOME_LABELS: Record<CallOutcome, string> = {
   cancelled: 'Annulé',
   declined: 'Refusé',
   missed: 'Manqué',
+  unknown: 'Issue inconnue',
 };
 
 export function talkSeconds(call: Pick<CallRecord, 'answeredAt' | 'endedAt'>): number {
