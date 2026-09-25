@@ -1,5 +1,12 @@
 # Journal des changements
 
+## 2026-09-25 — AGENTS.md aligné sur le téléphone web en service
+
+- À la demande de Franck, `AGENTS.md` ne dit plus que le téléphone web n'a
+  « jamais été essayé sur le PBX » : il est en service sur Hermes, avec appels
+  réels confirmés le 21 septembre. Il renvoie à `docs/OPERATIONS.md` pour la
+  release active et la publication, sans nom de release qui vieillirait.
+
 ## 2026-09-25 — Sonneries publiées sur Hermes
 
 - À la demande de Franck, release `20260925-sonneries` (source `191caa9`)

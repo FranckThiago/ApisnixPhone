@@ -7,9 +7,12 @@
 - Téléphone web PC : lire `docs/WEBPHONE_PLAN.md`, référence du périmètre,
   du design, des fonctions, des réglages et de l'ordre de réalisation.
   Sa maquette est `docs/design/webphone-maquette.html`. Le code web est dans
-  `webphone/` (React/TypeScript/Vite) : interface complète en mode démonstration,
-  démonstration par défaut, adaptateur SIP.js écrit et testé en simulation,
-  **jamais essayé sur le PBX : aucun appel réel à ce jour**. Commandes depuis `webphone/` :
+  `webphone/` (React/TypeScript/Vite) : démonstration par défaut, ligne réelle
+  par SIP.js quand le build porte les variables live. **En service** sur
+  https://phone.apisnix-crm.com/ (Hermes) ; appels réels entrants et sortants
+  avec audio dans les deux sens confirmés par Franck le 21 septembre 2026.
+  Release active, preuves, procédure de publication et retour :
+  `docs/OPERATIONS.md`. Commandes depuis `webphone/` :
   `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
   `npm run test -- --run`, `npm run build`.
   Le guide client est `docs/GUIDE_UTILISATEUR.md` ; après un changement visible,
