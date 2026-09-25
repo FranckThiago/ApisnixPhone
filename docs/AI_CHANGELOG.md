@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-25 — Tonalité sous chaque touche du pavé
+
+- Demande de Franck : un petit son à chaque touche en composant, comme sur les
+  téléphones classiques.
+- `keypadTone` (`telephony/audio.ts`) joue la double fréquence DTMF de la
+  touche (697–941 Hz × 1209–1477 Hz) pendant environ 150 ms, au volume
+  d'écoute. Jouée à l'appui sur le pavé (pointeur, ou Entrée/Espace sur une
+  touche), sur le pavé d'appel et pour les chiffres tapés pendant un appel.
+  Purement local : l'envoi DTMF de la ligne est inchangé.
+- Préférence `keypadTones` (activée par défaut), réglage « Sons du clavier ».
+- Faux objets Web Audio partagés dans `tests/fakeAudio.ts` ; 2 tests ajoutés
+  (53). Typage, lint réussis ; démonstration vérifiée (composition, réglage
+  coupé, pavé et clavier pendant un appel). Guide et PDF mis à jour, plan des
+  réglages complété. Non publié sur Hermes.
+
 ## 2026-09-25 — AGENTS.md aligné sur le téléphone web en service
 
 - À la demande de Franck, `AGENTS.md` ne dit plus que le téléphone web n'a

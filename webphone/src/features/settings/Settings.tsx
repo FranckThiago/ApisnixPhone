@@ -36,6 +36,7 @@ export function Settings() {
           <Toggle label="Sonnerie" hint="Jouée pour un appel entrant, au volume d’écoute." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
           <RingtonePicker />
           <Toggle label="Sons de la ligne" hint="Carillon d’annonce quand la ligne est prête, deux notes descendantes si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
+          <Toggle label="Sons du clavier" hint="Une courte tonalité à chaque touche du pavé, comme sur un téléphone classique." checked={preferences.keypadTones} onChange={keypadTones => set({ keypadTones })} />
           <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
           <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
         </Section>

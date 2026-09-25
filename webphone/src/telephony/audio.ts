@@ -293,6 +293,42 @@ export class CallProgressSounds implements CallProgressSoundPlayer {
   }
 }
 
+/** Row and column frequencies of each key, as on every tone-dialling telephone. */
+export const DTMF_FREQUENCIES: Readonly<Record<string, readonly [number, number]>> = {
+  '1': [697, 1209], '2': [697, 1336], '3': [697, 1477],
+  '4': [770, 1209], '5': [770, 1336], '6': [770, 1477],
+  '7': [852, 1209], '8': [852, 1336], '9': [852, 1477],
+  '*': [941, 1209], '0': [941, 1336], '#': [941, 1477],
+};
+
+/**
+ * The short « bip » a classic phone plays under each key: the key's two tones
+ * for about 150 ms. Heard only here; what reaches the far end during a call is
+ * the DTMF sent by the line, never this sound.
+ */
+export function keypadTone(key: string, volume: number) {
+  const pair = DTMF_FREQUENCIES[key];
+  const context = soundContext();
+  if (!pair || !context || volume <= 0) return;
+  if (context.state !== 'running') {
+    void context.resume().then(() => { if (context.state === 'running') keypadTone(key, volume); }).catch(() => undefined);
+    return;
+  }
+  const start = context.currentTime + 0.005;
+  for (const frequency of pair) {
+    const oscillator = context.createOscillator();
+    const envelope = context.createGain();
+    oscillator.frequency.value = frequency;
+    envelope.gain.setValueAtTime(0, start);
+    envelope.gain.linearRampToValueAtTime(0.24 * volume, start + 0.005);
+    envelope.gain.setValueAtTime(0.24 * volume, start + 0.13);
+    envelope.gain.linearRampToValueAtTime(0, start + 0.15);
+    oscillator.connect(envelope).connect(context.destination);
+    oscillator.start(start);
+    oscillator.stop(start + 0.16);
+  }
+}
+
 /**
  * Public-address chime, like the one before an airport announcement: three bell
  * notes for a line that is ready, two falling ones for a line that dropped.

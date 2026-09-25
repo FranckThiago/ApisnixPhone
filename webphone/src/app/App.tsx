@@ -11,6 +11,7 @@ import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { Recordings } from '../features/recordings/Recordings';
 import { Settings } from '../features/settings/Settings';
+import { keypadTone } from '../telephony/audio';
 import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
 import { applyTheme, storedTheme } from './theme';
@@ -22,7 +23,7 @@ const NAV: Array<[View, string, typeof History]> = [
 ];
 
 function useShortcuts() {
-  const { phone, setPaletteOpen, paletteOpen } = useApp();
+  const { phone, store, setPaletteOpen, paletteOpen } = useApp();
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -36,11 +37,16 @@ function useShortcuts() {
       if (!call || (call.phase !== 'active' && call.phase !== 'held')) return;
       if (event.key.toLowerCase() === 'm') phone.setMuted(!call.muted);
       if (event.key.toLowerCase() === 'h') phone.setHeld(call.phase !== 'held');
-      if (call.phase === 'active' && /^[\d*#]$/.test(event.key)) phone.sendDtmf(event.key);
+      if (call.phase === 'active' && /^[\d*#]$/.test(event.key)) {
+        // Same tone as the on-screen keypad, heard only here.
+        const { keypadTones, volume } = store.getSnapshot().preferences;
+        if (keypadTones && !event.repeat) keypadTone(event.key, volume / 100);
+        phone.sendDtmf(event.key);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [phone, paletteOpen, setPaletteOpen]);
+  }, [phone, store, paletteOpen, setPaletteOpen]);
 }
 
 function Workspace() {

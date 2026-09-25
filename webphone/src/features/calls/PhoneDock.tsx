@@ -11,6 +11,7 @@ import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
 import { CALL_TAGS, OUTCOME_LABELS } from '../../domain/types';
 import { findContact, searchContacts } from '../../storage/DataStore';
+import { keypadTone } from '../../telephony/audio';
 import type { CallSnapshot, ConnectionState } from '../../telephony/types';
 
 const KEYS: Array<[string, string]> = [
@@ -32,20 +33,28 @@ export function ConnectionPill() {
 }
 
 function Keypad({ onKey, compact = false }: { onKey(key: string): void; compact?: boolean }) {
+  const { preferences } = useData();
   const hold = useRef<ReturnType<typeof setTimeout> | null>(null);
   const held = useRef(false);
+  const beep = (digit: string) => { if (preferences.keypadTones) keypadTone(digit, preferences.volume / 100); };
   return (
     <div className={'keypad' + (compact ? ' keypad-compact' : '')} role="group" aria-label="Clavier téléphonique">
       {KEYS.map(([digit, letters]) => (
         <button key={digit} type="button" className="key" aria-label={digit === '0' ? '0, maintenir pour +' : digit}
           onPointerDown={() => {
+            // Heard as soon as the key goes down, like a real phone.
+            beep(digit);
             held.current = false;
             // Holding 0 types the international +, as on a phone.
             if (digit === '0' && !compact) hold.current = setTimeout(() => { held.current = true; onKey('+'); }, 550);
           }}
           onPointerUp={() => { if (hold.current) clearTimeout(hold.current); }}
           onPointerLeave={() => { if (hold.current) clearTimeout(hold.current); }}
-          onClick={() => { if (!held.current) onKey(digit); }}>
+          onClick={event => {
+            // A key pressed from the keyboard (Entrée, Espace) has no pointer: it sounds here.
+            if (event.detail === 0) beep(digit);
+            if (!held.current) onKey(digit);
+          }}>
           <b>{digit}</b><small>{letters}</small>
         </button>
       ))}

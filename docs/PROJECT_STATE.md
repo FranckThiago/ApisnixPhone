@@ -1,5 +1,17 @@
 # État du projet
 
+## Sons du clavier — 25 septembre 2026, non publiés
+
+Chaque touche du pavé émet une courte tonalité, comme sur un téléphone
+classique : la double fréquence DTMF propre à la touche, environ 150 ms, dès
+l'appui, au volume d'écoute. Elle s'entend en composant, sur le pavé pendant un
+appel et pour les chiffres tapés au clavier de l'ordinateur pendant un appel
+(une seule fois si la touche reste enfoncée). Le son est local : ce qui part
+vers le correspondant reste le DTMF de la ligne. Réglage **Sons du clavier**
+(Réglages → Audio), activé par défaut. Typage, lint et 53 tests réussis ;
+démonstration vérifiée dans le navigateur. **Pas encore publié sur Hermes** :
+la release active reste `20260925-sonneries`.
+
 ## Journal du poste — 25 septembre 2026
 
 Le Journal du téléphone réel lit par défaut les 30 derniers jours de la ligne

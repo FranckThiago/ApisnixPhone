@@ -288,6 +288,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Sortie / casque | Sortie système ; choix seulement si API et permission disponibles |
 | Volume d'écoute | 80 %, réglable ; jamais assimilé au volume système |
 | Sonnerie | Activée après interaction utilisateur ; choix simple de sons locaux |
+| Sons du clavier | Activés ; tonalité DTMF locale sous chaque touche du pavé, jamais transmise |
 | Annulation d'écho | Préférence activée si navigateur compatible |
 | Réduction de bruit / gain automatique | Préférences activées ; ne pas garantir leur prise en compte par tous les matériels |
 | Réponse automatique | Désactivée |

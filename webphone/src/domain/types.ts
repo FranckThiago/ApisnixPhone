@@ -59,6 +59,8 @@ export interface Preferences {
   ringtoneSound: string;
   /** Short cues when the line becomes ready or is lost. */
   lineSounds: boolean;
+  /** The dual tone of a classic phone under each key of the pad. */
+  keypadTones: boolean;
   echoCancellation: boolean;
   noiseSuppression: boolean;
   inputDevice: string;
@@ -80,6 +82,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   ringtone: true,
   ringtoneSound: 'classique',
   lineSounds: true,
+  keypadTones: true,
   echoCancellation: true,
   noiseSuppression: true,
   inputDevice: 'default',

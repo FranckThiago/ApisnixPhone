@@ -62,6 +62,10 @@ n'est ajouté. Le drapeau et le pays sont une aide à la lecture ; la ligne gris
 à droite montre les chiffres qui partiront réellement. Pour un `+`, maintenez la
 touche **0** du pavé.
 
+Comme sur un téléphone classique, chaque touche du pavé émet une courte
+tonalité. Elle s'entend aussi pendant un appel quand vous tapez des touches
+pour un serveur vocal. Pour la couper : Réglages → Audio, **Sons du clavier**.
+
 ![Appel qui sonne](guide/04-sonnerie.png)
 
 Une tonalité classique « toup toup » accompagne la sonnerie, puis un bref
@@ -210,7 +214,7 @@ Entrée pour valider.
 - **Audio** : choix du micro et du casque, **sensibilité du micro** (si l'on vous
   entend trop faible ou trop fort — à régler avant l'appel), **volume
   d'écoute**, **Tester le micro** avec une barre de niveau, sonnerie, sons de la
-  ligne, annulation d'écho, réduction de bruit.
+  ligne, sons du clavier, annulation d'écho, réduction de bruit.
 - **Sonnerie** : huit sons au choix. Les **calmes** (Classique, Carillon,
   Marimba, Douce) conviennent à un bureau tranquille ou à un casque sur les
   oreilles ; les **bruyantes** (Rétro, Trille, Alarme, Clairon) s'entendent dans
