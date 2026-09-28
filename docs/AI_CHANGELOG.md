@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-09-28 — Pays des numéros sans `+` publié sur Hermes
+
+- À la demande de Franck, release `20260928-country-code` (source `8890bb6`)
+  publiée à 13:25:24 Africa/Douala. Build isolé : `npm ci` sans vulnérabilité,
+  typage, lint, 54 tests, build live ; archive SHA-256
+  `f97f1cc50e75bf96fc0b057386a9e0d2e08f6cf5df1566278b9f691979b4ef7d`.
+- Comparée à `20260925-keypad-tones` alors en ligne : seuls `index.html`, le JS
+  principal et le module SIP.js changent. Sauvegarde protégée, manifeste
+  contrôlé, bascule atomique sans rechargement Caddy ; fichiers publics
+  identiques au build, `/api/me` anonyme 401, écran de connexion sans erreur.
+- Une coupure réseau pendant le premier transfert a interrompu la commande
+  après l'envoi ; fichiers revérifiés par SHA-256 avant extraction.
+- Appels web en cours non contrôlés sur le PBX ; la bascule ne coupe aucun appel.
+
 ## 2026-09-28 — Pays lu sur les numéros internationaux sans `+`
 
 - Signalement de Franck : sur son serveur, l'international se compose sans `+`

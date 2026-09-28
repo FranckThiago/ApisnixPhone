@@ -1,13 +1,16 @@
 # État du projet
 
-## Pays des numéros internationaux sans `+` — 28 septembre 2026
+## Pays des numéros internationaux sans `+` — publié le 28 septembre 2026
 
 Le PBX compose l'international sans `+`, avec l'indicatif du pays en tête ; le
 national commence par `0`. Le téléphone web lit donc un numéro de plus de
 6 chiffres sans `+`, sans `00` et sans `0` initial avec son indicatif :
 `41442201515` affiche la Suisse au lieu de « Numéro national ». Affichage seul,
 les chiffres composés ne changent pas. Typage, lint et 54 tests réussis.
-**Pas encore publié sur Hermes** : la release active reste `20260925-keypad-tones`.
+**Release active : `20260928-country-code`, source `8890bb6`**, publiée sur
+Hermes à 13:25:24 Africa/Douala ; elle contient les sons du clavier ci-dessous.
+Fichiers servis identiques au build ; un onglet ouvert avant doit être
+actualisé. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Sons du clavier — publiés le 25 septembre 2026
 
@@ -18,11 +21,10 @@ appel et pour les chiffres tapés au clavier de l'ordinateur pendant un appel
 (une seule fois si la touche reste enfoncée). Le son est local : ce qui part
 vers le correspondant reste le DTMF de la ligne. Réglage **Sons du clavier**
 (Réglages → Audio), activé par défaut. Typage, lint et 53 tests réussis ;
-démonstration vérifiée dans le navigateur. **Release active :
-`20260925-keypad-tones`, source `bf357bd`**, publiée sur Hermes à 23:23:49
-Africa/Douala ; elle inclut aussi le Journal du poste ci-dessous. Fichiers servis
-identiques au build ; un onglet ouvert avant doit être actualisé, ce qui
-reconnecte la ligne. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+démonstration vérifiée dans le navigateur. Release `20260925-keypad-tones`,
+source `bf357bd`, publiée sur Hermes à 23:23:49 Africa/Douala, remplacée le
+28 septembre par `20260928-country-code` qui la contient ; elle inclut aussi le
+Journal du poste ci-dessous.
 
 ## Journal du poste — 25 septembre 2026
 
