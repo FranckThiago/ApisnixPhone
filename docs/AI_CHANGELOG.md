@@ -1,5 +1,23 @@
 # Journal des changements
 
+## 2026-09-28 — Carte d'appel en thème clair
+
+- Signalé par Franck : pendant et après l'appel, la zone du clavier restait
+  bleu nuit en thème clair. Cause : la carte d'appel avait des couleurs fixes
+  (fond navy, textes et remplissages blancs translucides), conçues pour le
+  « panneau d'appel contrasté » du plan.
+- `tokens.css` : jetons `--call-*` (fond, halo en attente, textes, accent du
+  statut, remplissages, bordures), clairs par défaut et reprenant à
+  l'identique les valeurs navy sous `data-theme='dark'`. `app.css` : la carte,
+  les commandes, le clavier compact, la qualification, la note et le
+  planificateur les utilisent ; issues et message d'échec prennent les
+  couleurs sémantiques (`--success-soft`, `--danger-soft`…).
+- Renommages pour des noms justes dans les deux thèmes : `ghost-light` →
+  `ghost-call`, `scheduler-dark` → `scheduler-call`, `tone` du planificateur
+  `'light' | 'dark'` → `'page' | 'call'`.
+- Typage, lint, 59 tests, build ; démonstration vérifiée en clair et en sombre.
+  Captures et PDF du guide régénérés. Non publié sur Hermes.
+
 ## 2026-09-28 — Volume et autorisation du micro publiés sur Hermes
 
 - À la demande de Franck, release `20260928-volume-micro` (source `06a8cc3`)

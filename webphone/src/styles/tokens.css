@@ -35,6 +35,22 @@
   --side-active-text: var(--brand);
   --side-icon-active: var(--brand);
   --side-sub: var(--brand);
+  /* The call card follows the theme too: white with a brand glow by day, navy at night. */
+  --call-bg: radial-gradient(90% 55% at 50% 0%, #1010ff14, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f2e, transparent 70%), var(--surface);
+  --call-bg-held: radial-gradient(90% 55% at 50% 0%, #ffd21f59, transparent 70%), var(--surface);
+  --call-border: var(--border);
+  --call-text: var(--text);
+  --call-muted: var(--muted);
+  --call-caption: var(--muted);
+  --call-soft-text: var(--muted);
+  --call-placeholder: var(--faint);
+  /* Yellow text is unreadable on white: the status takes the dark amber of warnings. */
+  --call-accent: var(--warning);
+  --call-ring-gap: var(--surface);
+  --call-fill: #eef1f8;
+  --call-fill-hover: var(--brand-soft);
+  --call-raised: var(--surface);
+  --call-line: var(--border);
   --radius: 14px;
   --radius-sm: 10px;
   --row: 62px;
@@ -72,6 +88,20 @@
   --side-active-text: #ffffff;
   --side-icon-active: var(--yellow);
   --side-sub: var(--yellow);
+  --call-bg: radial-gradient(90% 55% at 50% 0%, #2a3cff66, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f26, transparent 70%), linear-gradient(180deg, var(--navy-2), var(--navy));
+  --call-bg-held: radial-gradient(90% 55% at 50% 0%, #ffd21f40, transparent 70%), linear-gradient(180deg, var(--navy-2), var(--navy));
+  --call-border: transparent;
+  --call-text: #ffffff;
+  --call-muted: #b9c2ec;
+  --call-caption: #aab4e6;
+  --call-soft-text: #d6dcff;
+  --call-placeholder: #9aa5d6;
+  --call-accent: var(--yellow);
+  --call-ring-gap: var(--navy-2);
+  --call-fill: rgb(255 255 255 / 8%);
+  --call-fill-hover: rgb(255 255 255 / 15%);
+  --call-raised: rgb(255 255 255 / 10%);
+  --call-line: rgb(255 255 255 / 14%);
   color-scheme: dark;
 }
 

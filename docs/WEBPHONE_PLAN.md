@@ -203,7 +203,7 @@ historique APISNIX reste présent ; le jaune devient un accent mesuré.
 | --- | --- | --- |
 | brand | `#1010FF` | Action principale et sélection |
 | brand-soft | `#EEEEFF` | Fond discret de sélection |
-| navy | `#111A35` | Navigation, panneau d'appel contrasté |
+| navy | `#111A35` | Navigation et panneau d'appel en thème sombre ; en thème clair, tous deux suivent la page (demandes de Franck, lot 4 puis 28 septembre) |
 | yellow | `#F4C543` | Identité et accent ; texte sombre par-dessus |
 | canvas | `#F5F7FB` | Fond principal |
 | surface | `#FFFFFF` | Surfaces de travail |

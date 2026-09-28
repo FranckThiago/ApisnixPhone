@@ -186,11 +186,11 @@ function WrapUp({ call }: { call: CallSnapshot }) {
         </>
       )}
       {/* Scheduling from a call also tags it, so the journal tells the same story. */}
-      <CallbackScheduler number={call.rawInput} name={contact?.name ?? call.remoteName} tone="dark"
+      <CallbackScheduler number={call.rawInput} name={contact?.name ?? call.remoteName} tone="call"
         onScheduled={() => { if (record && !record.tags.includes('À rappeler')) store.updateCall(record.id, { tags: [...record.tags, 'À rappeler'] }); }} />
       <div className="wrapup-actions">
-        <button type="button" className="ghost-light" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> Rappeler</button>
-        {!contact && <button type="button" className="ghost-light" onClick={addContact}><UserPlus size={16} /> Ajouter</button>}
+        <button type="button" className="ghost-call" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> Rappeler</button>
+        {!contact && <button type="button" className="ghost-call" onClick={addContact}><UserPlus size={16} /> Ajouter</button>}
         <button type="button" className="done" onClick={() => phone.dismiss()}>Terminer</button>
       </div>
     </div>
@@ -247,7 +247,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
           <>
             {keypad && live ? (
               <div className="dtmf-pad"><Keypad compact onKey={key => phone.sendDtmf(key)} />
-                <button type="button" className="ghost-light" onClick={() => setKeypad(false)}><X size={15} /> Masquer le clavier</button></div>
+                <button type="button" className="ghost-call" onClick={() => setKeypad(false)}><X size={15} /> Masquer le clavier</button></div>
             ) : (
               <div className="call-controls">
                 <button type="button" className={'control' + (call.muted ? ' on' : '')} disabled={!live} aria-pressed={call.muted} onClick={() => phone.setMuted(!call.muted)}>

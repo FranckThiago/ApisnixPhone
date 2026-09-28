@@ -5,7 +5,7 @@ import { useNow } from '../../app/clock';
 import { formatDue, quickOptions, toLocalInput } from '../../domain/callbacks';
 
 /** Plan a callback in one tap, or pick an exact moment. */
-export function CallbackScheduler({ number, name, tone = 'light', onScheduled }: { number: string; name?: string; tone?: 'light' | 'dark'; onScheduled?(): void }) {
+export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: { number: string; name?: string; tone?: 'page' | 'call'; onScheduled?(): void }) {
   const { store, notify } = useApp();
   const now = useNow();
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ export function CallbackScheduler({ number, name, tone = 'light', onScheduled }:
     onScheduled?.();
   };
 
-  if (!open) return <button type="button" className={tone === 'dark' ? 'ghost-light' : 'ghost'} onClick={() => setOpen(true)}><AlarmClock size={16} /> Planifier un rappel</button>;
+  if (!open) return <button type="button" className={tone === 'call' ? 'ghost-call' : 'ghost'} onClick={() => setOpen(true)}><AlarmClock size={16} /> Planifier un rappel</button>;
 
   return (
     <div className={`scheduler scheduler-${tone}`} role="group" aria-label="Planifier un rappel">

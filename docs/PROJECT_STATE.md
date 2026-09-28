@@ -1,5 +1,18 @@
 # État du projet
 
+## Carte d'appel qui suit le thème clair — 28 septembre 2026
+
+Signalé par Franck : pendant et après un appel, la carte d'appel (clavier,
+commandes, qualification, rappel) restait bleu nuit en thème clair. Elle suit
+désormais le thème, comme le menu : blanche avec le halo bleu et l'anneau jaune
+le jour, bleu nuit inchangé en thème sombre. Couleurs portées par les jetons
+`--call-*` de `tokens.css` ; le statut (« Ça sonne… », « Appel terminé », « En
+attente ») passe en ambre foncé en clair, le jaune étant illisible sur blanc.
+Typage, lint, 59 tests et build réussis ; démonstration vérifiée dans le
+navigateur en clair et en sombre (appel, clavier, muet/attente, fin d'appel,
+échec, rappel), captures et PDF du guide régénérés. **Pas encore publié sur
+Hermes** : la release active reste `20260928-volume-micro`.
+
 ## Volume jusqu'à 200 % et autorisation du micro — publiés le 28 septembre 2026
 
 Demandes de Franck. **Volume d'écoute** : 100 % par défaut (au lieu de 80 %),
