@@ -43,7 +43,7 @@ incident résolu selon son retour, sans nouvelle mesure serveur.
   contrôlé, bascule atomique sans rechargement Caddy ; fichiers publics
   identiques au build, `/api/me` anonyme 401, écran de connexion sans erreur.
 - Appels web en cours non contrôlés sur le PBX. Amplification au-delà de 100 %
-  et bouton d'autorisation restent à essayer sur une ligne réelle.
+  et bouton d'autorisation confirmés ensuite par Franck sur la ligne réelle.
 
 ## 2026-09-28 — Volume jusqu'à 200 % et autorisation du micro
 

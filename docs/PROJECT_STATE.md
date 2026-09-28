@@ -46,12 +46,11 @@ bloqué ou à demander, bouton qui redemande l'accès et, après un refus retenu
 le navigateur, étapes pour le lever (icône à gauche de l'adresse, Safari à
 part). Typage, lint et 59 tests réussis ; démonstration vérifiée dans le
 navigateur (bureau et mobile), captures et PDF du guide régénérés.
-**Non vérifié sur une ligne réelle** : amplification au-delà de 100 % pendant un
-appel (dont l'écho possible sur haut-parleurs, selon le navigateur) et bouton
-d'autorisation hors démonstration. **Release active : `20260928-volume-micro`,
-source `06a8cc3`**, publiée sur Hermes à 15:23:14 Africa/Douala ; elle contient
-le pays des numéros sans `+` ci-dessous. Fichiers servis identiques au build ;
-un onglet ouvert avant doit être actualisé. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+**Franck confirme le 28 septembre, sur la ligne réelle, que le volume et le
+bouton d'autorisation du micro fonctionnent.** Release `20260928-volume-micro`,
+source `06a8cc3`, publiée sur Hermes à 15:23:14 Africa/Douala, remplacée à
+16:18:11 par `20260928-mic-lifecycle`, construite sur la même base avec le
+correctif micro ci-dessus. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Pays des numéros internationaux sans `+` — publié le 28 septembre 2026
 

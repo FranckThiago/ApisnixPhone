@@ -435,7 +435,7 @@ repli SPA 200, JS `index-Dqi51cEz.js`, CSS `index-zU-iFouS.css` et module
 SIP.js servis identiques au build, `/api/me` anonyme 401, supervision 200 ;
 écran de connexion live sans erreur console. Appels web en cours non contrôlés
 sur le PBX ; un onglet ouvert avant doit être actualisé. Amplification et
-bouton d'autorisation pas encore essayés sur une ligne réelle. Retour ciblé :
+bouton d'autorisation confirmés ensuite par Franck sur la ligne réelle. Retour ciblé :
 après contrôle de la cible courante, repointer `current` vers
 `20260928-country-code`.
 
