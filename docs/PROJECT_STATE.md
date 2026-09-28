@@ -10,7 +10,8 @@ les chiffres composés ne changent pas. Typage, lint et 54 tests réussis.
 **Release active : `20260928-country-code`, source `8890bb6`**, publiée sur
 Hermes à 13:25:24 Africa/Douala ; elle contient les sons du clavier ci-dessous.
 Fichiers servis identiques au build ; un onglet ouvert avant doit être
-actualisé. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
+actualisé. Drapeau suisse confirmé par Franck sur le site en service le
+28 septembre. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Sons du clavier — publiés le 25 septembre 2026
 

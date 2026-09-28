@@ -405,7 +405,8 @@ JS `index-DLOJX2SC.js`, CSS et module SIP.js servis identiques au build,
 `/api/me` anonyme 401, supervision 200 ; écran de connexion live sans erreur
 console. Appels web en cours non contrôlés sur le PBX : la bascule ne coupe
 aucun appel, mais un onglet ouvert avant doit être actualisé pour voir le
-changement. Retour ciblé : après contrôle de la cible courante, repointer
+changement. Franck confirme ensuite le drapeau suisse sur le site en service.
+Retour ciblé : après contrôle de la cible courante, repointer
 `current` vers `20260925-keypad-tones`.
 
 Version précédente : `20260925-keypad-tones`, source `bf357bd`, publiée le
