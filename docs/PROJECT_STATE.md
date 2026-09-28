@@ -1,5 +1,22 @@
 # État du projet
 
+## Carte d'appel qui suit le thème clair — publiée le 28 septembre 2026
+
+Signalé par Franck : pendant et après un appel, la carte d'appel (clavier,
+commandes, qualification, rappel) restait bleu nuit en thème clair. Elle suit
+désormais le thème, comme le menu : blanche avec le halo bleu et l'anneau jaune
+le jour, bleu nuit inchangé en thème sombre. Couleurs portées par les jetons
+`--call-*` de `tokens.css` ; le statut (« Ça sonne… », « Appel terminé », « En
+attente ») passe en ambre foncé en clair, le jaune étant illisible sur blanc.
+Démonstration vérifiée dans le navigateur en clair et en sombre (appel,
+clavier, muet/attente, fin d'appel, échec, rappel), captures et PDF du guide
+régénérés. **Release active : `20260928-call-card-theme`, source `e05e2e0`**
+(correctif micro compris), publiée sur Hermes à 16:36:54 Africa/Douala après
+63 tests, typage, lint et build live ; fichiers servis identiques au build.
+Un onglet ouvert avant doit être actualisé hors appel.
+**Non vérifié sur une ligne réelle** : rendu chez un client en thème clair.
+[Preuves et retour](OPERATIONS.md#carte-dappel-en-thème-clair-publiée--28-septembre-2026).
+
 ## Micro des appels successifs — correctif du 28 septembre 2026
 
 Défaut reproduit en test : avec une sensibilité différente de 100 %, SIP.js
@@ -18,19 +35,6 @@ Incident résolu selon ce retour humain ; le réglage exact de sensibilité
 du poste et un nouvel enregistrement de mesures après correction n’ont pas
 été relevés.
 
-
-## Carte d'appel qui suit le thème clair — 28 septembre 2026
-
-Signalé par Franck : pendant et après un appel, la carte d'appel (clavier,
-commandes, qualification, rappel) restait bleu nuit en thème clair. Elle suit
-désormais le thème, comme le menu : blanche avec le halo bleu et l'anneau jaune
-le jour, bleu nuit inchangé en thème sombre. Couleurs portées par les jetons
-`--call-*` de `tokens.css` ; le statut (« Ça sonne… », « Appel terminé », « En
-attente ») passe en ambre foncé en clair, le jaune étant illisible sur blanc.
-Typage, lint, 59 tests et build réussis ; démonstration vérifiée dans le
-navigateur en clair et en sombre (appel, clavier, muet/attente, fin d'appel,
-échec, rappel), captures et PDF du guide régénérés. **Pas encore publié sur
-Hermes** : la release active est `20260928-mic-lifecycle`.
 
 ## Volume jusqu'à 200 % et autorisation du micro — publiés le 28 septembre 2026
 

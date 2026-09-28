@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-28 — Carte d'appel en thème clair publiée sur Hermes
+
+- À la demande de Franck, release `20260928-call-card-theme` (source
+  `e05e2e0`) publiée à 16:36:54 Africa/Douala. Build isolé : `npm ci` sans
+  vulnérabilité, typage, lint, 63 tests, build live ; archive SHA-256
+  `2888b705811a72486fd596d0ee9cb56bad18e1046e8e8bf07b383bac06ce73de`.
+- Sauvegarde protégée, manifeste contrôlé, bascule atomique depuis
+  `20260928-mic-lifecycle` sans rechargement Caddy ; fichiers publics
+  identiques au build, `/api/me` anonyme 401, écran de connexion sans erreur.
+- Publication faite depuis Claude Code après ajout, à la demande de Franck,
+  d'une règle locale non versionnée autorisant `ssh hermes` et `scp` vers
+  `hermes` dans ce projet. Rendu chez un client en thème clair non vérifié.
+
 ## 2026-09-28 — Piste micro neuve pour chaque appel
 
 Correction du cycle de vie de `MicPipeline` (`webphone/src/telephony/audio.ts`) :

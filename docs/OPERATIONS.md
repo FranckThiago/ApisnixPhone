@@ -389,12 +389,42 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-## Correctif micro publié — 28 septembre 2026
+## Carte d'appel en thème clair publiée — 28 septembre 2026
 
-Release active **`20260928-mic-lifecycle`**, publiée à **16:18:11 Africa/Douala
+Release active **`20260928-call-card-theme`**, publiée à **16:36:54
+Africa/Douala (15:36:54 UTC)** à la demande de Franck. Source `e05e2e0` : la
+release précédente (volume, correctif micro) plus la carte d'appel qui suit le
+thème clair. Build isolé depuis `git archive` : `npm ci` sans vulnérabilité,
+typage, lint, 63 tests, build live avec les trois variables publiques. Mode
+live et WSS attendu dans le bundle ; ni source map ni `.env`. Pas de migration
+ni changement PBX, Caddy, DNS, supervision ou compte.
+
+Archive ustar de 266 fichiers, SHA-256
+`2888b705811a72486fd596d0ee9cb56bad18e1046e8e8bf07b383bac06ce73de`.
+Sauvegarde protégée `/root/apisnix-phone-backups/20260928-call-card-theme/` :
+ancienne cible, manifeste antérieur, archive, manifeste, SHA256SUMS,
+source.json et heure de bascule. Empreinte et manifeste vérifiés après
+extraction ; release root 0755/0644, lue par caddy sans écriture. Bascule
+atomique après contrôle de la cible précédente, sans rechargement Caddy.
+
+Contrôles : HTTPS 200, HTTP 308, index `no-cache`, `index.html`, JS
+`index-GZv_vCIa.js` et CSS `index-DpADt8xd.css` servis identiques au build,
+assets immuables, repli SPA 200, `/api/me` anonyme 401, supervision 200. Écran
+de connexion live vérifié dans le navigateur intégré, sans erreur console ;
+aucune connexion SIP ni appel lancé. Aucun onglet client rechargé à distance :
+un onglet ouvert avant doit être actualisé **hors appel**.
+
+Retour ciblé : vérifier que `current` vise cette release puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20260928-mic-lifecycle`,
+conservée intacte (correctif micro sans le thème clair). Ne pas restaurer de
+configuration globale.
+
+## État précédent — correctif micro, 28 septembre 2026
+
+Release précédente **`20260928-mic-lifecycle`**, publiée à **16:18:11 Africa/Douala
 (15:18:11 UTC)**. Build isolé de la base active `06a8cc3`, avec seulement
 `webphone/src/telephony/audio.ts` et son test de régression issus de `e7cd2ab`.
-Le thème clair de la carte d'appel reste non publié. La piste amplifiée arrêtée
+Le thème clair de la carte d'appel n'y figurait pas. La piste amplifiée arrêtée
 par SIP.js n'est plus réutilisée à l'appel suivant ; capture directe à 100 %
 conservée. 63 tests, typage, lint et build live réussis. Régression reproduite
 avant correction. Pas de migration ni changement PBX, Caddy, DNS ou compte.
