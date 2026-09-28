@@ -408,8 +408,10 @@ Caddy. Bascule atomique après contrôle de la cible précédente. HTTPS 200,
 index no-cache, index/JS principal/CSS identiques au build ; écran de connexion
 vérifié dans le navigateur intégré. Aucun onglet client rechargé à distance.
 
-Un onglet déjà ouvert doit être actualisé **hors appel**. Validation humaine
-des appels successifs après actualisation encore attendue. Retour ciblé :
+Un onglet déjà ouvert doit être actualisé **hors appel**. **Franck confirme
+le 28 septembre que la correction a rétabli le son chez le client.** Cette
+validation humaine complète les tests ; aucune nouvelle mesure serveur après
+correction n’a été réalisée. Retour ciblé :
 vérifier que `current` vise cette release puis le repointer atomiquement vers
 `/srv/apisnixphone/releases/20260928-volume-micro`, conservée intacte ; cette
 ancienne version conserve le défaut de piste amplifiée. Ne pas restaurer de

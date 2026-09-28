@@ -10,6 +10,8 @@ l'échec avant correction, avec sensibilité 50/150/200 % et contrôle du trajet
 Publication ciblée à 16:18:11 : base `06a8cc3` et correctif `e7cd2ab`,
 63 tests/typage/lint/build live réussis, artefacts HTTPS vérifiés. État et
 limites dans PROJECT_STATE ; sauvegarde et retour dans OPERATIONS.
+Franck confirme ensuite le retour du son chez le client (« top ca a marché ») ;
+incident résolu selon son retour, sans nouvelle mesure serveur.
 
 
 ## 2026-09-28 — Carte d'appel en thème clair

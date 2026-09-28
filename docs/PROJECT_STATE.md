@@ -12,9 +12,11 @@ partagé. Le trajet direct à 100 % reste inchangé. Tests de non-régression à
 Correction publiée à 16:18:11 sur Hermes (`20260928-mic-lifecycle`), build
 ciblé de la base `06a8cc3` avec le correctif `e7cd2ab` ;
 le thème clair non publié reste séparé. 63 tests, typage, lint et build live
-réussis ; artefacts servis vérifiés. Validation sur une ligne réelle après
-actualisation encore nécessaire ; ce défaut reproduit n'établit pas à lui seul
-le réglage effectif du poste ayant signalé la panne.
+réussis ; artefacts servis vérifiés. **Franck confirme le 28 septembre le
+retour du son chez le client après publication : « top ca a marché ».**
+Incident résolu selon ce retour humain ; le réglage exact de sensibilité
+du poste et un nouvel enregistrement de mesures après correction n’ont pas
+été relevés.
 
 
 ## Carte d'appel qui suit le thème clair — 28 septembre 2026
