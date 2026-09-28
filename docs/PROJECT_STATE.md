@@ -1,5 +1,14 @@
 # État du projet
 
+## Pays des numéros internationaux sans `+` — 28 septembre 2026
+
+Le PBX compose l'international sans `+`, avec l'indicatif du pays en tête ; le
+national commence par `0`. Le téléphone web lit donc un numéro de plus de
+6 chiffres sans `+`, sans `00` et sans `0` initial avec son indicatif :
+`41442201515` affiche la Suisse au lieu de « Numéro national ». Affichage seul,
+les chiffres composés ne changent pas. Typage, lint et 54 tests réussis.
+**Pas encore publié sur Hermes** : la release active reste `20260925-keypad-tones`.
+
 ## Sons du clavier — publiés le 25 septembre 2026
 
 Chaque touche du pavé émet une courte tonalité, comme sur un téléphone

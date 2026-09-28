@@ -265,7 +265,9 @@ aussi depuis la recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
 - Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**. Hors
   appel, une actualisation vous reconnecte si votre navigateur a retenu l'accès.
 - Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la personne.
-- Un numéro commençant par `0` est lu comme un numéro français ; `1` suivi d'un
-  indicatif, comme un numéro d'Amérique du Nord (Canada ou États-Unis).
+- Un numéro commençant par `0` est lu comme un numéro français. Un numéro long
+  qui commence par un autre chiffre est lu avec l'indicatif de son pays, même
+  sans `+` : `41 44 220 15 15` s'affiche en Suisse, `1` suivi d'un indicatif en
+  Amérique du Nord (Canada ou États-Unis).
 - Pour toute question sur votre compte ou vos droits d'appel, contactez votre
   administrateur APISNIX.

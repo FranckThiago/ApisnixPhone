@@ -404,8 +404,12 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
    Le **Canada** est reconnu par la liste d'indicatifs fournie par Franck
    (`CANADIAN_AREA_CODES`, qui inclut à sa demande 600 et 888) ; les autres
    indicatifs donnent les États-Unis, sauf pays du plan +1 connu des métadonnées
-   (Caraïbes). Avant trois chiffres d'indicatif : Canada. `1001` et les numéros
-   courts restent « Numéro interne » ; sinon globe et « Pays non déterminé ».
+   (Caraïbes). Avant trois chiffres d'indicatif : Canada. Précisé par Franck le
+   28 septembre : le PBX compose l'international **sans `+`**, indicatif pays en
+   tête (`41442201515` = Suisse). Tout numéro de plus de 6 chiffres sans `+`, sans
+   `00` et sans `0` initial est donc lu avec son indicatif. `1001` et les numéros
+   de 6 chiffres au plus restent « Numéro interne » ; indicatif inconnu : globe
+   et « Pays non déterminé ».
 6. Un choix explicite dans un sélecteur d'indicatif peut insérer ce préfixe en
    le montrant ; le simple changement de langue/région ne modifie jamais la saisie.
 7. Filtrer les caractères de contrôle et les URL SIP arbitraires ; construire

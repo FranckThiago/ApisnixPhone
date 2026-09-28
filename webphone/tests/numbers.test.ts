@@ -29,6 +29,14 @@ describe('display metadata', () => {
     expect(describeNumber('00237699000102')).toMatchObject({ country: 'CM', display: '00237699000102' });
   });
 
+  it('reads a long number without + and without 0 as carrying its country code, as the PBX dials abroad', () => {
+    expect(describeNumber('41442201515')).toMatchObject({ kind: 'international', country: 'CH', countryName: 'Suisse', display: '41442201515' });
+    expect(describeNumber('33612345678')).toMatchObject({ country: 'FR', display: '33612345678' });
+    expect(describeNumber('237699000102')).toMatchObject({ country: 'CM', display: '237699000102' });
+    expect(describeNumber('0442201515')).toMatchObject({ kind: 'national', country: 'FR' });
+    expect(describeNumber('414422').kind).toBe('internal');
+  });
+
   it('reads a leading 0 as France and a leading 1 as North America, Canada told apart from the USA', () => {
     expect(describeNumber('0612345678')).toMatchObject({ kind: 'national', country: 'FR', display: '0612345678' });
     expect(describeNumber('06').country).toBe('FR');
@@ -44,8 +52,7 @@ describe('display metadata', () => {
     expect(describeNumber('1001').country).toBeUndefined();
     expect(describeNumber('8523').kind).toBe('internal');
     expect(describeNumber('8523').country).toBeUndefined();
-    expect(describeNumber('699000102').kind).toBe('national');
-    expect(describeNumber('699000102').country).toBeUndefined();
+    expect(describeNumber('999000102')).toMatchObject({ kind: 'international', country: undefined });
     expect(describeNumber('*72#').kind).toBe('unknown');
   });
 });

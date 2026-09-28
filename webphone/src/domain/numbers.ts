@@ -66,29 +66,41 @@ function northAmerica(digitsAfterOne: string): CountryCode | undefined {
   return known && known !== 'CA' ? known : 'US';
 }
 
+/** Longest number read as an internal extension when it has no country code. */
+const INTERNAL_MAX_LENGTH = 6;
+
+/**
+ * The number with its country code in front, or null for a national number or
+ * an extension. The PBX dials abroad with the bare country code (`41…` =
+ * Switzerland), so a long number without + and without a leading 0 carries one.
+ */
+function withCountryCode(dialTarget: string): string | null {
+  if (dialTarget.startsWith('+')) return dialTarget;
+  // `00` is only read as an international prefix to show a country; the dialled digits stay `00…`.
+  if (dialTarget.startsWith('00')) return '+' + dialTarget.slice(2);
+  // `1` followed by an area code (2–9) is North American from the fourth digit. `1001` stays an extension.
+  if (/^1[2-9]\d{2}/.test(dialTarget)) return '+' + dialTarget;
+  if (!dialTarget.startsWith('0') && dialTarget.length > INTERNAL_MAX_LENGTH) return '+' + dialTarget;
+  return null;
+}
+
 /**
  * Display only: the flag describes the numbering plan of the number, not where
  * the person is, and nothing here ever changes the digits that are dialled.
  */
 export function describeNumber(dialTarget: string): NumberInfo {
   if (!dialTarget || /[*#]/.test(dialTarget)) return { kind: 'unknown', display: dialTarget };
-  // `00` is only read as an international prefix to show a country; the dialled digits stay `00…`.
-  const international = dialTarget.startsWith('+') ? dialTarget : dialTarget.startsWith('00') ? '+' + dialTarget.slice(2) : null;
+  const international = withCountryCode(dialTarget);
   if (international) {
     const typer = new AsYouType();
     const formatted = typer.input(international);
     const country = international.startsWith('+1') ? northAmerica(international.slice(2)) : typer.getCountry();
+    // Only a typed + gets the spaced form; `00…` and bare country codes are shown as dialled.
     return { kind: 'international', country, countryName: countryName(country), display: dialTarget.startsWith('+') ? formatted : dialTarget };
-  }
-  // `1` followed by an area code (2–9): North American number typed without the +. `1001` stays an extension.
-  if (/^1[2-9]\d{2}/.test(dialTarget)) {
-    const country = northAmerica(dialTarget.slice(1));
-    return { kind: 'international', country, countryName: countryName(country), display: dialTarget };
   }
   // A leading 0 is the national format of the PBX's country.
   if (/^0[1-9]/.test(dialTarget)) return { kind: 'national', country: NATIONAL_COUNTRY, countryName: countryName(NATIONAL_COUNTRY), display: dialTarget };
-  if (dialTarget.length <= 6) return { kind: 'internal', display: dialTarget };
-  return { kind: 'national', display: dialTarget };
+  return { kind: 'internal', display: dialTarget };
 }
 
 export function sameNumber(a: string, b: string): boolean {

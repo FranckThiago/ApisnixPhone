@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-09-28 — Pays lu sur les numéros internationaux sans `+`
+
+- Signalement de Franck : sur son serveur, l'international se compose sans `+`
+  (`41442201515`) et le national commence par `0` ; sans le `+`, le téléphone
+  web perdait le pays et affichait « Numéro national ».
+- `describeNumber` (`domain/numbers.ts`) : nouvelle fonction `withCountryCode`,
+  qui lit avec son indicatif tout numéro de plus de 6 chiffres
+  (`INTERNAL_MAX_LENGTH`) sans `+`, sans `00` et sans `0` initial, en plus de
+  `+`, `00` et `1` + indicatif nord-américain. Les numéros plus courts restent
+  des postes internes. Affichage seul : `dialTarget` inchangé.
+- Tests : Suisse, France et Cameroun sans `+`, national `0…`, poste de
+  6 chiffres ; l'ancien cas `699000102` « national sans pays » est remplacé par
+  un indicatif inconnu. Typage, lint et 54 tests réussis. Non publié.
+
 ## 2026-09-25 — Sons du clavier publiés sur Hermes
 
 - À la demande de Franck, release `20260925-keypad-tones` (source `bf357bd`,
