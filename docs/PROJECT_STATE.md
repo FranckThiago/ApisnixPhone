@@ -1,5 +1,20 @@
 # État du projet
 
+## Micro des appels successifs — correctif du 28 septembre 2026
+
+Défaut reproduit en test : avec une sensibilité différente de 100 %, SIP.js
+arrête la piste Web Audio en fin d'appel ; `MicPipeline` conservait sa
+destination et renvoyait cette piste terminée à l'appel suivant. Le test micro
+séparé pouvait rester positif. La fermeture libère désormais aussi le gain et
+la destination : chaque appel recrée sa sortie, sans fermer le contexte audio
+partagé. Le trajet direct à 100 % reste inchangé. Tests de non-régression à
+50, 150 et 200 %, trajet direct et nettoyage tardif de l'ancienne session.
+Correction préparée pour publication ciblée sur la base active `06a8cc3` ;
+le thème clair non publié reste séparé. Validation sur une ligne réelle après
+actualisation encore nécessaire ; ce défaut reproduit n'établit pas à lui seul
+le réglage effectif du poste ayant signalé la panne.
+
+
 ## Carte d'appel qui suit le thème clair — 28 septembre 2026
 
 Signalé par Franck : pendant et après un appel, la carte d'appel (clavier,

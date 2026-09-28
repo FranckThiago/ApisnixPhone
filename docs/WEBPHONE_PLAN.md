@@ -663,3 +663,12 @@ Phrase utilisable dans une nouvelle conversation :
 Les fichiers locaux permettent la reprise sur ce Mac. Sur une autre machine,
 récupérer la branche publiée du dépôt ; les changements non committés ne sont
 pas synchronisés automatiquement et ne font pas partie de la mémoire distante.
+
+### Correctif du cycle de vie micro — 28 septembre 2026
+
+La chaîne de sensibilité du micro possède une destination par appel. Au
+raccrochage, `MicPipeline.close()` libère entrée, gain et destination ; le
+contexte audio partagé reste ouvert. SIP.js arrêtant les pistes envoyées,
+réutiliser une destination entre deux appels rendait les suivants muets quand
+la sensibilité différait de 100 %. Régression couverte à 50/150/200 %, avec
+contrôle distinct du trajet direct à 100 %. Aucun changement visible du guide.

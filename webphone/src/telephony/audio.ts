@@ -2,8 +2,8 @@ import { findRingtone, previewSeconds, scheduleRingtone } from './ringtones';
 
 /**
  * Microphone chain: device → gain → the track sent to the call.
- * The sent track never changes, so sensitivity and even the microphone itself
- * can be changed during a call without renegotiating it.
+ * Each call owns its output track: SIP.js stops that track when it closes the
+ * session. Never reuse an amplified destination across calls.
  */
 export interface MicSettings {
   deviceId: string;
@@ -94,8 +94,14 @@ export class MicPipeline {
   close() {
     this.source?.disconnect();
     this.input?.getTracks().forEach(track => track.stop());
+    this.gainNode?.disconnect();
+    this.destination?.stream.getTracks().forEach(track => track.stop());
+    this.destination?.disconnect();
     this.source = undefined;
     this.input = undefined;
+    this.gainNode = undefined;
+    this.destination = undefined;
+    // The shared AudioContext also plays sounds and the far end; keep it alive.
   }
 
   /** Level after the gain, 0–1, for the settings meter. */

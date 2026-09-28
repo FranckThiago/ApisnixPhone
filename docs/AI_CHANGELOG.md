@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-09-28 — Piste micro neuve pour chaque appel
+
+Correction du cycle de vie de `MicPipeline` (`webphone/src/telephony/audio.ts`) :
+la destination Web Audio arrêtée par SIP.js n'est plus réutilisée après
+raccrochage. Nouveau test `webphone/tests/micPipeline.test.ts`, reproduisant
+l'échec avant correction, avec sensibilité 50/150/200 % et contrôle du trajet
+100 %. Aucun changement d'interface, dépendance, migration ou réglage PBX.
+État et limites dans PROJECT_STATE ; publication ciblée suivie dans OPERATIONS.
+
+
 ## 2026-09-28 — Carte d'appel en thème clair
 
 - Signalé par Franck : pendant et après l'appel, la zone du clavier restait
