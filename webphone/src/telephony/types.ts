@@ -75,7 +75,7 @@ export interface PhoneController {
 }
 
 export interface AudioSettings {
-  /** Listening volume of this application, 0–100; not the computer's volume. */
+  /** Listening volume of this application, 0–200 (above 100 amplified); not the computer's volume. */
   volume: number;
   /** Microphone sensitivity, 0–200 %, 100 = unchanged. */
   micGain: number;

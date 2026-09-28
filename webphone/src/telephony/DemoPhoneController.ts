@@ -15,7 +15,7 @@ export class DemoPhoneController implements PhoneController {
   private timers = new Set<ReturnType<typeof setTimeout>>();
   private sequence = 0;
   private ringer = new Ringer();
-  private ringtone = { enabled: true, volume: 0.8, sound: DEFAULT_RINGTONE };
+  private ringtone = { enabled: true, volume: 1, sound: DEFAULT_RINGTONE };
 
   constructor(private callProgress: CallProgressSoundPlayer = new CallProgressSounds()) {}
 

@@ -20,6 +20,12 @@ describe('keypad tones', () => {
     expect(context.oscillators.every(oscillator => oscillator.window[1] - oscillator.window[0] <= 0.2)).toBe(true);
     expect(Math.max(...context.gains.flatMap(envelope => envelope.gain.events.map(([, value]) => value)))).toBeCloseTo(0.12);
 
+    // Every generated sound reaches the speakers through one limiter, so 200 % never crackles.
+    const limiter = context.compressors[0]!;
+    expect(context.gains.every(envelope => envelope.connections[0] === limiter)).toBe(true);
+    expect(limiter.connections).toEqual([context.destination]);
+    expect(context.compressors).toHaveLength(1);
+
     keypadTone('+', 0.5);
     keypadTone('9', 0);
     expect(context.oscillators).toHaveLength(2);

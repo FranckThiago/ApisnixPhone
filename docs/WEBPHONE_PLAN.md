@@ -285,8 +285,9 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
 | Densité | Confortable ; compacte possible sur petits écrans |
 | Micro | Périphérique système ; choix explicite possible |
+| Autorisation du micro | Ligne dédiée dans Réglages → Audio (demande de Franck, 28 septembre) : état lu par l'API Permissions quand elle existe, bouton qui redemande l'accès, étapes de déblocage quand le navigateur a retenu un refus — aucune page ne peut alors le forcer à redemander |
 | Sortie / casque | Sortie système ; choix seulement si API et permission disponibles |
-| Volume d'écoute | 80 %, réglable ; jamais assimilé au volume système |
+| Volume d'écoute | 100 %, réglable jusqu'à 200 % (demande de Franck, 28 septembre) ; jamais assimilé au volume système. Jusqu'à 100 %, la voix passe par l'élément audio comme avant ; au-delà, pendant l'appel, par une amplification Web Audio avec limiteur (`RemoteVoice`), l'élément à pleine puissance servant de repli. Sonneries et sons générés passent par un limiteur commun |
 | Sonnerie | Activée après interaction utilisateur ; choix simple de sons locaux |
 | Sons du clavier | Activés ; tonalité DTMF locale sous chaque touche du pavé, jamais transmise |
 | Annulation d'écho | Préférence activée si navigateur compatible |

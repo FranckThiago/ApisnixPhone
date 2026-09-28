@@ -90,12 +90,12 @@ describe('SIP controller', () => {
     await vi.advanceTimersByTimeAsync(0);
     h.invite.onProgress();
     expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ringing-out', dialTarget: '+237699000102' });
-    expect(h.callProgress.startRingback).toHaveBeenCalledWith(0.8);
+    expect(h.callProgress.startRingback).toHaveBeenCalledWith(1);
     expect(h.phone.getSnapshot().call?.answeredAt).toBeUndefined();
     await vi.advanceTimersByTimeAsync(5000);
     h.delegate.onCallAnswered(session('out'));
     expect(h.callProgress.stop).toHaveBeenCalled();
-    expect(h.callProgress.answered).toHaveBeenCalledWith(0.8);
+    expect(h.callProgress.answered).toHaveBeenCalledWith(1);
     const call = h.phone.getSnapshot().call!;
     expect(call.answeredAt! - call.startedAt).toBeGreaterThanOrEqual(5000);
     h.delegate.onCallHangup(session('out'));

@@ -51,6 +51,7 @@ export type Theme = 'light' | 'dark' | 'system';
 export interface Preferences {
   theme: Theme;
   density: 'comfortable' | 'compact';
+  /** Listening volume, 0–200 %: above 100 % the voice and the sounds are amplified. */
   volume: number;
   /** Microphone sensitivity, 0–200 %. */
   micGain: number;
@@ -74,10 +75,13 @@ export interface Preferences {
   callbacksSeenAt: number;
 }
 
+/** Top of the listening volume, in %: a media element stops at 100, the rest is amplified. */
+export const MAX_VOLUME = 200;
+
 export const DEFAULT_PREFERENCES: Preferences = {
   theme: 'system',
   density: 'comfortable',
-  volume: 80,
+  volume: 100,
   micGain: 100,
   ringtone: true,
   ringtoneSound: 'classique',

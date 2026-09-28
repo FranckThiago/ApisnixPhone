@@ -28,7 +28,9 @@ reconnecte toute seule (Chrome, Edge) ou préremplit le formulaire (Safari).
 
 Un carillon retentit et la pastille verte **Ligne prête** apparaît : vous pouvez
 appeler. Au premier appel, le navigateur demande l'accès au **microphone** :
-choisissez **Autoriser**.
+choisissez **Autoriser**. Refusé par erreur ? Réglages → Audio → **Autoriser le
+micro** le redemande, ou indique comment le débloquer si le navigateur a retenu
+le refus.
 
 | Message | Que faire |
 | --- | --- |
@@ -211,10 +213,19 @@ Entrée pour valider.
 
 ![Réglages](guide/13-reglages.png)
 
-- **Audio** : choix du micro et du casque, **sensibilité du micro** (si l'on vous
-  entend trop faible ou trop fort — à régler avant l'appel), **volume
-  d'écoute**, **Tester le micro** avec une barre de niveau, sonnerie, sons de la
-  ligne, sons du clavier, annulation d'écho, réduction de bruit.
+- **Audio** : **autorisation du micro**, choix du micro et du casque,
+  **sensibilité du micro** (si l'on vous entend trop faible ou trop fort — à
+  régler avant l'appel), **volume d'écoute**, **Tester le micro** avec une barre
+  de niveau, sonnerie, sons de la ligne, sons du clavier, annulation d'écho,
+  réduction de bruit.
+- **Volume d'écoute** : 100 % par défaut, jusqu'à **200 %** si votre
+  correspondant ou les sonneries restent trop faibles. Au-delà de 100 %, la voix
+  et les sons sont amplifiés par l'application ; utilisez de préférence un
+  casque, sinon votre correspondant peut entendre un écho.
+- **Autorisation du micro** : indique si le site a le droit d'utiliser votre
+  micro. **Autoriser le micro** redemande l'accès. Si le navigateur a retenu un
+  refus, il ne redemande plus de lui-même : suivez les étapes affichées (icône à
+  gauche de l'adresse → Microphone → Autoriser), puis **Réessayer**.
 - **Sonnerie** : huit sons au choix. Les **calmes** (Classique, Carillon,
   Marimba, Douce) conviennent à un bureau tranquille ou à un casque sur les
   oreilles ; les **bruyantes** (Rétro, Trille, Alarme, Clairon) s'entendent dans
@@ -253,7 +264,7 @@ aussi depuis la recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
 | Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte vient d'être connecté ailleurs. **Ce poste se met en pause** (en une à deux minutes) : il ne reçoit plus d'appels et ne peut plus en passer. Un appel en cours n'est pas interrompu par cette pause. | **Un compte = un seul appareil à la fois.** Cliquez **Reprendre la ligne ici** pour récupérer la ligne : c'est alors l'autre appareil qui passera en pause. Si ce n'est pas vous, prévenez votre administrateur. |
 | « Appel interrompu : la connexion au serveur a été perdue » | La liaison a coupé pendant l'appel (réseau, ou compte ouvert sur un autre appareil). | Vérifiez votre réseau et rappelez ; l'appel n'est jamais rappelé automatiquement. |
 | Le bouton Attente affiche « Patientez… » puis un message | Le serveur n'a pas confirmé, signe d'une connexion instable. | Réessayez ; si cela se répète, changez de réseau. |
-| « Le microphone est bloqué » | Le navigateur n'a pas l'autorisation. | Cliquez sur l'icône à gauche de l'adresse de la page, autorisez le microphone, rechargez. |
+| « Le microphone est bloqué » | Le navigateur n'a pas l'autorisation. | Réglages → Audio → **Autorisation du micro** : redemandez-la ou suivez les étapes affichées. |
 | « Aucun microphone trouvé » | Casque débranché ou non reconnu. | Rebranchez-le, puis vérifiez Réglages → Audio. |
 | Bouton « Activer le son » pendant un appel | Le navigateur a bloqué le son. | Cliquez sur le bouton. |
 | On vous entend mal, voix hachée | Le plus souvent le réseau (Wi-Fi faible, connexion partagée). | Rapprochez-vous de la borne ou passez en filaire ; vérifiez la sensibilité du micro. |

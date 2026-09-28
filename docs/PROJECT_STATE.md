@@ -1,5 +1,23 @@
 # État du projet
 
+## Volume jusqu'à 200 % et autorisation du micro — 28 septembre 2026
+
+Demandes de Franck. **Volume d'écoute** : 100 % par défaut (au lieu de 80 %),
+réglable jusqu'à 200 % dans Réglages et sous le pavé. Jusqu'à 100 %, la voix du
+correspondant suit exactement le chemin d'avant (élément audio). Au-delà, pendant
+un appel, l'élément est rendu muet sans être arrêté et la voix est amplifiée par
+Web Audio derrière un limiteur ; si cette chaîne ne peut pas tourner (sortie
+endormie, casque choisi inaccessible à Web Audio), l'élément joue à pleine
+puissance. Sonneries, tonalités et carillons passent par un limiteur commun pour
+ne pas saturer. **Autorisation du micro** (Réglages → Audio) : état autorisé,
+bloqué ou à demander, bouton qui redemande l'accès et, après un refus retenu par
+le navigateur, étapes pour le lever (icône à gauche de l'adresse, Safari à
+part). Typage, lint et 59 tests réussis ; démonstration vérifiée dans le
+navigateur (bureau et mobile), captures et PDF du guide régénérés.
+**Non vérifié sur une ligne réelle** : amplification au-delà de 100 % pendant un
+appel (dont l'écho possible sur haut-parleurs, selon le navigateur) et bouton
+d'autorisation hors démonstration. Pas encore publié sur Hermes.
+
 ## Pays des numéros internationaux sans `+` — publié le 28 septembre 2026
 
 Le PBX compose l'international sans `+`, avec l'indicatif du pays en tête ; le

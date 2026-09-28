@@ -1,5 +1,5 @@
 import type { CallOutcome } from '../domain/types';
-import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, Ringer } from './audio';
+import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, RemoteVoice, Ringer } from './audio';
 import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
 
@@ -103,8 +103,9 @@ export class SipPhoneController implements PhoneController {
   /** Memory only, for « Reprendre la ligne ici »; cleared on sign-out. Never written anywhere. */
   private credentials?: Credentials;
   private remoteAudio?: HTMLAudioElement;
+  private voice?: RemoteVoice;
   private ringer = new Ringer();
-  private audio: AudioSettings = { volume: 80, micGain: 100, ringtone: true, ringtoneSound: DEFAULT_RINGTONE, echoCancellation: true, noiseSuppression: true };
+  private audio: AudioSettings = { volume: 100, micGain: 100, ringtone: true, ringtoneSound: DEFAULT_RINGTONE, echoCancellation: true, noiseSuppression: true };
   private mic = new MicPipeline({ deviceId: 'default', gain: 100, echoCancellation: true, noiseSuppression: true });
 
   constructor(private config: SipConfig, private environment: SipEnvironment,
@@ -135,7 +136,10 @@ export class SipPhoneController implements PhoneController {
     // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
     // Without it the first incoming call is silent, because nothing was clicked just before the sound starts.
     this.remoteAudio ??= this.environment.createRemoteAudio();
-    if (this.remoteAudio) primeElement(this.remoteAudio);
+    if (this.remoteAudio) {
+      primeElement(this.remoteAudio);
+      this.voice ??= new RemoteVoice(this.remoteAudio);
+    }
     this.update({ connection: 'connecting', error: undefined });
     try {
       // One registration per browser: a second tab must not silently take the line.
@@ -217,6 +221,7 @@ export class SipPhoneController implements PhoneController {
       // Talk time starts here, never at the ringing or early media.
       this.updateCall({ phase: 'active', answeredAt: Date.now() });
       void this.remoteAudio?.play().catch(() => this.update({ audioBlocked: true }));
+      this.voice?.startCall();
       // One-way audio must never go unnoticed: check that our voice really leaves the browser.
       const session = this.session, manager = this.manager;
       if (session && manager) setTimeout(() => {
@@ -314,7 +319,7 @@ export class SipPhoneController implements PhoneController {
     this.mic.close();
     this.session = undefined;
     clearTimeout(this.quietTimer);
-    if (this.remoteAudio) this.remoteAudio.muted = false;
+    this.voice?.endCall();
     const micFailure = this.micFailure;
     const failure = micFailure ?? this.interruption ?? this.rejectionReason;
     this.micFailure = this.interruption = this.rejectionReason = undefined;
@@ -330,15 +335,15 @@ export class SipPhoneController implements PhoneController {
    * as a short burst of noise. The far end is silenced for that instant, then faded back in.
    */
   private quietRemote(quiet: boolean) {
-    const audio = this.remoteAudio;
-    if (!audio) return;
+    const voice = this.voice;
+    if (!voice) return;
     clearTimeout(this.quietTimer);
     if (quiet) {
-      audio.muted = true;
+      voice.setQuiet(true);
       // Never stay silent if the confirmation does not come.
-      this.quietTimer = setTimeout(() => { audio.muted = false; }, 4000);
+      this.quietTimer = setTimeout(() => voice.setQuiet(false), 4000);
     } else {
-      this.quietTimer = setTimeout(() => { audio.muted = false; }, 350);
+      this.quietTimer = setTimeout(() => voice.setQuiet(false), 350);
     }
   }
 
@@ -353,6 +358,7 @@ export class SipPhoneController implements PhoneController {
     this.ringer.stop();
     this.callProgress.stop();
     this.mic.close();
+    this.voice?.endCall();
     const manager = this.manager;
     this.manager = undefined;
     this.session = undefined;
@@ -477,12 +483,17 @@ export class SipPhoneController implements PhoneController {
   async setOutputDevice(deviceId: string) {
     const audio = this.remoteAudio as (HTMLAudioElement & { setSinkId?(id: string): Promise<void> }) | undefined;
     if (!audio?.setSinkId) return;
-    await audio.setSinkId(deviceId === 'default' ? '' : deviceId).catch(() => this.update({ error: 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.' }));
+    const chosen = await audio.setSinkId(deviceId === 'default' ? '' : deviceId).then(() => true, () => {
+      this.update({ error: 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.' });
+      return false;
+    });
+    // The amplified voice follows the element, never a headset the element could not reach.
+    if (chosen) await this.voice?.setSink(deviceId);
   }
 
   applyAudio(settings: AudioSettings) {
     this.audio = settings;
-    if (this.remoteAudio) this.remoteAudio.volume = Math.min(1, Math.max(0, settings.volume / 100));
+    this.voice?.setLevel(settings.volume / 100);
     this.mic.setGain(settings.micGain);
     this.mic.update({ echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression });
     if (!settings.ringtone) this.ringer.stop();

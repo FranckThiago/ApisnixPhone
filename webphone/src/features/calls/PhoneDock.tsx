@@ -9,7 +9,7 @@ import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
 import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
-import { CALL_TAGS, OUTCOME_LABELS } from '../../domain/types';
+import { CALL_TAGS, MAX_VOLUME, OUTCOME_LABELS } from '../../domain/types';
 import { findContact, searchContacts } from '../../storage/DataStore';
 import { keypadTone } from '../../telephony/audio';
 import type { CallSnapshot, ConnectionState } from '../../telephony/types';
@@ -120,7 +120,7 @@ function Dialer() {
         <Headphones size={20} aria-hidden="true" />
         <div><b>Volume d’écoute</b><small>{preferences.volume} %</small></div>
         <label className="volume"><Volume2 size={16} aria-hidden="true" />
-          <input type="range" min={0} max={100} value={preferences.volume} aria-label="Volume d’écoute"
+          <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label="Volume d’écoute"
             onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
         </label>
       </section>

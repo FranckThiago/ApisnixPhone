@@ -26,6 +26,18 @@ export class FakeOscillator extends FakeNode {
   stop(time: number) { this.window[1] = time; }
 }
 
+export class FakeCompressor extends FakeNode {
+  threshold = new FakeParam();
+  knee = new FakeParam();
+  ratio = new FakeParam();
+  attack = new FakeParam();
+  release = new FakeParam();
+}
+
+export class FakeSource extends FakeNode {
+  constructor(context: FakeContext, readonly stream: unknown) { super(context); }
+}
+
 export class FakeContext {
   static last?: FakeContext;
   state = 'running';
@@ -33,8 +45,14 @@ export class FakeContext {
   destination = new FakeNode(this);
   oscillators: FakeOscillator[] = [];
   gains: FakeGain[] = [];
+  compressors: FakeCompressor[] = [];
+  sources: FakeSource[] = [];
+  listeners = new Map<string, () => void>();
   constructor() { FakeContext.last = this; }
   resume() { return Promise.resolve(); }
+  addEventListener(type: string, listener: () => void) { this.listeners.set(type, listener); }
   createOscillator() { const node = new FakeOscillator(this); this.oscillators.push(node); return node; }
   createGain() { const node = new FakeGain(this); this.gains.push(node); return node; }
+  createDynamicsCompressor() { const node = new FakeCompressor(this); this.compressors.push(node); return node; }
+  createMediaStreamSource(stream: unknown) { const node = new FakeSource(this, stream); this.sources.push(node); return node; }
 }

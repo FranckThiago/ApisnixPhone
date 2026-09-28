@@ -124,16 +124,42 @@ function soundContext(): AudioContext | undefined {
   return sharedContext;
 }
 
+/** A hard ceiling just under full scale: louder than 100 %, peaks are held there instead of crackling. */
+function limiter(context: BaseAudioContext): AudioNode {
+  const node = context.createDynamicsCompressor();
+  node.threshold.value = -2;
+  node.knee.value = 0;
+  node.ratio.value = 20;
+  node.attack.value = 0.002;
+  node.release.value = 0.15;
+  return node;
+}
+
+const outputs = new WeakMap<BaseAudioContext, AudioNode>();
+
+/** Where every generated sound goes: the listening volume reaches 200 %, the limiter keeps it clean. */
+function soundOutput(context: BaseAudioContext): AudioNode {
+  let output = outputs.get(context);
+  if (!output) {
+    output = limiter(context);
+    output.connect(context.destination);
+    outputs.set(context, output);
+  }
+  return output;
+}
+
 let keepAwake = false;
 // Elements the browser refused to start: a sign-in without a click (after a reload) cannot unlock them yet.
 const locked = new Set<HTMLAudioElement>();
+// Other outputs of the page, such as the voice amplifier, woken up with the shared one.
+const sleepers = new Set<AudioContext>();
 
 /** Browsers may put the sound output back to sleep after a while: any click or key wakes it up again. */
 function keepSoundAwake() {
   if (keepAwake || typeof document === 'undefined') return;
   keepAwake = true;
   const wake = () => {
-    if (sharedContext && sharedContext.state !== 'running') void sharedContext.resume().catch(() => undefined);
+    for (const context of [sharedContext, ...sleepers]) if (context && context.state !== 'running') void context.resume().catch(() => undefined);
     for (const audio of locked) void audio.play().then(() => locked.delete(audio)).catch(() => undefined);
   };
   document.addEventListener('pointerdown', wake, true);
@@ -168,6 +194,117 @@ export function primeAudio() {
   source.start();
 }
 
+/** Highest listening level: 2 = 200 %. */
+export const MAX_LISTENING_LEVEL = 2;
+
+type SinkContext = AudioContext & { setSinkId?(id: string): Promise<void> };
+
+/**
+ * The far end's voice. Up to 100 % it plays through its media element, as it always did. A media
+ * element cannot go louder: above, during a call, the element is silenced — it keeps playing, which
+ * some browsers need to hand a call's sound to Web Audio — and the stream is amplified behind a
+ * limiter. Whenever that chain cannot run (output asleep, headset it cannot reach), the element
+ * plays at full volume instead: the voice is never lost to the amplifier.
+ */
+export class RemoteVoice {
+  private context?: SinkContext;
+  private gain?: GainNode;
+  private source?: MediaStreamAudioSourceNode;
+  private track?: MediaStreamTrack;
+  private level = 1;
+  private quiet = false;
+  private inCall = false;
+  private sink = 'default';
+  private sinkApplied = 'default';
+
+  constructor(private element: HTMLAudioElement) {
+    // SIP.js assigns the call's stream, and reloads the element when a new track arrives: follow it.
+    element.addEventListener('loadstart', () => this.apply());
+    this.apply();
+  }
+
+  /** 0–2; 1 is the element's full volume. */
+  setLevel(level: number) {
+    this.level = Math.min(MAX_LISTENING_LEVEL, Math.max(0, level));
+    this.apply();
+  }
+
+  /** Silences the far end for an instant, e.g. while a hold is renegotiated. */
+  setQuiet(quiet: boolean) {
+    this.quiet = quiet;
+    this.apply();
+  }
+
+  startCall() {
+    this.inCall = true;
+    this.apply();
+  }
+
+  endCall() {
+    this.inCall = false;
+    this.quiet = false;
+    this.source?.disconnect();
+    this.source = undefined;
+    this.track = undefined;
+    this.apply();
+  }
+
+  /** The amplifier must reach the headset chosen for the voice, or stay out of the way. */
+  async setSink(deviceId: string) {
+    this.sink = deviceId;
+    await this.syncSink();
+    this.apply();
+  }
+
+  private apply() {
+    const amplify = this.level > 1 && this.inCall && this.connect();
+    this.element.volume = amplify ? 1 : Math.min(1, this.level);
+    this.element.muted = this.quiet || amplify;
+    if (this.gain) this.gain.gain.value = amplify && !this.quiet ? this.level : 0;
+  }
+
+  private connect(): boolean {
+    const stream = this.element.srcObject as MediaStream | null;
+    const track = stream?.getAudioTracks?.()[0];
+    if (!stream || !track || track.readyState === 'ended' || typeof AudioContext === 'undefined') return false;
+    if (!this.context) {
+      // Its own output, so the headset chosen for the voice does not also take the ringtone.
+      const context: SinkContext = new AudioContext();
+      this.context = context;
+      this.gain = context.createGain();
+      this.gain.gain.value = 0;
+      this.gain.connect(limiter(context)).connect(context.destination);
+      context.addEventListener('statechange', () => this.apply());
+      sleepers.add(context);
+      keepSoundAwake();
+      void this.syncSink().then(() => this.apply());
+    }
+    if (this.context.state !== 'running') {
+      void this.context.resume().catch(() => undefined);
+      return false;
+    }
+    if (this.sinkApplied !== this.sink) return false;
+    if (this.track !== track) {
+      this.source?.disconnect();
+      this.source = this.context.createMediaStreamSource(stream);
+      this.source.connect(this.gain!);
+      this.track = track;
+    }
+    return true;
+  }
+
+  private async syncSink() {
+    const context = this.context;
+    if (!context || this.sinkApplied === this.sink || !context.setSinkId) return;
+    try {
+      await context.setSinkId(this.sink === 'default' ? '' : this.sink);
+      this.sinkApplied = this.sink;
+    } catch {
+      // The element keeps the voice on the chosen headset, at full volume.
+    }
+  }
+}
+
 /** Plays a ringtone of the library in a loop: generated, no audio file to ship, silent at once when stopped. */
 export class Ringer {
   private timer?: ReturnType<typeof setInterval>;
@@ -179,7 +316,7 @@ export class Ringer {
     const ringtone = findRingtone(ringtoneId);
     const output = context.createGain();
     output.gain.value = volume;
-    output.connect(context.destination);
+    output.connect(soundOutput(context));
     this.output = output;
     const cycle = () => {
       if (context.state !== 'running') void context.resume().catch(() => undefined);
@@ -248,7 +385,7 @@ export class CallProgressSounds implements CallProgressSoundPlayer {
         envelope.gain.exponentialRampToValueAtTime(0.13 * volume, start + 0.025);
         envelope.gain.setValueAtTime(0.13 * volume, start + 0.18);
         envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
-        oscillator.connect(envelope).connect(context.destination);
+        oscillator.connect(envelope).connect(soundOutput(context));
         oscillator.addEventListener('ended', () => this.active.delete(oscillator));
         this.active.add(oscillator);
         oscillator.start(start);
@@ -277,7 +414,7 @@ export class CallProgressSounds implements CallProgressSoundPlayer {
       envelope.gain.setValueAtTime(0.0001, start);
       envelope.gain.exponentialRampToValueAtTime(level * volume, start + 0.008);
       envelope.gain.exponentialRampToValueAtTime(0.0001, start + decay);
-      oscillator.connect(envelope).connect(context.destination);
+      oscillator.connect(envelope).connect(soundOutput(context));
       oscillator.start(start);
       oscillator.stop(start + decay + 0.03);
     }
@@ -323,7 +460,7 @@ export function keypadTone(key: string, volume: number) {
     envelope.gain.linearRampToValueAtTime(0.24 * volume, start + 0.005);
     envelope.gain.setValueAtTime(0.24 * volume, start + 0.13);
     envelope.gain.linearRampToValueAtTime(0, start + 0.15);
-    oscillator.connect(envelope).connect(context.destination);
+    oscillator.connect(envelope).connect(soundOutput(context));
     oscillator.start(start);
     oscillator.stop(start + 0.16);
   }
@@ -354,7 +491,7 @@ export function chime(kind: 'ready' | 'lost', volume: number) {
       envelope.gain.setValueAtTime(0, start);
       envelope.gain.linearRampToValueAtTime(level * volume, start + 0.012);
       envelope.gain.exponentialRampToValueAtTime(0.0001, start + decay);
-      oscillator.connect(envelope).connect(context.destination);
+      oscillator.connect(envelope).connect(soundOutput(context));
       oscillator.start(start);
       oscillator.stop(start + decay + 0.05);
     }
@@ -363,7 +500,7 @@ export function chime(kind: 'ready' | 'lost', volume: number) {
 
 export function microphoneErrorMessage(error: unknown): string {
   const name = error instanceof DOMException ? error.name : '';
-  if (name === 'NotAllowedError' || name === 'SecurityError') return 'Le microphone est bloqué. Autorisez-le dans la barre d’adresse du navigateur, puis réessayez.';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return 'Le microphone est bloqué. Réglages → Audio → Autorisation du micro explique comment le débloquer.';
   if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'Aucun microphone trouvé. Branchez votre casque, puis réessayez.';
   if (name === 'NotReadableError') return 'Le microphone est utilisé par une autre application.';
   return 'Le microphone est indisponible.';

@@ -288,6 +288,9 @@ input[type=range] { accent-color: var(--brand); }
 .due-card header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; } .due-card header svg { color: var(--yellow-strong); } .due-card header button { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--brand); }
 .due-card li { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--border); } .due-card li span { flex: 1; min-width: 0; } .due-card b, .due-card small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .due-card li.overdue small { color: var(--warning); font-weight: 600; } .row-call.always { opacity: 1; transform: none; flex: none; }
+.mic-help { margin: 4px 0 8px; padding-left: 30px; display: grid; gap: 4px; list-style: decimal; } .setting > .ghost, .setting > .pill { flex: none; white-space: nowrap; }
+/* Followed by other rows even when it is the last div of the section (the demo hides the micro test). */
+.setting.mic-access { border-bottom: 1px solid var(--border); }
 .mic-test { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: center; padding: 10px 0 12px; border-bottom: 1px solid var(--border); } .mic-test small { grid-column: 1 / -1; }
 .meter { height: 10px; border-radius: 999px; overflow: hidden; background: linear-gradient(90deg, var(--success-soft) 0 75%, var(--yellow-soft) 75% 92%, var(--danger-soft) 92%); border: 1px solid var(--border); }
 .meter i { display: block; height: 100%; border-radius: 999px; background: var(--success); transition: width .06s linear; } .meter.clipping i { background: var(--danger); }

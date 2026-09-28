@@ -1,6 +1,7 @@
-import { Mic, Square } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Mic, RotateCcw, Square } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
+import { MAX_VOLUME } from '../../domain/types';
 import { MicPipeline, microphoneErrorMessage } from '../../telephony/audio';
 
 interface Devices { inputs: MediaDeviceInfo[]; outputs: MediaDeviceInfo[] }
@@ -22,7 +23,85 @@ function useDevices(enabled: boolean): [Devices, () => void] {
     navigator.mediaDevices.addEventListener('devicechange', read);
     return () => { alive = false; navigator.mediaDevices.removeEventListener('devicechange', read); };
   }, [enabled]);
-  return [devices, () => refresh.current()];
+  return [devices, useCallback(() => refresh.current(), [])];
+}
+
+type MicAccess = PermissionState | 'unknown';
+
+/** What the browser allows right now; follows a change made from the address bar, without reloading. */
+function useMicAccess(enabled: boolean): [MicAccess, (access: MicAccess) => void] {
+  const [access, setAccess] = useState<MicAccess>('unknown');
+  useEffect(() => {
+    if (!enabled || !navigator.permissions?.query) return;
+    let alive = true;
+    let status: PermissionStatus | undefined;
+    const read = () => { if (alive && status) setAccess(status.state); };
+    // Some browsers cannot tell for the microphone: the button still asks.
+    navigator.permissions.query({ name: 'microphone' as PermissionName }).then(result => {
+      status = result;
+      read();
+      result.addEventListener('change', read);
+    }).catch(() => undefined);
+    return () => { alive = false; status?.removeEventListener('change', read); };
+  }, [enabled]);
+  return [access, setAccess];
+}
+
+const ACCESS_HINTS: Record<MicAccess, string> = {
+  granted: 'Autorisé pour ce site.',
+  prompt: 'Pas encore autorisé : le navigateur vous le demandera.',
+  denied: 'Bloqué : le navigateur a retenu un refus et ne vous le redemande plus de lui-même.',
+  unknown: 'Refusé par erreur ? Redemandez l’autorisation ici.',
+};
+
+/**
+ * Asks the browser for the microphone again, for someone who refused it by mistake. Once a refusal
+ * is remembered, no page can make the browser ask again: the steps to lift it are shown instead.
+ */
+function MicPermission({ demo, onAllowed }: { demo: boolean; onAllowed(): void }) {
+  const { notify } = useApp();
+  const [access, setAccess] = useMicAccess(!demo);
+  const [asking, setAsking] = useState(false);
+  const [problem, setProblem] = useState('');
+
+  const ask = async () => {
+    // The demo never asks the browser for a permission.
+    if (demo) return notify('Démonstration : aucune permission demandée.');
+    if (!navigator.mediaDevices?.getUserMedia) return setProblem('Ce navigateur ne donne pas accès au micro sur cette page.');
+    setAsking(true);
+    setProblem('');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      // Only the permission was wanted: nothing keeps listening.
+      stream.getTracks().forEach(track => track.stop());
+      setAccess('granted');
+      onAllowed();
+      notify('Micro autorisé.');
+    } catch (failure) {
+      const name = failure instanceof DOMException ? failure.name : '';
+      if (name === 'NotAllowedError' || name === 'SecurityError') setAccess('denied');
+      else setProblem(microphoneErrorMessage(failure));
+    } finally {
+      setAsking(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="setting mic-access"><span><b>Autorisation du micro</b><small>{problem || (demo ? 'Démonstration : aucune autorisation n’est demandée.' : ACCESS_HINTS[access])}</small></span>
+        {access === 'granted'
+          ? <span className="pill pill-ok"><i />Autorisé</span>
+          : <button type="button" className="ghost" disabled={asking} onClick={() => void ask()}>
+              {access === 'denied' ? <><RotateCcw size={15} /> Réessayer</> : <><Mic size={15} /> Autoriser le micro</>}</button>}</div>
+      {access === 'denied' && (
+        <ol className="callout mic-help">
+          <li>Cliquez sur l’icône à gauche de l’adresse <b>{location.host}</b> (cadenas, réglages ou micro barré).</li>
+          <li>Mettez <b>Microphone</b> sur <b>Autoriser</b>. Sur Safari : menu Safari → Réglages pour ce site web → Microphone.</li>
+          <li>Revenez ici : l’autorisation est reconnue, sinon cliquez sur <b>Réessayer</b>. En dernier recours, actualisez la page hors appel.</li>
+        </ol>
+      )}
+    </>
+  );
 }
 
 /** Opens the microphone only while the test runs, and always releases it. */
@@ -83,6 +162,7 @@ export function AudioSettings() {
   return (
     <>
       {demo && <p className="callout">Démonstration : aucun microphone n’est demandé. Les réglages ci-dessous s’appliqueront à votre ligne réelle.</p>}
+      <MicPermission demo={demo} onAllowed={refreshDevices} />
       <label className="setting"><span><b>Microphone</b><small>{devices.inputs.length ? 'Pris en compte à l’appel suivant.' : 'Micro du système. La liste apparaît après un premier test autorisé.'}</small></span>
         <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}>
           <option value="default">Micro du système</option>
@@ -96,8 +176,8 @@ export function AudioSettings() {
           <option value="default">Sortie du système</option>
           {devices.outputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>Volume d’écoute</b><small>{preferences.volume} % — distinct du volume de l’ordinateur.</small></span>
-        <input type="range" min={0} max={100} value={preferences.volume} aria-label="Volume d’écoute" onChange={event => set({ volume: Number(event.target.value) })} /></label>
+      <label className="setting"><span><b>Volume d’écoute</b><small>{preferences.volume} % — {preferences.volume > 100 ? 'voix et sons amplifiés ; un casque évite l’écho chez votre correspondant' : 'distinct du volume de l’ordinateur'}. Jusqu’à {MAX_VOLUME} %.</small></span>
+        <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label="Volume d’écoute" onChange={event => set({ volume: Number(event.target.value) })} /></label>
     </>
   );
 }

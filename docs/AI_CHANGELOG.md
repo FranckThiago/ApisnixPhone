@@ -1,5 +1,25 @@
 # Journal des changements
 
+## 2026-09-28 — Volume jusqu'à 200 % et autorisation du micro
+
+- Demandes de Franck : un bouton dans les réglages pour redemander le micro à
+  qui l'a refusé par erreur, et un volume global plus fort.
+- `AudioSettings.tsx` : ligne « Autorisation du micro » (API Permissions si
+  disponible, suivie en direct), bouton « Autoriser le micro » qui appelle
+  `getUserMedia` puis libère aussitôt le micro ; après un refus retenu, étapes
+  de déblocage et « Réessayer ». Le message « microphone bloqué » y renvoie.
+- `audio.ts` : `RemoteVoice` gère la voix distante (niveau 0–2, silence de
+  renégociation, casque) ; au-delà de 100 %, amplification Web Audio avec
+  limiteur pendant l'appel, repli sur l'élément à pleine puissance. Les sons
+  générés passent par un limiteur partagé (`soundOutput`).
+- Volume par défaut 100 % (`DEFAULT_PREFERENCES`, contrôleurs réel et démo),
+  curseurs jusqu'à `MAX_VOLUME` = 200 %.
+- Tests : `remoteVoice.test.ts` (5 cas), limiteur des tonalités, attentes de
+  volume par défaut. Typage, lint, 59 tests. Guide, captures et PDF mis à jour.
+- Limites : amplification et bouton non essayés sur une ligne réelle ; au-delà
+  de 100 %, l'annulation d'écho du navigateur peut ne pas couvrir la voix
+  amplifiée sur haut-parleurs.
+
 ## 2026-09-28 — Pays des numéros sans `+` publié sur Hermes
 
 - À la demande de Franck, release `20260928-country-code` (source `8890bb6`)
