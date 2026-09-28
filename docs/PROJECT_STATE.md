@@ -14,7 +14,8 @@ régénérés. **Release active : `20260928-call-card-theme`, source `e05e2e0`**
 (correctif micro compris), publiée sur Hermes à 16:36:54 Africa/Douala après
 63 tests, typage, lint et build live ; fichiers servis identiques au build.
 Un onglet ouvert avant doit être actualisé hors appel.
-**Non vérifié sur une ligne réelle** : rendu chez un client en thème clair.
+**Franck confirme ensuite le 28 septembre le bon rendu en thème clair en
+service.**
 [Preuves et retour](OPERATIONS.md#carte-dappel-en-thème-clair-publiée--28-septembre-2026).
 
 ## Micro des appels successifs — correctif du 28 septembre 2026

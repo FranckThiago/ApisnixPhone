@@ -413,6 +413,7 @@ assets immuables, repli SPA 200, `/api/me` anonyme 401, supervision 200. Écran
 de connexion live vérifié dans le navigateur intégré, sans erreur console ;
 aucune connexion SIP ni appel lancé. Aucun onglet client rechargé à distance :
 un onglet ouvert avant doit être actualisé **hors appel**.
+Franck confirme ensuite le 28 septembre le bon rendu en thème clair en service.
 
 Retour ciblé : vérifier que `current` vise cette release puis le repointer
 atomiquement vers `/srv/apisnixphone/releases/20260928-mic-lifecycle`,
