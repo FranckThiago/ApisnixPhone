@@ -9,8 +9,10 @@ séparé pouvait rester positif. La fermeture libère désormais aussi le gain e
 la destination : chaque appel recrée sa sortie, sans fermer le contexte audio
 partagé. Le trajet direct à 100 % reste inchangé. Tests de non-régression à
 50, 150 et 200 %, trajet direct et nettoyage tardif de l'ancienne session.
-Correction préparée pour publication ciblée sur la base active `06a8cc3` ;
-le thème clair non publié reste séparé. Validation sur une ligne réelle après
+Correction publiée à 16:18:11 sur Hermes (`20260928-mic-lifecycle`), build
+ciblé de la base `06a8cc3` avec le correctif `e7cd2ab` ;
+le thème clair non publié reste séparé. 63 tests, typage, lint et build live
+réussis ; artefacts servis vérifiés. Validation sur une ligne réelle après
 actualisation encore nécessaire ; ce défaut reproduit n'établit pas à lui seul
 le réglage effectif du poste ayant signalé la panne.
 
@@ -26,7 +28,7 @@ attente ») passe en ambre foncé en clair, le jaune étant illisible sur blanc.
 Typage, lint, 59 tests et build réussis ; démonstration vérifiée dans le
 navigateur en clair et en sombre (appel, clavier, muet/attente, fin d'appel,
 échec, rappel), captures et PDF du guide régénérés. **Pas encore publié sur
-Hermes** : la release active reste `20260928-volume-micro`.
+Hermes** : la release active est `20260928-mic-lifecycle`.
 
 ## Volume jusqu'à 200 % et autorisation du micro — publiés le 28 septembre 2026
 

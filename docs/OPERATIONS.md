@@ -389,7 +389,33 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260928-volume-micro`, source `06a8cc3`, publiée le
+## Correctif micro publié — 28 septembre 2026
+
+Release active **`20260928-mic-lifecycle`**, publiée à **16:18:11 Africa/Douala
+(15:18:11 UTC)**. Build isolé de la base active `06a8cc3`, avec seulement
+`webphone/src/telephony/audio.ts` et son test de régression issus de `e7cd2ab`.
+Le thème clair de la carte d'appel reste non publié. La piste amplifiée arrêtée
+par SIP.js n'est plus réutilisée à l'appel suivant ; capture directe à 100 %
+conservée. 63 tests, typage, lint et build live réussis. Régression reproduite
+avant correction. Pas de migration ni changement PBX, Caddy, DNS ou compte.
+
+Archive de 266 fichiers, SHA-256
+`0f01bc019ed9acf6cebd49f74ab394fdea5cd4949a03bf965151024db7ec115f`.
+Sauvegarde protégée `/root/apisnix-phone-backups/20260928-mic-lifecycle/` :
+ancienne cible, manifeste antérieur, archive, SHA256SUMS, source.json et heure
+de bascule. Manifeste extrait vérifié ; release root 0755/0644 lisible par
+Caddy. Bascule atomique après contrôle de la cible précédente. HTTPS 200,
+index no-cache, index/JS principal/CSS identiques au build ; écran de connexion
+vérifié dans le navigateur intégré. Aucun onglet client rechargé à distance.
+
+Un onglet déjà ouvert doit être actualisé **hors appel**. Validation humaine
+des appels successifs après actualisation encore attendue. Retour ciblé :
+vérifier que `current` vise cette release puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20260928-volume-micro`, conservée intacte ; cette
+ancienne version conserve le défaut de piste amplifiée. Ne pas restaurer de
+configuration globale.
+
+Version précédente : `20260928-volume-micro`, source `06a8cc3`, publiée le
 28 septembre à 15:23:14 Africa/Douala (14:23:14 UTC) : volume d'écoute de 100 %
 par défaut, réglable jusqu'à 200 % (amplification Web Audio avec limiteur
 au-delà de 100 %, repli sur l'élément audio), ligne « Autorisation du micro »

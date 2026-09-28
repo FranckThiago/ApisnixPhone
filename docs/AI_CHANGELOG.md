@@ -7,7 +7,9 @@ la destination Web Audio arrêtée par SIP.js n'est plus réutilisée après
 raccrochage. Nouveau test `webphone/tests/micPipeline.test.ts`, reproduisant
 l'échec avant correction, avec sensibilité 50/150/200 % et contrôle du trajet
 100 %. Aucun changement d'interface, dépendance, migration ou réglage PBX.
-État et limites dans PROJECT_STATE ; publication ciblée suivie dans OPERATIONS.
+Publication ciblée à 16:18:11 : base `06a8cc3` et correctif `e7cd2ab`,
+63 tests/typage/lint/build live réussis, artefacts HTTPS vérifiés. État et
+limites dans PROJECT_STATE ; sauvegarde et retour dans OPERATIONS.
 
 
 ## 2026-09-28 — Carte d'appel en thème clair
