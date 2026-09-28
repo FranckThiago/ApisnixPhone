@@ -1,6 +1,6 @@
 # État du projet
 
-## Volume jusqu'à 200 % et autorisation du micro — 28 septembre 2026
+## Volume jusqu'à 200 % et autorisation du micro — publiés le 28 septembre 2026
 
 Demandes de Franck. **Volume d'écoute** : 100 % par défaut (au lieu de 80 %),
 réglable jusqu'à 200 % dans Réglages et sous le pavé. Jusqu'à 100 %, la voix du
@@ -16,7 +16,10 @@ part). Typage, lint et 59 tests réussis ; démonstration vérifiée dans le
 navigateur (bureau et mobile), captures et PDF du guide régénérés.
 **Non vérifié sur une ligne réelle** : amplification au-delà de 100 % pendant un
 appel (dont l'écho possible sur haut-parleurs, selon le navigateur) et bouton
-d'autorisation hors démonstration. Pas encore publié sur Hermes.
+d'autorisation hors démonstration. **Release active : `20260928-volume-micro`,
+source `06a8cc3`**, publiée sur Hermes à 15:23:14 Africa/Douala ; elle contient
+le pays des numéros sans `+` ci-dessous. Fichiers servis identiques au build ;
+un onglet ouvert avant doit être actualisé. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 
 ## Pays des numéros internationaux sans `+` — publié le 28 septembre 2026
 
@@ -25,8 +28,9 @@ national commence par `0`. Le téléphone web lit donc un numéro de plus de
 6 chiffres sans `+`, sans `00` et sans `0` initial avec son indicatif :
 `41442201515` affiche la Suisse au lieu de « Numéro national ». Affichage seul,
 les chiffres composés ne changent pas. Typage, lint et 54 tests réussis.
-**Release active : `20260928-country-code`, source `8890bb6`**, publiée sur
-Hermes à 13:25:24 Africa/Douala ; elle contient les sons du clavier ci-dessous.
+Release `20260928-country-code`, source `8890bb6`, publiée sur Hermes à
+13:25:24 Africa/Douala, remplacée à 15:23:14 par `20260928-volume-micro` qui la
+contient.
 Fichiers servis identiques au build ; un onglet ouvert avant doit être
 actualisé. Drapeau suisse confirmé par Franck sur le site en service le
 28 septembre. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).

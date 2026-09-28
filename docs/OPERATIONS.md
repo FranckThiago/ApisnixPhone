@@ -389,7 +389,29 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-Version active : `20260928-country-code`, source `8890bb6`, publiée le
+Version active : `20260928-volume-micro`, source `06a8cc3`, publiée le
+28 septembre à 15:23:14 Africa/Douala (14:23:14 UTC) : volume d'écoute de 100 %
+par défaut, réglable jusqu'à 200 % (amplification Web Audio avec limiteur
+au-delà de 100 %, repli sur l'élément audio), ligne « Autorisation du micro »
+dans Réglages → Audio. Build isolé depuis `git archive` : `npm ci` sans
+vulnérabilité, typage, lint, 59 tests et build live réussis. Archive ustar de
+266 fichiers, SHA-256
+`6c10867edeaf428eda30ad1b10dfa5fa52400aad743779bc68373e5997b72edd`, manifeste
+contrôlé après extraction ; release root 0755/0644, lue par Caddy sans droit
+d'écriture. Face à la release en ligne, `index.html`, le JS principal, le CSS
+et le module SIP.js changent. Ancienne cible, manifestes, archive et reçu
+protégés dans `/root/apisnix-phone-backups/20260928-volume-micro/`. Bascule
+atomique de `current` depuis `20260928-country-code`, sans rechargement Caddy.
+HTTPS 200, HTTP 308, index `no-cache` identique au build, assets immuables,
+repli SPA 200, JS `index-Dqi51cEz.js`, CSS `index-zU-iFouS.css` et module
+SIP.js servis identiques au build, `/api/me` anonyme 401, supervision 200 ;
+écran de connexion live sans erreur console. Appels web en cours non contrôlés
+sur le PBX ; un onglet ouvert avant doit être actualisé. Amplification et
+bouton d'autorisation pas encore essayés sur une ligne réelle. Retour ciblé :
+après contrôle de la cible courante, repointer `current` vers
+`20260928-country-code`.
+
+Version précédente : `20260928-country-code`, source `8890bb6`, publiée le
 28 septembre à 13:25:24 Africa/Douala (12:25:24 UTC) : pays affiché pour les
 numéros internationaux composés sans `+`, comme le fait le PBX. Build isolé
 depuis `git archive` : `npm ci` sans vulnérabilité, typage, lint, 54 tests et

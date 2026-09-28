@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-28 — Volume et autorisation du micro publiés sur Hermes
+
+- À la demande de Franck, release `20260928-volume-micro` (source `06a8cc3`)
+  publiée à 15:23:14 Africa/Douala. Build isolé : `npm ci` sans vulnérabilité,
+  typage, lint, 59 tests, build live ; archive SHA-256
+  `6c10867edeaf428eda30ad1b10dfa5fa52400aad743779bc68373e5997b72edd`.
+- Comparée à `20260928-country-code` alors en ligne : `index.html`, JS
+  principal, CSS et module SIP.js changent. Sauvegarde protégée, manifeste
+  contrôlé, bascule atomique sans rechargement Caddy ; fichiers publics
+  identiques au build, `/api/me` anonyme 401, écran de connexion sans erreur.
+- Appels web en cours non contrôlés sur le PBX. Amplification au-delà de 100 %
+  et bouton d'autorisation restent à essayer sur une ligne réelle.
+
 ## 2026-09-28 — Volume jusqu'à 200 % et autorisation du micro
 
 - Demandes de Franck : un bouton dans les réglages pour redemander le micro à
