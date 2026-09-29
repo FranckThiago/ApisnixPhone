@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-09-29 — Guide client raccourci à 8 pages
+
+- Demande de Franck : le PDF de 19 pages ne serait pas lu. `GUIDE_UTILISATEUR.md`
+  retire l'explication des codes SIP, Contacts et favoris et « Tout trouver en
+  un geste » (captures `10`, `11`, `14` et `15` conservées mais plus citées) ;
+  Journal, Rappels, Audio, Réglages, dépannage et « Bon à savoir » condensés.
+  Pages 2 et 3, jugées bonnes, conservées.
+- `build-guide-pdf.mjs` : image titrée `"gauche"`/`"droite"` avec son texte à
+  côté, plusieurs images d'une ligne côte à côte avec légende, hauteur réglable
+  dans le titre (`"gauche 90mm"`), taille par défaut selon la forme de la
+  capture, sommaire cliquable en couverture avec numéros de page relevés par
+  `pdftotext` (sans numéros si poppler manque), espaces insécables français.
+- PDF régénéré : 8 pages, contrôlées visuellement page par page. Captures non
+  régénérées (déjà à jour), aucun changement applicatif ni publication.
+
 ## 2026-09-28 — Carte d'appel en thème clair publiée sur Hermes
 
 - À la demande de Franck, release `20260928-call-card-theme` (source

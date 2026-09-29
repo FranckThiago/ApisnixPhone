@@ -6,6 +6,13 @@ installer, vous ouvrez la page, vous vous connectez, vous appelez.
 Les captures de ce guide viennent de la démonstration : noms et numéros sont
 fictifs. Version décrite : ApisnixPhone Web 0.1.0.
 
+<!-- Mise en page du PDF (webphone/scripts/build-guide-pdf.mjs) : une image
+titrée "gauche" ou "droite" se place sur ce côté, avec à côté d'elle le texte
+qui la suit jusqu'au prochain titre ou à la prochaine image. Plusieurs images
+sur une même ligne s'affichent côte à côte, légendées par leur texte
+alternatif. Une hauteur dans le titre ("gauche 90mm", "60mm") remplace la
+taille par défaut ; l'ajuster pour éviter les blancs en bas de page. -->
+
 ## Avant de commencer
 
 - Un ordinateur avec **Chrome ou Edge** à jour, et une connexion stable. Safari
@@ -48,51 +55,47 @@ le refus.
   trouve en haut à droite.
 - **Au centre**, la page choisie.
 - **À droite**, le téléphone. Il reste là quelle que soit la page : vous pouvez
-  consulter un contact ou vos rappels sans quitter votre appel.
+  consulter vos rappels ou vos enregistrements sans quitter votre appel.
 - **En haut**, la barre de recherche et l'état de la ligne.
 
 ## 3. Passer un appel
 
+![Composer un numéro](guide/03-composer.png "gauche")
+
 Tapez le numéro au clavier de l'ordinateur ou sur le pavé, puis **Appeler** ou
 la touche **Entrée**. Vous pouvez aussi taper un **nom** : les contacts
 correspondants sont proposés.
-
-![Composer un numéro](guide/03-composer.png)
 
 **Le numéro est composé exactement comme vous le saisissez** : aucun indicatif
 n'est ajouté. Le drapeau et le pays sont une aide à la lecture ; la ligne grise
 à droite montre les chiffres qui partiront réellement. Pour un `+`, maintenez la
 touche **0** du pavé.
 
-Comme sur un téléphone classique, chaque touche du pavé émet une courte
-tonalité. Elle s'entend aussi pendant un appel quand vous tapez des touches
-pour un serveur vocal. Pour la couper : Réglages → Audio, **Sons du clavier**.
+Chaque touche du pavé émet une courte tonalité, comme sur un téléphone
+classique. Pour la couper : Réglages → Audio, **Sons du clavier**.
 
-![Appel qui sonne](guide/04-sonnerie.png)
-
-Une tonalité classique « toup toup » accompagne la sonnerie, puis un bref
-« gling » confirme le décroché. Le chronomètre démarre alors, jamais pendant
-l'attente ; avant, le bouton rouge indique **Annuler**.
+Une tonalité « toup toup » accompagne la sonnerie, puis un bref « gling »
+confirme le décroché. Le chronomètre démarre alors, jamais pendant l'attente ;
+avant, le bouton rouge indique **Annuler**.
 
 ## 4. Pendant l'appel
 
-| Appel en cours | Micro coupé, appel en attente |
-| --- | --- |
-| ![Appel en cours](guide/05-en-appel.png) | ![Micro coupé et appel en attente](guide/06-muet-attente.png) |
+![Appel qui sonne](guide/04-sonnerie.png "62mm") ![Appel en cours](guide/05-en-appel.png) ![Micro coupé, appel en attente](guide/06-muet-attente.png)
 
-| Bouton | Raccourci | Effet |
-| --- | --- | --- |
-| **Muet** | `M` | Coupe votre micro ; le correspondant ne vous entend plus. Une étiquette jaune « Micro coupé » le rappelle. |
-| **Attente** | `H` | Met le correspondant en attente ; **Reprendre** le récupère. L'écran change quand la mise en attente est confirmée. |
-| **Clavier** | `K`, ou les chiffres | Envoie des touches à un serveur vocal (« tapez 1… »). |
-| **Raccrocher** | — | Termine l'appel. |
+- **Muet** (touche `M`) coupe votre micro : le correspondant ne vous entend
+  plus. Une étiquette jaune « Micro coupé » le rappelle.
+- **Attente** (`H`) met le correspondant en attente ; **Reprendre** le
+  récupère.
+- **Clavier** (`K`, ou les chiffres) envoie des touches à un serveur vocal
+  (« tapez 1… »).
+- **Raccrocher** termine l'appel.
 
 Les raccourcis ne fonctionnent pas pendant que vous écrivez dans un champ, et la
 touche Échap ne raccroche jamais.
 
 ## 5. À la fin de l'appel
 
-![Fin d'appel](guide/07-fin-appel.png)
+![Fin d'appel](guide/07-fin-appel.png "gauche 120mm")
 
 L'application indique l'issue et la durée. Vous pouvez, en quelques secondes :
 
@@ -104,181 +107,111 @@ L'application indique l'issue et la durée. Vous pouvez, en quelques secondes :
 - **Rappeler** tout de suite, **Ajouter** le numéro à vos contacts, ou
   **Terminer**.
 
-Si un appel échoue à cause du micro ou si le serveur refuse l'appel, un encadré
-rouge explique la cause. Le code SIP reçu reste consultable dans le détail de
-l'appel du **Journal** sur cet appareil.
-
-### Comprendre un refus SIP
-
-| Code affiché | Signification |
-| --- | --- |
-| SIP 403 Forbidden | Appel interdit par le serveur. |
-| SIP 404 Not Found | Numéro ou destination introuvable. |
-| SIP 480 Temporarily Unavailable | Correspondant temporairement indisponible. |
-| SIP 486 Busy Here | Ligne occupée. |
-| SIP 488 Not Acceptable Here | Média ou codec refusé. |
-| SIP 503 Service Unavailable | Service téléphonique indisponible. |
-
-Ces codes indiquent la réponse reçue par ApisnixPhone ; ils ne désignent pas à
-eux seuls la cause exacte dans la configuration du serveur. Communiquez le code
-à votre administrateur si le problème se répète.
+Si un appel échoue, à cause du micro ou d'un refus du serveur, un encadré rouge
+en donne la cause. Si cela se répète, transmettez le code affiché à votre
+administrateur : il reste visible dans le détail de l'appel du **Journal**.
 
 ## 6. Recevoir un appel
 
-![Appel entrant](guide/09-appel-entrant.png)
+![Appel entrant](guide/09-appel-entrant.png "droite 94mm")
 
-Le téléphone sonne avec la sonnerie choisie dans les Réglages, passe au premier plan et le titre de l'onglet affiche
-« Appel entrant… ». Choisissez **Accepter** ou **Refuser** : l'application ne
-répond jamais à votre place. Un appel laissé sans réponse devient **Manqué** et
-une pastille rouge apparaît sur le Journal ; elle s'efface quand vous l'ouvrez.
+Le téléphone sonne avec la sonnerie choisie dans les Réglages, passe au premier
+plan et le titre de l'onglet affiche « Appel entrant… ».
+
+Choisissez **Accepter** ou **Refuser** : l'application ne répond jamais à votre
+place.
+
+Un appel laissé sans réponse devient **Manqué** et une pastille rouge apparaît
+sur le Journal ; elle s'efface quand vous l'ouvrez.
 
 ## 7. Le journal d'appels
 
-Sur la ligne réelle, **Tous les appels du poste** affiche par défaut les appels
-des 30 derniers jours suivis par le serveur, y compris ceux passés depuis un
-autre appareil et ceux sans enregistrement audio. L’historique s’actualise
-chaque minute. **Cet appareil** montre les appels observés par ce navigateur ;
-vous y retrouvez vos tags et notes locaux. En démonstration, seul ce journal
-local est affiché.
+![Détail d'un appel](guide/08-journal-detail.png "gauche")
 
 Les appels sont regroupés par jour. Filtrez par **Tous / Sortants / Entrants /
-Manqués** ou cherchez un nom, un numéro ou un pays. Le bouton de rappel lance
-un nouvel appel ; un clic sur la ligne ouvre le numéro, la date et le résultat.
-Les tags, notes et le retrait du journal sont disponibles dans **Cet appareil**.
-Vous pouvez programmer un rappel ou ajouter un contact depuis les deux vues.
+Manqués** ou cherchez un nom, un numéro ou un pays. Le bouton de rappel relance
+l'appel ; un clic sur la ligne ouvre son détail.
 
-![Détail d'un appel](guide/08-journal-detail.png)
+- **Tous les appels du poste** : les 30 derniers jours, y compris les appels
+  passés depuis un autre appareil. Actualisé chaque minute.
+- **Cet appareil** : les appels vus par ce navigateur, avec vos tags et notes.
 
-> **Portée des données :** les chiffres du haut de page suivent la vue choisie.
-> Le serveur affiche au plus 500 appels par requête ; si la limite est atteinte,
-> un message le signale. Les données de **Cet appareil** disparaissent à la
-> déconnexion si vous n’avez pas activé leur conservation ; l’historique du
-> poste reste accessible lors d’une nouvelle connexion.
+## 8. Les rappels
 
-## 8. Contacts et favoris
+![Rappels](guide/12-rappels.png "droite")
 
-![Fiche contact](guide/10-contacts.png)
+Ouvrez **Journal**, puis **Rappels**. Vos rappels sont classés **À faire
+maintenant**, **Plus tard aujourd'hui** et **À venir**. À l'heure prévue,
+l'application vous prévient et une pastille jaune apparaît.
 
-**Nouveau contact** crée une fiche : nom, entreprise, plusieurs numéros avec un
-libellé, note. La fiche montre vos derniers échanges avec la personne. L'étoile
-l'ajoute aux **Favoris**.
+Pour chaque rappel : **Appeler**, reporter d'une heure, marquer comme fait ou
+supprimer. **Un rappel se clôt tout seul dès que vous avez joint la personne.**
 
-![Favoris](guide/11-favoris.png)
+## 9. Vos enregistrements
 
-Les favoris se trouvent dans la page Contacts : le bouton **Favoris**, à côté
-de **Tous**, n'affiche que vos raccourcis. Cliquer sur une carte ouvre la fiche ;
-seul le bouton **Appeler** lance l'appel, pour éviter tout appel par erreur.
+![Enregistrements de la ligne](guide/18-audio.png "gauche")
 
-## 8 bis. Audio : vos enregistrements
+La page **Audio** rassemble les enregistrements des appels de votre poste. Ils
+apparaissent **quelques minutes après la fin de l'appel** (« En traitement » en
+attendant).
 
-![Enregistrements de la ligne](guide/18-audio.png)
+Choisissez la période, puis **Écouter** dans la page ou **Télécharger** le
+fichier. Vous ne voyez que les enregistrements de votre poste.
 
-La page **Audio** rassemble les enregistrements des appels de votre poste,
-réalisés par le serveur. Ils y apparaissent **quelques minutes après la fin de
-l'appel** ; en attendant, la ligne indique « En traitement » et se met à jour
-toute seule.
+Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
+**Réessayer** ; sinon, contactez APISNIX.
 
-Rien à saisir : l'accès s'ouvre tout seul avec votre ligne, dès votre connexion.
-Si la page indique que l'accès n'a pas pu être ouvert, **Réessayer** suffit en
-général ; sinon, contactez APISNIX. Choisissez ensuite la période —
-Aujourd'hui, Hier, 7 derniers jours — puis, pour chaque appel :
+## 10. Réglages
 
-- **Écouter** lance la lecture dans la page, avec un lecteur en bas de la liste ;
-- **Télécharger** enregistre le fichier audio sur votre appareil.
+![Réglages](guide/13-reglages.png "droite")
 
-Vous ne voyez que les enregistrements de votre poste, quel que soit l'appareil
-utilisé pour appeler. Se déconnecter du téléphone referme cet accès.
-
-## 9. Les rappels
-
-![Rappels](guide/12-rappels.png)
-
-Ouvrez **Journal**, puis **Rappels** en haut de la page.
-Tout rappel planifié arrive ici, classé : **À faire maintenant**, **Plus tard
-aujourd'hui**, **À venir**. À l'heure prévue, l'application vous prévient et une
-pastille jaune apparaît. Pour chaque rappel : **Appeler**, reporter d'une heure,
-marquer comme fait, supprimer. Les prochains rappels s'affichent aussi sous le
-pavé numérique. **Un rappel se clôt tout seul dès que vous avez joint la
-personne.**
-
-## 10. Tout trouver en un geste
-
-![Recherche et commandes](guide/14-recherche.png)
-
-Cliquez sur la barre du haut ou tapez **Ctrl + K** (**⌘ K** sur Mac) : un nom,
-un numéro ou une action (« réglages », « thème sombre »…). Flèches pour choisir,
-Entrée pour valider.
-
-## 11. Réglages
-
-![Réglages](guide/13-reglages.png)
-
-- **Audio** : **autorisation du micro**, choix du micro et du casque,
-  **sensibilité du micro** (si l'on vous entend trop faible ou trop fort — à
-  régler avant l'appel), **volume d'écoute**, **Tester le micro** avec une barre
-  de niveau, sonnerie, sons de la ligne, sons du clavier, annulation d'écho,
-  réduction de bruit.
+- **Audio** : autorisation et choix du micro et du casque, **sensibilité du
+  micro**, **Tester le micro**, annulation d'écho, réduction de bruit, sons de
+  la ligne et du clavier.
 - **Volume d'écoute** : 100 % par défaut, jusqu'à **200 %** si votre
-  correspondant ou les sonneries restent trop faibles. Au-delà de 100 %, la voix
-  et les sons sont amplifiés par l'application ; utilisez de préférence un
-  casque, sinon votre correspondant peut entendre un écho.
-- **Autorisation du micro** : indique si le site a le droit d'utiliser votre
-  micro. **Autoriser le micro** redemande l'accès. Si le navigateur a retenu un
-  refus, il ne redemande plus de lui-même : suivez les étapes affichées (icône à
-  gauche de l'adresse → Microphone → Autoriser), puis **Réessayer**.
-- **Sonnerie** : huit sons au choix. Les **calmes** (Classique, Carillon,
-  Marimba, Douce) conviennent à un bureau tranquille ou à un casque sur les
-  oreilles ; les **bruyantes** (Rétro, Trille, Alarme, Clairon) s'entendent dans
-  un open space ou casque posé. Touchez un son pour le choisir : il est joué
-  quelques secondes. Le bouton ▶ l'écoute sans le choisir. La sonnerie suit le
-  volume d'écoute ; Classique est celle d'origine.
-
-![Choix de la sonnerie](guide/19-sonneries.png)
+  correspondant reste trop faible. Au-delà de 100 %, préférez un casque pour
+  éviter l'écho.
 - **Apparence** : thème Clair, Sombre ou Système ; densité d'affichage.
-- **Appels** : notifications du système, à activer si vous travaillez souvent
-  dans une autre fenêtre.
+- **Appels** : notifications du système, utiles si vous travaillez souvent dans
+  une autre fenêtre.
+
+![Choix de la sonnerie](guide/19-sonneries.png "gauche 60mm")
+
+- **Sonnerie** : huit sons. Les **calmes** (Classique, Carillon, Marimba,
+  Douce) pour un bureau tranquille ; les **bruyantes** (Rétro, Trille, Alarme,
+  Clairon) pour un open space. Touchez un son pour le choisir ; ▶ l'écoute sans
+  le choisir.
 - **Données de cet appareil** : par défaut, contacts, notes et journal local
-  disparaissent à la déconnexion. Activez **Conserver sur cet appareil** pour les
-  retrouver la prochaine fois. **Ne l'activez pas sur un ordinateur partagé.**
-  « Effacer les données de cet appareil » supprime tout ce qui est conservé ici.
+  disparaissent à la déconnexion. **Conserver sur cet appareil** les garde :
+  **jamais sur un ordinateur partagé.**
 - **Compte** : votre identifiant, la version, **Se déconnecter**.
 
-![Thème sombre](guide/15-theme-sombre.png)
+## 11. Sur téléphone ou petite fenêtre
 
-## 12. Sur téléphone ou petite fenêtre
-
-| Journal | Téléphone |
-| --- | --- |
-| ![Journal sur mobile](guide/16-mobile-journal.png) | ![Téléphone sur mobile](guide/17-mobile-telephone.png) |
+![Journal sur mobile](guide/16-mobile-journal.png "gauche 56mm") ![Téléphone sur mobile](guide/17-mobile-telephone.png)
 
 Le menu passe en bas de l'écran, avec le bouton vert **Téléphone** et l'accès
 **Audio** toujours visibles.
-Pendant un appel, un bandeau reste visible sur toutes les pages, avec son bouton
-Raccrocher. Les Favoris s'ouvrent depuis Contacts ; la page Audio s'ouvre
-aussi depuis la recherche (⌘K / Ctrl K, « Ouvrir mes enregistrements »).
+
+Pendant un appel, un bandeau reste visible sur toutes les pages, avec son
+bouton **Raccrocher**.
 
 ## En cas de problème
 
-| Ce que vous voyez | Ce que cela signifie | Que faire |
-| --- | --- | --- |
-| Bandeau rouge « Cette ligne est ouverte sur un autre appareil » | Votre compte vient d'être connecté ailleurs. **Ce poste se met en pause** (en une à deux minutes) : il ne reçoit plus d'appels et ne peut plus en passer. Un appel en cours n'est pas interrompu par cette pause. | **Un compte = un seul appareil à la fois.** Cliquez **Reprendre la ligne ici** pour récupérer la ligne : c'est alors l'autre appareil qui passera en pause. Si ce n'est pas vous, prévenez votre administrateur. |
-| « Appel interrompu : la connexion au serveur a été perdue » | La liaison a coupé pendant l'appel (réseau, ou compte ouvert sur un autre appareil). | Vérifiez votre réseau et rappelez ; l'appel n'est jamais rappelé automatiquement. |
-| Le bouton Attente affiche « Patientez… » puis un message | Le serveur n'a pas confirmé, signe d'une connexion instable. | Réessayez ; si cela se répète, changez de réseau. |
-| « Le microphone est bloqué » | Le navigateur n'a pas l'autorisation. | Réglages → Audio → **Autorisation du micro** : redemandez-la ou suivez les étapes affichées. |
-| « Aucun microphone trouvé » | Casque débranché ou non reconnu. | Rebranchez-le, puis vérifiez Réglages → Audio. |
-| Bouton « Activer le son » pendant un appel | Le navigateur a bloqué le son. | Cliquez sur le bouton. |
-| On vous entend mal, voix hachée | Le plus souvent le réseau (Wi-Fi faible, connexion partagée). | Rapprochez-vous de la borne ou passez en filaire ; vérifiez la sensibilité du micro. |
-| Bandeau « Connexion perdue : reconnexion en cours… » | Le réseau a coupé. Un appel interrompu n'est **jamais** rappelé automatiquement. | Patientez quelques secondes ; sinon reconnectez-vous et rappelez. |
-| Deux notes descendantes | La ligne vient de se couper. | Même conduite que ci-dessus. |
+| Ce que vous voyez | Que faire |
+| --- | --- |
+| « Cette ligne est ouverte sur un autre appareil » | **Un compte = un seul appareil à la fois** : ce poste se met en pause. **Reprendre la ligne ici** la récupère. Si ce n'est pas vous, prévenez votre administrateur. |
+| « Connexion perdue », « Appel interrompu » ou deux notes descendantes | Le réseau a coupé. Patientez quelques secondes, vérifiez votre réseau et rappelez : un appel n'est **jamais** rappelé automatiquement. |
+| Attente : « Patientez… » puis un message | Connexion instable : réessayez, ou changez de réseau. |
+| « Le microphone est bloqué » | Réglages → Audio → **Autorisation du micro**, ou icône à gauche de l'adresse → Microphone → Autoriser. |
+| « Aucun microphone trouvé » | Rebranchez le casque, puis vérifiez Réglages → Audio. |
+| Bouton « Activer le son » | Cliquez dessus : le navigateur avait bloqué le son. |
+| On vous entend mal, voix hachée | Souvent le Wi-Fi : rapprochez-vous de la borne ou passez en filaire. |
 
 ## Bon à savoir
 
-- Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**. Hors
-  appel, une actualisation vous reconnecte si votre navigateur a retenu l'accès.
-- Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la personne.
-- Un numéro commençant par `0` est lu comme un numéro français. Un numéro long
-  qui commence par un autre chiffre est lu avec l'indicatif de son pays, même
-  sans `+` : `41 44 220 15 15` s'affiche en Suisse, `1` suivi d'un indicatif en
-  Amérique du Nord (Canada ou États-Unis).
+- Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**.
+- Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la
+  personne. Un numéro commençant par `0` est lu comme un numéro français.
 - Pour toute question sur votre compte ou vos droits d'appel, contactez votre
   administrateur APISNIX.

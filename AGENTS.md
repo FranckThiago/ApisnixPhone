@@ -18,7 +18,9 @@
   Le guide client est `docs/GUIDE_UTILISATEUR.md` ; après un changement visible,
   régénérer ses captures avec `node scripts/guide-screenshots.mjs` (serveur de
   démonstration sur le port 5185), relire le texte concerné, puis reconstruire le
-  PDF remis aux clients avec `node scripts/build-guide-pdf.mjs`.
+  PDF remis aux clients avec `node scripts/build-guide-pdf.mjs`. Le garder court
+  (8 pages, captures et texte en colonnes réglés dans le Markdown), sans
+  explication des codes d'erreur ni des fonctions secondaires.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord
   le dépôt privé `FranckThiago/Gestion_CRM-APISNIX` : `AGENTS.md`, puis
