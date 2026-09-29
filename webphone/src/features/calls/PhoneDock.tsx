@@ -9,7 +9,8 @@ import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
 import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
-import { CALL_TAGS, MAX_VOLUME, OUTCOME_LABELS } from '../../domain/types';
+import { CALL_TAGS, CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel } from '../../domain/types';
+import { useI18n, type MessageKey } from '../../i18n';
 import { findContact, searchContacts } from '../../storage/DataStore';
 import { keypadTone } from '../../telephony/audio';
 import type { CallSnapshot, ConnectionState } from '../../telephony/types';
@@ -19,28 +20,30 @@ const KEYS: Array<[string, string]> = [
   ['7', 'PQRS'], ['8', 'TUV'], ['9', 'WXYZ'], ['*', ''], ['0', '+'], ['#', ''],
 ];
 
-const CONNECTION: Record<ConnectionState, [string, 'ok' | 'wait' | 'bad']> = {
-  ready: ['Ligne prête', 'ok'], connecting: ['Connexion…', 'wait'], registering: ['Enregistrement…', 'wait'],
-  reconnecting: ['Reconnexion…', 'wait'], offline: ['Hors ligne', 'bad'], 'auth-error': ['Identifiants refusés', 'bad'],
-  'network-error': ['Réseau indisponible', 'bad'], 'other-tab-active': ['Actif dans un autre onglet', 'bad'],
+const CONNECTION: Record<ConnectionState, [MessageKey, 'ok' | 'wait' | 'bad']> = {
+  ready: ['connection.ready', 'ok'], connecting: ['connection.connecting', 'wait'], registering: ['connection.registering', 'wait'],
+  reconnecting: ['connection.reconnecting', 'wait'], offline: ['connection.offline', 'bad'], 'auth-error': ['connection.authError', 'bad'],
+  'network-error': ['connection.networkError', 'bad'], 'other-tab-active': ['connection.otherTab', 'bad'],
 };
 
 export function ConnectionPill() {
   const { connection, demo, lineTaken } = usePhone();
+  const { t } = useI18n();
   const [label, tone] = CONNECTION[connection];
-  if (lineTaken) return <span className="pill pill-bad"><i aria-hidden="true" />Ligne ouverte ailleurs</span>;
-  return <span className={`pill pill-${tone}`}><i aria-hidden="true" />{demo && connection === 'ready' ? 'Démo · ligne prête' : label}</span>;
+  if (lineTaken) return <span className="pill pill-bad"><i aria-hidden="true" />{t('connection.takenElsewhere')}</span>;
+  return <span className={`pill pill-${tone}`}><i aria-hidden="true" />{t(demo && connection === 'ready' ? 'connection.demoReady' : label)}</span>;
 }
 
 function Keypad({ onKey, compact = false }: { onKey(key: string): void; compact?: boolean }) {
   const { preferences } = useData();
+  const { t } = useI18n();
   const hold = useRef<ReturnType<typeof setTimeout> | null>(null);
   const held = useRef(false);
   const beep = (digit: string) => { if (preferences.keypadTones) keypadTone(digit, preferences.volume / 100); };
   return (
-    <div className={'keypad' + (compact ? ' keypad-compact' : '')} role="group" aria-label="Clavier téléphonique">
+    <div className={'keypad' + (compact ? ' keypad-compact' : '')} role="group" aria-label={t('keypad.label')}>
       {KEYS.map(([digit, letters]) => (
-        <button key={digit} type="button" className="key" aria-label={digit === '0' ? '0, maintenir pour +' : digit}
+        <button key={digit} type="button" className="key" aria-label={digit === '0' ? t('keypad.zeroHold') : digit}
           onPointerDown={() => {
             // Heard as soon as the key goes down, like a real phone.
             beep(digit);
@@ -67,6 +70,7 @@ function Dialer() {
   const { connection } = usePhone();
   const { contacts, preferences } = useData();
   const { store } = useApp();
+  const { t } = useI18n();
   const field = useRef<HTMLInputElement>(null);
   const input = parseDialInput(dial);
   const info = describeNumber(input.dialTarget);
@@ -81,46 +85,46 @@ function Dialer() {
 
   return (
     <>
-      <section className="dock-card dialer" aria-label="Composer un numéro">
-        <header className="dock-head"><h2>Nouvel appel</h2><ConnectionPill /></header>
+      <section className="dock-card dialer" aria-label={t('dialer.label')}>
+        <header className="dock-head"><h2>{t('dialer.title')}</h2><ConnectionPill /></header>
         <div className={'dial-field' + (dial && !input.valid ? ' invalid' : '')}>
-          <label htmlFor="dial-input">Numéro à appeler</label>
+          <label htmlFor="dial-input">{t('dialer.field')}</label>
           <div className="dial-row">
             <input id="dial-input" ref={field} value={dial} inputMode="tel" autoComplete="off" spellCheck={false}
-              placeholder="Nom ou numéro" aria-describedby="dial-hint"
+              placeholder={t('dialer.placeholder')} aria-describedby="dial-hint"
               onChange={event => setDial(/[a-zA-ZÀ-ÿ]/.test(event.target.value) ? event.target.value.slice(0, 40) : filterDialCharacters(event.target.value))}
               onKeyDown={event => { if (event.key === 'Enter' && ready) placeCall(dial); }} />
-            {dial && <button type="button" className="icon-button" aria-label="Effacer le dernier caractère" onClick={() => { setDial(dial.slice(0, -1)); field.current?.focus(); }}><Delete size={18} /></button>}
+            {dial && <button type="button" className="icon-button" aria-label={t('dialer.backspace')} onClick={() => { setDial(dial.slice(0, -1)); field.current?.focus(); }}><Delete size={18} /></button>}
           </div>
           <p id="dial-hint" className="dial-hint">
-            {input.valid ? <><Flag info={info} size={18} /><span>{known ? `${known.name} · ` : ''}{countryLabel(info)}</span><span className="dial-exact" title="Numéro exactement composé">{input.dialTarget}</span></>
-              : dial && suggestions.length === 0 ? <span>Chiffres, +, * et # uniquement.</span>
-              : <span>Le numéro est composé tel que vous le saisissez.</span>}
+            {input.valid ? <><Flag info={info} size={18} /><span>{known ? `${known.name} · ` : ''}{countryLabel(info)}</span><span className="dial-exact" title={t('dialer.exact')}>{input.dialTarget}</span></>
+              : dial && suggestions.length === 0 ? <span>{t('dialer.allowed')}</span>
+              : <span>{t('dialer.asTyped')}</span>}
           </p>
         </div>
         {suggestions.length > 0 && (
-          <ul className="suggestions" aria-label="Contacts correspondants">
+          <ul className="suggestions" aria-label={t('dialer.suggestions')}>
             {suggestions.map(contact => (
               <li key={contact.id}>
                 <button type="button" onClick={() => setDial(contact.numbers[0]?.value ?? '')}>
                   <Avatar name={contact.name} size={30} /><span><b>{contact.name}</b><small>{contact.numbers[0]?.value}</small></span>
                 </button>
-                <button type="button" className="icon-button" aria-label={`Ouvrir la fiche de ${contact.name}`} onClick={() => openContact(contact.id)}><UserPlus size={16} /></button>
+                <button type="button" className="icon-button" aria-label={t('dialer.openContact', { name: contact.name })} onClick={() => openContact(contact.id)}><UserPlus size={16} /></button>
               </li>
             ))}
           </ul>
         )}
         <Keypad onKey={press} />
         <button type="button" className="call-button" disabled={!ready} onClick={() => placeCall(dial)}>
-          <Phone size={20} /> Appeler <Kbd>↵</Kbd>
+          <Phone size={20} /> {t('action.call')} <Kbd>↵</Kbd>
         </button>
       </section>
       <DueCallbacks />
-      <section className="dock-card audio-card" aria-label="Audio">
+      <section className="dock-card audio-card" aria-label={t('nav.audio')}>
         <Headphones size={20} aria-hidden="true" />
-        <div><b>Volume d’écoute</b><small>{preferences.volume} %</small></div>
+        <div><b>{t('volume.label')}</b><small>{preferences.volume} %</small></div>
         <label className="volume"><Volume2 size={16} aria-hidden="true" />
-          <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label="Volume d’écoute"
+          <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')}
             onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
         </label>
       </section>
@@ -132,17 +136,18 @@ function Dialer() {
 function DueCallbacks() {
   const { placeCall, setView } = useApp();
   const { callbacks } = useData();
+  const { t } = useI18n();
   const now = useNow();
   const groups = groupCallbacks(callbacks, now);
   const next = [...groups.overdue, ...groups.today].slice(0, 2);
   if (!next.length) return null;
   return (
-    <section className="dock-card due-card" aria-label="Rappels à faire">
-      <header><AlarmClock size={17} aria-hidden="true" /><b>Rappels</b><button type="button" onClick={() => setView('callbacks')}>Tout voir</button></header>
+    <section className="dock-card due-card" aria-label={t('due.label')}>
+      <header><AlarmClock size={17} aria-hidden="true" /><b>{t('due.title')}</b><button type="button" onClick={() => setView('callbacks')}>{t('due.seeAll')}</button></header>
       <ul>{next.map(callback => (
         <li key={callback.id} className={callback.dueAt <= now ? 'overdue' : ''}>
-          <span><b>{callback.name ?? callback.number}</b><small>{callback.dueAt <= now ? 'À faire maintenant' : formatDue(callback.dueAt, now)}{callback.note ? ` · ${callback.note}` : ''}</small></span>
-          <button type="button" className="row-call always" aria-label={`Appeler ${callback.name ?? callback.number}`} onClick={() => placeCall(callback.number)}><Phone size={16} /></button>
+          <span><b>{callback.name ?? callback.number}</b><small>{callback.dueAt <= now ? t('due.now') : formatDue(callback.dueAt, now)}{callback.note ? ` · ${callback.note}` : ''}</small></span>
+          <button type="button" className="row-call always" aria-label={t('action.callName', { name: callback.name ?? callback.number })} onClick={() => placeCall(callback.number)}><Phone size={16} /></button>
         </li>))}
       </ul>
     </section>
@@ -157,41 +162,42 @@ function useSeconds(from: number | undefined, until?: number) {
 function WrapUp({ call }: { call: CallSnapshot }) {
   const { phone, store, wrapUpRecordId, placeCall, openContact, notify } = useApp();
   const { calls, contacts } = useData();
+  const { t } = useI18n();
   const record = calls.find(item => item.id === wrapUpRecordId);
   const contact = findContact(contacts, call.dialTarget);
   const talked = call.answeredAt && call.endedAt ? Math.round((call.endedAt - call.answeredAt) / 1000) : 0;
 
   const addContact = () => {
-    const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: 'Principal', value: call.rawInput }], favorite: false });
+    const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: t('contact.mainLabel'), value: call.rawInput }], favorite: false });
     phone.dismiss();
     openContact(created.id);
-    notify('Contact créé. Complétez son nom.', 'success');
+    notify(t('contact.createdToast'), 'success');
   };
 
   return (
     <div className="wrapup">
       {call.failure && <p className="call-failure" role="alert">{call.failure}</p>}
-      <p className={`outcome outcome-${call.outcome}`}>{OUTCOME_LABELS[call.outcome ?? 'failed']}{talked ? ` · ${formatDuration(talked)}` : ''}</p>
+      <p className={`outcome outcome-${call.outcome}`}>{outcomeLabel(call.outcome ?? 'failed')}{talked ? ` · ${formatDuration(talked)}` : ''}</p>
       {record && (
         <>
-          <div className="tags" role="group" aria-label="Qualifier l’appel">
+          <div className="tags" role="group" aria-label={t('wrapup.tags')}>
             {CALL_TAGS.map(tag => {
               const active = record.tags.includes(tag);
               return <button key={tag} type="button" className={'tag' + (active ? ' active' : '')} aria-pressed={active}
-                onClick={() => store.updateCall(record.id, { tags: active ? record.tags.filter(t => t !== tag) : [...record.tags, tag] })}>{tag}</button>;
+                onClick={() => store.updateCall(record.id, { tags: active ? record.tags.filter(other => other !== tag) : [...record.tags, tag] })}>{tagLabel(tag)}</button>;
             })}
           </div>
-          <textarea className="note" rows={3} maxLength={500} placeholder="Note sur cet appel…" aria-label="Note sur cet appel"
+          <textarea className="note" rows={3} maxLength={500} placeholder={t('wrapup.notePlaceholder')} aria-label={t('wrapup.notePlaceholder')}
             value={record.note ?? ''} onChange={event => store.updateCall(record.id, { note: event.target.value })} />
         </>
       )}
       {/* Scheduling from a call also tags it, so the journal tells the same story. */}
       <CallbackScheduler number={call.rawInput} name={contact?.name ?? call.remoteName} tone="call"
-        onScheduled={() => { if (record && !record.tags.includes('À rappeler')) store.updateCall(record.id, { tags: [...record.tags, 'À rappeler'] }); }} />
+        onScheduled={() => { if (record && !record.tags.includes(CALLBACK_TAG)) store.updateCall(record.id, { tags: [...record.tags, CALLBACK_TAG] }); }} />
       <div className="wrapup-actions">
-        <button type="button" className="ghost-call" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> Rappeler</button>
-        {!contact && <button type="button" className="ghost-call" onClick={addContact}><UserPlus size={16} /> Ajouter</button>}
-        <button type="button" className="done" onClick={() => phone.dismiss()}>Terminer</button>
+        <button type="button" className="ghost-call" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> {t('wrapup.callBack')}</button>
+        {!contact && <button type="button" className="ghost-call" onClick={addContact}><UserPlus size={16} /> {t('wrapup.add')}</button>}
+        <button type="button" className="done" onClick={() => phone.dismiss()}>{t('wrapup.done')}</button>
       </div>
     </div>
   );
@@ -201,6 +207,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
   const { phone } = useApp();
   const { audioBlocked } = usePhone();
   const { contacts } = useData();
+  const { t } = useI18n();
   const [keypad, setKeypad] = useState(false);
   const info = describeNumber(call.dialTarget);
   const contact = findContact(contacts, call.dialTarget);
@@ -219,46 +226,46 @@ function CallCard({ call }: { call: CallSnapshot }) {
   }, [call.phase]);
   const seconds = useSeconds(call.answeredAt, call.endedAt);
   const ringing = call.phase === 'dialing' || call.phase === 'ringing-out' || call.phase === 'ringing-in';
-  const status = call.phase === 'dialing' ? 'Connexion…' : call.phase === 'ringing-out' ? 'Ça sonne…'
-    : call.phase === 'ringing-in' ? 'Appel entrant' : call.phase === 'held' ? 'En attente' : call.phase === 'ended' ? 'Appel terminé' : formatDuration(seconds);
+  const status = call.phase === 'dialing' ? t('call.dialing') : call.phase === 'ringing-out' ? t('call.ringingOut')
+    : call.phase === 'ringing-in' ? t('call.ringingIn') : call.phase === 'held' ? t('call.held') : call.phase === 'ended' ? t('call.ended') : formatDuration(seconds);
 
   return (
-    <section className={`dock-card call-card phase-${call.phase}`} aria-label="Appel en cours">
+    <section className={`dock-card call-card phase-${call.phase}`} aria-label={t('call.label')}>
       <header className="call-top">
-        <span className="call-direction">{call.direction === 'inbound' ? <PhoneIncoming size={14} /> : <Phone size={14} />}{call.direction === 'inbound' ? 'Entrant' : 'Sortant'}</span>
-        {call.muted && call.phase !== 'ended' && <span className="chip-warning"><MicOff size={13} /> Micro coupé</span>}
+        <span className="call-direction">{call.direction === 'inbound' ? <PhoneIncoming size={14} /> : <Phone size={14} />}{t(call.direction === 'inbound' ? 'call.inbound' : 'call.outbound')}</span>
+        {call.muted && call.phase !== 'ended' && <span className="chip-warning"><MicOff size={13} /> {t('call.muted')}</span>}
       </header>
       <div className={'call-identity' + (ringing ? ' ringing' : '')}>
         <Avatar name={name} size={84} ring />
         <h2>{name ?? info.display}</h2>
         <p className="call-number"><Flag info={info} size={18} />{name ? info.display : countryLabel(info)}</p>
         <p className="call-status" role="status" aria-live="polite">{status}</p>
-        {audioBlocked && live && <button type="button" className="done" onClick={() => phone.resumeAudio()}>Activer le son</button>}
-        {call.dtmf && <p className="dtmf" aria-label="Touches envoyées">{call.dtmf}</p>}
+        {audioBlocked && live && <button type="button" className="done" onClick={() => phone.resumeAudio()}>{t('call.enableSound')}</button>}
+        {call.dtmf && <p className="dtmf" aria-label={t('call.dtmf')}>{call.dtmf}</p>}
       </div>
 
       {call.phase === 'ended' ? <WrapUp call={call} />
         : call.phase === 'ringing-in' ? (
           <div className="incoming-actions">
-            <button type="button" className="round decline" onClick={() => phone.decline()}><PhoneOff size={24} /><span>Refuser</span></button>
-            <button type="button" className="round accept" onClick={() => phone.answer()}><Phone size={24} /><span>Accepter</span></button>
+            <button type="button" className="round decline" onClick={() => phone.decline()}><PhoneOff size={24} /><span>{t('call.decline')}</span></button>
+            <button type="button" className="round accept" onClick={() => phone.answer()}><Phone size={24} /><span>{t('call.accept')}</span></button>
           </div>
         ) : (
           <>
             {keypad && live ? (
               <div className="dtmf-pad"><Keypad compact onKey={key => phone.sendDtmf(key)} />
-                <button type="button" className="ghost-call" onClick={() => setKeypad(false)}><X size={15} /> Masquer le clavier</button></div>
+                <button type="button" className="ghost-call" onClick={() => setKeypad(false)}><X size={15} /> {t('call.hideKeypad')}</button></div>
             ) : (
               <div className="call-controls">
                 <button type="button" className={'control' + (call.muted ? ' on' : '')} disabled={!live} aria-pressed={call.muted} onClick={() => phone.setMuted(!call.muted)}>
-                  {call.muted ? <MicOff size={21} /> : <Mic size={21} />}<span>{call.muted ? 'Réactiver' : 'Muet'}</span><Kbd>M</Kbd></button>
+                  {call.muted ? <MicOff size={21} /> : <Mic size={21} />}<span>{t(call.muted ? 'call.unmute' : 'call.mute')}</span><Kbd>M</Kbd></button>
                 <button type="button" className={'control' + (call.phase === 'held' ? ' on' : '')} disabled={!live || call.holdPending} aria-pressed={call.phase === 'held'}
                   onClick={() => phone.setHeld(call.phase !== 'held')}>
-                  {call.phase === 'held' ? <Play size={21} /> : <Pause size={21} />}<span>{call.holdPending ? 'Patientez…' : call.phase === 'held' ? 'Reprendre' : 'Attente'}</span><Kbd>H</Kbd></button>
-                <button type="button" className="control" disabled={call.phase !== 'active'} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>Clavier</span><Kbd>K</Kbd></button>
+                  {call.phase === 'held' ? <Play size={21} /> : <Pause size={21} />}<span>{t(call.holdPending ? 'call.wait' : call.phase === 'held' ? 'call.resume' : 'call.hold')}</span><Kbd>H</Kbd></button>
+                <button type="button" className="control" disabled={call.phase !== 'active'} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
               </div>
             )}
-            <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{live ? 'Raccrocher' : 'Annuler'}</button>
+            <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{t(live ? 'call.hangUp' : 'action.cancel')}</button>
           </>
         )}
     </section>
@@ -267,6 +274,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
 
 export function PhoneDock() {
   const { call } = usePhone();
-  return <aside className="dock" aria-label="Téléphone">{call ? <CallCard call={call} /> : <Dialer />}
-    {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> Vous pourrez noter et qualifier l’appel à la fin.</p>}</aside>;
+  const { t } = useI18n();
+  return <aside className="dock" aria-label={t('dock.label')}>{call ? <CallCard call={call} /> : <Dialer />}
+    {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> {t('dock.note')}</p>}</aside>;
 }

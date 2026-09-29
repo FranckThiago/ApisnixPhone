@@ -1,27 +1,29 @@
 import { DEFAULT_PREFERENCES, type CallOutcome, type CallRecord, type Contact } from '../domain/types';
+import { t, type MessageKey } from '../i18n';
 import type { AppData } from '../storage/DataStore';
 
 // Entirely fictional people and numbers, shown only under the « Démonstration » label.
-const PEOPLE: Array<[string, string, string, boolean, string?]> = [
-  ['Camille Martin', 'Atelier Lumen', '+33 1 00 00 00 01', true, 'Préfère être rappelée après 14 h.'],
+// Notes and shared names are keys: the sample data is written in the language chosen at sign-in.
+const PEOPLE: Array<[string | MessageKey, string, string, boolean, MessageKey?]> = [
+  ['Camille Martin', 'Atelier Lumen', '+33 1 00 00 00 01', true, 'demo.noteCamille'],
   ['Alex Laurent', 'Nordia Conseil', '+32 2 000 00 01', true],
   ['Sarah Moreau', 'Studio Océane', '+33 1 00 00 00 02', false],
-  ['Équipe Abidjan', 'Baobab Services', '+225 00 00 00 00 01', true, 'Standard : demander le poste 12.'],
+  ['demo.teamAbidjan', 'Baobab Services', '+225 00 00 00 00 01', true, 'demo.noteAbidjan'],
   ['Yann Kouassi', 'Baobab Services', '+225 00 00 00 00 02', false],
   ['Nadia Essomba', 'Wouri Logistique', '+237 600 00 00 01', true],
   ['Marc Tremblay', 'Érable & Cie', '+1 416 555 0100', false],
   ['Inès Haddad', 'Atlas Voyages', '+212 500 00 00 01', false],
   ['Lucas Meyer', 'Alpen Digital', '+41 22 000 00 01', false],
-  ['Accueil interne', 'APISNIX', '1001', false],
+  ['demo.reception', 'APISNIX', '1001', false],
 ];
 
 export function demoSeed(now = Date.now()): AppData {
   const contacts: Contact[] = PEOPLE.map(([name, company, value, favorite, note], index) => ({
-    id: `demo-contact-${index}`, name, company, favorite, note,
-    numbers: [{ label: index === 9 ? 'Poste' : 'Bureau', value }], createdAt: now, updatedAt: now,
+    id: `demo-contact-${index}`, name: name.startsWith('demo.') ? t(name as MessageKey) : name, company, favorite, note: note && t(note),
+    numbers: [{ label: t(index === 9 ? 'demo.extension' : 'demo.office'), value }], createdAt: now, updatedAt: now,
   }));
-  const script: Array<[number, number, 'outbound' | 'inbound', CallOutcome, number, string[]?, string?]> = [
-    [0, 18, 'outbound', 'answered', 258, ['Intéressé'], 'Devis à envoyer avant vendredi.'],
+  const script: Array<[number, number, 'outbound' | 'inbound', CallOutcome, number, string[]?, MessageKey?]> = [
+    [0, 18, 'outbound', 'answered', 258, ['Intéressé'], 'demo.noteQuote'],
     [1, 47, 'inbound', 'answered', 166],
     [2, 64, 'inbound', 'missed', 0],
     [3, 146, 'outbound', 'answered', 369, ['Rendez-vous']],
@@ -42,7 +44,7 @@ export function demoSeed(now = Date.now()): AppData {
     const answeredAt = outcome === 'answered' ? startedAt + 7000 : undefined;
     const contact = contacts[person]!;
     return {
-      id: `demo-call-${index}`, direction, outcome, startedAt, answeredAt, tags: tags ?? [], note,
+      id: `demo-call-${index}`, direction, outcome, startedAt, answeredAt, tags: tags ?? [], note: note && t(note),
       dialTarget: contact.numbers[0]!.value.replace(/\s/g, ''), remoteName: undefined,
       endedAt: (answeredAt ?? startedAt + 12_000) + seconds * 1000,
     };
@@ -51,8 +53,8 @@ export function demoSeed(now = Date.now()): AppData {
   calls.splice(3, 0, { id: 'demo-call-x', direction: 'inbound', outcome: 'answered', dialTarget: '+221300000001', tags: [],
                        startedAt: now - 98 * 60_000, answeredAt: now - 98 * 60_000 + 5000, endedAt: now - 96 * 60_000 });
   const callbacks = [
-    { id: 'demo-cb-0', number: '+237 600 00 00 01', name: 'Nadia Essomba', dueAt: now - 20 * 60_000, note: 'N’a pas répondu ce matin.', createdAt: now - 171 * 60_000 },
-    { id: 'demo-cb-1', number: '+33 1 00 00 00 01', name: 'Camille Martin', dueAt: now + 95 * 60_000, note: 'Confirmer le devis.', createdAt: now - 18 * 60_000 },
+    { id: 'demo-cb-0', number: '+237 600 00 00 01', name: 'Nadia Essomba', dueAt: now - 20 * 60_000, note: t('demo.noteNoAnswer'), createdAt: now - 171 * 60_000 },
+    { id: 'demo-cb-1', number: '+33 1 00 00 00 01', name: 'Camille Martin', dueAt: now + 95 * 60_000, note: t('demo.noteConfirm'), createdAt: now - 18 * 60_000 },
     { id: 'demo-cb-2', number: '+1 416 555 0100', name: 'Marc Tremblay', dueAt: now + 26 * 3_600_000, createdAt: now - 236 * 60_000 },
   ];
   return { schema: 1, contacts, calls, callbacks, preferences: { ...DEFAULT_PREFERENCES } };

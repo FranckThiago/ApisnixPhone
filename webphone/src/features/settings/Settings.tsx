@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
+import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
 import { MAX_AGE_DAYS, MAX_CALLS } from '../../storage/DataStore';
 import { persistChoice } from '../../storage/persistence';
 import { AudioSettings } from './AudioSettings';
@@ -23,72 +24,79 @@ export function Settings() {
   const { store, notify, simulateIncoming, logout, phone } = useApp();
   const { preferences, calls, contacts } = useData();
   const { account, demo } = usePhone();
+  const { t, tp, language } = useI18n();
   const profile = account ? `${account.domain}:${account.username}` : '';
   const set = store.setPreferences.bind(store);
 
   return (
     <div className="page">
-      <header className="page-head"><div><p className="eyebrow">Votre confort</p><h1><span className="swoosh">Réglages</span></h1>
-        <p className="lead">Audio, apparence et données conservées sur cet appareil.</p></div></header>
+      <header className="page-head"><div><p className="eyebrow">{t('settings.eyebrow')}</p><h1><span className="swoosh">{t('settings.title')}</span></h1>
+        <p className="lead">{t('settings.lead')}</p></div></header>
       <div className="settings-grid">
-        <Section icon={<Headphones size={18} />} title="Audio">
+        <Section icon={<Headphones size={18} />} title={t('settings.audio')}>
           <AudioSettings />
-          <Toggle label="Sonnerie" hint="Jouée pour un appel entrant, au volume d’écoute." checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
+          <Toggle label={t('settings.ringtone')} hint={t('settings.ringtoneHint')} checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
           <RingtonePicker />
-          <Toggle label="Sons de la ligne" hint="Carillon d’annonce quand la ligne est prête, deux notes descendantes si elle se coupe." checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
-          <Toggle label="Sons du clavier" hint="Une courte tonalité à chaque touche du pavé, comme sur un téléphone classique." checked={preferences.keypadTones} onChange={keypadTones => set({ keypadTones })} />
-          <Toggle label="Annulation d’écho" checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
-          <Toggle label="Réduction de bruit" hint="Selon le matériel ; pris en compte au prochain appel." checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
+          <Toggle label={t('settings.lineSounds')} hint={t('settings.lineSoundsHint')} checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
+          <Toggle label={t('settings.keypadTones')} hint={t('settings.keypadTonesHint')} checked={preferences.keypadTones} onChange={keypadTones => set({ keypadTones })} />
+          <Toggle label={t('settings.echo')} checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
+          <Toggle label={t('settings.noise')} hint={t('settings.noiseHint')} checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
         </Section>
 
-        <Section icon={<Palette size={18} />} title="Apparence">
-          <div className="setting"><span><b>Thème</b></span>
-            <div className="segmented" role="group" aria-label="Thème">
-              {([['light', 'Clair'], ['dark', 'Sombre'], ['system', 'Système']] as Array<[Theme, string]>).map(([value, label]) => (
+        <Section icon={<Palette size={18} />} title={t('settings.appearance')}>
+          <div className="setting"><span><b>{t('language.label')}</b><small>{t('settings.languageHint')}</small></span>
+            <div className="segmented" role="group" aria-label={t('language.label')}>
+              {LANGUAGES.map(({ id, name }) => (
+                <button key={id} type="button" lang={id} aria-pressed={language === id} className={language === id ? 'active' : ''}
+                  onClick={() => setLanguage(id)}>{name}</button>))}
+            </div></div>
+          <div className="setting"><span><b>{t('settings.theme')}</b></span>
+            <div className="segmented" role="group" aria-label={t('settings.theme')}>
+              {([['light', 'theme.light'], ['dark', 'theme.dark'], ['system', 'theme.system']] as Array<[Theme, MessageKey]>).map(([value, label]) => (
                 <button key={value} type="button" aria-pressed={preferences.theme === value} className={preferences.theme === value ? 'active' : ''}
-                  onClick={() => { set({ theme: value }); applyTheme(value); }}>{label}</button>))}
+                  onClick={() => { set({ theme: value }); applyTheme(value); }}>{t(label)}</button>))}
             </div></div>
-          <div className="setting"><span><b>Densité</b></span>
-            <div className="segmented" role="group" aria-label="Densité">
-              {([['comfortable', 'Confortable'], ['compact', 'Compacte']] as const).map(([value, label]) => (
+          <div className="setting"><span><b>{t('settings.density')}</b></span>
+            <div className="segmented" role="group" aria-label={t('settings.density')}>
+              {([['comfortable', 'density.comfortable'], ['compact', 'density.compact']] as const).map(([value, label]) => (
                 <button key={value} type="button" aria-pressed={preferences.density === value} className={preferences.density === value ? 'active' : ''}
-                  onClick={() => set({ density: value })}>{label}</button>))}
+                  onClick={() => set({ density: value })}>{t(label)}</button>))}
             </div></div>
         </Section>
 
-        <Section icon={<BellRing size={18} />} title="Appels">
-          <Toggle label="Notifications du système" hint="Jamais demandées sans votre accord ; l’application fonctionne sans."
+        <Section icon={<BellRing size={18} />} title={t('settings.calls')}>
+          <Toggle label={t('settings.notifications')} hint={t('settings.notificationsHint')}
             checked={preferences.notifications} onChange={async wanted => {
               if (!wanted) return set({ notifications: false });
               // The demo never asks the browser for a permission.
-              if (demo) { set({ notifications: true }); return notify('Démonstration : aucune permission demandée.'); }
-              if (typeof Notification === 'undefined') return notify('Notifications indisponibles dans ce navigateur.', 'danger');
+              if (demo) { set({ notifications: true }); return notify(t('settings.demoNoPermission')); }
+              if (typeof Notification === 'undefined') return notify(t('settings.notificationsUnavailable'), 'danger');
               set({ notifications: (await Notification.requestPermission()) === 'granted' });
             }} />
-          <div className="setting"><span><b>Réponse automatique</b><small>Toujours désactivée : vous décidez de chaque appel.</small></span><span className="pill">Désactivée</span></div>
-          <div className="setting"><span><b>Indicatif ajouté automatiquement</b><small>Aucun : le numéro est composé tel que saisi.</small></span><span className="pill">Aucun</span></div>
-          {demo && <button type="button" className="ghost" onClick={simulateIncoming}><PhoneIncoming size={16} /> Simuler un appel entrant</button>}
+          <div className="setting"><span><b>{t('settings.autoAnswer')}</b><small>{t('settings.autoAnswerHint')}</small></span><span className="pill">{t('settings.off')}</span></div>
+          <div className="setting"><span><b>{t('settings.autoPrefix')}</b><small>{t('settings.autoPrefixHint')}</small></span><span className="pill">{t('settings.none')}</span></div>
+          {demo && <button type="button" className="ghost" onClick={simulateIncoming}><PhoneIncoming size={16} /> {t('settings.simulate')}</button>}
         </Section>
 
-        <Section icon={<Database size={18} />} title="Données de cet appareil">
-          <Toggle label="Conserver sur cet appareil" hint={`Contacts, notes et journal (${MAX_CALLS} appels ou ${MAX_AGE_DAYS} jours au plus). Sinon, tout disparaît à la déconnexion.`}
-            checked={preferences.persist} onChange={async persist => { persistChoice.set(profile, persist); await store.setPersist(persist); notify(persist ? 'Vos données seront conservées sur cet appareil.' : 'Conservation désactivée et copie locale effacée.'); }} />
-          <p className="muted">{contacts.length} contact{contacts.length > 1 ? 's' : ''} · {calls.length} appel{calls.length > 1 ? 's' : ''}. Le mot de passe n’est jamais enregistré.</p>
+        <Section icon={<Database size={18} />} title={t('settings.data')}>
+          <Toggle label={t('settings.persist')} hint={t('settings.persistHint', { calls: MAX_CALLS, days: MAX_AGE_DAYS })}
+            checked={preferences.persist} onChange={async persist => { persistChoice.set(profile, persist); await store.setPersist(persist); notify(t(persist ? 'settings.persistOn' : 'settings.persistOff')); }} />
+          <p className="muted">{tp('settings.contacts', contacts.length)} · {tp('settings.callCount', calls.length)}. {t('settings.noPassword')}</p>
           <button type="button" className="ghost danger" onClick={async () => {
-            if (!window.confirm('Effacer les contacts, notes et le journal de cet appareil ? Le journal central du serveur n’est pas concerné.')) return;
+            if (!window.confirm(t('settings.eraseConfirm'))) return;
             await store.eraseDevice();
-            notify('Données de cet appareil effacées.');
-          }}>Effacer les données de cet appareil</button>
+            notify(t('settings.erased'));
+          }}>{t('settings.erase')}</button>
         </Section>
 
-        <Section icon={<Info size={18} />} title="Compte">
-          <dl className="about"><div><dt>Identifiant</dt><dd>{account?.username}</dd></div><div><dt>Mode</dt><dd>{demo ? 'Démonstration' : 'Ligne réelle'}</dd></div>
-            <div><dt>Version</dt><dd>ApisnixPhone Web 0.1.0</dd></div></dl>
+        <Section icon={<Info size={18} />} title={t('settings.account')}>
+          <dl className="about"><div><dt>{t('settings.username')}</dt><dd>{account?.username}</dd></div><div><dt>{t('settings.mode')}</dt><dd>{t(demo ? 'settings.modeDemo' : 'settings.modeLive')}</dd></div>
+            <div><dt>{t('settings.version')}</dt><dd>ApisnixPhone Web 0.1.0</dd></div></dl>
           <button type="button" className="ghost danger" onClick={() => {
             const call = phone.getSnapshot().call;
-            if (call && call.phase !== 'ended' && !window.confirm('Un appel est en cours. Se déconnecter y mettra fin.')) return;
+            if (call && call.phase !== 'ended' && !window.confirm(t('confirm.signOutInCall'))) return;
             void logout();
-          }}><LogOut size={16} /> Se déconnecter</button>
+          }}><LogOut size={16} /> {t('action.signOut')}</button>
         </Section>
       </div>
     </div>

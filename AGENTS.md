@@ -15,12 +15,16 @@
   `docs/OPERATIONS.md`. Commandes depuis `webphone/` :
   `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
   `npm run test -- --run`, `npm run build`.
-  Le guide client est `docs/GUIDE_UTILISATEUR.md` ; après un changement visible,
-  régénérer ses captures avec `node scripts/guide-screenshots.mjs` (serveur de
-  démonstration sur le port 5185), relire le texte concerné, puis reconstruire le
-  PDF remis aux clients avec `node scripts/build-guide-pdf.mjs`. Le garder court
-  (8 pages, captures et texte en colonnes réglés dans le Markdown), sans
-  explication des codes d'erreur ni des fonctions secondaires.
+  L'interface existe en français (défaut), anglais et espagnol : tout texte
+  visible passe par `webphone/src/i18n/` et s'ajoute dans les trois
+  dictionnaires. Le guide client est `docs/GUIDE_UTILISATEUR.md`, avec ses
+  éditions `.en.md` et `.es.md` à garder alignées ; après un changement visible,
+  régénérer les captures avec `node scripts/guide-screenshots.mjs` puis
+  `GUIDE_LANG=en` et `GUIDE_LANG=es` (serveur de démonstration sur le port 5185),
+  relire les textes concernés, puis reconstruire les trois PDF remis aux clients
+  avec `node scripts/build-guide-pdf.mjs`. Les garder courts (8 pages, captures
+  et texte en colonnes réglés dans le Markdown), sans explication des codes
+  d'erreur ni des fonctions secondaires.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord
   le dépôt privé `FranckThiago/Gestion_CRM-APISNIX` : `AGENTS.md`, puis

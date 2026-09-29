@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
+import { t } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence, persistChoice } from '../storage/persistence';
 import { chime } from '../telephony/audio';
@@ -104,7 +105,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
     setWrapUpRecordId(record.id);
     // Reaching the person fulfils the callbacks promised for that number.
-    if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify('Rappel effectué : il a été marqué comme fait.', 'success');
+    if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify(t('callbacks.doneToast'), 'success');
   }), [notify]);
 
   // Problems reported by the line (microphone refused, hold rejected…) are said once, in plain words.
@@ -143,9 +144,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const placeCall = useCallback((rawInput: string) => {
     const input = parseDialInput(rawInput);
     const state = phone.getSnapshot();
-    if (!input.valid) return notify(input.reason === 'empty' ? 'Saisissez un numéro à appeler.' : 'Ce numéro contient des caractères non autorisés.', 'danger');
-    if (state.connection !== 'ready') return notify('La ligne n’est pas connectée.', 'danger');
-    if (state.call) return notify('Un appel est déjà en cours.', 'danger');
+    if (!input.valid) return notify(t(input.reason === 'empty' ? 'dial.empty' : 'dial.invalid'), 'danger');
+    if (state.connection !== 'ready') return notify(t('dial.notConnected'), 'danger');
+    if (state.call) return notify(t('dial.busy'), 'danger');
     const contact = findContact(store.getSnapshot().contacts, input.dialTarget);
     phone.call(rawInput, input.dialTarget, contact?.name);
     setDial('');
@@ -159,7 +160,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       await recordings.openWithLine(credentials.username, credentials.password);
       setRecordingsAccess({ state: 'open' });
     } catch (error) {
-      setRecordingsAccess({ state: 'failed', message: error instanceof Error ? error.message : 'Le service des enregistrements est momentanément injoignable.' });
+      setRecordingsAccess({ state: 'failed', message: error instanceof Error ? error.message : t('rec.unreachable') });
     }
   }, []);
 
@@ -214,7 +215,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const simulateIncoming = useCallback(() => {
     const caller = DEMO_CALLERS[incomingIndex.current++ % DEMO_CALLERS.length]!;
     const contact = findContact(store.getSnapshot().contacts, caller[0]);
-    if (demoPhone && !demoPhone.simulateIncoming(caller[0], contact?.name)) notify('Terminez l’appel en cours avant d’en simuler un autre.', 'danger');
+    if (demoPhone && !demoPhone.simulateIncoming(caller[0], contact?.name)) notify(t('demo.finishCallFirst'), 'danger');
   }, [notify]);
 
   const openContact = useCallback((id: string | null) => {

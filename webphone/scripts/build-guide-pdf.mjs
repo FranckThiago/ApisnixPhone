@@ -1,5 +1,7 @@
-// Builds docs/ApisnixPhone-Guide-utilisateur.pdf from docs/GUIDE_UTILISATEUR.md and its screenshots.
-//   node scripts/build-guide-pdf.mjs
+// Builds the client guide PDFs from docs/GUIDE_UTILISATEUR*.md and their screenshots, in French,
+// English and Spanish.
+//   node scripts/build-guide-pdf.mjs          (all three)
+//   node scripts/build-guide-pdf.mjs en       (one edition: fr, en or es)
 // Headless Chrome prints a branded HTML rendering; no extra dependency. When poppler's pdftotext is
 // installed, a second pass writes the page numbers into the cover's table of contents.
 import { spawn, spawnSync } from 'node:child_process';
@@ -11,30 +13,42 @@ import { pathToFileURL } from 'node:url';
 const DOCS = resolve(import.meta.dirname, '../../docs');
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PORT = 9338;
-const OUTPUT = join(DOCS, 'ApisnixPhone-Guide-utilisateur.pdf');
 const IMAGE = /!\[([^\]]*)\]\(([^)\s]+)(?: "([^"]*)")?\)/g;
+const NBSP = ' ';
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
-const markdown = (await readFile(join(DOCS, 'GUIDE_UTILISATEUR.md'), 'utf8')).replace(/<!--[\s\S]*?-->\n*/g, '');
+/** One edition per language: its Markdown, its PDF and the words printed outside the Markdown. */
+const EDITIONS = {
+  fr: { source: 'GUIDE_UTILISATEUR.md', output: 'ApisnixPhone-Guide-utilisateur.pdf', locale: 'fr-FR', title: 'Guide d’utilisation', contents: 'Sommaire',
+    tagline: 'Votre téléphone professionnel dans le navigateur : rien à installer, vous ouvrez la page, vous vous connectez, vous appelez.' },
+  en: { source: 'GUIDE_UTILISATEUR.en.md', output: 'ApisnixPhone-User-guide.pdf', locale: 'en-GB', title: 'User guide', contents: 'Contents',
+    tagline: 'Your business phone in the browser: nothing to install, you open the page, sign in and call.' },
+  es: { source: 'GUIDE_UTILISATEUR.es.md', output: 'ApisnixPhone-Guia-de-uso.pdf', locale: 'es-ES', title: 'Guía de uso', contents: 'Índice',
+    tagline: 'Tu teléfono profesional en el navegador: nada que instalar, abres la página, inicias sesión y llamas.' },
+};
+const chosen = process.argv.length > 2 ? process.argv.slice(2) : Object.keys(EDITIONS);
+for (const lang of chosen) if (!EDITIONS[lang]) throw new Error(`Édition inconnue : ${lang} (fr, en ou es)`);
 
 // Screenshot shape decides its size: desktop captures are wide, phone-panel captures portrait or tall.
 const shapes = new Map();
-for (const [, , src] of markdown.matchAll(IMAGE)) {
-  const png = await readFile(join(DOCS, src));
-  const ratio = png.readUInt32BE(16) / png.readUInt32BE(20);
-  shapes.set(src, ratio > 1.2 ? 'wide' : ratio < 0.55 ? 'tall' : 'portrait');
+async function readShapes(markdown) {
+  for (const [, , src] of markdown.matchAll(IMAGE)) {
+    const png = await readFile(join(DOCS, src));
+    const ratio = png.readUInt32BE(16) / png.readUInt32BE(20);
+    shapes.set(src, ratio > 1.2 ? 'wide' : ratio < 0.55 ? 'tall' : 'portrait');
+  }
 }
 
 const escape = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const image = (alt, src, height) => `<img class="${shapes.get(src)}"${height ? ` style="height:${height}mm;width:auto;max-height:none"` : ''} src="${pathToFileURL(join(DOCS, src))}" alt="${escape(alt)}">`;
-const inline = text => escape(text)
-  // French spacing: guillemets and : ; ? ! never end up alone at a line edge.
-  .replace(/« /g, '« ').replace(/ ([»:;?!])/g, ' $1')
+// French spacing: guillemets and : ; ? ! never end up alone at a line edge.
+const frenchSpacing = text => text.replace(/« /g, '«' + NBSP).replace(/ ([»:;?!])/g, NBSP + '$1');
+const inline = (text, lang) => (lang === 'fr' ? frenchSpacing(escape(text)) : escape(text))
   .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
   .replace(/`([^`]+)`/g, '<code>$1</code>');
 
 /** Splits the small Markdown subset the guide uses into headings, image lines and ready HTML blocks. */
-function toBlocks(source) {
+function toBlocks(source, lang) {
   const lines = source.split('\n');
   const blocks = [];
   let index = 0;
@@ -46,8 +60,8 @@ function toBlocks(source) {
     if (heading) { blocks.push({ heading: heading[2], level: heading[1].length }); index++; continue; }
     if (line.startsWith('|')) {
       const [head, , ...body] = gather(l => l.startsWith('|')).map(row => row.slice(1, -1).split('|').map(cell => cell.trim()));
-      blocks.push({ html: `<table><thead><tr>${head.map(cell => `<th>${inline(cell)}</th>`).join('')}</tr></thead><tbody>`
-        + body.map(row => `<tr>${row.map(cell => `<td>${inline(cell)}</td>`).join('')}</tr>`).join('') + '</tbody></table>' });
+      blocks.push({ html: `<table><thead><tr>${head.map(cell => `<th>${inline(cell, lang)}</th>`).join('')}</tr></thead><tbody>`
+        + body.map(row => `<tr>${row.map(cell => `<td>${inline(cell, lang)}</td>`).join('')}</tr>`).join('') + '</tbody></table>' });
       continue;
     }
     if (line.startsWith('- ')) {
@@ -56,13 +70,13 @@ function toBlocks(source) {
         if (lines[index].startsWith('- ')) items.push(lines[index].slice(2)); else items[items.length - 1] += ' ' + lines[index].trim();
         index++;
       }
-      blocks.push({ html: '<ul>' + items.map(item => `<li>${inline(item)}</li>`).join('') + '</ul>' });
+      blocks.push({ html: '<ul>' + items.map(item => `<li>${inline(item, lang)}</li>`).join('') + '</ul>' });
       continue;
     }
-    if (line.startsWith('>')) { blocks.push({ html: `<blockquote>${inline(gather(l => l.startsWith('>')).map(l => l.replace(/^> ?/, '')).join(' '))}</blockquote>` }); continue; }
+    if (line.startsWith('>')) { blocks.push({ html: `<blockquote>${inline(gather(l => l.startsWith('>')).map(l => l.replace(/^> ?/, '')).join(' '), lang)}</blockquote>` }); continue; }
     const paragraph = gather(l => l.trim() && !/^(#{1,3} |\||- |>)/.test(l)).join(' ');
     if (!paragraph.replace(IMAGE, '').trim()) { blocks.push({ images: [...paragraph.matchAll(IMAGE)].map(([, alt, src, title]) => ({ alt, src, title })) }); continue; }
-    blocks.push({ html: `<p>${inline(paragraph)}</p>` });
+    blocks.push({ html: `<p>${inline(paragraph, lang)}</p>` });
   }
   return blocks;
 }
@@ -70,13 +84,14 @@ function toBlocks(source) {
 /**
  * An image line titled "gauche" or "droite" takes that side; the text up to the next heading or image sits beside it.
  * A height in the title ("gauche 90mm", "60mm") overrides the default size of every image on the line.
+ * These layout words stay French in every edition.
  */
-function toHtml(source) {
-  const blocks = toBlocks(source);
+function toHtml(source, sections, lang) {
+  const blocks = toBlocks(source, lang);
   const html = [];
   for (let index = 0; index < blocks.length; index++) {
     const { heading, level, images, html: block } = blocks[index];
-    if (heading) { html.push(`<h${level}${level === 2 ? ` id="s${sections.indexOf(heading)}"` : ''}>${inline(heading)}</h${level}>`); continue; }
+    if (heading) { html.push(`<h${level}${level === 2 ? ` id="s${sections.indexOf(heading)}"` : ''}>${inline(heading, lang)}</h${level}>`); continue; }
     if (!images) { html.push(block); continue; }
     const [, place, height] = /^(gauche|droite)? ?(?:(\d+)mm)?$/.exec(images[0].title ?? '') ?? [];
     const figure = images.length === 1 ? `<figure>${image(images[0].alt, images[0].src, height)}</figure>`
@@ -90,20 +105,28 @@ function toHtml(source) {
   return html.join('\n');
 }
 
-const [, ...rest] = markdown.split('\n');
-const intro = rest.join('\n').split('\n## ')[0];
-const body = '## ' + rest.join('\n').split('\n## ').slice(1).join('\n## ');
-const sections = [...body.matchAll(/^## (.+)$/gm)].map(match => match[1]);
-const version = /Version décrite : ([^.\n]+(?:\.\d+)*)/.exec(markdown)?.[1] ?? 'ApisnixPhone Web';
-const today = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(new Date());
 const logo = pathToFileURL(resolve(DOCS, '../branding/apisnix-mark.png'));
 
-const contents = pages => sections.map((title, index) => {
-  const [, number, name] = /^(?:(\d+)\. )?(.+)$/.exec(title);
-  return `<a href="#s${index}"><span class="n">${number ?? '•'}</span><span class="t">${inline(name)}</span><span class="p">${pages?.[index] ?? ''}</span></a>`;
-}).join('');
+/** Reads one edition: its sections, and its HTML page once the section page numbers are known. */
+async function edition(lang) {
+  const settings = EDITIONS[lang];
+  const markdown = (await readFile(join(DOCS, settings.source), 'utf8')).replace(/<!--[\s\S]*?-->\n*/g, '');
+  await readShapes(markdown);
+  const [, ...rest] = markdown.split('\n');
+  const intro = rest.join('\n').split('\n## ')[0];
+  const body = '## ' + rest.join('\n').split('\n## ').slice(1).join('\n## ');
+  const sections = [...body.matchAll(/^## (.+)$/gm)].map(match => match[1]);
+  const version = /ApisnixPhone Web \d+(?:\.\d+)*/.exec(markdown)?.[0] ?? 'ApisnixPhone Web';
+  const today = new Intl.DateTimeFormat(settings.locale, { month: 'long', year: 'numeric' }).format(new Date());
+  const contents = pages => sections.map((title, index) => {
+    const [, number, name] = /^(?:(\d+)\. )?(.+)$/.exec(title);
+    return `<a href="#s${index}"><span class="n">${number ?? '•'}</span><span class="t">${inline(name, lang)}</span><span class="p">${pages?.[index] ?? ''}</span></a>`;
+  }).join('');
+  const page = pages => pageHtml({ lang, settings, version, today, contents: contents(pages), intro: toHtml(intro, sections, lang), body: toHtml(body, sections, lang) });
+  return { settings, sections, page };
+}
 
-const page = pages => `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>ApisnixPhone — guide d’utilisation</title><style>
+const pageHtml = ({ lang, settings, version, today, contents, intro, body }) => `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>ApisnixPhone — ${escape(settings.title)}</title><style>
   @page { size: A4; margin: 17mm 16mm 18mm; }
   * { box-sizing: border-box; }
   body { margin: 0; font: 10.6pt/1.55 -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif; color: #141d38; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -139,16 +162,16 @@ const page = pages => `<!doctype html><html lang="fr"><head><meta charset="utf-8
   td:first-child { width: 38%; }
   blockquote { margin: 3mm 0 5mm; padding: 3.5mm 5mm; border-radius: 3mm; background: #eef0ff; border-left: 1.2mm solid #1010ff; page-break-inside: avoid; }
 </style></head><body>
-  <section class="cover"><div><img src="${logo}" alt="APISNIX"><h1>ApisnixPhone<br><span>Guide d’utilisation</span></h1>
-    <p>Votre téléphone professionnel dans le navigateur : rien à installer, vous ouvrez la page, vous vous connectez, vous appelez.</p>
+  <section class="cover"><div><img src="${logo}" alt="APISNIX"><h1>ApisnixPhone<br><span>${escape(settings.title)}</span></h1>
+    <p>${inline(settings.tagline, lang)}</p>
     <small>${escape(version)} · ${escape(today)} · APISNIX</small></div>
-    <div class="toc"><h2>Sommaire</h2><nav>${contents(pages)}</nav></div></section>
-  <div class="intro">${toHtml(intro)}</div>
-  ${toHtml(body)}
+    <div class="toc"><h2>${escape(settings.contents)}</h2><nav>${contents}</nav></div></section>
+  <div class="intro">${intro}</div>
+  ${body}
 </body></html>`;
 
 /** Finds the page of each section heading in the printed PDF, or null without pdftotext. */
-function sectionPages(pdf) {
+function sectionPages(pdf, sections) {
   const result = spawnSync('pdftotext', ['-layout', pdf, '-'], { encoding: 'utf8' });
   if (result.status !== 0) return null;
   const printed = result.stdout.split('\f').map(text => text.normalize('NFKC').replace(/[’]/g, "'").replace(/\s+/g, ' '));
@@ -180,7 +203,7 @@ try {
     socket.send(JSON.stringify({ id, method, params }));
   });
   await send('Page.enable');
-  const print = async html => {
+  const print = async (html, output, title) => {
     await writeFile(htmlPath, html);
     await send('Page.navigate', { url: pathToFileURL(htmlPath).href });
     await sleep(2500);
@@ -188,15 +211,20 @@ try {
     if (broken.result.value) throw new Error(`${broken.result.value} image(s) introuvable(s)`);
     const { data } = await send('Page.printToPDF', {
       printBackground: true, preferCSSPageSize: true, displayHeaderFooter: true, headerTemplate: '<span></span>',
-      footerTemplate: '<div style="width:100%;font:8pt -apple-system,Arial;color:#8f99b0;padding:0 16mm;display:flex;justify-content:space-between"><span>ApisnixPhone — guide d’utilisation</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
+      footerTemplate: `<div style="width:100%;font:8pt -apple-system,Arial;color:#8f99b0;padding:0 16mm;display:flex;justify-content:space-between"><span>ApisnixPhone — ${escape(title)}</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`,
     });
-    await writeFile(OUTPUT, Buffer.from(data, 'base64'));
+    await writeFile(output, Buffer.from(data, 'base64'));
   };
-  // Placeholder numbers keep the cover the same size in both passes.
-  await print(page(sections.map(() => '00')));
-  const pages = sectionPages(OUTPUT);
-  if (pages) await print(page(pages)); else { await print(page(null)); console.warn('pdftotext absent : sommaire sans numéros de page'); }
-  console.log('✓', OUTPUT, Math.round((await readFile(OUTPUT)).length / 1024) + ' Ko', pages ? `· sommaire p. ${pages.join(', ')}` : '');
+  for (const lang of chosen) {
+    const { settings, sections, page } = await edition(lang);
+    const output = join(DOCS, settings.output);
+    // Placeholder numbers keep the cover the same size in both passes.
+    await print(page(sections.map(() => '00')), output, settings.title);
+    const pages = sectionPages(output, sections);
+    await print(page(pages), output, settings.title);
+    if (!pages) console.warn('pdftotext absent : sommaire sans numéros de page');
+    console.log('✓', output, Math.round((await readFile(output)).length / 1024) + ' Ko', pages ? `· sommaire p. ${pages.join(', ')}` : '');
+  }
 } finally {
   socket?.close();
   chrome.kill();

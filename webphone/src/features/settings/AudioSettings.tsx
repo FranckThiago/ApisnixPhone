@@ -2,6 +2,7 @@ import { Mic, RotateCcw, Square } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { MAX_VOLUME } from '../../domain/types';
+import { rich, useI18n, type MessageKey } from '../../i18n';
 import { MicPipeline, microphoneErrorMessage } from '../../telephony/audio';
 
 interface Devices { inputs: MediaDeviceInfo[]; outputs: MediaDeviceInfo[] }
@@ -47,12 +48,7 @@ function useMicAccess(enabled: boolean): [MicAccess, (access: MicAccess) => void
   return [access, setAccess];
 }
 
-const ACCESS_HINTS: Record<MicAccess, string> = {
-  granted: 'Autorisé pour ce site.',
-  prompt: 'Pas encore autorisé : le navigateur vous le demandera.',
-  denied: 'Bloqué : le navigateur a retenu un refus et ne vous le redemande plus de lui-même.',
-  unknown: 'Refusé par erreur ? Redemandez l’autorisation ici.',
-};
+const ACCESS_HINTS: Record<MicAccess, MessageKey> = { granted: 'mic.granted', prompt: 'mic.prompt', denied: 'mic.denied', unknown: 'mic.unknown' };
 
 /**
  * Asks the browser for the microphone again, for someone who refused it by mistake. Once a refusal
@@ -60,14 +56,15 @@ const ACCESS_HINTS: Record<MicAccess, string> = {
  */
 function MicPermission({ demo, onAllowed }: { demo: boolean; onAllowed(): void }) {
   const { notify } = useApp();
+  const { t } = useI18n();
   const [access, setAccess] = useMicAccess(!demo);
   const [asking, setAsking] = useState(false);
   const [problem, setProblem] = useState('');
 
   const ask = async () => {
     // The demo never asks the browser for a permission.
-    if (demo) return notify('Démonstration : aucune permission demandée.');
-    if (!navigator.mediaDevices?.getUserMedia) return setProblem('Ce navigateur ne donne pas accès au micro sur cette page.');
+    if (demo) return notify(t('settings.demoNoPermission'));
+    if (!navigator.mediaDevices?.getUserMedia) return setProblem(t('mic.noAccess'));
     setAsking(true);
     setProblem('');
     try {
@@ -76,7 +73,7 @@ function MicPermission({ demo, onAllowed }: { demo: boolean; onAllowed(): void }
       stream.getTracks().forEach(track => track.stop());
       setAccess('granted');
       onAllowed();
-      notify('Micro autorisé.');
+      notify(t('mic.allowedToast'));
     } catch (failure) {
       const name = failure instanceof DOMException ? failure.name : '';
       if (name === 'NotAllowedError' || name === 'SecurityError') setAccess('denied');
@@ -88,16 +85,16 @@ function MicPermission({ demo, onAllowed }: { demo: boolean; onAllowed(): void }
 
   return (
     <>
-      <div className="setting mic-access"><span><b>Autorisation du micro</b><small>{problem || (demo ? 'Démonstration : aucune autorisation n’est demandée.' : ACCESS_HINTS[access])}</small></span>
+      <div className="setting mic-access"><span><b>{t('mic.permission')}</b><small>{problem || t(demo ? 'mic.demoNoAsk' : ACCESS_HINTS[access])}</small></span>
         {access === 'granted'
-          ? <span className="pill pill-ok"><i />Autorisé</span>
+          ? <span className="pill pill-ok"><i />{t('mic.allowed')}</span>
           : <button type="button" className="ghost" disabled={asking} onClick={() => void ask()}>
-              {access === 'denied' ? <><RotateCcw size={15} /> Réessayer</> : <><Mic size={15} /> Autoriser le micro</>}</button>}</div>
+              {access === 'denied' ? <><RotateCcw size={15} /> {t('action.retry')}</> : <><Mic size={15} /> {t('mic.allow')}</>}</button>}</div>
       {access === 'denied' && (
         <ol className="callout mic-help">
-          <li>Cliquez sur l’icône à gauche de l’adresse <b>{location.host}</b> (cadenas, réglages ou micro barré).</li>
-          <li>Mettez <b>Microphone</b> sur <b>Autoriser</b>. Sur Safari : menu Safari → Réglages pour ce site web → Microphone.</li>
-          <li>Revenez ici : l’autorisation est reconnue, sinon cliquez sur <b>Réessayer</b>. En dernier recours, actualisez la page hors appel.</li>
+          <li>{rich('mic.help1', { host: <b>{location.host}</b> })}</li>
+          <li>{rich('mic.help2', { microphone: <b>{t('mic.help2Microphone')}</b>, allow: <b>{t('mic.help2Allow')}</b> })}</li>
+          <li>{rich('mic.help3', { retry: <b>{t('action.retry')}</b> })}</li>
         </ol>
       )}
     </>
@@ -107,6 +104,7 @@ function MicPermission({ demo, onAllowed }: { demo: boolean; onAllowed(): void }
 /** Opens the microphone only while the test runs, and always releases it. */
 function MicTest({ onAllowed }: { onAllowed(): void }) {
   const { preferences } = useData();
+  const { t } = useI18n();
   const [level, setLevel] = useState(0);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState('');
@@ -143,10 +141,10 @@ function MicTest({ onAllowed }: { onAllowed(): void }) {
 
   return (
     <div className="mic-test">
-      <button type="button" className="ghost" onClick={running ? stop : () => void start()}>{running ? <><Square size={15} /> Arrêter le test</> : <><Mic size={16} /> Tester le micro</>}</button>
-      <div className={'meter' + (level > 0.92 ? ' clipping' : '')} role="meter" aria-label="Niveau du micro" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(level * 100)}>
+      <button type="button" className="ghost" onClick={running ? stop : () => void start()}>{running ? <><Square size={15} /> {t('mic.stopTest')}</> : <><Mic size={16} /> {t('mic.test')}</>}</button>
+      <div className={'meter' + (level > 0.92 ? ' clipping' : '')} role="meter" aria-label={t('mic.level')} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(level * 100)}>
         <i style={{ width: `${Math.round(level * 100)}%` }} /></div>
-      <small>{error || (running ? (level > 0.92 ? 'Trop fort : baissez la sensibilité.' : 'Parlez normalement : la barre doit rester dans la zone verte.') : 'Le micro n’est écouté que pendant le test.')}</small>
+      <small>{error || t(running ? (level > 0.92 ? 'mic.tooLoud' : 'mic.speak') : 'mic.onlyDuringTest')}</small>
     </div>
   );
 }
@@ -155,29 +153,32 @@ export function AudioSettings() {
   const { store } = useApp();
   const { preferences } = useData();
   const { demo } = usePhone();
+  const { t } = useI18n();
   const [devices, refreshDevices] = useDevices(!demo);
   const set = store.setPreferences.bind(store);
   const sinkSupported = typeof HTMLMediaElement !== 'undefined' && 'setSinkId' in HTMLMediaElement.prototype;
 
   return (
     <>
-      {demo && <p className="callout">Démonstration : aucun microphone n’est demandé. Les réglages ci-dessous s’appliqueront à votre ligne réelle.</p>}
+      {demo && <p className="callout">{t('audio.demo')}</p>}
       <MicPermission demo={demo} onAllowed={refreshDevices} />
-      <label className="setting"><span><b>Microphone</b><small>{devices.inputs.length ? 'Pris en compte à l’appel suivant.' : 'Micro du système. La liste apparaît après un premier test autorisé.'}</small></span>
+      <label className="setting"><span><b>{t('audio.microphone')}</b><small>{t(devices.inputs.length ? 'audio.nextCall' : 'audio.systemMicHint')}</small></span>
         <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}>
-          <option value="default">Micro du système</option>
+          <option value="default">{t('audio.systemMic')}</option>
           {devices.inputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>Sensibilité du micro</b><small>{preferences.micGain} % — {preferences.micGain === 100 ? 'niveau d’origine' : preferences.micGain > 100 ? 'on vous entend plus fort' : 'on vous entend moins fort'}. À 100 %, votre micro est transmis tel quel. Un changement fait pendant un appel s’applique à l’appel suivant.</small></span>
-        <input type="range" min={0} max={200} step={5} value={preferences.micGain} aria-label="Sensibilité du micro" onChange={event => set({ micGain: Number(event.target.value) })} /></label>
+      <label className="setting"><span><b>{t('audio.sensitivity')}</b><small>{t('audio.sensitivityHint', { value: preferences.micGain,
+          state: t(preferences.micGain === 100 ? 'audio.gainOriginal' : preferences.micGain > 100 ? 'audio.gainLouder' : 'audio.gainSofter') })}</small></span>
+        <input type="range" min={0} max={200} step={5} value={preferences.micGain} aria-label={t('audio.sensitivity')} onChange={event => set({ micGain: Number(event.target.value) })} /></label>
       {!demo && <MicTest onAllowed={refreshDevices} />}
-      <label className="setting"><span><b>Casque / sortie</b><small>{sinkSupported ? 'Sortie du système par défaut.' : 'Ce navigateur ne permet pas de choisir : la sortie du système est utilisée.'}</small></span>
+      <label className="setting"><span><b>{t('audio.output')}</b><small>{t(sinkSupported ? 'audio.outputDefault' : 'audio.outputUnsupported')}</small></span>
         <select value={preferences.outputDevice} disabled={!sinkSupported} onChange={event => set({ outputDevice: event.target.value })}>
-          <option value="default">Sortie du système</option>
+          <option value="default">{t('audio.systemOutput')}</option>
           {devices.outputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>Volume d’écoute</b><small>{preferences.volume} % — {preferences.volume > 100 ? 'voix et sons amplifiés ; un casque évite l’écho chez votre correspondant' : 'distinct du volume de l’ordinateur'}. Jusqu’à {MAX_VOLUME} %.</small></span>
-        <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label="Volume d’écoute" onChange={event => set({ volume: Number(event.target.value) })} /></label>
+      <label className="setting"><span><b>{t('volume.label')}</b><small>{t('audio.volumeHint', { value: preferences.volume, max: MAX_VOLUME,
+          state: t(preferences.volume > 100 ? 'audio.volumeAmplified' : 'audio.volumeNormal') })}</small></span>
+        <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')} onChange={event => set({ volume: Number(event.target.value) })} /></label>
     </>
   );
 }

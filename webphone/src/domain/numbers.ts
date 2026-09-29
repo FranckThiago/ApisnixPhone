@@ -1,4 +1,5 @@
 import { AsYouType, type CountryCode } from 'libphonenumber-js';
+import { locale, t } from '../i18n';
 
 /**
  * What the user typed, what will really be dialled, and display-only metadata
@@ -20,7 +21,7 @@ export interface NumberInfo {
 }
 
 const VISUAL_SEPARATORS = /[\s\u00a0().-]/g;
-const regionNames = new Intl.DisplayNames(['fr'], { type: 'region' });
+const regionNames = new Map<string, Intl.DisplayNames>();
 
 export function parseDialInput(rawInput: string): DialInput {
   const dialTarget = rawInput.replace(VISUAL_SEPARATORS, '');
@@ -36,10 +37,13 @@ export function filterDialCharacters(value: string): string {
   return value.replace(/[^\d+*#\s().-]/g, '').slice(0, 40);
 }
 
-export function countryName(country: CountryCode | undefined): string | undefined {
+/** Country name in the language of the interface, or in the one given. */
+export function countryName(country: CountryCode | undefined, language = locale()): string | undefined {
   if (!country) return undefined;
   try {
-    return regionNames.of(country) ?? country;
+    let names = regionNames.get(language);
+    if (!names) regionNames.set(language, names = new Intl.DisplayNames([language], { type: 'region' }));
+    return names.of(country) ?? country;
   } catch {
     return country;
   }
@@ -109,7 +113,7 @@ export function sameNumber(a: string, b: string): boolean {
 
 export function countryLabel(info: NumberInfo): string {
   if (info.countryName) return info.countryName;
-  if (info.kind === 'internal') return 'Numéro interne';
-  if (info.kind === 'national') return 'Numéro national';
-  return 'Pays non déterminé';
+  if (info.kind === 'internal') return t('number.internal');
+  if (info.kind === 'national') return t('number.national');
+  return t('number.unknownCountry');
 }

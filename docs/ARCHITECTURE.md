@@ -51,7 +51,11 @@ d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés, stockés av
 les autres données locales. `src/storage/` garde les données en
 mémoire et n'écrit dans IndexedDB qu'après le choix « Conserver sur cet
 appareil ». `src/app/AppContext.tsx` monte un contrôleur unique hors des vues et
-inscrit au journal les seuls appels observés. Rien n'est déployé. Capacités et
+inscrit au journal les seuls appels observés. `src/i18n/` porte les textes :
+dictionnaire français de référence (`fr.ts`), traductions `en.ts` et `es.ts`
+typées sur les mêmes clés, `t`/`tp` utilisables hors React (contrôleurs,
+formats) et `useI18n` pour rafraîchir les vues ; langue gardée dans
+`localStorage` (`apisnixphone.language`), français par défaut. Rien n'est déployé. Capacités et
 validations restantes : voir le plan, référence de ce périmètre.
 
 ## Sources de référence

@@ -1,3 +1,4 @@
+import { dateFormat, t } from '../i18n';
 import { dayKey } from './format';
 import type { Callback } from './types';
 
@@ -12,14 +13,14 @@ function at(base: Date, days: number, hour: number): number {
 export function quickOptions(now: number): QuickOption[] {
   const today = new Date(now);
   const options: QuickOption[] = [
-    { label: 'Dans 15 min', at: now + 15 * 60_000 },
-    { label: 'Dans 1 h', at: now + 60 * 60_000 },
+    { label: t('quick.in15'), at: now + 15 * 60_000 },
+    { label: t('quick.in1h'), at: now + 60 * 60_000 },
   ];
-  if (today.getHours() < 13) options.push({ label: 'Cet après-midi 14 h', at: at(today, 0, 14) });
-  options.push({ label: 'Demain 9 h', at: at(today, 1, 9) });
+  if (today.getHours() < 13) options.push({ label: t('quick.afternoon'), at: at(today, 0, 14) });
+  options.push({ label: t('quick.tomorrow'), at: at(today, 1, 9) });
   // Next Monday, or the one after when today is already Monday.
   const untilMonday = ((8 - today.getDay()) % 7) || 7;
-  if (untilMonday > 1) options.push({ label: 'Lundi 9 h', at: at(today, untilMonday, 9) });
+  if (untilMonday > 1) options.push({ label: t('quick.monday'), at: at(today, untilMonday, 9) });
   return options;
 }
 
@@ -35,13 +36,11 @@ export function groupCallbacks(callbacks: Callback[], now: number): CallbackGrou
   };
 }
 
-const dateTime = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-const timeOnly = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
 export function formatDue(dueAt: number, now: number): string {
-  if (dayKey(dueAt) === dayKey(now)) return `Aujourd’hui ${timeOnly.format(dueAt)}`;
-  if (dayKey(dueAt) === dayKey(now + 86_400_000)) return `Demain ${timeOnly.format(dueAt)}`;
-  return dateTime.format(dueAt);
+  const time = dateFormat({ hour: '2-digit', minute: '2-digit' }).format(dueAt);
+  if (dayKey(dueAt) === dayKey(now)) return t('due.todayAt', { time });
+  if (dayKey(dueAt) === dayKey(now + 86_400_000)) return t('due.tomorrowAt', { time });
+  return dateFormat({ weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(dueAt);
 }
 
 /** Value for an `<input type="datetime-local">`, in local time. */

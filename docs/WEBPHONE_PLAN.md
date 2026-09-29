@@ -281,7 +281,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 
 | Réglage utilisateur | Valeur initiale / règle |
 | --- | --- |
-| Langue | Français |
+| Langue | Français par défaut ; anglais et espagnol au choix sur l'écran de connexion et dans Réglages → Apparence (demande de Franck, 29 septembre), retenus par le navigateur |
 | Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
 | Densité | Confortable ; compacte possible sur petits écrans |
 | Micro | Périphérique système ; choix explicite possible |

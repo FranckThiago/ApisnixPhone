@@ -1,3 +1,5 @@
+import { dateFormat, t } from '../i18n';
+
 export function formatDuration(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds));
   const h = Math.floor(s / 3600);
@@ -12,10 +14,7 @@ export function formatLongDuration(totalSeconds: number): string {
   return `${Math.floor(minutes / 60)} h ${String(minutes % 60).padStart(2, '0')}`;
 }
 
-const time = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' });
-const day = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-
-export const formatTime = (stamp: number) => time.format(stamp);
+export const formatTime = (stamp: number) => dateFormat({ hour: '2-digit', minute: '2-digit' }).format(stamp);
 
 export function dayKey(stamp: number): string {
   const d = new Date(stamp);
@@ -23,9 +22,9 @@ export function dayKey(stamp: number): string {
 }
 
 export function formatDay(stamp: number, now = Date.now()): string {
-  if (dayKey(stamp) === dayKey(now)) return 'Aujourd’hui';
-  if (dayKey(stamp) === dayKey(now - 86_400_000)) return 'Hier';
-  const label = day.format(stamp);
+  if (dayKey(stamp) === dayKey(now)) return t('day.today');
+  if (dayKey(stamp) === dayKey(now - 86_400_000)) return t('day.yesterday');
+  const label = dateFormat({ weekday: 'long', day: 'numeric', month: 'long' }).format(stamp);
   return label.charAt(0).toUpperCase() + label.slice(1);
 }
 

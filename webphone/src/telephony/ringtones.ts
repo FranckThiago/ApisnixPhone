@@ -5,6 +5,8 @@
  * square and sawtooth waves, whose bright harmonics carry over an open space.
  */
 
+import type { MessageKey } from '../i18n';
+
 /** One sound of a ringtone cycle; times are in seconds from the start of the cycle. */
 export interface RingNote {
   at: number;
@@ -22,8 +24,9 @@ export interface RingNote {
 
 export interface Ringtone {
   id: string;
-  label: string;
-  hint: string;
+  /** Name and hint in the dictionaries, so they follow the language. */
+  label: MessageKey;
+  hint: MessageKey;
   loud: boolean;
   /** Seconds between the start of two cycles. */
   period: number;
@@ -73,7 +76,7 @@ function bugle(at: number, frequency: number, length: number): RingNote[] {
 
 /** The original two-tone ring, kept as the default. */
 const CLASSIQUE: Ringtone = {
-  id: 'classique', label: 'Classique', hint: 'Deux notes brèves, la sonnerie d’origine.', loud: false, period: 1.6,
+  id: 'classique', label: 'ringtone.classique', hint: 'ringtone.classique.hint', loud: false, period: 1.6,
   notes: [{ at: 0, frequency: 740, level: 0.85, length: 0.22, attack: 0.03 }, { at: 0.22, frequency: 587, level: 0.85, length: 0.22, attack: 0.03 }],
 };
 
@@ -82,31 +85,31 @@ export const DEFAULT_RINGTONE = CLASSIQUE.id;
 export const RINGTONES: readonly Ringtone[] = [
   CLASSIQUE,
   {
-    id: 'carillon', label: 'Carillon', hint: 'Quatre notes de cloche, comme une horloge.', loud: false, period: 4,
+    id: 'carillon', label: 'ringtone.carillon', hint: 'ringtone.carillon.hint', loud: false, period: 4,
     notes: [659.25, 523.25, 587.33, 392].flatMap((frequency, index) => bell(index * 0.5, frequency, 0.56, 1.8)),
   },
   {
-    id: 'marimba', label: 'Marimba', hint: 'Notes boisées, légères et rondes.', loud: false, period: 2.4,
+    id: 'marimba', label: 'ringtone.marimba', hint: 'ringtone.marimba.hint', loud: false, period: 2.4,
     notes: [523.25, 659.25, 783.99, 1046.5, 783.99, 659.25].flatMap((frequency, index) => marimba(index * 0.15, frequency)),
   },
   {
-    id: 'douce', label: 'Douce', hint: 'Deux accords qui montent sans brusquer.', loud: false, period: 3.6,
+    id: 'douce', label: 'ringtone.douce', hint: 'ringtone.douce.hint', loud: false, period: 3.6,
     notes: [...swell(0, [440, 554.37, 659.25]), ...swell(1.5, [440, 587.33, 739.99])],
   },
   {
-    id: 'retro', label: 'Rétro', hint: 'La cloche mécanique d’un vieux téléphone.', loud: true, period: 3,
+    id: 'retro', label: 'ringtone.retro', hint: 'ringtone.retro.hint', loud: true, period: 3,
     notes: [...hammer(0, 10), ...hammer(0.6, 10)],
   },
   {
-    id: 'trille', label: 'Trille', hint: 'Deux tons vifs, comme un standard de bureau.', loud: true, period: 2.2,
+    id: 'trille', label: 'ringtone.trille', hint: 'ringtone.trille.hint', loud: true, period: 2.2,
     notes: warble(0, 1),
   },
   {
-    id: 'alarme', label: 'Alarme', hint: 'Bips aigus et rapides, impossibles à manquer.', loud: true, period: 1.2,
+    id: 'alarme', label: 'ringtone.alarme', hint: 'ringtone.alarme.hint', loud: true, period: 1.2,
     notes: [0, 0.16, 0.32, 0.48].map(at => beep(at, 1600, 0.1, 0.92, 'square')),
   },
   {
-    id: 'clairon', label: 'Clairon', hint: 'Fanfare aiguë et éclatante qui domine le bruit.', loud: true, period: 2.6,
+    id: 'clairon', label: 'ringtone.clairon', hint: 'ringtone.clairon.hint', loud: true, period: 2.6,
     notes: ([[0, 783.99, 0.13], [0.15, 1046.5, 0.13], [0.3, 1318.51, 0.13], [0.45, 1567.98, 0.42], [1, 1318.51, 0.13], [1.15, 1567.98, 0.6]] as const)
       .flatMap(([at, frequency, length]) => bugle(at, frequency, length)),
   },

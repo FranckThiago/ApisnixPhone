@@ -1,3 +1,5 @@
+import { t, type MessageKey } from '../i18n';
+
 export type CallDirection = 'outbound' | 'inbound';
 export type CallOutcome = 'answered' | 'no-answer' | 'busy' | 'failed' | 'cancelled' | 'declined' | 'missed' | 'unknown';
 
@@ -97,18 +99,21 @@ export const DEFAULT_PREFERENCES: Preferences = {
   callbacksSeenAt: 0,
 };
 
+/** Stored under their French name, whatever the language: data saved before stays readable. */
 export const CALL_TAGS = ['Intéressé', 'À rappeler', 'Rendez-vous', 'Pas intéressé', 'Mauvais numéro', 'Messagerie'] as const;
+export type CallTag = typeof CALL_TAGS[number];
+/** The tag a scheduled callback adds to its call. */
+export const CALLBACK_TAG: CallTag = 'À rappeler';
 
-export const OUTCOME_LABELS: Record<CallOutcome, string> = {
-  answered: 'Répondu',
-  'no-answer': 'Sans réponse',
-  busy: 'Occupé',
-  failed: 'Échec',
-  cancelled: 'Annulé',
-  declined: 'Refusé',
-  missed: 'Manqué',
-  unknown: 'Issue inconnue',
+const TAG_LABELS: Record<CallTag, MessageKey> = {
+  'Intéressé': 'tag.interested', 'À rappeler': 'tag.callBack', 'Rendez-vous': 'tag.meeting',
+  'Pas intéressé': 'tag.notInterested', 'Mauvais numéro': 'tag.wrongNumber', 'Messagerie': 'tag.voicemail',
 };
+
+/** A tag as shown in the current language. */
+export const tagLabel = (tag: string) => (tag in TAG_LABELS ? t(TAG_LABELS[tag as CallTag]) : tag);
+
+export const outcomeLabel = (outcome: CallOutcome) => t(`outcome.${outcome}`);
 
 export function talkSeconds(call: Pick<CallRecord, 'answeredAt' | 'endedAt'>): number {
   // Ringing and early media are not a conversation.

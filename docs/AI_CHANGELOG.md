@@ -1,5 +1,33 @@
 # Journal des changements
 
+## 2026-09-29 — Choix de la langue et guides anglais et espagnol
+
+- Demande de Franck : ApisnixPhone Web avec choix de la langue à l'entrée,
+  français par défaut, anglais et espagnol ajoutés, et le manuel dans ces deux
+  langues.
+- `webphone/src/i18n/` : 478 textes en français de référence, traductions
+  anglaise (britannique, heure sur 24 h) et espagnole typées sur les mêmes
+  clés ; `t`, `tp` (pluriels par `Intl.PluralRules`), `rich` et `useI18n`.
+  Sélecteur « Français · English · Español » en haut de la connexion, rappelé
+  dans Réglages → Apparence et dans la recherche ; choix dans `localStorage`,
+  attribut `lang` de la page tenu à jour.
+- Tous les écrans, les messages des contrôleurs SIP et démo, du service des
+  enregistrements et du micro, les dates, les pays (`Intl.DisplayNames`), les
+  sonneries et la démonstration passent par les dictionnaires. Tags conservés
+  sous leur nom français (compatibilité des données), affichés traduits.
+  Réglages : une commande trop large passe sous son libellé au lieu d'être
+  coupée.
+- Nouveau `tests/i18n.test.ts` (clés et variables identiques dans les trois
+  langues, bascule, pluriels, dates, pays, tags, refus du service) ; typage,
+  lint, 69 tests et build réussis. Bundle principal : environ 67 Ko de plus.
+- Guides `GUIDE_UTILISATEUR.en.md` et `.es.md`, captures `docs/guide/en|es`,
+  PDF `ApisnixPhone-User-guide.pdf` et `ApisnixPhone-Guia-de-uso.pdf` (8 pages
+  chacun, sommaire paginé). Le script de captures désigne les éléments par leur
+  structure, plus par leur texte, et prend `GUIDE_LANG` ; le script PDF produit
+  les trois éditions. Captures françaises régénérées ; celles des contacts,
+  favoris, recherche et thème sombre, plus citées, retirées.
+- Non publié sur Hermes ; aucun changement serveur, PBX ou dépendance.
+
 ## 2026-09-29 — Guide client raccourci à 8 pages
 
 - Demande de Franck : le PDF de 19 pages ne serait pas lu. `GUIDE_UTILISATEUR.md`

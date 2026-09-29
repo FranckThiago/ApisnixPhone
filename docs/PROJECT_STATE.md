@@ -1,5 +1,25 @@
 # État du projet
 
+## Choix de la langue : français, anglais, espagnol — prêt, non publié (29 septembre 2026)
+
+Demande de Franck. ApisnixPhone Web s'affiche en **français par défaut** ; l'anglais
+et l'espagnol se choisissent en haut de l'écran de connexion (chaque langue sous
+son propre nom) ou dans Réglages → Apparence, et le navigateur retient le choix.
+Tout suit la langue : textes, messages de la ligne et du service des
+enregistrements, dates et heures, noms de pays, sonneries, données de
+démonstration. Les tags d'appel restent enregistrés sous leur nom français et
+s'affichent traduits : les données déjà conservées restent lisibles. Un message
+d'erreur rédigé en français par le service des enregistrements est remplacé,
+hors français, par une phrase traduite avec son code. Typage, lint, 69 tests
+(dont la complétude des trois dictionnaires) et build réussis ; démonstration
+vérifiée dans le navigateur en anglais et en espagnol, bascule et mémorisation
+comprises. Guide client livré en trois éditions de 8 pages :
+[français](GUIDE_UTILISATEUR.md), [anglais](GUIDE_UTILISATEUR.en.md),
+[espagnol](GUIDE_UTILISATEUR.es.md), avec leurs PDF. **Non publié sur Hermes** :
+la release active reste `20260928-call-card-theme`. Limites : le champ date du
+rappel suit la langue du navigateur, pas celle de l'application ; une note ou un
+message déjà affiché garde la langue de son écriture.
+
 ## Carte d'appel qui suit le thème clair — publiée le 28 septembre 2026
 
 Signalé par Franck : pendant et après un appel, la carte d'appel (clavier,

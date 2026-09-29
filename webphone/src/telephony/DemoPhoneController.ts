@@ -1,4 +1,5 @@
 import type { CallOutcome } from '../domain/types';
+import { t } from '../i18n';
 import { CallProgressSounds, type CallProgressSoundPlayer, Ringer } from './audio';
 import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
@@ -57,7 +58,7 @@ export class DemoPhoneController implements PhoneController {
     await new Promise<void>(resolve => this.later(550, resolve));
     if (!username.trim() || !password) {
       // A terminal refusal: no retry loop.
-      this.update({ connection: 'auth-error', error: 'Identifiant ou mot de passe refusé.' });
+      this.update({ connection: 'auth-error', error: t('sip.authRefused') });
       return;
     }
     this.update({ connection: 'ready', account: { username: username.trim(), domain: 'demonstration.invalid' } });

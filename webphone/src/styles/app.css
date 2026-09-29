@@ -184,7 +184,9 @@ fieldset { border: 1px solid var(--border); border-radius: 12px; padding: 12px; 
 /* ---------- Settings ---------- */
 .settings-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .settings-section { padding: 20px; display: grid; gap: 4px; } .settings-section h2 { display: flex; align-items: center; gap: 9px; font-size: 15px; margin-bottom: 8px; } .settings-section h2 svg { color: var(--yellow-strong); }
-.setting { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 11px 0; border-bottom: 1px solid var(--border); } .setting:last-of-type { border-bottom: 0; }
+.setting { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 18px; padding: 11px 0; border-bottom: 1px solid var(--border); } .setting:last-of-type { border-bottom: 0; }
+/* A long label (Spanish, English) or a narrow column puts the control under its label instead of cutting it. */
+.setting > span:first-child { flex: 1 1 150px; min-width: 0; } .setting > .segmented { flex: none; max-width: 100%; }
 .setting span b { display: block; font-weight: 600; } .setting select { width: auto; max-width: 190px; } .setting input[type=range] { width: 150px; }
 .settings-section > .ghost, .settings-section > .muted { margin-top: 10px; justify-self: start; }
 input[type=range] { accent-color: var(--brand); }
@@ -315,6 +317,12 @@ input[type=range] { accent-color: var(--brand); }
 .login-brand ul { display: grid; gap: 13px; color: #c5ccea; font-size: 15px; } .login-brand li { display: flex; gap: 11px; align-items: center; } .login-brand li svg { color: var(--yellow); flex: none; }
 .login-form { display: grid; place-items: center; padding: 32px 24px; background: var(--surface); }
 .login-form form { width: min(390px, 100%); display: grid; gap: 14px; } .login-mark { display: none; border-radius: 16px; }
+/* Chosen before signing in: the first thing on the form, each language under its own name. */
+.language-picker { justify-self: start; display: inline-flex; align-items: center; gap: 2px; padding: 3px 3px 3px 10px; margin-bottom: 18px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); }
+.language-picker svg { margin-right: 6px; flex: none; }
+.language-picker button { padding: 6px 11px; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--muted); transition: background .15s, color .15s; }
+.language-picker button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm), inset 0 -2px 0 var(--yellow); }
+.language-picker button:hover:not(.active) { color: var(--text); }
 .login-form h1 { margin: 0; } .password { position: relative; display: block; } .password .icon-button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
 .form-error { padding: 10px 12px; border-radius: 10px; background: var(--danger-soft); color: var(--danger); font-weight: 600; font-size: 13px; }
 .fine { font-size: 12px; color: var(--faint); text-align: center; }

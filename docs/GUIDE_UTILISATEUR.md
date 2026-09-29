@@ -11,7 +11,9 @@ titrée "gauche" ou "droite" se place sur ce côté, avec à côté d'elle le te
 qui la suit jusqu'au prochain titre ou à la prochaine image. Plusieurs images
 sur une même ligne s'affichent côte à côte, légendées par leur texte
 alternatif. Une hauteur dans le titre ("gauche 90mm", "60mm") remplace la
-taille par défaut ; l'ajuster pour éviter les blancs en bas de page. -->
+taille par défaut ; l'ajuster pour éviter les blancs en bas de page.
+Versions anglaise et espagnole : GUIDE_UTILISATEUR.en.md et .es.md, captures
+dans guide/en et guide/es ; les garder alignées sur ce texte. -->
 
 ## Avant de commencer
 
@@ -25,13 +27,16 @@ taille par défaut ; l'ajuster pour éviter les blancs en bas de page. -->
 
 ## 1. Se connecter
 
-Saisissez votre identifiant et votre mot de passe, puis **Se connecter**.
+En haut du formulaire, choisissez votre **langue** : Français, English ou
+Español. Le navigateur la retient ; elle se change aussi dans Réglages →
+Apparence. Saisissez ensuite votre identifiant et votre mot de passe, puis
+**Se connecter**.
 ApisnixPhone n'enregistre jamais votre mot de passe. Votre navigateur peut vous
 proposer de le retenir : si vous acceptez, une actualisation de la page vous
 reconnecte toute seule (Chrome, Edge) ou préremplit le formulaire (Safari).
 **Refusez sur un ordinateur partagé.**
 
-![Écran de connexion](guide/01-connexion.png)
+![Écran de connexion](guide/01-connexion.png "92mm")
 
 Un carillon retentit et la pastille verte **Ligne prête** apparaît : vous pouvez
 appeler. Au premier appel, le navigateur demande l'accès au **microphone** :
@@ -171,7 +176,8 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
 - **Volume d'écoute** : 100 % par défaut, jusqu'à **200 %** si votre
   correspondant reste trop faible. Au-delà de 100 %, préférez un casque pour
   éviter l'écho.
-- **Apparence** : thème Clair, Sombre ou Système ; densité d'affichage.
+- **Apparence** : langue (Français, English, Español), thème Clair, Sombre ou
+  Système, densité d'affichage.
 - **Appels** : notifications du système, utiles si vous travaillez souvent dans
   une autre fenêtre.
 

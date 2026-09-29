@@ -11,15 +11,16 @@ import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { Recordings } from '../features/recordings/Recordings';
 import { Settings } from '../features/settings/Settings';
+import { useI18n, type MessageKey } from '../i18n';
 import { keypadTone } from '../telephony/audio';
 import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
 import { applyTheme, storedTheme } from './theme';
 
 // On a narrow screen the phone sits in the middle of this list, as the main action.
-const NAV: Array<[View, string, typeof History]> = [
-  ['journal', 'Journal', History], ['contacts', 'Contacts', BookUser], ['phone', 'Téléphone', Phone],
-  ['audio', 'Audio', AudioLines], ['settings', 'Réglages', SettingsIcon],
+const NAV: Array<[View, MessageKey, typeof History]> = [
+  ['journal', 'nav.journal', History], ['contacts', 'nav.contacts', BookUser], ['phone', 'nav.phone', Phone],
+  ['audio', 'nav.audio', AudioLines], ['settings', 'nav.settings', SettingsIcon],
 ];
 
 function useShortcuts() {
@@ -53,6 +54,7 @@ function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
   const { account, call, demo, connection, lineTaken } = usePhone();
   const { preferences, calls, callbacks } = useData();
+  const { t, language } = useI18n();
   useShortcuts();
   const now = useNow();
 
@@ -74,11 +76,11 @@ function Workspace() {
       // Already late when the page opened: the badge is enough, no burst of alerts.
       if (now - callback.dueAt > 90_000) continue;
       const label = callback.name ?? callback.number;
-      notify(`C’est l’heure de rappeler ${label}.`);
+      notify(t('callbacks.dueToast', { name: label }));
       if (preferences.notifications && !demo && typeof Notification !== 'undefined' && Notification.permission === 'granted')
-        new Notification('Rappel ApisnixPhone', { body: `Rappeler ${label}${callback.note ? ` — ${callback.note}` : ''}` });
+        new Notification(t('callbacks.notificationTitle'), { body: t('callbacks.notificationBody', { name: label }) + (callback.note ? ` — ${callback.note}` : '') });
     }
-  }, [dueCallbacks, now, notify, preferences.notifications, demo]);
+  }, [dueCallbacks, now, notify, preferences.notifications, demo, t]);
 
   // The badge counts missed calls not looked at yet; opening the journal is looking at them.
   const unseenMissed = calls.filter(item => item.outcome === 'missed' && item.startedAt > preferences.missedSeenAt).length;
@@ -96,79 +98,79 @@ function Workspace() {
   // The tab title tells what is happening when the page is in the background.
   const ringingIn = call?.phase === 'ringing-in';
   useEffect(() => {
-    document.title = ringingIn ? 'Appel entrant… · ApisnixPhone' : call && call.phase !== 'ended' ? 'En appel · ApisnixPhone'
+    document.title = ringingIn ? t('title.incoming') : call && call.phase !== 'ended' ? t('title.inCall')
       : unseenMissed ? `(${unseenMissed}) ApisnixPhone` : 'ApisnixPhone';
-  }, [ringingIn, call, unseenMissed]);
+  }, [ringingIn, call, unseenMissed, t, language]);
   useEffect(() => {
     if (!ringingIn || demo || !preferences.notifications || !document.hidden || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-    const notification = new Notification('Appel entrant', { body: call?.remoteName ?? call?.dialTarget ?? '', tag: 'apisnixphone-incoming' });
+    const notification = new Notification(t('banner.incoming'), { body: call?.remoteName ?? call?.dialTarget ?? '', tag: 'apisnixphone-incoming' });
     notification.onclick = () => window.focus();
     return () => notification.close();
-  }, [ringingIn, demo, preferences.notifications, call?.remoteName, call?.dialTarget]);
+  }, [ringingIn, demo, preferences.notifications, call?.remoteName, call?.dialTarget, t]);
   const dark = document.documentElement.dataset.theme === 'dark';
   const inCall = call && call.phase !== 'ended';
   const signOut = () => {
-    if (inCall && !window.confirm('Un appel est en cours. Se déconnecter y mettra fin.')) return;
+    if (inCall && !window.confirm(t('confirm.signOutInCall'))) return;
     void logout();
   };
 
   return (
     <div className={'shell' + (view === 'phone' ? ' show-phone' : '')}>
-      {demo && <p className="demo-banner"><b>Démonstration</b> Données fictives · aucun appel réel, aucun microphone utilisé</p>}
-      <nav className="sidebar" aria-label="Navigation principale">
+      {demo && <p className="demo-banner"><b>{t('demo.bannerTitle')}</b> {t('demo.bannerText')}</p>}
+      <nav className="sidebar" aria-label={t('nav.label')}>
         <a className="brand" href="/" onClick={event => { event.preventDefault(); setView('journal'); }}>
           <span className="brand-mark"><img src="/apisnix-mark.png" alt="" width={34} height={34} /></span>
           <span className="brand-name">APISNIX<small>ApisnixPhone</small></span></a>
-        <p className="nav-caption">Espace d’appels</p>
+        <p className="nav-caption">{t('nav.caption')}</p>
         <ul>
           {NAV.map(([key, label, Icon]) => (
             <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key || key === 'journal' && view === 'callbacks' ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
               aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => setView(key)}>
-              <Icon size={key === 'phone' ? 24 : 19} /><span>{label}</span>
+              <Icon size={key === 'phone' ? 24 : 19} /><span>{t(label)}</span>
               {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (unseenDue ? ' badge-yellow' : '')}
-                aria-label={`${unseenMissed} appels manqués non consultés, ${unseenDue} nouveaux rappels à faire`}>{unseenMissed + unseenDue}</i>}</button></li>
+                aria-label={t('nav.badge', { missed: unseenMissed, due: unseenDue })}>{unseenMissed + unseenDue}</i>}</button></li>
           ))}
         </ul>
         <div className="sidebar-foot">
           <Avatar name={account?.username} size={34} />
-          <span className="account" title={account?.domain}><b>{account?.username}</b><small>{demo ? 'Démonstration' : 'Ligne connectée'}</small></span>
-          <button type="button" className="icon-button sign-out" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={17} /></button>
+          <span className="account" title={account?.domain}><b>{account?.username}</b><small>{t(demo ? 'account.demo' : 'account.connected')}</small></span>
+          <button type="button" className="icon-button sign-out" aria-label={t('action.signOut')} title={t('action.signOut')} onClick={signOut}><LogOut size={17} /></button>
         </div>
       </nav>
 
       <div className="main">
         <header className="topbar">
           <button type="button" className="palette-trigger" onClick={() => setPaletteOpen(true)}>
-            <Search size={17} aria-hidden="true" /><span>Un contact, un numéro, une action…</span><Kbd>{/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}</Kbd></button>
+            <Search size={17} aria-hidden="true" /><span>{t('topbar.search')}</span><Kbd>{/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}</Kbd></button>
           <ConnectionPill />
-          <button type="button" className="icon-button" aria-label={dark ? 'Thème clair' : 'Thème sombre'} onClick={() => {
+          <button type="button" className="icon-button" aria-label={t(dark ? 'theme.toLight' : 'theme.toDark')} onClick={() => {
             const theme = dark ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme);
           }}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
           {/* Always within reach, whatever the height of the window. */}
-          <button type="button" className="icon-button sign-out" aria-label="Se déconnecter" title="Se déconnecter" onClick={signOut}><LogOut size={18} /></button>
+          <button type="button" className="icon-button sign-out" aria-label={t('action.signOut')} title={t('action.signOut')} onClick={signOut}><LogOut size={18} /></button>
         </header>
         {lineTaken && (
           <div className="line-alert" role="alert">
             <ShieldAlert size={22} aria-hidden="true" />
-            <p><b>Cette ligne est ouverte sur un autre appareil.</b> Ce poste est en pause : il ne reçoit plus les appels et ne peut plus en passer. Un compte ne fonctionne que sur un appareil à la fois. Reprenez la ligne ici, et c’est l’autre appareil qui sera mis en pause.</p>
-            <button type="button" onClick={() => phone.retakeLine()}>Reprendre la ligne ici</button>
+            <p><b>{t('line.takenTitle')}</b> {t('line.takenText')}</p>
+            <button type="button" onClick={() => phone.retakeLine()}>{t('line.retake')}</button>
           </div>
         )}
         {connection !== 'ready' && !lineTaken && (
-          <p className="line-banner" role="status"><WifiOff size={16} /> {connection === 'reconnecting' ? 'Connexion perdue : reconnexion en cours… Les appels sont indisponibles.' : 'Ligne en cours d’enregistrement…'}</p>
+          <p className="line-banner" role="status"><WifiOff size={16} /> {t(connection === 'reconnecting' ? 'line.reconnecting' : 'line.registering')}</p>
         )}
         {/* Visible from every view on narrow screens: hanging up is never hidden behind navigation. */}
         {inCall && view !== 'phone' && (
           <div className="call-banner" role="status">
-            <button type="button" onClick={() => setView('phone')}><Phone size={16} /> {ringingIn ? 'Appel entrant' : 'Appel en cours'} · {call.remoteName ?? call.dialTarget}</button>
-            <button type="button" className="banner-hangup" aria-label="Raccrocher" onClick={() => phone.hangup()}><PhoneOff size={16} /></button>
+            <button type="button" onClick={() => setView('phone')}><Phone size={16} /> {t(ringingIn ? 'banner.incoming' : 'banner.active')} · {call.remoteName ?? call.dialTarget}</button>
+            <button type="button" className="banner-hangup" aria-label={t('call.hangUp')} onClick={() => phone.hangup()}><PhoneOff size={16} /></button>
           </div>
         )}
         <div className="content">
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
-          {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label="Journal et rappels">
-            <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> Appels</button>
-            <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> Rappels{unseenDue > 0 && <i className="badge badge-yellow" aria-label={`${unseenDue} nouveaux rappels à faire`}>{unseenDue}</i>}</button>
+          {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label={t('journal.sections')}>
+            <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> {t('journal.tabCalls')}</button>
+            <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> {t('journal.tabCallbacks')}{unseenDue > 0 && <i className="badge badge-yellow" aria-label={t('callbacks.newDue', { count: unseenDue })}>{unseenDue}</i>}</button>
           </nav>}
           {(view === 'journal' || view === 'phone') && <Journal />}
           {view === 'contacts' && <Contacts />}
@@ -187,6 +189,8 @@ function Workspace() {
 export function App() {
   const { account } = usePhone();
   const { sessionOpen } = useApp();
+  // A new language re-renders the whole tree, including the parts that format outside React.
+  useI18n();
   useEffect(() => {
     applyTheme(storedTheme());
     // « Système » keeps following the computer when it switches between day and night.

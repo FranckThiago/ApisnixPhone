@@ -1,3 +1,4 @@
+import { language, t } from '../i18n';
 import { RecordingsError, type LineCall, type LineHistory, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
 
 type Fetch = typeof fetch;
@@ -7,7 +8,6 @@ interface ServiceEntry { entry_id?: string; id: number | null; number: string; d
 interface ServiceDashboard { journal?: ServiceEntry[]; truncated?: boolean; journal_fresh?: boolean; journal_caught_up?: boolean }
 interface ServiceMe { user: { name: string; role: string }; endpoint: { extension: string; alias: string } | null; csrf: string }
 
-const UNAVAILABLE = 'Le service des enregistrements est momentanément injoignable.';
 
 /** Local calendar day as the service expects it (YYYY-MM-DD), for the person's own clock. */
 export function dayString(stamp: number): string {
@@ -77,15 +77,17 @@ export class HttpRecordingsSource implements RecordingsSource {
         headers: { 'Content-Type': 'application/json', ...(this.csrf ? { 'X-CSRF-Token': this.csrf } : {}), ...(init.headers ?? {}) },
       });
     } catch {
-      throw new RecordingsError(UNAVAILABLE, 0);
+      throw new RecordingsError(t('rec.unreachable'), 0);
     }
     let body: unknown;
     try { body = await response.json(); } catch { body = null; }
     if (!response.ok || body === null || typeof body !== 'object') {
       const message = (body as { error?: string } | null)?.error;
       // A refused sign-in keeps the service's own sentence; an expired session gets a plain invitation.
+      // The service speaks French: in another language its sentence becomes a translated one with the status.
       const expired = response.status === 401 && path !== '/line-session';
-      throw new RecordingsError(expired ? 'Connectez-vous pour accéder à vos enregistrements.' : message ?? UNAVAILABLE, response.status);
+      throw new RecordingsError(expired ? t('rec.signIn') : !message ? t('rec.unreachable')
+        : language() === 'fr' ? message : t('rec.serviceRefused', { status: response.status }), response.status);
     }
     return body as T;
   }
@@ -94,7 +96,7 @@ export class HttpRecordingsSource implements RecordingsSource {
     this.csrf = me.csrf;
     if (me.user.role !== 'agent' || !me.endpoint) {
       // A supervisor account would show other people's calls: not what this screen is for.
-      throw new RecordingsError(me.user.role !== 'agent' ? 'Cet accès n’est pas un accès agent : utilisez celui de votre poste.' : 'Votre poste n’est plus rattaché à une équipe. Contactez votre administrateur.', 403);
+      throw new RecordingsError(t(me.user.role !== 'agent' ? 'rec.notAgent' : 'rec.noTeam'), 403);
     }
     return { name: me.user.name, extension: me.endpoint.extension, alias: me.endpoint.alias || undefined };
   }
@@ -149,7 +151,7 @@ export class DemoRecordingsSource implements RecordingsSource {
   async signOut() { this.open = false; }
 
   private identity(username = 'demo'): RecordingsIdentity {
-    return { name: 'Nadia · Démonstration', extension: username || 'demo', alias: 'Nadia · accueil' };
+    return { name: t('rec.demoName'), extension: username || 'demo', alias: t('rec.demoAlias') };
   }
 
   async list(period: Period): Promise<RecordingsListing> {

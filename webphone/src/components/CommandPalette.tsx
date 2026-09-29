@@ -1,8 +1,9 @@
-import { AlarmClock, AudioLines, BookUser, History, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
+import { AlarmClock, AudioLines, BookUser, History, Languages, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../app/AppContext';
 import { applyTheme } from '../app/theme';
 import { countryLabel, describeNumber, parseDialInput } from '../domain/numbers';
+import { LANGUAGES, setLanguage, useI18n } from '../i18n';
 import { searchContacts } from '../storage/DataStore';
 import { Avatar } from './Avatar';
 import { Flag } from './Flag';
@@ -14,6 +15,7 @@ export function CommandPalette() {
   const { paletteOpen, setPaletteOpen, placeCall, setView, openContact, simulateIncoming, store, setFavoritesOnly } = useApp();
   const { contacts, preferences } = useData();
   const { demo } = usePhone();
+  const { t, language } = useI18n();
   const [query, setQuery] = useState('');
   const [index, setIndex] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -30,7 +32,7 @@ export function CommandPalette() {
     const input = parseDialInput(query);
     if (input.valid && input.dialTarget.length > 1) {
       const info = describeNumber(input.dialTarget);
-      result.push({ id: 'dial', icon: <Flag info={info} size={20} />, label: `Appeler ${input.dialTarget}`, hint: countryLabel(info), run: () => placeCall(query) });
+      result.push({ id: 'dial', icon: <Flag info={info} size={20} />, label: t('palette.call', { number: input.dialTarget }), hint: countryLabel(info), run: () => placeCall(query) });
     }
     for (const contact of searchContacts(contacts, query).slice(0, query ? 5 : 3)) {
       const number = contact.numbers[0]?.value;
@@ -38,35 +40,37 @@ export function CommandPalette() {
                     run: () => (number && query ? placeCall(number) : openContact(contact.id)) });
     }
     const actions: Command[] = [
-      { id: 'journal', icon: <History size={18} />, label: 'Ouvrir le journal', run: () => setView('journal') },
-      { id: 'contacts', icon: <BookUser size={18} />, label: 'Ouvrir les contacts', run: () => { setFavoritesOnly(false); setView('contacts'); } },
-      { id: 'callbacks', icon: <AlarmClock size={18} />, label: 'Ouvrir les rappels', run: () => setView('callbacks') },
-      { id: 'favorites', icon: <Star size={18} />, label: 'Ouvrir les favoris', run: () => { setFavoritesOnly(true); setView('contacts'); } },
-      { id: 'audio', icon: <AudioLines size={18} />, label: 'Ouvrir mes enregistrements', run: () => setView('audio') },
-      { id: 'settings', icon: <SettingsIcon size={18} />, label: 'Ouvrir les réglages', run: () => setView('settings') },
-      { id: 'theme', icon: <Moon size={18} />, label: preferences.theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre',
+      { id: 'journal', icon: <History size={18} />, label: t('palette.journal'), run: () => setView('journal') },
+      { id: 'contacts', icon: <BookUser size={18} />, label: t('palette.contacts'), run: () => { setFavoritesOnly(false); setView('contacts'); } },
+      { id: 'callbacks', icon: <AlarmClock size={18} />, label: t('palette.callbacks'), run: () => setView('callbacks') },
+      { id: 'favorites', icon: <Star size={18} />, label: t('palette.favorites'), run: () => { setFavoritesOnly(true); setView('contacts'); } },
+      { id: 'audio', icon: <AudioLines size={18} />, label: t('palette.audio'), run: () => setView('audio') },
+      { id: 'settings', icon: <SettingsIcon size={18} />, label: t('palette.settings'), run: () => setView('settings') },
+      { id: 'theme', icon: <Moon size={18} />, label: t(preferences.theme === 'dark' ? 'palette.toLight' : 'palette.toDark'),
         run: () => { const theme = preferences.theme === 'dark' ? 'light' : 'dark'; store.setPreferences({ theme }); applyTheme(theme); } },
-      ...(demo ? [{ id: 'incoming', icon: <PhoneIncoming size={18} />, label: 'Simuler un appel entrant', run: simulateIncoming }] : []),
+      // The other languages, under their own names: « english » or « español » finds them.
+      ...LANGUAGES.filter(({ id }) => id !== language).map(({ id, name }) => ({ id: 'lang-' + id, icon: <Languages size={18} />, label: name, hint: t('language.label'), run: () => setLanguage(id) })),
+      ...(demo ? [{ id: 'incoming', icon: <PhoneIncoming size={18} />, label: t('palette.simulate'), run: simulateIncoming }] : []),
     ];
     const text = query.trim().toLowerCase();
     return [...result, ...actions.filter(action => !text || action.label.toLowerCase().includes(text))];
-  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store, setFavoritesOnly]);
+  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store, setFavoritesOnly, t, language]);
 
   const active = Math.min(index, Math.max(0, commands.length - 1));
   const run = (command: Command | undefined) => { if (!command) return; setPaletteOpen(false); command.run(); };
 
   return (
-    <dialog ref={dialog} className="palette" aria-label="Recherche et commandes" onClose={() => setPaletteOpen(false)}
+    <dialog ref={dialog} className="palette" aria-label={t('palette.label')} onClose={() => setPaletteOpen(false)}
       onClick={event => { if (event.target === dialog.current) setPaletteOpen(false); }}>
       <div className="palette-input"><Search size={18} aria-hidden="true" />
-        <input value={query} autoFocus placeholder="Un nom, un numéro, une action…" aria-label="Rechercher ou composer"
+        <input value={query} autoFocus placeholder={t('palette.placeholder')} aria-label={t('palette.input')}
           onChange={event => { setQuery(event.target.value); setIndex(0); }}
           onKeyDown={event => {
             if (event.key === 'ArrowDown') { event.preventDefault(); setIndex((active + 1) % Math.max(1, commands.length)); }
             if (event.key === 'ArrowUp') { event.preventDefault(); setIndex((active - 1 + commands.length) % Math.max(1, commands.length)); }
             if (event.key === 'Enter') { event.preventDefault(); run(commands[active]); }
           }} /></div>
-      <ul role="listbox" aria-label="Résultats">
+      <ul role="listbox" aria-label={t('palette.results')}>
         {commands.map((command, position) => (
           <li key={command.id} role="option" aria-selected={position === active} className={position === active ? 'active' : ''}
             onMouseEnter={() => setIndex(position)} onClick={() => run(command)}>
@@ -74,9 +78,9 @@ export function CommandPalette() {
             {command.id === 'dial' || (command.id.startsWith('c') && query) ? <Phone size={15} className="palette-call" aria-hidden="true" /> : null}
           </li>
         ))}
-        {commands.length === 0 && <li className="palette-empty">Aucun résultat.</li>}
+        {commands.length === 0 && <li className="palette-empty">{t('palette.empty')}</li>}
       </ul>
-      <footer><span><kbd className="kbd">↑</kbd><kbd className="kbd">↓</kbd> naviguer</span><span><kbd className="kbd">↵</kbd> valider</span><span><kbd className="kbd">Échap</kbd> fermer</span></footer>
+      <footer><span><kbd className="kbd">↑</kbd><kbd className="kbd">↓</kbd> {t('palette.navigate')}</span><span><kbd className="kbd">↵</kbd> {t('palette.select')}</span><span><kbd className="kbd">{t('palette.escape')}</kbd> {t('palette.close')}</span></footer>
     </dialog>
   );
 }

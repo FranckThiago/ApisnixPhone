@@ -1,15 +1,24 @@
 // Regenerates the user guide's screenshots from the DEMONSTRATION build (fictional data only).
 //   1. VITE_APP_MODE=demo npm run dev -- --port 5185
-//   2. node scripts/guide-screenshots.mjs
-// Drives a headless Chrome over the DevTools protocol; no extra dependency.
+//   2. node scripts/guide-screenshots.mjs            (French, docs/guide/)
+//      GUIDE_LANG=en node scripts/guide-screenshots.mjs  (English, docs/guide/en/; es for Spanish)
+// Drives a headless Chrome over the DevTools protocol; no extra dependency. Elements are reached by
+// their structure, never by their text, so the same steps work in every language. Node 22.18 or
+// later reads the TypeScript dictionaries directly.
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { en } from '../src/i18n/en.ts';
+import { es } from '../src/i18n/es.ts';
+import { fr } from '../src/i18n/fr.ts';
 
 const URL_APP = process.env.GUIDE_URL ?? 'http://127.0.0.1:5185/';
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const OUT = resolve(import.meta.dirname, '../../docs/guide');
+const LANG = process.env.GUIDE_LANG ?? 'fr';
+const WORDS = { fr, en, es }[LANG];
+if (!WORDS) throw new Error(`GUIDE_LANG inconnu : ${LANG} (fr, en ou es)`);
+const OUT = resolve(import.meta.dirname, '../../docs/guide', LANG === 'fr' ? '' : LANG);
 const PORT = 9337;
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
@@ -63,8 +72,9 @@ const HELPERS = `
   window.__type = (selector, value) => { const el = document.querySelector(selector);
     Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value').set.call(el, value);
     el.dispatchEvent(new Event('input', { bubbles: true })); };
-  window.__nav = label => [...document.querySelectorAll('.nav-item')].find(b => b.textContent.includes(label)).click();
-  window.__button = label => [...document.querySelectorAll('button')].find(b => b.textContent.trim().startsWith(label)).click();
+  window.__nav = view => document.querySelector('.nav-' + view + ' .nav-item').click();
+  window.__click = (selector, index = 0) => document.querySelectorAll(selector)[index].click();
+  window.__text = (selector, text) => [...document.querySelectorAll(selector)].find(b => b.textContent.trim() === text).click();
   window.__wait = ms => new Promise(done => setTimeout(done, ms));`;
 
 try {
@@ -75,7 +85,10 @@ try {
   await viewport(1440, 900);
   await send('Page.navigate', { url: URL_APP });
   await sleep(1500);
-  await run(HELPERS + `localStorage.setItem('apisnixphone.theme', 'light'); return true;`);
+  // The language is the one a person would pick on the sign-in screen, remembered by the browser.
+  await run(`localStorage.setItem('apisnixphone.theme', 'light'); localStorage.setItem('apisnixphone.language', ${JSON.stringify(LANG)}); location.reload(); return true;`);
+  await sleep(1500);
+  await run(HELPERS + 'return true;');
 
   await shot('01-connexion');
   await run(`__type('.login input[autocomplete=username]', 'camille'); __type('.login input[type=password]', 'demonstration'); document.querySelector('.login form').requestSubmit(); await __wait(2200);`);
@@ -84,45 +97,36 @@ try {
   await run(`__type('#dial-input', '+33 1 00 00 00 01');`);
   await shot('03-composer', '.dock');
 
-  await run(`__button('Appeler'); await __wait(1500);`);
+  await run(`__click('.call-button'); await __wait(1500);`);
   await shot('04-sonnerie', '.call-card');
   await run(`await __wait(2600);`);
   await shot('05-en-appel', '.call-card');
-  await run(`__button('Muet'); __button('Attente'); await __wait(900);`);
+  await run(`__click('.call-controls .control', 0); __click('.call-controls .control', 1); await __wait(900);`);
   await shot('06-muet-attente', '.call-card');
-  await run(`__button('Reprendre'); await __wait(800); document.querySelector('.hangup').click(); await __wait(500); __button('Intéressé'); __type('.wrapup .note', 'Envoyer le devis avant vendredi.'); __button('Planifier un rappel'); await __wait(300);`);
+  await run(`__click('.call-controls .control', 1); await __wait(800); document.querySelector('.hangup').click(); await __wait(500); __click('.wrapup .tags .tag');
+    __type('.wrapup .note', ${JSON.stringify(WORDS['demo.noteQuote'])}); __click('.wrapup > .ghost-call'); await __wait(300);`);
   await shot('07-fin-appel', '.call-card');
-  await run(`__button('Demain 9 h'); await __wait(400); __button('Terminer'); await __wait(400);`);
+  await run(`__text('.scheduler .tag', ${JSON.stringify(WORDS['quick.tomorrow'])}); await __wait(400); __click('.wrapup-actions .done'); await __wait(400);`);
 
   await run(`document.querySelector('.call-summary').click(); await __wait(400);`);
   await shot('08-journal-detail');
   await run(`document.querySelector('.call-summary').click();`);
 
-  await run(`__nav('Réglages'); await __wait(400); __button('Simuler un appel entrant'); await __wait(900);`);
+  await run(`__nav('settings'); await __wait(400); document.querySelector('.settings-section .lucide-phone-incoming').closest('button').click(); await __wait(900);`);
   await shot('09-appel-entrant', '.call-card');
-  await run(`document.querySelector('.round.decline').click(); await __wait(400); __button('Terminer'); await __wait(300);`);
+  await run(`document.querySelector('.round.decline').click(); await __wait(400); __click('.wrapup-actions .done'); await __wait(300);`);
 
-  await run(`__nav('Contacts'); await __wait(400); [...document.querySelectorAll('.contact-row')].find(r => r.textContent.includes('Camille')).click(); await __wait(400);`);
-  await shot('10-contacts');
-  await run(`__button('Favoris'); await __wait(400);`);
-  await shot('11-favoris');
-  await run(`__nav('Journal'); await __wait(150); [...document.querySelectorAll('.journal-sections button')].find(b => b.textContent.includes('Rappels')).click(); await __wait(400);`);
+  // Contacts, favourites, search and the dark theme are no longer in the short guide: no capture.
+  await run(`__nav('journal'); await __wait(150); __click('.journal-sections button', 1); await __wait(400);`);
   await shot('12-rappels');
-  await run(`__nav('Réglages'); await __wait(400);`);
+  await run(`__nav('settings'); await __wait(400);`);
   await shot('13-reglages');
   await run(`document.querySelector('.ringtones').scrollIntoView({ block: 'center' }); await __wait(200);`);
   await shot('19-sonneries', '.ringtones');
 
-  await run(`__nav('Journal'); await __wait(300); document.querySelector('.palette-trigger').click(); await __wait(300); __type('.palette input', 'cam');`);
-  await shot('14-recherche');
-  await run(`document.querySelector('.palette').close(); __button('Sombre') ?? 0;`).catch(() => undefined);
-  await run(`__nav('Réglages'); await __wait(300); __button('Sombre'); await __wait(300); __nav('Journal'); await __wait(400);`);
-  await shot('15-theme-sombre');
-  await run(`__nav('Réglages'); await __wait(300); __button('Clair'); await __wait(300); __nav('Journal');`);
-
-  await run(`__nav('Audio'); await __wait(500);`);
+  await run(`__nav('audio'); await __wait(500);`);
   await shot('18-audio');
-  await run(`__nav('Journal'); await __wait(300);`);
+  await run(`__nav('journal'); await __wait(300);`);
 
   await viewport(390, 844, true);
   await sleep(500);

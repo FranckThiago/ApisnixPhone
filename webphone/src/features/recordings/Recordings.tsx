@@ -7,26 +7,28 @@ import { dayKey, formatDay, formatDuration, formatTime } from '../../domain/form
 import { countryLabel, describeNumber } from '../../domain/numbers';
 import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing } from '../../recordings/types';
 import { findContact } from '../../storage/DataStore';
+import { t, useI18n, type MessageKey } from '../../i18n';
 
-const PERIODS: Array<[Period, string]> = [['today', 'Aujourd’hui'], ['yesterday', 'Hier'], ['week', '7 derniers jours']];
+const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week']];
 
 function message(error: unknown): string {
-  return error instanceof RecordingsError ? error.message : 'Le service des enregistrements est momentanément injoignable.';
+  return error instanceof RecordingsError ? error.message : t('rec.unreachable');
 }
 
 /** The access could not be opened with the line: say why, offer to try again, never ask for a password. */
 function Unavailable({ message, retrying, onRetry }: { message: string; retrying: boolean; onRetry(): void }) {
+  const { t } = useI18n();
   return (
     <section className="panel access-panel">
       <div className="access-copy">
         <KeyRound size={26} aria-hidden="true" />
-        <h2>Vos enregistrements d’appels</h2>
-        <p>Chaque appel de votre poste est enregistré par le serveur. Quelques minutes après l’appel, l’audio est prêt : vous pouvez l’écouter ici ou le télécharger.</p>
-        <p>L’accès s’ouvre tout seul avec votre ligne : rien à saisir.</p>
+        <h2>{t('rec.accessTitle')}</h2>
+        <p>{t('rec.accessText')}</p>
+        <p>{t('rec.accessAuto')}</p>
       </div>
       <div className="access-form">
         <p className="form-error" role="alert">{message}</p>
-        <button type="button" className="primary" disabled={retrying} onClick={onRetry}><RefreshCw size={16} className={retrying ? 'spin' : ''} /> {retrying ? 'Ouverture…' : 'Réessayer'}</button>
+        <button type="button" className="primary" disabled={retrying} onClick={onRetry}><RefreshCw size={16} className={retrying ? 'spin' : ''} /> {t(retrying ? 'rec.opening' : 'action.retry')}</button>
       </div>
     </section>
   );
@@ -35,13 +37,14 @@ function Unavailable({ message, retrying, onRetry }: { message: string; retrying
 function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: string | null; onPlay(fileId: string | null): void }) {
   const { recordings } = useApp();
   const { contacts } = useData();
+  const { t } = useI18n();
   const info = describeNumber(call.number);
   const contact = call.number ? findContact(contacts, call.number) : undefined;
-  const name = contact?.name ?? (call.number ? info.display : 'Numéro inconnu');
+  const name = contact?.name ?? (call.number ? info.display : t('rec.unknownNumber'));
   return (
     <li className="audio-row">
       <div className="audio-main">
-      <span className={'direction ' + (call.direction === 'inbound' ? 'inbound' : 'outbound')} title={call.direction === 'inbound' ? 'Appel entrant' : 'Appel sortant'}>
+      <span className={'direction ' + (call.direction === 'inbound' ? 'inbound' : 'outbound')} title={t(call.direction === 'inbound' ? 'direction.inbound' : 'direction.outbound')}>
         {call.direction === 'inbound' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}</span>
       <Avatar name={contact?.name ?? call.number} size={38} />
       <span className="who"><b>{name}</b><small>{contact ? info.display : countryLabel(info)}</small></span>
@@ -50,12 +53,12 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
       </div>
       <span className="audio-files">
         {call.files.map(file => file.state !== 'available'
-          ? <span key={file.id} className="pill pill-wait" title="Le serveur prépare le fichier : il sera disponible dans quelques minutes."><i />En traitement</span>
+          ? <span key={file.id} className="pill pill-wait" title={t('rec.processingTitle')}><i />{t('rec.processing')}</span>
           : <span key={file.id} className="audio-actions">
               <span className="audio-length mono"><Clock3 size={13} aria-hidden="true" />{file.durationSeconds === null ? '—' : formatDuration(file.durationSeconds)}</span>
               <button type="button" className={'ghost small' + (playingId === file.id ? ' active-audio' : '')} aria-pressed={playingId === file.id}
-                onClick={() => onPlay(playingId === file.id ? null : file.id)}>{playingId === file.id ? <Square size={14} /> : <Play size={14} />} {playingId === file.id ? 'Arrêter' : 'Écouter'}</button>
-              <a className="ghost small" href={recordings.audioUrl(file.id, true)} download title="Télécharger ce fichier sur cet appareil"><Download size={14} /> Télécharger</a>
+                onClick={() => onPlay(playingId === file.id ? null : file.id)}>{playingId === file.id ? <Square size={14} /> : <Play size={14} />} {t(playingId === file.id ? 'rec.stop' : 'rec.listen')}</button>
+              <a className="ghost small" href={recordings.audioUrl(file.id, true)} download title={t('rec.downloadTitle')}><Download size={14} /> {t('rec.download')}</a>
             </span>)}
       </span>
     </li>
@@ -66,6 +69,7 @@ export function Recordings() {
   const { recordings, notify, recordingsAccess, reopenRecordings } = useApp();
   const { demo } = usePhone();
   const { contacts } = useData();
+  const { t, tp } = useI18n();
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
   const [period, setPeriod] = useState<Period>('today');
   const [listing, setListing] = useState<RecordingsListing | null>(null);
@@ -105,11 +109,11 @@ export function Recordings() {
   };
 
   const groups = useMemo(() => {
-    const result: Array<{ key: string; label: string; calls: RecordedCall[] }> = [];
+    const result: Array<{ key: string; calls: RecordedCall[] }> = [];
     for (const call of listing?.calls ?? []) {
       const key = dayKey(call.startedAt);
       const last = result[result.length - 1];
-      if (last?.key === key) last.calls.push(call); else result.push({ key, label: formatDay(call.startedAt), calls: [call] });
+      if (last?.key === key) last.calls.push(call); else result.push({ key, calls: [call] });
     }
     return result;
   }, [listing]);
@@ -119,54 +123,54 @@ export function Recordings() {
   return (
     <div className="page">
       <header className="page-head">
-        <div><p className="eyebrow">Vos enregistrements</p><h1><span className="swoosh">Audio</span> de vos appels</h1>
-          <p className="lead">Écoutez ou téléchargez les enregistrements de votre poste.</p></div>
+        <div><p className="eyebrow">{t('rec.eyebrow')}</p><h1><span className="swoosh">{t('rec.titleStrong')}</span>{t('rec.titleRest')}</h1>
+          <p className="lead">{t('rec.lead')}</p></div>
         {identity && (
-          <span className="scope" title="Les enregistrements sont ceux du serveur, pour votre poste uniquement, quel que soit l’appareil utilisé pour appeler."><Info size={14} /> Poste {identity.alias ?? identity.extension}{demo ? ' · données fictives' : ''}</span>
+          <span className="scope" title={t('rec.scopeTitle')}><Info size={14} /> {t('rec.extension', { name: identity.alias ?? identity.extension })}{demo ? ` · ${t('demo.fictional')}` : ''}</span>
         )}
       </header>
 
-      {identity === undefined || recordingsAccess.state === 'opening' ? <div className="panel empty"><AudioLines size={28} /><b>Ouverture de vos enregistrements…</b></div>
+      {identity === undefined || recordingsAccess.state === 'opening' ? <div className="panel empty"><AudioLines size={28} /><b>{t('rec.openingAll')}</b></div>
         : identity === null ? <Unavailable retrying={false} onRetry={() => void reopenRecordings()}
-            message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || 'L’accès aux enregistrements n’est pas ouvert pour cette ligne. Réessayez ; si le problème persiste, contactez APISNIX.'} />
+            message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || t('rec.notOpen')} />
         : (
           <section className="panel">
             <div className="toolbar">
-              <div className="tabs" role="tablist" aria-label="Période">
-                {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => setPeriod(key)}>{label}</button>)}
+              <div className="tabs" role="tablist" aria-label={t('rec.period')}>
+                {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => setPeriod(key)}>{t(label)}</button>)}
               </div>
               <div className="head-actions">
-                <button type="button" className="ghost small" onClick={() => void load()} disabled={loading} aria-label="Actualiser"><RefreshCw size={14} className={loading ? 'spin' : ''} /> Actualiser</button>
-                <button type="button" className="ghost small" onClick={async () => { play(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> Fermer l’accès</button>
+                <button type="button" className="ghost small" onClick={() => void load()} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
+                <button type="button" className="ghost small" onClick={async () => { play(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
               </div>
             </div>
             {(pending > 0 || listing?.catchingUp || listing?.stale || error) && (
               <p className="audio-notice" role="status">
-                {error ? error : listing?.stale ? 'Le service ne reçoit plus de nouvelles données : la liste peut être incomplète.'
-                  : listing?.catchingUp ? 'Import des appels récents en cours : la liste se complète toute seule.'
-                  : `${pending} fichier${pending > 1 ? 's' : ''} en préparation : disponible${pending > 1 ? 's' : ''} dans quelques minutes, sans rien faire.`}
+                {error ? error : listing?.stale ? t('rec.stale')
+                  : listing?.catchingUp ? t('rec.catchingUp')
+                  : tp('rec.pending', pending)}
               </p>
             )}
             {groups.length === 0 ? (
-              <div className="empty"><AudioLines size={28} /><b>{loading && !listing ? 'Chargement…' : 'Aucun enregistrement sur cette période'}</b>
-                <p>Un enregistrement apparaît ici quelques minutes après la fin de l’appel.</p></div>
+              <div className="empty"><AudioLines size={28} /><b>{t(loading && !listing ? 'rec.loading' : 'rec.empty')}</b>
+                <p>{t('rec.emptyHint')}</p></div>
             ) : groups.map(group => (
               <div key={group.key} className="day-group">
-                <h2 className="day-label">{group.label}<span>{group.calls.length}</span></h2>
+                <h2 className="day-label">{formatDay(group.calls[0]!.startedAt)}<span>{group.calls.length}</span></h2>
                 <ul className="audio-list">
                   {group.calls.map(call => <Row key={call.id} call={call} playingId={playingId}
-                    onPlay={fileId => play(fileId, `${(call.number && findContact(contacts, call.number)?.name) || call.number || 'Numéro inconnu'} · ${formatDay(call.startedAt)} ${formatTime(call.startedAt)}`)} />)}
+                    onPlay={fileId => play(fileId, `${(call.number && findContact(contacts, call.number)?.name) || call.number || t('rec.unknownNumber')} · ${formatDay(call.startedAt)} ${formatTime(call.startedAt)}`)} />)}
                 </ul>
               </div>
             ))}
-            <footer className="audio-foot"><span>{ready} fichier{ready > 1 ? 's' : ''} disponible{ready > 1 ? 's' : ''}</span>
+            <footer className="audio-foot"><span>{tp('rec.ready', ready)}</span>
               <span className="playing-now" hidden={!playing}><AudioLines size={14} aria-hidden="true" /> {playing?.label}</span></footer>
           </section>
         )}
       {/* Outside the list: a refresh never interrupts the listening. */}
       {playing && (
-        <audio key={playing.id} className="audio-player" src={playing.src} controls autoPlay preload="none" aria-label={'Lecture : ' + playing.label}
-          onEnded={() => setPlaying(null)} onError={() => { setPlaying(null); notify('Ce fichier est momentanément inaccessible. Réessayez dans quelques minutes.', 'danger'); }} />
+        <audio key={playing.id} className="audio-player" src={playing.src} controls autoPlay preload="none" aria-label={t('rec.playing', { label: playing.label })}
+          onEnded={() => setPlaying(null)} onError={() => { setPlaying(null); notify(t('rec.fileError'), 'danger'); }} />
       )}
     </div>
   );

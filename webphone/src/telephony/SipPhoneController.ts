@@ -1,4 +1,5 @@
 import type { CallOutcome } from '../domain/types';
+import { t, type MessageKey } from '../i18n';
 import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, RemoteVoice, Ringer } from './audio';
 import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
@@ -65,14 +66,7 @@ export interface SipEnvironment {
 }
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
-const SIP_CALL_FAILURES: Record<number, string> = {
-  403: 'SIP 403 Forbidden — appel interdit par le serveur.',
-  404: 'SIP 404 Not Found — numéro ou destination introuvable.',
-  480: 'SIP 480 Temporarily Unavailable — correspondant temporairement indisponible.',
-  486: 'SIP 486 Busy Here — ligne occupée.',
-  488: 'SIP 488 Not Acceptable Here — média ou codec refusé.',
-  503: 'SIP 503 Service Unavailable — service téléphonique indisponible.',
-};
+const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
 /** How often the PBX is asked who holds the account: quick enough to stop shared credentials, light for the server. */
 const LINE_CHECK = 45_000;
@@ -130,7 +124,7 @@ export class SipPhoneController implements PhoneController {
   async connect(credentials: Credentials) {
     if (this.wanted) return;
     const username = credentials.username.trim();
-    if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: 'Saisissez votre identifiant et votre mot de passe.' });
+    if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: t('sip.missingCredentials') });
     this.wanted = true;
     this.credentials = { username, password: credentials.password };
     // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
@@ -146,7 +140,7 @@ export class SipPhoneController implements PhoneController {
       const release = await this.environment.acquireLine(`apisnixphone:${this.config.domain}:${username}`);
       if (!release) {
         this.wanted = false;
-        return this.update({ connection: 'other-tab-active', error: 'Cette ligne est déjà ouverte dans un autre onglet de ce navigateur.' });
+        return this.update({ connection: 'other-tab-active', error: t('sip.otherTab') });
       }
       this.releaseLine = release;
       this.applyAudio(this.audio);
@@ -156,7 +150,7 @@ export class SipPhoneController implements PhoneController {
     } catch {
       // No retry loop here: the person decides to try again.
       await this.teardown();
-      this.update({ connection: 'network-error', account: null, error: 'Connexion au serveur impossible. Vérifiez votre réseau, puis réessayez.' });
+      this.update({ connection: 'network-error', account: null, error: t('sip.serverUnreachable') });
     }
   }
 
@@ -173,7 +167,7 @@ export class SipPhoneController implements PhoneController {
             const refused = status === 401 || status === 403 || status === 404 || status === 407;
             void this.teardown();
             this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
-                          error: refused ? 'Identifiant ou mot de passe refusé.' : `Le serveur a refusé l’enregistrement (${status}).` });
+                          error: refused ? t('sip.authRefused') : t('sip.registerRefused', { status }) });
           },
         },
       }).catch(() => undefined);
@@ -184,7 +178,7 @@ export class SipPhoneController implements PhoneController {
       const call = this.snapshot.call;
       if (call && call.phase !== 'ended') {
         // A conversation that took place stays « answered »; only say how it ended.
-        this.interruption = 'Appel interrompu : la connexion au serveur a été perdue.';
+        this.interruption = t('sip.interrupted');
         this.finish(call.answeredAt ? 'answered' : 'failed');
       }
       this.update({ connection: 'reconnecting', error: undefined });
@@ -192,7 +186,7 @@ export class SipPhoneController implements PhoneController {
       this.reconnectTimer = setTimeout(() => {
         if (this.snapshot.connection !== 'reconnecting') return;
         void this.teardown();
-        this.update({ connection: 'network-error', account: null, error: 'Connexion perdue. Vérifiez votre réseau, puis reconnectez-vous.' });
+        this.update({ connection: 'network-error', account: null, error: t('sip.connectionLost') });
       }, RECONNECT_GRACE);
     },
     onRegistered: () => {
@@ -227,7 +221,7 @@ export class SipPhoneController implements PhoneController {
       if (session && manager) setTimeout(() => {
         if (this.session !== session || this.snapshot.call?.phase !== 'active' || this.snapshot.call.muted) return;
         void manager.sentAudioPackets(session).then(packets => {
-          if (packets === 0 && this.session === session) this.update({ error: 'Votre correspondant ne vous entend pas : votre micro n’émet rien. Raccrochez, vérifiez le micro dans Réglages, puis rappelez.' });
+          if (packets === 0 && this.session === session) this.update({ error: t('sip.silentMic') });
         }).catch(() => undefined);
       }, 5000);
       // Safety net: SIP.js starts the sound itself and stays quiet when the browser refuses.
@@ -397,13 +391,13 @@ export class SipPhoneController implements PhoneController {
           this.callProgress.stop();
           const status = response.message.statusCode ?? 0;
           this.rejection = REJECTIONS[status] ?? 'failed';
-          this.rejectionReason = SIP_CALL_FAILURES[status];
+          this.rejectionReason = status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
         },
       },
     }).catch(error => {
       if (this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
       this.finish('failed');
-      this.update({ error: error instanceof DOMException ? microphoneErrorMessage(error) : 'L’appel n’a pas pu être lancé.' });
+      this.update({ error: error instanceof DOMException ? microphoneErrorMessage(error) : t('sip.callFailed') });
     });
   }
 
@@ -411,7 +405,7 @@ export class SipPhoneController implements PhoneController {
     if (this.snapshot.call?.phase !== 'ringing-in' || !this.session || !this.manager) return;
     this.ringer.stop();
     this.manager.answer(this.session).catch(error => {
-      this.update({ error: error instanceof DOMException ? microphoneErrorMessage(error) : 'Impossible de répondre à cet appel.' });
+      this.update({ error: error instanceof DOMException ? microphoneErrorMessage(error) : t('sip.answerFailed') });
     });
   }
 
@@ -454,12 +448,12 @@ export class SipPhoneController implements PhoneController {
       if (!this.snapshot.call?.holdPending) return;
       this.updateCall({ holdPending: false });
       this.quietRemote(false);
-      this.update({ error: 'Le serveur n’a pas confirmé. Votre connexion semble instable : réessayez.' });
+      this.update({ error: t('sip.holdUnconfirmed') });
     }, HOLD_PATIENCE);
     (held ? this.manager.hold(this.session) : this.manager.unhold(this.session)).catch(() => {
       this.updateCall({ holdPending: false });
       this.quietRemote(false);
-      this.update({ error: held ? 'La mise en attente a été refusée.' : 'La reprise de l’appel a échoué.' });
+      this.update({ error: t(held ? 'sip.holdRefused' : 'sip.resumeFailed') });
     });
   }
 
@@ -476,7 +470,7 @@ export class SipPhoneController implements PhoneController {
     try {
       await this.mic.switchDevice(deviceId);
     } catch (error) {
-      this.update({ error: microphoneErrorMessage(error) + ' Le micro précédent reste utilisé.' });
+      this.update({ error: t('sip.micKept', { reason: microphoneErrorMessage(error) }) });
     }
   }
 
@@ -484,7 +478,7 @@ export class SipPhoneController implements PhoneController {
     const audio = this.remoteAudio as (HTMLAudioElement & { setSinkId?(id: string): Promise<void> }) | undefined;
     if (!audio?.setSinkId) return;
     const chosen = await audio.setSinkId(deviceId === 'default' ? '' : deviceId).then(() => true, () => {
-      this.update({ error: 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.' });
+      this.update({ error: t('sip.outputFailed') });
       return false;
     });
     // The amplified voice follows the element, never a headset the element could not reach.

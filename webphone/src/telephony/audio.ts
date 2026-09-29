@@ -1,3 +1,4 @@
+import { t } from '../i18n';
 import { findRingtone, previewSeconds, scheduleRingtone } from './ringtones';
 
 /**
@@ -506,8 +507,8 @@ export function chime(kind: 'ready' | 'lost', volume: number) {
 
 export function microphoneErrorMessage(error: unknown): string {
   const name = error instanceof DOMException ? error.name : '';
-  if (name === 'NotAllowedError' || name === 'SecurityError') return 'Le microphone est bloqué. Réglages → Audio → Autorisation du micro explique comment le débloquer.';
-  if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'Aucun microphone trouvé. Branchez votre casque, puis réessayez.';
-  if (name === 'NotReadableError') return 'Le microphone est utilisé par une autre application.';
-  return 'Le microphone est indisponible.';
+  if (name === 'NotAllowedError' || name === 'SecurityError') return t('mic.blocked');
+  if (name === 'NotFoundError' || name === 'OverconstrainedError') return t('mic.notFound');
+  if (name === 'NotReadableError') return t('mic.inUse');
+  return t('mic.unavailable');
 }
