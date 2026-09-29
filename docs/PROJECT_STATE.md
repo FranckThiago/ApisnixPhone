@@ -1,6 +1,6 @@
 # État du projet
 
-## Choix de la langue : français, anglais, espagnol — prêt, non publié (29 septembre 2026)
+## Choix de la langue : français, anglais, espagnol — publié le 29 septembre 2026
 
 Demande de Franck. ApisnixPhone Web s'affiche en **français par défaut** ; l'anglais
 et l'espagnol se choisissent en haut de l'écran de connexion (chaque langue sous
@@ -15,8 +15,12 @@ hors français, par une phrase traduite avec son code. Typage, lint, 69 tests
 vérifiée dans le navigateur en anglais et en espagnol, bascule et mémorisation
 comprises. Guide client livré en trois éditions de 8 pages :
 [français](GUIDE_UTILISATEUR.md), [anglais](GUIDE_UTILISATEUR.en.md),
-[espagnol](GUIDE_UTILISATEUR.es.md), avec leurs PDF. **Non publié sur Hermes** :
-la release active reste `20260928-call-card-theme`. Limites : le champ date du
+[espagnol](GUIDE_UTILISATEUR.es.md), avec leurs PDF. **Release active :
+`20260929-languages`, source `0324bbc`**, publiée sur Hermes à 17:28:03
+Africa/Douala ; fichiers servis identiques au build, connexion live vérifiée
+dans les trois langues sans se connecter. Un onglet ouvert avant doit être
+actualisé hors appel. [Preuves et retour](OPERATIONS.md#choix-de-la-langue-publié--29-septembre-2026).
+Usage en anglais ou en espagnol par un client non encore constaté. Limites : le champ date du
 rappel suit la langue du navigateur, pas celle de l'application ; une note ou un
 message déjà affiché garde la langue de son écriture.
 

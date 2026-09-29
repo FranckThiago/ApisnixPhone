@@ -389,9 +389,41 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
-## Carte d'appel en thème clair publiée — 28 septembre 2026
+## Choix de la langue publié — 29 septembre 2026
 
-Release active **`20260928-call-card-theme`**, publiée à **16:36:54
+Release active **`20260929-languages`**, publiée à **17:28:03 Africa/Douala
+(16:28:03 UTC)** à la demande de Franck. Source `0324bbc` : la release
+précédente (thème clair, correctif micro, volume) plus le choix de la langue
+français, anglais, espagnol. Build isolé depuis `git archive` : `npm ci` sans
+vulnérabilité, typage, lint, 69 tests, build live avec les trois variables
+publiques. Mode live et WSS attendu dans le bundle ; ni source map ni `.env`.
+Pas de migration ni changement PBX, Caddy, DNS, supervision ou compte.
+
+Archive ustar de 266 fichiers, SHA-256
+`196a1207068e32703063d4f7b16d65c608945873ee7dd6604ad95dfcfc41f7e1`.
+Sauvegarde protégée `/root/apisnix-phone-backups/20260929-languages/` :
+ancienne cible, manifeste antérieur, archive, manifeste, SHA256SUMS,
+source.json et heure de bascule. Empreinte vérifiée avant extraction,
+manifeste identique au build ; release root 0755/0644, lue par caddy sans
+écriture. Bascule atomique après contrôle de la cible précédente, sans
+rechargement Caddy.
+
+Contrôles : HTTPS 200, HTTP 308, index `no-cache` et identique au build, JS
+`index-BYCFfM-u.js`, `lib-DDTI8ldE.js` et CSS `index-CYVI7wZm.css` servis
+identiques au build, assets immuables, CSP inchangée, repli SPA 200,
+`/api/me` anonyme 401. Écran de connexion live vérifié dans le navigateur
+intégré : français par défaut, bascule anglais et espagnol, aucune erreur
+console ; aucune connexion SIP ni appel lancé. Aucun onglet client rechargé à
+distance : un onglet ouvert avant doit être actualisé **hors appel** pour
+obtenir le choix de la langue.
+
+Retour ciblé : vérifier que `current` vise cette release puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20260928-call-card-theme`,
+conservée intacte. Ne pas restaurer de configuration globale.
+
+## État précédent — carte d'appel en thème clair, 28 septembre 2026
+
+Release **`20260928-call-card-theme`**, publiée à **16:36:54
 Africa/Douala (15:36:54 UTC)** à la demande de Franck. Source `e05e2e0` : la
 release précédente (volume, correctif micro) plus la carte d'appel qui suit le
 thème clair. Build isolé depuis `git archive` : `npm ci` sans vulnérabilité,

@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-29 — Choix de la langue publié sur Hermes
+
+- À la demande de Franck, release `20260929-languages` (source `0324bbc`)
+  publiée à 17:28:03 Africa/Douala. Build isolé : `npm ci` sans
+  vulnérabilité, typage, lint, 69 tests, build live ; archive SHA-256
+  `196a1207068e32703063d4f7b16d65c608945873ee7dd6604ad95dfcfc41f7e1`.
+- Sauvegarde protégée, manifeste contrôlé, bascule atomique depuis
+  `20260928-call-card-theme` sans rechargement Caddy ; fichiers publics
+  identiques au build, `/api/me` anonyme 401, écran de connexion live en
+  français par défaut puis en anglais et en espagnol, sans erreur console.
+- Aucune connexion SIP ni appel lancé pendant le contrôle ; usage réel en
+  anglais ou en espagnol non encore constaté. Retour ciblé dans OPERATIONS.
+
 ## 2026-09-29 — Choix de la langue et guides anglais et espagnol
 
 - Demande de Franck : ApisnixPhone Web avec choix de la langue à l'entrée,
