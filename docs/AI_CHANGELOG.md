@@ -1,5 +1,22 @@
 # Journal des changements
 
+## 2026-09-30 — Lien de connexion client
+
+- Demande de Franck : connecter la ligne d'un client par un simple lien
+  `#u=<identifiant>&p=<mot de passe>`. Mot de passe en clair dans le lien
+  accepté par Franck (même exposition que les liens VICIdial, client
+  responsable, changement de mot de passe pour couper).
+- `webphone/src/features/auth/credentials.ts` : `parseSignInLink` (décodage
+  pourcent, `+` conservé), lecture au chargement puis effacement du fragment par
+  `history.replaceState`, et relais d'un lien collé dans un onglet ouvert
+  (`hashchange`). `Login.tsx` remplit le formulaire et l'envoie par
+  `requestSubmit` : même chemin que la saisie manuelle (contrôles, proposition
+  d'enregistrement du navigateur) ; un lien passe avant l'accès enregistré, et
+  il n'est utilisé qu'une fois pour qu'une déconnexion reste définitive.
+- Tests `tests/signInLink.test.ts` (73 au total), typage, lint ; démonstration
+  vérifiée dans le navigateur intégré. Guides FR/EN/ES et PDF (8 pages)
+  complétés, format documenté dans OPERATIONS. Non publié sur Hermes.
+
 ## 2026-09-29 — Choix de la langue publié sur Hermes
 
 - À la demande de Franck, release `20260929-languages` (source `0324bbc`)

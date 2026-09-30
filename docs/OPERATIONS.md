@@ -389,6 +389,32 @@ du micro). Le bloc `route` garantit que `try_files` précède les règles de cac
 `/`, `/index.html` et les routes de repli portent `no-cache`, les assets
 empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
+### Lien de connexion d'un client
+
+Depuis le 30 septembre 2026 (code, pas encore publié sur Hermes) :
+
+```
+https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>
+```
+
+- Tout ce qui suit `#` reste dans le navigateur : ni Caddy ni un journal ne le
+  voient. Ne jamais écrire `?u=` : ce serait envoyé au serveur.
+- Dans le mot de passe, encoder `&` en `%26`, `#` en `%23`, `%` en `%25` et
+  l'espace en `%20` ; `+` et `=` restent tels quels. Un mot de passe en lettres
+  et chiffres s'écrit donc directement. Dans une console de navigateur,
+  `encodeURIComponent('…')` donne la forme encodée.
+- À l'ouverture, la page lit le lien, l'efface de la barre d'adresse, remplit le
+  formulaire et l'envoie : mêmes contrôles qu'à la main, puis Chrome et Edge
+  proposent d'enregistrer l'accès pour les actualisations suivantes. Collé dans
+  un onglet déjà ouvert, il connecte depuis l'écran de connexion ; si une ligne
+  est déjà connectée, il est effacé et ignoré.
+- Le lien vaut le mot de passe, comme les liens VICIdial : qui le détient a la
+  ligne, et le client en est responsable (choix de Franck). Changer le mot de
+  passe SIP, notamment lors d'une suspension, le rend inutilisable.
+- Un lien faux affiche « Identifiant ou mot de passe refusé » et chaque clic
+  compte comme un échec pour Fail2ban : plusieurs clics depuis un même site
+  peuvent bloquer tous ses postes (voir plus haut).
+
 ## Choix de la langue publié — 29 septembre 2026
 
 Release active **`20260929-languages`**, publiée à **17:28:03 Africa/Douala

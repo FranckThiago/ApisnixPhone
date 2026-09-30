@@ -21,7 +21,8 @@ dans guide/en et guide/es ; les garder alignées sur ce texte. -->
   fonctionne pour appeler, mais il est déconseillé : les sons d'annonce n'y sont
   pas fiables.
 - Un **casque avec micro** : c'est lui qui fait la qualité de vos appels.
-- Votre **identifiant** et votre **mot de passe**, remis par votre administrateur.
+- Votre **identifiant** et votre **mot de passe**, ou un **lien de connexion**,
+  remis par votre administrateur.
 - Gardez l'onglet ouvert et l'ordinateur éveillé : si la page est fermée ou le
   PC en veille, vous ne recevez plus d'appels.
 
@@ -35,6 +36,8 @@ ApisnixPhone n'enregistre jamais votre mot de passe. Votre navigateur peut vous
 proposer de le retenir : si vous acceptez, une actualisation de la page vous
 reconnecte toute seule (Chrome, Edge) ou préremplit le formulaire (Safari).
 **Refusez sur un ordinateur partagé.**
+Vous avez reçu un **lien de connexion** ? Cliquez dessus : la ligne se connecte
+toute seule, sans rien saisir. Il contient votre mot de passe : ne le partagez pas.
 
 ![Écran de connexion](guide/01-connexion.png "92mm")
 

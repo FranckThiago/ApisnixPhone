@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useApp, usePhone } from '../../app/AppContext';
 import { LANGUAGES, setLanguage, useI18n } from '../../i18n';
 import { primeAudio } from '../../telephony/audio';
-import { offerToSave, savedCredentials } from './credentials';
+import { consumeSignInLink, offerToSave, onSignInLink, pendingSignInLink, savedCredentials } from './credentials';
 
 /** Each language under its own name; the choice is remembered by this browser. */
 export function LanguagePicker() {
@@ -21,19 +21,38 @@ export function LanguagePicker() {
 export function Login() {
   const { login } = useApp();
   const { connection, error, demo } = usePhone();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [link] = useState(pendingSignInLink);
+  const [username, setUsername] = useState(link?.username ?? '');
+  const [password, setPassword] = useState(link?.password ?? '');
   const [visible, setVisible] = useState(false);
+  // Each sign-in link to send: the one that opened the page, then any pasted into this open tab.
+  const [linkRound, setLinkRound] = useState(link ? 1 : 0);
+  const sentRound = useRef(0);
+  const form = useRef<HTMLFormElement>(null);
   const { t } = useI18n();
   const busy = connection === 'connecting' || connection === 'registering';
 
-  // After a reload, an access the person saved in the browser signs back in by itself (real line only).
+  useEffect(() => onSignInLink(pasted => {
+    setUsername(pasted.username);
+    setPassword(pasted.password);
+    setLinkRound(round => round + 1);
+  }), []);
+
+  // A sign-in link has filled the form: send it as the person would, same checks, same offer to save.
+  useEffect(() => {
+    if (linkRound === sentRound.current) return;
+    sentRound.current = linkRound;
+    consumeSignInLink();
+    form.current?.requestSubmit();
+  }, [linkRound]);
+
+  // Otherwise, after a reload, an access the person saved in the browser signs back in by itself (real line only).
   const tried = useRef(false);
   useEffect(() => {
-    if (demo || tried.current || connection !== 'offline') return;
+    if (link || demo || tried.current || connection !== 'offline') return;
     tried.current = true;
     void savedCredentials().then(saved => { if (saved) void login(saved); });
-  }, [demo, connection, login]);
+  }, [link, demo, connection, login]);
 
   const submit = async () => {
     if (busy) return;
@@ -55,7 +74,7 @@ export function Login() {
         </ul>
       </section>
       <section className="login-form">
-        <form onSubmit={event => { event.preventDefault(); void submit(); }}>
+        <form ref={form} onSubmit={event => { event.preventDefault(); void submit(); }}>
           <LanguagePicker />
           <img src="/apisnix-mark.png" alt="APISNIX" width={56} height={56} className="login-mark" />
           <p className="eyebrow">ApisnixPhone</p>

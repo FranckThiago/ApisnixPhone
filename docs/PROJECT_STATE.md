@@ -1,5 +1,24 @@
 # État du projet
 
+## Lien de connexion client — construit le 30 septembre 2026, non publié
+
+Demande de Franck : un lien qui connecte la ligne du client sans rien saisir,
+`https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>`. La page lit
+le lien, l'efface aussitôt de la barre d'adresse, remplit le formulaire et
+l'envoie comme à la main ; Chrome et Edge proposent ensuite d'enregistrer
+l'accès. Collé dans un onglet ouvert, il connecte depuis l'écran de connexion
+et il est ignoré si une ligne est déjà connectée ; une déconnexion reste
+définitive. Le lien porte le mot de passe en clair, choix assumé par Franck
+(comme les liens VICIdial, le client en est responsable ; changer le mot de
+passe le coupe). Typage, lint et 73 tests réussis ; démonstration vérifiée dans
+le navigateur (nouvel onglet, onglet ouvert, ligne déjà connectée,
+déconnexion). Guide client complété dans les trois langues, PDF toujours de
+8 pages. **Pas encore publié sur Hermes** ; essai avec une vraie ligne à faire.
+Format et encodage : [OPERATIONS](OPERATIONS.md#lien-de-connexion-dun-client).
+Limite : sur Safari et Firefox, la proposition d'enregistrer l'accès après un
+lien n'a pas été vérifiée ; à défaut, le client reclique sur son lien après
+une actualisation.
+
 ## Choix de la langue : français, anglais, espagnol — publié le 29 septembre 2026
 
 Demande de Franck. ApisnixPhone Web s'affiche en **français par défaut** ; l'anglais

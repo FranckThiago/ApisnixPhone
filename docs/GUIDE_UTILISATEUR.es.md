@@ -18,7 +18,8 @@ cuyas palabras siguen en francés para el script: "gauche" (izquierda),
   fiables.
 - Unos **auriculares con micrófono**: de ellos depende la calidad de tus
   llamadas.
-- Tu **usuario** y tu **contraseña**, entregados por tu administrador.
+- Tu **usuario** y tu **contraseña**, o un **enlace de conexión**, entregados
+  por tu administrador.
 - Mantén la pestaña abierta y el ordenador encendido: si la página se cierra o
   el PC entra en reposo, dejas de recibir llamadas.
 
@@ -31,6 +32,8 @@ ApisnixPhone nunca guarda tu contraseña. Tu navegador puede ofrecerte
 recordarla: si aceptas, al recargar la página vuelves a conectarte solo
 (Chrome, Edge) o el formulario se rellena (Safari). **Recházalo en un
 ordenador compartido.**
+¿Recibiste un **enlace de conexión**? Haz clic en él: la línea se conecta sola,
+sin escribir nada. Contiene tu contraseña: no lo compartas.
 
 ![Pantalla de inicio de sesión](guide/es/01-connexion.png "92mm")
 

@@ -15,7 +15,8 @@ the build script: "gauche" (left), "droite" (right), an optional height. -->
 - A computer with an up-to-date **Chrome or Edge** and a stable connection.
   Safari can make calls but is not recommended: its sound cues are unreliable.
 - A **headset with a microphone**: it makes the quality of your calls.
-- Your **username** and **password**, given by your administrator.
+- Your **username** and **password**, or a **sign-in link**, given by your
+  administrator.
 - Keep the tab open and the computer awake: if the page is closed or the PC
   goes to sleep, you no longer receive calls.
 
@@ -27,6 +28,8 @@ Appearance. Then enter your username and password, and click **Sign in**.
 ApisnixPhone never stores your password. Your browser may offer to save it:
 if you accept, reloading the page signs you back in by itself (Chrome, Edge)
 or fills in the form (Safari). **Decline on a shared computer.**
+Received a **sign-in link**? Click it: the line connects by itself, with nothing
+to type. It contains your password: do not share it.
 
 ![Sign-in screen](guide/en/01-connexion.png "92mm")
 
