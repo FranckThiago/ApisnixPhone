@@ -328,6 +328,8 @@ input[type=range] { accent-color: var(--brand); }
 .fine { font-size: 12px; color: var(--faint); text-align: center; }
 /* Link generator (/lien): the link reads in full, the copy button leads. */
 .login input.link-output { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: var(--surface-2); color: var(--muted); }
+.discreet-link { justify-self: center; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--faint); text-decoration: none; opacity: .8; transition: color .15s, opacity .15s; }
+.discreet-link:hover, .discreet-link:focus-visible { color: var(--brand); opacity: 1; }
 .link-actions { display: flex; gap: 8px; } .link-actions .primary { flex: 1; } .link-actions button:disabled { opacity: .5; cursor: not-allowed; }
 
 /* ---------- Responsive ---------- */

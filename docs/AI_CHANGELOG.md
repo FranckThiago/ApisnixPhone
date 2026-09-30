@@ -23,6 +23,10 @@
   sans autocomplétion pour que le navigateur ne retienne pas le mot de passe du
   client. Textes dans les trois langues ; 75 tests, lien produit vérifié en
   démonstration, bureau et mobile.
+- Enfin, à la demande de Franck, petit lien discret « Créer un lien de
+  connexion » sous l'aide de l'écran de connexion, et retour vers la connexion
+  sur `/lien`. Seules les trois captures de connexion du guide sont refaites ;
+  PDF toujours de 8 pages.
 
 ## 2026-09-29 — Choix de la langue publié sur Hermes
 

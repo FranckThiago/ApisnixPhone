@@ -1,4 +1,4 @@
-import { Check, Copy, Share2 } from 'lucide-react';
+import { ArrowLeft, Check, Copy, Share2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { applyTheme, storedTheme } from '../../app/theme';
 import { useI18n } from '../../i18n';
@@ -68,6 +68,7 @@ export function LinkGenerator() {
           </div>
           <p className="callout">{t('linkgen.warning')}</p>
           <p className="fine">{t('linkgen.note')}</p>
+          <a className="discreet-link" href="/"><ArrowLeft size={13} /> {t('linkgen.back')}</a>
         </form>
       </section>
     </main>

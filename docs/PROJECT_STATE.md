@@ -14,7 +14,8 @@ passe le coupe). Typage, lint et 75 tests réussis ; démonstration vérifiée d
 le navigateur (nouvel onglet, onglet ouvert, ligne déjà connectée,
 déconnexion). Guide client complété dans les trois langues, PDF toujours de
 8 pages. Générateur pour Franck sur `/lien` (identifiant, mot de passe, Copier
-ou Partager), calculé dans le navigateur, sans charger le téléphone ; lien
+ou Partager), atteint aussi par un petit lien discret en bas de l'écran de
+connexion ; calculé dans le navigateur, sans charger le téléphone ; lien
 produit reconnecté en démonstration, affichage bureau et mobile, clair et
 sombre contrôlé. **Pas encore publié sur Hermes** ; essai avec une vraie ligne à
 faire.

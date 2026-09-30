@@ -401,7 +401,8 @@ https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>
   le mot de passe de la ligne, puis **Copier le lien** (ou **Partager** sur un
   téléphone). Tout se fait dans le navigateur : rien n'est envoyé ni enregistré,
   et le téléphone n'y est pas chargé. La page est ouverte sans connexion : elle
-  ne fait que mettre en forme ce qu'on y tape.
+  ne fait que mettre en forme ce qu'on y tape. Un petit lien discret « Créer un
+  lien de connexion », en bas de l'écran de connexion, y mène au cas où.
 - Tout ce qui suit `#` reste dans le navigateur : ni Caddy ni un journal ne le
   voient. Ne jamais écrire `?u=` : ce serait envoyé au serveur.
 - À la main, encoder dans le mot de passe `&` en `%26`, `#` en `%23`, `%` en

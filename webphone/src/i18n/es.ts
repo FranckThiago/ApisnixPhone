@@ -70,6 +70,7 @@ export const es: Record<MessageKey, string> = {
   'login.registering': 'Registrando la línea…',
   'login.submit': 'Iniciar sesión',
   'login.help': 'APISNIX configura el dominio de antemano. ¿Necesitas ayuda? Contacta con tu administrador.',
+  'login.linkGenerator': 'Crear un enlace de conexión',
   // Sign-in link generator (/lien)
   'linkgen.title': 'Enlace de conexión',
   'linkgen.lead': 'Prepara el enlace que conecta la línea de un cliente con un clic.',
@@ -82,6 +83,7 @@ export const es: Record<MessageKey, string> = {
   'linkgen.shareText': 'Tu línea ApisnixPhone: haz clic en este enlace para conectarte.',
   'linkgen.warning': 'Comprueba el usuario y la contraseña: un enlace erróneo se rechaza, y varios intentos pueden bloquear las conexiones desde el sitio del cliente durante varios días.',
   'linkgen.note': 'No se envía ni se guarda nada: el enlace se prepara en este navegador. Contiene la contraseña: envíalo solo al titular de la línea.',
+  'linkgen.back': 'Volver al inicio de sesión',
 
   // Dialling
   'dial.empty': 'Escribe un número para llamar.',

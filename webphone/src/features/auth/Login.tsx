@@ -1,4 +1,4 @@
-import { ArrowRight, Eye, EyeOff, Headphones, Languages, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Headphones, Languages, Link2, ShieldCheck, Zap } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useApp, usePhone } from '../../app/AppContext';
 import { LANGUAGES, setLanguage, useI18n } from '../../i18n';
@@ -89,6 +89,8 @@ export function Login() {
           {connection === 'other-tab-active' && <p className="fine">{t('login.otherTab')}</p>}
           <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>
           <p className="fine">{t('login.help')}</p>
+          {/* For the administrator, out of the way: the page that prepares a customer's sign-in link. */}
+          <a className="discreet-link" href="/lien"><Link2 size={13} /> {t('login.linkGenerator')}</a>
         </form>
       </section>
     </main>

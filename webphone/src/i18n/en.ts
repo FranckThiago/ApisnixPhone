@@ -70,6 +70,7 @@ export const en: Record<MessageKey, string> = {
   'login.registering': 'Registering the line…',
   'login.submit': 'Sign in',
   'login.help': 'The domain is preset by APISNIX. Need help? Contact your administrator.',
+  'login.linkGenerator': 'Create a sign-in link',
   // Sign-in link generator (/lien)
   'linkgen.title': 'Sign-in link',
   'linkgen.lead': 'Prepare the link that connects a customer’s line in one click.',
@@ -82,6 +83,7 @@ export const en: Record<MessageKey, string> = {
   'linkgen.shareText': 'Your ApisnixPhone line: click this link to sign in.',
   'linkgen.warning': 'Check the username and password: a wrong link is refused, and several attempts can block sign-ins from the customer’s site for several days.',
   'linkgen.note': 'Nothing is sent or stored: the link is prepared in this browser. It contains the password, so send it only to the holder of the line.',
+  'linkgen.back': 'Back to sign-in',
 
   // Dialling
   'dial.empty': 'Enter a number to call.',
