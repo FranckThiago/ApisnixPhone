@@ -1,6 +1,6 @@
 # État du projet
 
-## Lien de connexion client — construit le 30 septembre 2026, non publié
+## Lien de connexion client et générateur — publiés le 30 septembre 2026
 
 Demande de Franck : un lien qui connecte la ligne du client sans rien saisir,
 `https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>`. La page lit
@@ -17,8 +17,12 @@ déconnexion). Guide client complété dans les trois langues, PDF toujours de
 ou Partager), atteint aussi par un petit lien discret en bas de l'écran de
 connexion ; calculé dans le navigateur, sans charger le téléphone ; lien
 produit reconnecté en démonstration, affichage bureau et mobile, clair et
-sombre contrôlé. **Pas encore publié sur Hermes** ; essai avec une vraie ligne à
-faire.
+sombre contrôlé. **Release active : `20260930-sign-in-link`, source `258cfcc`**,
+publiée sur Hermes à 18:02:28 Africa/Douala ; fichiers servis identiques au
+build, écran de connexion live avec le lien discret et `/lien` vérifiés sans
+erreur console, sans connexion de ligne. Un onglet ouvert avant doit être
+actualisé hors appel. Essai d'un vrai lien client encore à faire.
+[Preuves et retour](OPERATIONS.md#lien-de-connexion-et-générateur-publiés--30-septembre-2026).
 Format et encodage : [OPERATIONS](OPERATIONS.md#lien-de-connexion-dun-client).
 Limite : sur Safari et Firefox, la proposition d'enregistrer l'accès après un
 lien n'a pas été vérifiée ; à défaut, le client reclique sur son lien après
@@ -39,11 +43,11 @@ hors français, par une phrase traduite avec son code. Typage, lint, 69 tests
 vérifiée dans le navigateur en anglais et en espagnol, bascule et mémorisation
 comprises. Guide client livré en trois éditions de 8 pages :
 [français](GUIDE_UTILISATEUR.md), [anglais](GUIDE_UTILISATEUR.en.md),
-[espagnol](GUIDE_UTILISATEUR.es.md), avec leurs PDF. **Release active :
-`20260929-languages`, source `0324bbc`**, publiée sur Hermes à 17:28:03
-Africa/Douala ; fichiers servis identiques au build, connexion live vérifiée
-dans les trois langues sans se connecter. Un onglet ouvert avant doit être
-actualisé hors appel. [Preuves et retour](OPERATIONS.md#choix-de-la-langue-publié--29-septembre-2026).
+[espagnol](GUIDE_UTILISATEUR.es.md), avec leurs PDF. Release
+`20260929-languages`, source `0324bbc`, publiée sur Hermes à 17:28:03
+Africa/Douala, remplacée le 30 septembre par `20260930-sign-in-link` qui la
+contient ; fichiers servis identiques au build, connexion live vérifiée dans
+les trois langues sans se connecter. [Preuves et retour](OPERATIONS.md#état-précédent--choix-de-la-langue-29-septembre-2026).
 Usage en anglais ou en espagnol par un client non encore constaté. Limites : le champ date du
 rappel suit la langue du navigateur, pas celle de l'application ; une note ou un
 message déjà affiché garde la langue de son écriture.

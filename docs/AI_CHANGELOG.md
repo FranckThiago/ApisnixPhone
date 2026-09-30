@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-09-30 — Lien de connexion et générateur publiés sur Hermes
+
+- À la demande de Franck, release `20260930-sign-in-link` (source `258cfcc`)
+  publiée à 18:02:28 Africa/Douala. Build isolé : `npm ci` sans
+  vulnérabilité, typage, lint, 75 tests, build live ; archive SHA-256
+  `083a56677e1a1c634122586bababb94b1d344ac3b309702d34f942f37d38b55f`.
+- Sauvegarde protégée, manifeste contrôlé, bascule atomique depuis
+  `20260929-languages` sans rechargement Caddy ; fichiers publics identiques
+  au build, `/lien` servi par le repli SPA, `/api/me` anonyme 401, écran de
+  connexion et générateur live vérifiés sans erreur console.
+- Aucun lien ouvert ni connexion SIP pendant le contrôle ; essai d'un vrai
+  lien client encore à faire. Retour ciblé dans OPERATIONS.
+
 ## 2026-09-30 — Lien de connexion client
 
 - Demande de Franck : connecter la ligne d'un client par un simple lien

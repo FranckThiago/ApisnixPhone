@@ -391,7 +391,7 @@ empreintés restent immuables. Ne pas retirer cet ordre explicite.
 
 ### Lien de connexion d'un client
 
-Depuis le 30 septembre 2026 (code, pas encore publié sur Hermes) :
+En service depuis le 30 septembre 2026 (release `20260930-sign-in-link`) :
 
 ```
 https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>
@@ -420,9 +420,42 @@ https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>
   compte comme un échec pour Fail2ban : plusieurs clics depuis un même site
   peuvent bloquer tous ses postes (voir plus haut).
 
-## Choix de la langue publié — 29 septembre 2026
+## Lien de connexion et générateur publiés — 30 septembre 2026
 
-Release active **`20260929-languages`**, publiée à **17:28:03 Africa/Douala
+Release active **`20260930-sign-in-link`**, publiée à **18:02:28 Africa/Douala
+(17:02:28 UTC)** à la demande de Franck. Source `258cfcc` : la release
+précédente plus le lien de connexion `#u=…&p=…`, le générateur `/lien` et son
+petit lien sur l'écran de connexion. Build isolé depuis `git archive` :
+`npm ci` sans vulnérabilité, typage, lint, 75 tests, build live avec les trois
+variables publiques. Mode live et WSS attendu dans le bundle ; ni source map ni
+`.env`. Pas de migration ni changement PBX, Caddy, DNS, supervision ou compte.
+
+Archive ustar de 266 fichiers, SHA-256
+`083a56677e1a1c634122586bababb94b1d344ac3b309702d34f942f37d38b55f`.
+Sauvegarde protégée `/root/apisnix-phone-backups/20260930-sign-in-link/` :
+ancienne cible, manifeste antérieur, archive, manifeste, SHA256SUMS,
+source.json et heure de bascule. Empreinte vérifiée avant extraction,
+manifeste identique au build ; release root 0755/0644, lue par caddy sans
+écriture. Bascule atomique après contrôle de la cible précédente, sans
+rechargement Caddy.
+
+Contrôles : HTTPS 200, HTTP 308, `/` et `/lien` 200 `no-cache` servant l'index
+du build, JS `index-DRewTJMh.js`, `lib-DBcT_Opp.js` et CSS
+`index-BL9yqqXC.css` identiques au build, assets immuables, CSP et en-têtes
+inchangés, `/api/me` anonyme 401. Navigateur intégré : écran de connexion live
+sans Démonstration, lien discret menant à `/lien`, lien produit sur
+`https://phone.apisnix-crm.com/`, aucune erreur console. Aucun lien ouvert,
+aucune connexion SIP ni appel : un faux mot de passe compterait pour Fail2ban.
+Un onglet ouvert avant doit être actualisé **hors appel**.
+
+Retour ciblé : vérifier que `current` vise cette release puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20260929-languages`, conservée
+intacte. Ne pas restaurer de configuration globale.
+
+## État précédent — choix de la langue, 29 septembre 2026
+
+Release **`20260929-languages`**, remplacée le 30 septembre par
+`20260930-sign-in-link` qui la contient, publiée à **17:28:03 Africa/Douala
 (16:28:03 UTC)** à la demande de Franck. Source `0324bbc` : la release
 précédente (thème clair, correctif micro, volume) plus le choix de la langue
 français, anglais, espagnol. Build isolé depuis `git archive` : `npm ci` sans
