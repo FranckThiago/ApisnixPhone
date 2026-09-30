@@ -49,6 +49,11 @@ export function parseSignInLink(hash: string): Credentials | null {
   return username && password ? { username, password } : null;
 }
 
+/** The link the generator page (`/lien`) hands out: every character of the password survives the trip. */
+export function buildSignInLink(origin: string, { username, password }: Credentials) {
+  return `${origin}/#u=${encodeURIComponent(username.trim())}&p=${encodeURIComponent(password)}`;
+}
+
 /** Reads the link, then wipes it from the address bar: the password must not stay on screen, in a bookmark or a screen share. */
 function takeSignInLink() {
   if (typeof location === 'undefined' || !location.hash) return null;

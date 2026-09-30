@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseSignInLink } from '../src/features/auth/credentials';
+import { buildSignInLink, parseSignInLink } from '../src/features/auth/credentials';
 
 describe('sign-in link', () => {
   it('reads the username and the password from the fragment', () => {
@@ -24,5 +24,18 @@ describe('sign-in link', () => {
     expect(parseSignInLink('#p=secret')).toBeNull();
     expect(parseSignInLink('#u=&p=secret')).toBeNull();
     expect(parseSignInLink('#user=edu001&pass=secret')).toBeNull();
+  });
+});
+
+describe('sign-in link generator', () => {
+  it('builds a link the phone reads back exactly', () => {
+    const credentials = { username: 'edu001', password: 'a&b#c=d%e+f g/é' };
+    const link = buildSignInLink('https://phone.apisnix-crm.com', credentials);
+    expect(link.startsWith('https://phone.apisnix-crm.com/#u=edu001&p=')).toBe(true);
+    expect(parseSignInLink(new URL(link).hash)).toEqual(credentials);
+  });
+
+  it('writes a plain password as it is', () => {
+    expect(buildSignInLink('https://phone.apisnix-crm.com', { username: ' edu001 ', password: 'Abc123' })).toBe('https://phone.apisnix-crm.com/#u=edu001&p=Abc123');
   });
 });

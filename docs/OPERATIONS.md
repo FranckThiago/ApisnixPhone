@@ -397,12 +397,16 @@ Depuis le 30 septembre 2026 (code, pas encore publié sur Hermes) :
 https://phone.apisnix-crm.com/#u=<identifiant>&p=<mot de passe>
 ```
 
+- **Générateur : https://phone.apisnix-crm.com/lien.** Saisir l'identifiant et
+  le mot de passe de la ligne, puis **Copier le lien** (ou **Partager** sur un
+  téléphone). Tout se fait dans le navigateur : rien n'est envoyé ni enregistré,
+  et le téléphone n'y est pas chargé. La page est ouverte sans connexion : elle
+  ne fait que mettre en forme ce qu'on y tape.
 - Tout ce qui suit `#` reste dans le navigateur : ni Caddy ni un journal ne le
   voient. Ne jamais écrire `?u=` : ce serait envoyé au serveur.
-- Dans le mot de passe, encoder `&` en `%26`, `#` en `%23`, `%` en `%25` et
-  l'espace en `%20` ; `+` et `=` restent tels quels. Un mot de passe en lettres
-  et chiffres s'écrit donc directement. Dans une console de navigateur,
-  `encodeURIComponent('…')` donne la forme encodée.
+- À la main, encoder dans le mot de passe `&` en `%26`, `#` en `%23`, `%` en
+  `%25` et l'espace en `%20` ; `+` et `=` restent tels quels. Le générateur le
+  fait seul.
 - À l'ouverture, la page lit le lien, l'efface de la barre d'adresse, remplit le
   formulaire et l'envoie : mêmes contrôles qu'à la main, puis Chrome et Edge
   proposent d'enregistrer l'accès pour les actualisations suivantes. Collé dans

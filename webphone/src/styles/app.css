@@ -326,6 +326,9 @@ input[type=range] { accent-color: var(--brand); }
 .login-form h1 { margin: 0; } .password { position: relative; display: block; } .password .icon-button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); }
 .form-error { padding: 10px 12px; border-radius: 10px; background: var(--danger-soft); color: var(--danger); font-weight: 600; font-size: 13px; }
 .fine { font-size: 12px; color: var(--faint); text-align: center; }
+/* Link generator (/lien): the link reads in full, the copy button leads. */
+.login input.link-output { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: var(--surface-2); color: var(--muted); }
+.link-actions { display: flex; gap: 8px; } .link-actions .primary { flex: 1; } .link-actions button:disabled { opacity: .5; cursor: not-allowed; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1240px) {

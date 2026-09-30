@@ -225,7 +225,7 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 
 | Écran | Contenu et comportement |
 | --- | --- |
-| Connexion | Logo, identifiant et mot de passe ; domaine préconfiguré ; erreur lisible ; pas de jargon SIP en premier plan. Lien de connexion `#u=…&p=…` qui remplit et envoie le formulaire, puis s'efface de l'adresse (demande de Franck, 30 septembre ; format dans OPERATIONS) |
+| Connexion | Logo, identifiant et mot de passe ; domaine préconfiguré ; erreur lisible ; pas de jargon SIP en premier plan. Lien de connexion `#u=…&p=…` qui remplit et envoie le formulaire, puis s'efface de l'adresse, et générateur pour l'administrateur sur `/lien` (demande de Franck, 30 septembre ; format dans OPERATIONS) |
 | Préparation audio | Choisir micro/casque, vérifier le niveau micro, écouter un son local sur clic ; état de permission explicite |
 | Journal | Onglets Appels / Rappels ; liste d’appels recherchable, Tous/Sortants/Entrants/Manqués, date/durée/pays/résultat ; rappel depuis chaque ligne. Sur écran compact, cinq boutons de navigation gardent Appel au centre |
 | Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative |

@@ -16,6 +16,13 @@
 - Tests `tests/signInLink.test.ts` (73 au total), typage, lint ; démonstration
   vérifiée dans le navigateur intégré. Guides FR/EN/ES et PDF (8 pages)
   complétés, format documenté dans OPERATIONS. Non publié sur Hermes.
+- Puis, à la demande de Franck, générateur de liens : page `/lien`
+  (`LinkGenerator.tsx`, `buildSignInLink`), rendue par `main.tsx` sans
+  `AppProvider` ni téléphone ; copie par le presse-papiers avec repli
+  `execCommand`, partage natif quand le navigateur l'offre ; champs en texte
+  sans autocomplétion pour que le navigateur ne retienne pas le mot de passe du
+  client. Textes dans les trois langues ; 75 tests, lien produit vérifié en
+  démonstration, bureau et mobile.
 
 ## 2026-09-29 — Choix de la langue publié sur Hermes
 

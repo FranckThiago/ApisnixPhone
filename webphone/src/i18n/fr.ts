@@ -68,6 +68,18 @@ export const fr = {
   'login.registering': 'Enregistrement de la ligne…',
   'login.submit': 'Se connecter',
   'login.help': 'Le domaine est préconfiguré par APISNIX. Besoin d’aide ? Contactez votre administrateur.',
+  // Sign-in link generator (/lien)
+  'linkgen.title': 'Lien de connexion',
+  'linkgen.lead': 'Préparez le lien qui connecte la ligne d’un client en un clic.',
+  'linkgen.link': 'Lien à envoyer',
+  'linkgen.placeholder': 'Saisissez l’identifiant et le mot de passe',
+  'linkgen.copy': 'Copier le lien',
+  'linkgen.copied': 'Lien copié',
+  'linkgen.copyFailed': 'Copie impossible : sélectionnez le lien et copiez-le.',
+  'linkgen.share': 'Partager',
+  'linkgen.shareText': 'Votre ligne ApisnixPhone : cliquez sur ce lien pour vous connecter.',
+  'linkgen.warning': 'Vérifiez l’identifiant et le mot de passe : un lien faux est refusé, et plusieurs essais peuvent bloquer les connexions depuis le site du client pendant plusieurs jours.',
+  'linkgen.note': 'Rien n’est envoyé ni enregistré : le lien est préparé dans ce navigateur. Il contient le mot de passe, envoyez-le seulement au titulaire de la ligne.',
 
   // Dialling
   'dial.empty': 'Saisissez un numéro à appeler.',

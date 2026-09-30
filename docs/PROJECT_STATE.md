@@ -10,10 +10,14 @@ l'accès. Collé dans un onglet ouvert, il connecte depuis l'écran de connexion
 et il est ignoré si une ligne est déjà connectée ; une déconnexion reste
 définitive. Le lien porte le mot de passe en clair, choix assumé par Franck
 (comme les liens VICIdial, le client en est responsable ; changer le mot de
-passe le coupe). Typage, lint et 73 tests réussis ; démonstration vérifiée dans
+passe le coupe). Typage, lint et 75 tests réussis ; démonstration vérifiée dans
 le navigateur (nouvel onglet, onglet ouvert, ligne déjà connectée,
 déconnexion). Guide client complété dans les trois langues, PDF toujours de
-8 pages. **Pas encore publié sur Hermes** ; essai avec une vraie ligne à faire.
+8 pages. Générateur pour Franck sur `/lien` (identifiant, mot de passe, Copier
+ou Partager), calculé dans le navigateur, sans charger le téléphone ; lien
+produit reconnecté en démonstration, affichage bureau et mobile, clair et
+sombre contrôlé. **Pas encore publié sur Hermes** ; essai avec une vraie ligne à
+faire.
 Format et encodage : [OPERATIONS](OPERATIONS.md#lien-de-connexion-dun-client).
 Limite : sur Safari et Firefox, la proposition d'enregistrer l'accès après un
 lien n'a pas été vérifiée ; à défaut, le client reclique sur son lien après
