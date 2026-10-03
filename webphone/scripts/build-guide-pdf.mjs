@@ -45,7 +45,8 @@ const image = (alt, src, height) => `<img class="${shapes.get(src)}"${height ? `
 const frenchSpacing = text => text.replace(/« /g, '«' + NBSP).replace(/ ([»:;?!])/g, NBSP + '$1');
 const inline = (text, lang) => (lang === 'fr' ? frenchSpacing(escape(text)) : escape(text))
   .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-  .replace(/`([^`]+)`/g, '<code>$1</code>');
+  .replace(/`([^`]+)`/g, '<code>$1</code>')
+  .replace(/\[([^\]]+)\]\((https?:[^)\s]+|mailto:[^)\s]+)\)/g, '<a href="$2">$1</a>');
 
 /** Splits the small Markdown subset the guide uses into headings, image lines and ready HTML blocks. */
 function toBlocks(source, lang) {
@@ -82,7 +83,7 @@ function toBlocks(source, lang) {
 }
 
 /**
- * An image line titled "gauche" or "droite" takes that side; the text up to the next heading or image sits beside it.
+ * An image line titled "gauche" or "droite" takes that side; the text up to the next heading, image or table sits beside it.
  * A height in the title ("gauche 90mm", "60mm") overrides the default size of every image on the line.
  * These layout words stay French in every edition.
  */
@@ -99,7 +100,8 @@ function toHtml(source, sections, lang) {
     const side = { gauche: 'left', droite: 'right' }[place];
     if (!side) { html.push(figure); continue; }
     const text = [];
-    while (blocks[index + 1]?.html) text.push(blocks[++index].html);
+    // A table always takes the full width: it ends the text beside the image.
+    while (blocks[index + 1]?.html && !blocks[index + 1].html.startsWith('<table')) text.push(blocks[++index].html);
     html.push(`<div class="split ${side}">${figure}<div class="text">${text.join('')}</div></div>`);
   }
   return html.join('\n');
@@ -148,6 +150,7 @@ const pageHtml = ({ lang, settings, version, today, contents, intro, body }) => 
   h3 { font-size: 12pt; margin: 6mm 0 2mm; page-break-after: avoid; }
   p { margin: 0 0 3mm; } ul { margin: 0 0 3mm; padding-left: 5mm; } li { margin-bottom: 1.2mm; }
   strong { color: #0b1230; } code { font: 9.5pt ui-monospace, Menlo, monospace; padding: .3mm 1.2mm; border-radius: 1mm; background: #eef0ff; color: #1010ff; }
+  p a, li a, td a { color: #1010ff; text-decoration: none; white-space: nowrap; }
   figure { margin: 4mm 0 5mm; text-align: center; page-break-inside: avoid; }
   img { max-width: 100%; max-height: 118mm; border-radius: 2.5mm; border: .3mm solid #e4e8f2; box-shadow: 0 1.5mm 5mm #10184018; }
   figure.row { display: flex; justify-content: center; gap: 5mm; } figure.row img { height: 64mm; max-height: none; }

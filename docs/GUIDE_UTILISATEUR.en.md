@@ -22,6 +22,14 @@ the build script: "gauche" (left), "droite" (right), an optional height. -->
 
 ## 1. Sign in
 
+Open [https://apisnix-crm.com](https://apisnix-crm.com) and choose the
+**SIP login** card, or go straight to
+[https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
+
+![Home page](guide/en/00-accueil.png)
+
+![Sign-in screen](guide/en/01-connexion.png "gauche 55mm")
+
 At the top of the form, choose your **language**: Français, English or
 Español. The browser remembers it; you can also change it in Settings →
 Appearance. Then enter your username and password, and click **Sign in**.
@@ -31,22 +39,20 @@ or fills in the form (Safari). **Decline on a shared computer.**
 Received a **sign-in link**? Click it: the line connects by itself, with nothing
 to type. It contains your password: do not share it.
 
-![Sign-in screen](guide/en/01-connexion.png "92mm")
-
-A chime sounds and the green **Line ready** badge appears: you can call. On
-the first call, the browser asks for access to the **microphone**: choose
-**Allow**. Refused by mistake? Settings → Audio → **Allow the microphone** asks
-again, or explains how to unblock it if the browser remembered the refusal.
-
 | Message | What to do |
 | --- | --- |
 | Username or password refused | Check what you typed (capitals, zeros). The app does not retry by itself. |
 | Cannot connect to the server | Check your network, then try again. |
 | This line is already open in another tab | Close the other ApisnixPhone tab. If you have just signed out in this tab, reload the page. |
 
+A chime sounds and the green **Line ready** badge appears: you can call. On
+the first call, the browser asks for access to the **microphone**: choose
+**Allow**. Refused by mistake? Settings → Audio → **Allow the microphone** asks
+again, or explains how to unblock it if the browser remembered the refusal.
+
 ## 2. The main screen
 
-![Call log](guide/en/02-journal.png)
+![Call log](guide/en/02-journal.png "100mm")
 
 - **On the left**, the menu: Call log, Contacts, Audio, Settings. Callbacks
   are in the Call log, under the **Callbacks** tab. Your account and the red

@@ -1,5 +1,17 @@
 # État du projet
 
+## Guide client : accès par l'accueil APISNIX — 3 octobre 2026
+
+Demande de Franck : le guide ne disait pas comment arriver sur ApisnixPhone.
+La section « Se connecter » commence désormais comme le manuel agent : ouvrir
+https://apisnix-crm.com et choisir la carte **Connexion SIP** (encadrée en
+rouge sur une capture de l'accueil public, une par langue), ou aller
+directement sur https://phone.apisnix-crm.com. Les liens du PDF sont
+cliquables. Pour rester à 8 pages, la capture de connexion se place à gauche
+de son texte et le tableau des messages précède le paragraphe du carillon.
+Capture refaite par `webphone/scripts/home-screenshot.mjs`. Trois PDF
+reconstruits, 8 pages et sommaire inchangé. Aucun changement de l'application.
+
 ## Lien de connexion client et générateur — publiés le 30 septembre 2026
 
 Demande de Franck : un lien qui connecte la ligne du client sans rien saisir,

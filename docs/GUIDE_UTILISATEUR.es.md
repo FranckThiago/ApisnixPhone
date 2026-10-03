@@ -25,6 +25,14 @@ cuyas palabras siguen en francés para el script: "gauche" (izquierda),
 
 ## 1. Iniciar sesión
 
+Abre [https://apisnix-crm.com](https://apisnix-crm.com) y elige la tarjeta
+**Conexión SIP**, o ve directamente a
+[https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
+
+![Página de inicio](guide/es/00-accueil.png)
+
+![Pantalla de inicio de sesión](guide/es/01-connexion.png "gauche 55mm")
+
 En la parte superior del formulario, elige tu **idioma**: Français, English o
 Español. El navegador lo recuerda; también se cambia en Ajustes → Apariencia.
 Después escribe tu usuario y tu contraseña y pulsa **Iniciar sesión**.
@@ -35,7 +43,11 @@ ordenador compartido.**
 ¿Recibiste un **enlace de conexión**? Haz clic en él: la línea se conecta sola,
 sin escribir nada. Contiene tu contraseña: no lo compartas.
 
-![Pantalla de inicio de sesión](guide/es/01-connexion.png "92mm")
+| Mensaje | Qué hacer |
+| --- | --- |
+| Usuario o contraseña rechazados | Revisa lo que escribiste (mayúsculas, ceros). La aplicación no lo reintenta sola. |
+| No se puede conectar con el servidor | Comprueba tu red y vuelve a intentarlo. |
+| Esta línea ya está abierta en otra pestaña | Cierra la otra pestaña de ApisnixPhone. Si acabas de cerrar sesión en esta pestaña, recarga la página. |
 
 Suena un carillón y aparece la etiqueta verde **Línea lista**: ya puedes
 llamar. En la primera llamada, el navegador pide acceso al **micrófono**: elige
@@ -43,15 +55,9 @@ llamar. En la primera llamada, el navegador pide acceso al **micrófono**: elige
 micrófono** lo vuelve a pedir, o explica cómo desbloquearlo si el navegador
 recordó el rechazo.
 
-| Mensaje | Qué hacer |
-| --- | --- |
-| Usuario o contraseña rechazados | Revisa lo que escribiste (mayúsculas, ceros). La aplicación no lo reintenta sola. |
-| No se puede conectar con el servidor | Comprueba tu red y vuelve a intentarlo. |
-| Esta línea ya está abierta en otra pestaña | Cierra la otra pestaña de ApisnixPhone. Si acabas de cerrar sesión en esta pestaña, recarga la página. |
-
 ## 2. La pantalla principal
 
-![Registro de llamadas](guide/es/02-journal.png)
+![Registro de llamadas](guide/es/02-journal.png "100mm")
 
 - **A la izquierda**, el menú: Registro, Contactos, Audio, Ajustes. Las
   devoluciones de llamada están en el Registro, en la pestaña

@@ -8,12 +8,15 @@ fictifs. Version décrite : ApisnixPhone Web 0.1.0.
 
 <!-- Mise en page du PDF (webphone/scripts/build-guide-pdf.mjs) : une image
 titrée "gauche" ou "droite" se place sur ce côté, avec à côté d'elle le texte
-qui la suit jusqu'au prochain titre ou à la prochaine image. Plusieurs images
+qui la suit jusqu'au prochain titre, à la prochaine image ou au prochain
+tableau. Plusieurs images
 sur une même ligne s'affichent côte à côte, légendées par leur texte
 alternatif. Une hauteur dans le titre ("gauche 90mm", "60mm") remplace la
 taille par défaut ; l'ajuster pour éviter les blancs en bas de page.
 Versions anglaise et espagnole : GUIDE_UTILISATEUR.en.md et .es.md, captures
-dans guide/en et guide/es ; les garder alignées sur ce texte. -->
+dans guide/en et guide/es ; les garder alignées sur ce texte. La capture
+00-accueil vient de l'accueil public apisnix-crm.com, pas de la démonstration :
+la refaire avec webphone/scripts/home-screenshot.mjs. -->
 
 ## Avant de commencer
 
@@ -28,6 +31,14 @@ dans guide/en et guide/es ; les garder alignées sur ce texte. -->
 
 ## 1. Se connecter
 
+Ouvrez [https://apisnix-crm.com](https://apisnix-crm.com) et choisissez la carte
+**Connexion SIP**, ou allez directement sur
+[https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
+
+![Page d'accueil](guide/00-accueil.png)
+
+![Écran de connexion](guide/01-connexion.png "gauche 55mm")
+
 En haut du formulaire, choisissez votre **langue** : Français, English ou
 Español. Le navigateur la retient ; elle se change aussi dans Réglages →
 Apparence. Saisissez ensuite votre identifiant et votre mot de passe, puis
@@ -39,7 +50,11 @@ reconnecte toute seule (Chrome, Edge) ou préremplit le formulaire (Safari).
 Vous avez reçu un **lien de connexion** ? Cliquez dessus : la ligne se connecte
 toute seule, sans rien saisir. Il contient votre mot de passe : ne le partagez pas.
 
-![Écran de connexion](guide/01-connexion.png "92mm")
+| Message | Que faire |
+| --- | --- |
+| Identifiant ou mot de passe refusé | Vérifiez la saisie (majuscules, zéros). L'application ne réessaie pas toute seule. |
+| Connexion au serveur impossible | Vérifiez votre réseau, puis réessayez. |
+| Cette ligne est déjà ouverte dans un autre onglet | Fermez l'autre onglet ApisnixPhone. Si vous venez de vous déconnecter dans cet onglet, actualisez la page. |
 
 Un carillon retentit et la pastille verte **Ligne prête** apparaît : vous pouvez
 appeler. Au premier appel, le navigateur demande l'accès au **microphone** :
@@ -47,15 +62,9 @@ choisissez **Autoriser**. Refusé par erreur ? Réglages → Audio → **Autoris
 micro** le redemande, ou indique comment le débloquer si le navigateur a retenu
 le refus.
 
-| Message | Que faire |
-| --- | --- |
-| Identifiant ou mot de passe refusé | Vérifiez la saisie (majuscules, zéros). L'application ne réessaie pas toute seule. |
-| Connexion au serveur impossible | Vérifiez votre réseau, puis réessayez. |
-| Cette ligne est déjà ouverte dans un autre onglet | Fermez l'autre onglet ApisnixPhone. Si vous venez de vous déconnecter dans cet onglet, actualisez la page. |
-
 ## 2. L'écran principal
 
-![Journal d'appels](guide/02-journal.png)
+![Journal d'appels](guide/02-journal.png "100mm")
 
 - **À gauche**, le menu : Journal, Contacts, Audio, Réglages. Les Rappels se
   trouvent dans le Journal, sous l’onglet **Rappels**. Votre

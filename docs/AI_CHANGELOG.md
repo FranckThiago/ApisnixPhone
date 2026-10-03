@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-10-03 — Guide client : arriver sur ApisnixPhone depuis l'accueil
+
+- Demande de Franck, en s'inspirant du manuel agent : « Se connecter » indique
+  d'ouvrir https://apisnix-crm.com et de choisir la carte Connexion SIP, ou
+  d'aller sur https://phone.apisnix-crm.com, dans les trois éditions.
+- `webphone/scripts/home-screenshot.mjs` capture la rangée de cartes de
+  l'accueil public (`?lang=fr|en|es`), carte ApisnixPhone encadrée en rouge,
+  vers `docs/guide/00-accueil.png`, `en/`, `es/`. Lecture seule, sans connexion.
+- `build-guide-pdf.mjs` : liens Markdown rendus cliquables, en bleu et sans
+  coupure (même règle que le générateur des manuels du dépôt de gestion) ; un
+  tableau termine le texte placé à côté d'une image.
+- Section 1 réordonnée (capture de connexion à gauche du texte, tableau, puis
+  carillon) et journal à 100 mm : trois PDF de 8 pages, sommaire inchangé.
+
 ## 2026-09-30 — Lien de connexion et générateur publiés sur Hermes
 
 - À la demande de Franck, release `20260930-sign-in-link` (source `258cfcc`)
