@@ -2,7 +2,7 @@
 
 ## Départ de page et appels abandonnés — 6 octobre 2026
 
-Correctif préparé pour `20261006-call-lifecycle` : le contrôleur global demande
+**En service : `20261006-call-lifecycle`**, source `bd386ae`, 23:40 Douala : le contrôleur global demande
 le raccrochage lors de `pagehide`, après l’avertissement natif `beforeunload`.
 Annuler le départ, changer de rubrique ou masquer l’onglet ne coupe pas l’appel.
 Un retour depuis le cache de navigation recharge une session propre. Une perte
@@ -13,13 +13,15 @@ La remise du BYE/CANCEL reste une tentative : un navigateur tué ou une coupure
 réseau exige aussi un garde-fou PBX, suivi dans le dépôt privé. Le code 480
 n’accuse plus systématiquement le correspondant. 92 tests, typage, lint et
 build live réussis. Les guides conseillent de raccrocher avant de quitter ;
-leurs illustrations de navigation ne changent pas. Publication détaillée dans
+leurs illustrations de navigation ne changent pas. Trois PDF huit pages relus.
+Navigation réelle : appel interne libéré puis reconnexion réussie. Fermeture
+forcée non garantie ; session timers serveur essayés puis retirés. Détails dans
 [OPERATIONS.md](OPERATIONS.md).
 
 
 ## Numéros entrants et tonalités — 6 octobre 2026
 
-**En service : 20261006-incoming-identity**, source `6383a37`, publié
+**Version précédente : 20261006-incoming-identity**, source `6383a37`, publié
 à 17:18 Douala. Plus de déduction France/Pérou à partir d’un entrant
 national ambigu. Les numéros internationaux complets restent identifiés ;
 identité SIP ou nom numérique concordant utilisable pour retrouver l’indicatif,

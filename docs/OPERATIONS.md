@@ -2,8 +2,8 @@
 
 ## Raccrochage au départ de page — 6 octobre 2026
 
-Release préparée `20261006-call-lifecycle`, retour prévu vers
-`20261006-incoming-identity`. Correctif `pagehide` installé au niveau global,
+**En service : `20261006-call-lifecycle`**, source `bd386ae`, publiée le
+6 octobre à 23:40:06 Africa/Douala. Retour vers `20261006-incoming-identity`. Correctif `pagehide` installé au niveau global,
 avertissement avant départ conservé ; retour bfcache rechargé et terminaison
 explicitement demandée à la perte WSS. Pas de coupure au simple changement de
 rubrique ou de visibilité. Message 480 prudent FR/EN/ES. Tests de régression
@@ -12,7 +12,25 @@ total, typage, lint, build live réussis. Aucune migration, dépendance ni compt
 modifié dans le frontend. Les garanties PBX sont documentées dans le dépôt
 privé ; un envoi au départ n’est jamais garanti en cas de crash ou de coupure.
 
-Après publication, recharger hors appel pour charger le nouveau JavaScript.
+Build isolé git archive / npm ci, 266 fichiers, archive SHA-256
+`64c75004688ae58589ad3510424637512a013734df76baf36722bf3ca3ae2cdc`.
+Sauvegarde `/root/apisnix-phone-backups/20261006-call-lifecycle/` sur Hermes,
+ancienne cible et manifestes protégés ; symlink atomique, pas de redémarrage.
+JS `index-DfUM_rAy.js`, CSS `index-soO7B-ST.css`, HTTPS identique au build.
+Le dossier racine créé sous umask 077 a causé un bref 404 initial ; corrigé
+0755 et lecture Caddy contrôlée. Vérifier cette lecture **avant** toute future
+bascule, y compris le dossier racine, pas seulement les sous-dossiers.
+
+Test interne réel : changement de rubrique sans coupure, départ de page avec
+libération du canal et compteur revenu à zéro, puis reconnexion Ligne prête.
+Fermeture forcée de l’onglet par l’outil : libération non garantie, test nettoyé
+manuellement. L’essai de session timers PBX a été retiré car insuffisant ;
+aucun réglage serveur durable ajouté. La disparition brutale reste une limite.
+Trois guides PDF reconstruits et relus : huit pages chacun.
+
+Retour : vérifier current encore sur cette release puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261006-incoming-identity`.
+Pas de restauration DB/PBX. Recharger hors appel pour charger le nouveau JavaScript.
 Les captures des guides ne montrent aucun des chemins techniques modifiés ;
 les trois textes de fin de guide sont corrigés sans nouvelle mise en page.
 

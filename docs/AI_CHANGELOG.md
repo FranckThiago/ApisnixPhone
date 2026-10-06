@@ -6,7 +6,10 @@ Correctif du cycle de vie de la page et de la perte WSS, sans interrompre
 les navigations internes. Message 480 prudent dans les trois langues.
 92 tests, typage et lint réussis ; build live produit. Architecture, état,
 exploitation et guides synchronisés ; publication suivie dans OPERATIONS.
-Aucune migration ni dépendance ajoutée.
+Aucune migration ni dépendance ajoutée. Release publiée à 23:40 Douala,
+HTTPS et test interne de navigation puis reconnexion vérifiés. Fermeture forcée
+non garantie ; essai serveur retiré. Bref 404 de droits racine corrigé et
+contrôle préalable de lecture Caddy ajouté à la procédure.
 
 ## Numéros entrants et tonalités — 6 octobre 2026
 
