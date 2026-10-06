@@ -182,6 +182,9 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
 
 ![Réglages](guide/13-reglages.png "droite")
 
+- **Poste connecté** : en tête de la page, l'identifiant de votre ligne, son
+  serveur et son état. Sur téléphone, c'est ici qu'on le lit ; une capture de
+  cet écran suffit pour que le support sache quel poste est connecté.
 - **Audio** : autorisation et choix du micro et du casque, **sensibilité du
   micro**, **Tester le micro**, annulation d'écho, réduction de bruit, sons de
   la ligne et du clavier.

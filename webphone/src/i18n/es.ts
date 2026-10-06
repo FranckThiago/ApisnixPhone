@@ -403,6 +403,8 @@ export const es: Record<MessageKey, string> = {
   'settings.erased': 'Datos de este dispositivo borrados.',
   'settings.erase': 'Borrar los datos de este dispositivo',
   'settings.account': 'Cuenta',
+  'settings.identity': 'Extensión conectada',
+  'settings.server': 'Servidor',
   'settings.username': 'Usuario',
   'settings.mode': 'Modo',
   'settings.modeDemo': 'Demostración',

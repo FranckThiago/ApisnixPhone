@@ -165,6 +165,9 @@ otherwise, contact APISNIX.
 
 ![Settings](guide/en/13-reglages.png "droite")
 
+- **Connected extension**: at the top of the page, your line's username, its
+  server and its status. On a phone this is where you read it; a screenshot
+  of this screen tells support which extension is connected.
 - **Audio**: microphone permission and choice of microphone and headset,
   **microphone sensitivity**, **Test the microphone**, echo cancellation,
   noise reduction, line and keypad sounds.

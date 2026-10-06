@@ -1,6 +1,8 @@
 import { BellRing, Database, Headphones, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
+import { Avatar } from '../../components/Avatar';
+import { ConnectionPill } from '../calls/PhoneDock';
 import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
 import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
@@ -31,7 +33,13 @@ export function Settings() {
   return (
     <div className="page">
       <header className="page-head"><div><p className="eyebrow">{t('settings.eyebrow')}</p><h1><span className="swoosh">{t('settings.title')}</span></h1>
-        <p className="lead">{t('settings.lead')}</p></div></header>
+        <p className="lead">{t('settings.lead')}</p></div>
+        {/* The sidebar hides the account on a narrow screen: here the extension stays readable, and on a screenshot. */}
+        <div className="identity" role="group" aria-label={t('settings.identity')}>
+          <Avatar name={account?.username} size={44} />
+          <span className="identity-who"><small>{t('settings.identity')}</small><b>{account?.username}</b><small>{account?.domain}</small></span>
+          <ConnectionPill />
+        </div></header>
       <div className="settings-grid">
         <Section icon={<Headphones size={18} />} title={t('settings.audio')}>
           <AudioSettings />
@@ -90,7 +98,7 @@ export function Settings() {
         </Section>
 
         <Section icon={<Info size={18} />} title={t('settings.account')}>
-          <dl className="about"><div><dt>{t('settings.username')}</dt><dd>{account?.username}</dd></div><div><dt>{t('settings.mode')}</dt><dd>{t(demo ? 'settings.modeDemo' : 'settings.modeLive')}</dd></div>
+          <dl className="about"><div><dt>{t('settings.username')}</dt><dd>{account?.username}</dd></div><div><dt>{t('settings.server')}</dt><dd>{account?.domain}</dd></div><div><dt>{t('settings.mode')}</dt><dd>{t(demo ? 'settings.modeDemo' : 'settings.modeLive')}</dd></div>
             <div><dt>{t('settings.version')}</dt><dd>ApisnixPhone Web 0.1.0</dd></div></dl>
           <button type="button" className="ghost danger" onClick={() => {
             const call = phone.getSnapshot().call;

@@ -402,6 +402,8 @@ export const fr = {
   'settings.erased': 'Données de cet appareil effacées.',
   'settings.erase': 'Effacer les données de cet appareil',
   'settings.account': 'Compte',
+  'settings.identity': 'Poste connecté',
+  'settings.server': 'Serveur',
   'settings.username': 'Identifiant',
   'settings.mode': 'Mode',
   'settings.modeDemo': 'Démonstration',

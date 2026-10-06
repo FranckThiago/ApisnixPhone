@@ -175,6 +175,9 @@ si no, contacta con APISNIX.
 
 ![Ajustes](guide/es/13-reglages.png "droite")
 
+- **Extensión conectada**: en la parte superior de la página, el usuario de su
+  línea, su servidor y su estado. En el teléfono es aquí donde se lee; una
+  captura de esta pantalla indica al soporte qué extensión está conectada.
 - **Audio**: permiso y elección del micrófono y de los auriculares,
   **sensibilidad del micrófono**, **Probar el micrófono**, cancelación de eco,
   reducción de ruido, sonidos de la línea y del teclado.

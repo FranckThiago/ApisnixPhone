@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-10-06 — Poste connecté visible dans les Réglages
+
+Demande de Franck : sur téléphone ou fenêtre réduite, la barre latérale masque
+le compte, et une capture envoyée par un client ne disait pas à quel poste il
+était connecté. Les Réglages s'ouvrent désormais sur une carte « Poste
+connecté » : identifiant, serveur et pastille d'état de la ligne ; la rubrique
+Compte affiche aussi le serveur. Textes dans les trois langues, guide et
+captures mis à jour. Typage, lint et 81 tests réussis ; vérifié en démo à 375
+px et 1 400 px. Aucune migration ni changement serveur.
+
 ## Récupération de l’affichage — 6 octobre 2026
 
 Publié sur Hermes : **20261006-display-recovery**, source 4b671aa,

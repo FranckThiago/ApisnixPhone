@@ -216,6 +216,14 @@ bascule doit être actualisé pour obtenir les sonneries, ce qui reconnecte la
 ligne. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 Les applications Android et Windows ne sont pas concernées.
 
+## Poste connecté dans les Réglages — 6 octobre 2026
+
+Les Réglages commencent par une carte « Poste connecté » : identifiant de la
+ligne, serveur et pastille d'état, lisible sur téléphone où la barre latérale
+masque le compte. Une capture de cet écran suffit au support pour identifier le
+poste. La rubrique Compte indique aussi le serveur. Guide et captures à jour
+dans les trois langues.
+
 ## Rappels dans le Journal — 24 septembre 2026
 
 La navigation compacte contient cinq boutons : Journal, Contacts, Appel au
