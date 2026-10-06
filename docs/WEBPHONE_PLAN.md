@@ -408,7 +408,8 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
 3. Montrer le numéro qui sera composé avant Appeler ; ne pas convertir
    silencieusement `00` en `+`, ni un numéro national en international.
 4. Utiliser libphonenumber-js pour **afficher** pays/indicatif ; ne pas remplacer
-   `dialTarget` par sa propriété normalisée `.number`.
+   `dialTarget` par sa propriété normalisée `.number` lors de la composition.
+   La récupération concordante d’une identité entrante ci-dessous est distincte.
 5. Règles d'affichage demandées par Franck le 21 septembre, sans effet sur les
    chiffres composés : un numéro commençant par `0` (hors `00`) est lu comme
    national **France** (`NATIONAL_COUNTRY` dans `numbers.ts`) ; `1` suivi d'un
@@ -422,11 +423,25 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
    `00` et sans `0` initial est donc lu avec son indicatif. `1001` et les numéros
    de 6 chiffres au plus restent « Numéro interne » ; indicatif inconnu : globe
    et « Pays non déterminé ».
-   Depuis le 6 octobre, un entrant de neuf chiffres validable comme national
-   français après ajout du zéro reçoit le pays France (numéro reçu conservé).
-   C’est un repli lié au format national du PBX, pas une preuve universelle du
-   pays. Les indicatifs explicites +/00 restent prioritaires. Le préfixe carrier
-   `90033` suivi de neuf chiffres est affiché France sur les sortants.
+   Correction du 6 octobre : ces raccourcis nationaux concernent la composition,
+   pas les entrants. Un entrant de 7–10 chiffres sans +/00 reste de pays inconnu,
+   y compris les neuf chiffres français et les dix chiffres canadiens. Les
+   internationaux explicites +/00 et les formats internationaux complets de
+   11–15 chiffres sans zéro initial sont validés par les métadonnées avant
+   d’afficher un pays ; un indicatif incomplet ne suffit plus. Les extensions
+   numériques de six chiffres au plus restent internes.
+   À réception, `incomingNumber` accepte une identité SIP P-Asserted-Identity
+   ou un nom purement numérique portant un international valide uniquement
+   si le numéro national correspond exactement (ou avec son préfixe national),
+   sans conflit entre les candidats. Privacy interdit cette récupération,
+   les anonymes et extensions sont exclus. Un numéro déjà explicite est conservé.
+   Le numéro reçu reste dans `rawInput` et `receivedNumber` du journal local ;
+   le numéro complet récupéré sert à la carte, au rappel et au contact.
+   Cette identité n’est pas une preuve d’authenticité de l’appelant. Si le PBX
+   ne transmet pas l’indicatif, l’application ne peut pas le reconstruire.
+   Le journal central et les anciens appels sans ces métadonnées gardent leur
+   numéro brut ; leur pays ambigu est recalculé comme inconnu, sans migration.
+   Le préfixe carrier `90033` suivi de neuf chiffres affiche France en sortie.
 6. Un choix explicite dans un sélecteur d'indicatif peut insérer ce préfixe en
    le montrant ; le simple changement de langue/région ne modifie jamais la saisie.
 7. Filtrer les caractères de contrôle et les URL SIP arbitraires ; construire

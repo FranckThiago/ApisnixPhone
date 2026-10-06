@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { describeNumber, filterDialCharacters, parseDialInput } from '../src/domain/numbers';
+import { describeNumber, incomingNumber, filterDialCharacters, parseDialInput } from '../src/domain/numbers';
 
 describe('dial input', () => {
   it('adapts leading + while preserving national zeros and carrier/service prefixes', () => {
@@ -63,9 +63,9 @@ describe('display metadata', () => {
 });
 
 // Synthetic numbers only: incoming national IDs do not become US numbers.
-it('uses the French incoming format without changing caller IDs or explicit international codes', () => {
+it('leaves incoming national formats unknown without altering caller IDs or explicit international codes', () => {
   for (const number of ['612345678', '123456789']) {
-    expect(describeNumber(number, 'inbound')).toMatchObject({ country: 'FR', display: number });
+    expect(describeNumber(number, 'inbound')).toMatchObject({ kind: 'unknown', display: number });
   }
   expect(describeNumber('15145550100', 'inbound').country).toBe('CA');
   expect(describeNumber('12125550100', 'inbound').country).toBe('US');
@@ -73,4 +73,33 @@ it('uses the French incoming format without changing caller IDs or explicit inte
   expect(describeNumber('1001', 'inbound').country).toBeUndefined();
   expect(describeNumber('90033123456789', 'outbound')).toMatchObject({ country: 'FR', display: '90033123456789' });
   expect(describeNumber(parseDialInput('+33123456789').dialTarget).country).toBe('FR');
+});
+
+// Fictional Canadian subscriber; both national and explicit international forms.
+it('does not mistake a Canadian national ID for Peru, nor a French one for another country', () => {
+  for (const value of ['5145550100', '4185550100', '2125550100', '123456789', '0612345678']) {
+    expect(describeNumber(value, 'inbound')).toMatchObject({ kind: 'unknown', display: value });
+    expect(describeNumber(value, 'inbound').country).toBeUndefined();
+  }
+  expect(describeNumber('+15145550100', 'inbound').country).toBe('CA');
+  expect(describeNumber('0015145550100', 'inbound').country).toBe('CA');
+  expect(describeNumber('+51987654321', 'inbound').country).toBe('PE');
+  expect(describeNumber('33612345678', 'inbound').country).toBe('FR');
+  expect(describeNumber('+1514', 'inbound').country).toBeUndefined();
+  expect(describeNumber('0612345678', 'outbound').country).toBe('FR');
+});
+
+it('recovers only a complete, valid and concordant provider identity', () => {
+  expect(incomingNumber('5145550100', ['+15145550100'])).toBe('+15145550100');
+  expect(incomingNumber('5145550100', ['15145550100'])).toBe('+15145550100');
+  expect(incomingNumber('612345678', ['0033612345678'])).toBe('+33612345678');
+  expect(incomingNumber('0612345678', ['+33612345678'])).toBe('+33612345678');
+  expect(incomingNumber('+15145550100', ['+12125550100'])).toBe('+15145550100');
+  for (const candidates of [[], ['Canada'], ['+12125550100'], ['call +15145550100'], ['+1514']]) {
+    expect(incomingNumber('5145550100', candidates)).toBe('5145550100');
+  }
+  expect(incomingNumber('anonymous', ['+15145550100'])).toBe('anonymous');
+  expect(incomingNumber('1001', ['+15145550100'])).toBe('1001');
+  // Both +1 and +51 can validate: conflicting evidence must not choose one.
+  expect(incomingNumber('5143650100', ['+15143650100', '+5143650100'])).toBe('5143650100');
 });

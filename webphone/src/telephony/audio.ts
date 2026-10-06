@@ -389,8 +389,8 @@ export class CallProgressSounds implements CallProgressSoundPlayer {
         oscillator.frequency.value = 440;
         const start = context.currentTime + offset;
         envelope.gain.setValueAtTime(0.0001, start);
-        envelope.gain.exponentialRampToValueAtTime(0.13 * volume, start + 0.025);
-        envelope.gain.setValueAtTime(0.13 * volume, start + 0.18);
+        envelope.gain.exponentialRampToValueAtTime(0.21 * volume, start + 0.025);
+        envelope.gain.setValueAtTime(0.21 * volume, start + 0.18);
         envelope.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
         oscillator.connect(envelope).connect(soundOutput(context));
         oscillator.addEventListener('ended', () => this.active.delete(oscillator));
@@ -413,7 +413,7 @@ export class CallProgressSounds implements CallProgressSoundPlayer {
     }
     const start = context.currentTime;
     // A compact service-bell « gling »: a clear strike with two quick overtones.
-    for (const [ratio, level, decay] of [[1, 0.18, 0.85], [2.01, 0.08, 0.52], [3.9, 0.035, 0.3]] as const) {
+    for (const [ratio, level, decay] of [[1, 0.288, 0.85], [2.01, 0.128, 0.52], [3.9, 0.056, 0.3]] as const) {
       const oscillator = context.createOscillator();
       const envelope = context.createGain();
       oscillator.type = 'sine';

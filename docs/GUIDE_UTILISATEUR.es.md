@@ -229,6 +229,6 @@ botón **Colgar**.
 - Cerrar la pestaña o recargar la página durante una llamada **corta la
   llamada**.
 - La bandera indica el país del **número**, no dónde está la persona. Un
-  número que empieza por `0` se lee como número francés.
+  número recibido sin indicativo fiable aparece con país no determinado.
 - Para cualquier duda sobre tu cuenta o tus permisos de llamada, contacta con
   tu administrador de APISNIX.

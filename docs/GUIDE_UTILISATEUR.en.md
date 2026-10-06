@@ -216,6 +216,6 @@ button.
 
 - Closing the tab or reloading the page during a call **ends the call**.
 - The flag shows the country of the **number**, not where the person is. A
-  number starting with `0` is read as a French number.
+  received number without a reliable country code has an unknown country.
 - For any question about your account or your calling rights, contact your
   APISNIX administrator.

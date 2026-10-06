@@ -25,6 +25,8 @@ export interface CallRecord {
   id: string;
   direction: CallDirection;
   dialTarget: string;
+  /** Original incoming caller ID, before concordant provider metadata recovery. */
+  receivedNumber?: string;
   remoteName?: string;
   startedAt: number;
   answeredAt?: number;

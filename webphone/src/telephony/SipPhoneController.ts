@@ -1,3 +1,4 @@
+import { incomingNumber } from '../domain/numbers';
 import type { CallOutcome } from '../domain/types';
 import { t, type MessageKey } from '../i18n';
 import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, RemoteVoice, Ringer } from './audio';
@@ -8,6 +9,8 @@ import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSn
 export interface ManagedSession {
   id: string;
   remoteIdentity: { displayName?: string; uri: { user?: string } };
+  assertedIdentity?: { uri: { user?: string } };
+  request?: { getHeader(name: string): string | undefined };
 }
 
 interface Rejection { message: { statusCode?: number } }
@@ -202,7 +205,11 @@ export class SipPhoneController implements PhoneController {
       this.rejectionReason = undefined;
       this.localHangup = false;
       const number = session.remoteIdentity.uri.user ?? '';
-      this.update({ call: { id: session.id, direction: 'inbound', rawInput: number, dialTarget: number, remoteName: session.remoteIdentity.displayName || undefined,
+      const privateIdentity = /(?:^|;)\s*(?:id|user|header)\s*(?:;|$)/i.test(session.request?.getHeader('Privacy') ?? '');
+      const canonical = privateIdentity ? number : incomingNumber(number, [session.assertedIdentity?.uri.user, session.remoteIdentity.displayName]);
+      const remoteName = session.remoteIdentity.displayName;
+      this.update({ call: { id: session.id, direction: 'inbound', rawInput: number, dialTarget: canonical,
+                            remoteName: remoteName === number ? undefined : remoteName || undefined,
                             phase: 'ringing-in', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' } });
       if (this.audio.ringtone) this.ringer.start(this.audio.volume / 100, this.audio.ringtoneSound);
     },

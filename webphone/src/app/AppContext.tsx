@@ -101,6 +101,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     recorded.current.add(call.id);
     const record = store.addCall({
       direction: call.direction, dialTarget: call.dialTarget, remoteName: call.remoteName,
+      ...(call.direction === 'inbound' ? { receivedNumber: call.rawInput } : {}),
       startedAt: call.startedAt, answeredAt: call.answeredAt, endedAt: call.endedAt, outcome: call.outcome, failure: call.failure,
     });
     setWrapUpRecordId(record.id);

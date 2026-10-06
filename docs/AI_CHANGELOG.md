@@ -1,5 +1,20 @@
 # Journal des changements
 
+## Numéros entrants et tonalités — 6 octobre 2026
+
+Correctif préparé : plus de déduction France/Pérou à partir d’un entrant
+national ambigu. Les numéros internationaux complets restent identifiés ;
+identité SIP ou nom numérique concordant utilisable pour retrouver l’indicatif,
+sinon « Pays non déterminé ». Numéro brut conservé dans le journal local.
+Rappel et contact utilisent le numéro complet quand récupéré. L’historique
+central sans indicatif ne peut pas être enrichi rétrospectivement.
+
+Retour d’appel local renforcé (gain 0,13 → 0,21) et signal de décroché ×1,6,
+avec volume utilisateur, silence et limiteur conservés. Sonnerie entrante,
+voix, micro et sons du clavier inchangés. Aucun changement PBX/opérateur.
+86 tests, typage, lint et build réussis. Publication et contrôles live à suivre.
+
+
 ## 2026-10-06 — Un nouvel appel ferme la carte de fin d'appel
 
 Demande de Franck : des clients appelaient depuis le Journal alors que la carte

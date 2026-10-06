@@ -164,11 +164,12 @@ function WrapUp({ call }: { call: CallSnapshot }) {
   const { calls, contacts } = useData();
   const { t } = useI18n();
   const record = calls.find(item => item.id === wrapUpRecordId);
+  const callbackNumber = call.direction === 'inbound' ? call.dialTarget : call.rawInput;
   const contact = findContact(contacts, call.dialTarget);
   const talked = call.answeredAt && call.endedAt ? Math.round((call.endedAt - call.answeredAt) / 1000) : 0;
 
   const addContact = () => {
-    const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: t('contact.mainLabel'), value: call.rawInput }], favorite: false });
+    const created = store.saveContact({ name: call.remoteName || call.dialTarget, numbers: [{ label: t('contact.mainLabel'), value: callbackNumber }], favorite: false });
     phone.dismiss();
     openContact(created.id);
     notify(t('contact.createdToast'), 'success');
@@ -192,10 +193,10 @@ function WrapUp({ call }: { call: CallSnapshot }) {
         </>
       )}
       {/* Scheduling from a call also tags it, so the journal tells the same story. */}
-      <CallbackScheduler number={call.rawInput} name={contact?.name ?? call.remoteName} tone="call"
+      <CallbackScheduler number={callbackNumber} name={contact?.name ?? call.remoteName} tone="call"
         onScheduled={() => { if (record && !record.tags.includes(CALLBACK_TAG)) store.updateCall(record.id, { tags: [...record.tags, CALLBACK_TAG] }); }} />
       <div className="wrapup-actions">
-        <button type="button" className="ghost-call" onClick={() => { phone.dismiss(); placeCall(call.rawInput); }}><RotateCcw size={16} /> {t('wrapup.callBack')}</button>
+        <button type="button" className="ghost-call" onClick={() => { phone.dismiss(); placeCall(callbackNumber); }}><RotateCcw size={16} /> {t('wrapup.callBack')}</button>
         {!contact && <button type="button" className="ghost-call" onClick={addContact}><UserPlus size={16} /> {t('wrapup.add')}</button>}
         <button type="button" className="done" onClick={() => phone.dismiss()}>{t('wrapup.done')}</button>
       </div>

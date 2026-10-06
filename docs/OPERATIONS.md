@@ -1,5 +1,28 @@
 # Construction et validation
 
+## Numéros entrants et sons — validation du 6 octobre 2026
+
+Version préparée : entrants nationaux ambigus sans pays forcé, récupération
+conditionnelle d’une identité internationale fournie par SIP P-Asserted-Identity
+ou nom numérique concordant. Numéro initial conservé en local, rappel/contact
+avec numéro récupéré. Le PBX doit transmettre l’identité complète : le client
+ne peut pas récupérer un indicatif absent de toutes les informations reçues.
+Aucun accès opérateur, DID, dialplan ou service de supervision modifié.
+Le journal central reste fondé sur son numéro AMI brut ; sans préfixe fiable,
+son pays devient indéterminé, sans modification des anciens enregistrements.
+
+Retour d’appel local 0,13 → 0,21, chime de décroché ×1,6, mêmes fréquences et
+durées ; volume zéro muet, limiteur conservé et somme des enveloppes du chime
+inférieure à 1 même à 200 %. Le ressenti dépend du casque et du volume système.
+Sonnerie entrante, volume voix, micro et clavier inchangés.
+
+86 tests, typage, lint, build ; fixture navigateur avec numéros fictifs Canada,
+France, Pérou, information absente/concordante et commandes des deux sons,
+sans erreur console. Aucun appel réel ni onglet client rechargé. Guides FR/EN/ES
+alignés sur la prudence d’affichage ; captures existantes non affectées par
+ce correctif de métadonnées/son, trois PDF reconstruits.
+
+
 ## Appeler ferme la carte de fin d'appel — publié le 6 octobre 2026
 
 **En service : 20261006-call-closes-wrapup**, source `0141698`, bascule le

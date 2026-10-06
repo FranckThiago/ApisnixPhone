@@ -22,6 +22,7 @@ export class FakeOscillator extends FakeNode {
   type = 'sine';
   frequency = new FakeParam();
   window: [number, number] = [0, 0];
+  addEventListener() {}
   start(time: number) { this.window[0] = time; }
   stop(time: number) { this.window[1] = time; }
 }

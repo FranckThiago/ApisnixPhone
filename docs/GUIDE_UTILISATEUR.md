@@ -235,6 +235,6 @@ bouton **Raccrocher**.
 
 - Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**.
 - Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la
-  personne. Un numéro commençant par `0` est lu comme un numéro français.
+  personne. Pour un appel reçu sans indicatif fiable, le pays reste indéterminé.
 - Pour toute question sur votre compte ou vos droits d'appel, contactez votre
   administrateur APISNIX.

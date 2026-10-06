@@ -99,15 +99,23 @@ function withCountryCode(dialTarget: string): string | null {
  */
 export function describeNumber(dialTarget: string, direction?: 'inbound' | 'outbound' | 'unknown'): NumberInfo {
   if (!dialTarget || /[*#]/.test(dialTarget)) return { kind: 'unknown', display: dialTarget };
-  // The PBX can deliver a French national caller ID without its trunk zero.
-  // Restrict this fallback to incoming, complete nine-digit French numbers;
-  // keep the actual caller ID intact and never reinterpret explicit +/00 codes.
-  if (direction === 'inbound' && /^[1-9]\d{8}$/.test(dialTarget)
-      && parsePhoneNumberFromString('0' + dialTarget, 'FR')?.isValid()) {
-    return { kind: 'national', country: 'FR', countryName: countryName('FR'), display: dialTarget };
+  if (direction === 'inbound') {
+    const compact = dialTarget.replace(VISUAL_SEPARATORS, '');
+    // Bare national caller IDs can also be valid international numbers (e.g.
+    // a Canadian 514… looks like Peru +51). Never guess from those 7–10 digits.
+    const explicit = compact.startsWith('+') || compact.startsWith('00');
+    if (!explicit && /^\d{1,6}$/.test(compact)) return { kind: 'internal', display: dialTarget };
+    const international = explicit ? compact.replace(/^00/, '+')
+      : /^[1-9]\d{10,14}$/.test(compact) ? '+' + compact : undefined;
+    const number = international && /^\+\d+$/.test(international)
+      ? parsePhoneNumberFromString(international) : undefined;
+    if (number?.isValid() && number.country) {
+      return { kind: 'international', country: number.country, countryName: countryName(number.country), display: dialTarget };
+    }
+    return { kind: 'unknown', display: dialTarget };
   }
   // Known France carrier selector: metadata only, the leading 9 is still dialled.
-  const countryTarget = /^90033[1-9]\d{8}$/.test(dialTarget) && direction !== 'inbound' ? dialTarget.slice(1) : dialTarget;
+  const countryTarget = /^90033[1-9]\d{8}$/.test(dialTarget) ? dialTarget.slice(1) : dialTarget;
   const international = withCountryCode(countryTarget);
   if (international) {
     const typer = new AsYouType();
@@ -119,6 +127,30 @@ export function describeNumber(dialTarget: string, direction?: 'inbound' | 'outb
   // A leading 0 is the national format of the PBX's country.
   if (/^0[1-9]/.test(dialTarget)) return { kind: 'national', country: NATIONAL_COUNTRY, countryName: countryName(NATIONAL_COUNTRY), display: dialTarget };
   return { kind: 'internal', display: dialTarget };
+}
+
+/**
+ * Recover an international caller ID only from concordant identities supplied
+ * with this call. No address-book guesses, default country, or substring match.
+ * Explicit original numbers win; contradictory evidence leaves the ID intact.
+ */
+export function incomingNumber(raw: string, identities: readonly (string | undefined)[] = []): string {
+  const compact = raw.replace(VISUAL_SEPARATORS, '');
+  if (!/^[1-9]\d{6,9}$/.test(compact) && !/^0\d{8,9}$/.test(compact)) return raw;
+  const matches = new Set<string>();
+  for (const identity of identities) {
+    if (!identity) continue;
+    const value = identity.replace(VISUAL_SEPARATORS, '');
+    // A numeric provider name may carry E.164 without its +; never parse free text.
+    const international = value.startsWith('00') ? '+' + value.slice(2)
+      : /^[1-9]\d{10,14}$/.test(value) ? '+' + value : value;
+    if (!/^\+\d{7,15}$/.test(international)) continue;
+    const number = parsePhoneNumberFromString(international);
+    if (!number?.isValid() || !number.country) continue;
+    if (number.nationalNumber === compact || number.number.slice(1) === compact
+        || number.formatNational().replace(/\D/g, '') === compact) matches.add(number.number);
+  }
+  return matches.size === 1 ? [...matches][0]! : raw;
 }
 
 export function sameNumber(a: string, b: string): boolean {

@@ -54,6 +54,27 @@ describe('SIP controller', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
+  it('keeps the original incoming ID and uses a concordant asserted international identity', async () => {
+    const h = harness();
+    await ready(h);
+    const incoming = session('in', '5145550100', '5145550100');
+    incoming.assertedIdentity = { uri: { user: '+15145550100' } };
+    h.delegate.onCallReceived(incoming);
+    expect(h.phone.getSnapshot().call).toMatchObject({ rawInput: '5145550100', dialTarget: '+15145550100', direction: 'inbound' });
+    expect(h.phone.getSnapshot().call?.remoteName).toBeUndefined();
+    expect(h.manager.call).not.toHaveBeenCalled();
+  });
+
+  it('does not recover a private identity', async () => {
+    const h = harness();
+    await ready(h);
+    const incoming = session('in', '5145550100', '+15145550100');
+    incoming.assertedIdentity = { uri: { user: '+15145550100' } };
+    incoming.request = { getHeader: () => 'id' };
+    h.delegate.onCallReceived(incoming);
+    expect(h.phone.getSnapshot().call?.dialTarget).toBe('5145550100');
+  });
+
   it('is ready only once registered, not when the socket opens', async () => {
     const h = harness();
     await h.phone.connect({ username: ' alice ', password: 'fictional' });
