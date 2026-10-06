@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { t } from '../src/i18n';
 import { SipPhoneController, type ManagedSession, type Manager, type ManagerDelegate, type SipEnvironment } from '../src/telephony/SipPhoneController';
 import type { CallProgressSoundPlayer } from '../src/telephony/audio';
 
@@ -41,7 +42,7 @@ function harness(lineFree = true) {
   const callProgress: CallProgressSoundPlayer = {
     startRingback: vi.fn(), answered: vi.fn(), stop: vi.fn(),
   };
-  const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws' }, environment, callProgress);
+  const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws', statusUrl: 'https://pbx.example/etat' }, environment, callProgress);
   return { phone, manager, released, environment, callProgress, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
 }
 
@@ -90,8 +91,47 @@ describe('SIP controller', () => {
     h.reject(403);
     await vi.advanceTimersByTimeAsync(60000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'auth-error', account: null });
+    expect(h.phone.getSnapshot().error).toContain(t('sip.lockWarning'));
     expect(h.manager.register).toHaveBeenCalledTimes(1);
     expect(h.released).toHaveBeenCalled();
+  });
+
+  it('shows the site block with a countdown when the socket is refused, then lifts it', async () => {
+    const h = harness();
+    h.manager.connect.mockImplementationOnce(async () => { throw new Error('refused'); });
+    h.environment.blockStatus = async () => ({ blocked: true, remaining: 61 });
+    await h.phone.connect({ username: 'alice', password: 'fictional' });
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'blocked', account: null });
+    expect(h.phone.getSnapshot().error).toBe(t('sip.blocked', { time: '1 min 01 s' }));
+    await vi.advanceTimersByTimeAsync(31_000);
+    expect(h.phone.getSnapshot().error).toBe(t('sip.blocked', { time: '30 s' }));
+    // A new attempt during the block changes nothing: the countdown stays.
+    await h.phone.connect({ username: 'alice', password: 'fictional' });
+    expect(h.phone.getSnapshot().connection).toBe('blocked');
+    expect(h.manager.connect).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(31_000);
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'offline', error: t('sip.blockLifted') });
+    expect(h.phone.getSnapshot().blockedUntil).toBeUndefined();
+  });
+
+  it('keeps the network message when the site is not blocked or the status page is unreachable', async () => {
+    const h = harness();
+    h.manager.connect.mockImplementation(async () => { throw new Error('refused'); });
+    h.environment.blockStatus = async () => ({ blocked: false, remaining: 0 });
+    await h.phone.connect({ username: 'alice', password: 'fictional' });
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'network-error', error: t('sip.serverUnreachable') });
+    h.environment.blockStatus = async () => { throw new Error('offline'); };
+    await h.phone.connect({ username: 'alice', password: 'fictional' });
+    expect(h.phone.getSnapshot().connection).toBe('network-error');
+  });
+
+  it('switches to the block countdown when the refused registration was the one that triggered it', async () => {
+    const h = harness();
+    h.environment.blockStatus = async () => ({ blocked: true, remaining: 60 });
+    await h.phone.connect({ username: 'alice', password: 'wrong' });
+    h.reject(403);
+    await vi.advanceTimersByTimeAsync(10);
+    expect(h.phone.getSnapshot().connection).toBe('blocked');
   });
 
   it('does not register when another tab holds the line', async () => {

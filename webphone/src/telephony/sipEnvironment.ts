@@ -86,6 +86,21 @@ export const browserSipEnvironment: SipEnvironment = {
     return audio;
   },
 
+  // The page answers for the caller's own address only; a short timeout keeps a slow server from delaying the message.
+  async blockStatus(url) {
+    const control = new AbortController();
+    const timer = setTimeout(() => control.abort(), 4000);
+    try {
+      const response = await fetch(url, { cache: 'no-store', signal: control.signal });
+      if (!response.ok) return null;
+      const body = await response.json() as { bloque?: unknown; reste?: unknown };
+      return { blocked: body.bloque === true, remaining: Number(body.reste) || 0 };
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  },
   acquireLine(name) {
     if (!navigator.locks) return Promise.resolve(() => undefined);
     return new Promise(resolve => {
@@ -106,5 +121,7 @@ export function sipConfigFromEnv(env: ImportMetaEnv) {
   const iceServers = String(env.VITE_ICE_SERVERS ?? '').split(',').map(url => url.trim()).filter(Boolean);
   if (env.VITE_APP_MODE !== 'live') return null;
   if (!/^[a-z0-9.-]+$/i.test(domain) || !/^wss:\/\/[^\s]+$/i.test(wssUrl)) throw new Error('VITE_SIP_DOMAIN et VITE_SIP_WSS_URL (wss://) sont requis en mode live.');
-  return { domain, wssUrl, iceServers };
+  // The PBX web server says whether this site is blocked (same host as the SIP domain unless overridden).
+  const statusUrl = String(env.VITE_BLOCK_STATUS_URL ?? '').trim() || `https://${domain}/agc/apisnix/etat-telephonie.php`;
+  return { domain, wssUrl, iceServers, statusUrl };
 }

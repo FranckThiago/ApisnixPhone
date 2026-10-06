@@ -59,18 +59,34 @@ export interface SipConfig {
   domain: string;
   wssUrl: string;
   iceServers?: string[];
+  /** Page of the PBX web server saying whether this site is blocked after too many refused sign-ins. */
+  statusUrl?: string;
 }
+
+/** Answer of the block-status page: blocked for `remaining` more seconds, or not blocked. */
+export interface BlockStatus { blocked: boolean; remaining: number }
 
 export interface SipEnvironment {
   createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined): Promise<Manager> | Manager;
   createRemoteAudio(): HTMLAudioElement | undefined;
   /** Resolves to a release function, or null when another tab of this origin holds the line. */
   acquireLine(name: string): Promise<(() => void | Promise<void>) | null>;
+  /** Reads the block status of this site; null when the page cannot be reached. */
+  blockStatus?(url: string): Promise<BlockStatus | null>;
 }
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
 const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
+
+/** « 4 min 12 s », « 1 h 05 min » or « 40 s »: readable in the three languages of the interface. */
+export function blockDuration(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds)), m = Math.floor(s / 60);
+  const two = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+  if (m >= 60) return `${Math.floor(m / 60)} h ${two(m % 60)} min`;
+  if (m > 0) return `${m} min ${two(s % 60)} s`;
+  return `${s} s`;
+}
 /** How often the PBX is asked who holds the account: quick enough to stop shared credentials, light for the server. */
 const LINE_CHECK = 45_000;
 const HOLD_PATIENCE = 8000;
@@ -97,6 +113,7 @@ export class SipPhoneController implements PhoneController {
   private lineWatch?: ReturnType<typeof setInterval>;
   private quietTimer?: ReturnType<typeof setTimeout>;
   private holdTimer?: ReturnType<typeof setTimeout>;
+  private blockTicker?: ReturnType<typeof setInterval>;
   /** Memory only, for « Reprendre la ligne ici »; cleared on sign-out. Never written anywhere. */
   private credentials?: Credentials;
   private remoteAudio?: HTMLAudioElement;
@@ -126,6 +143,8 @@ export class SipPhoneController implements PhoneController {
 
   async connect(credentials: Credentials) {
     if (this.wanted) return;
+    // While the site is blocked, a new attempt would only be refused: the countdown stays on screen.
+    if ((this.snapshot.blockedUntil ?? 0) > Date.now()) return;
     const username = credentials.username.trim();
     if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: t('sip.missingCredentials') });
     this.wanted = true;
@@ -153,8 +172,33 @@ export class SipPhoneController implements PhoneController {
     } catch {
       // No retry loop here: the person decides to try again.
       await this.teardown();
+      // A refused socket is also what a blocked site sees: say so, with the time left, rather than « check your network ».
+      if (await this.checkBlock()) return;
       this.update({ connection: 'network-error', account: null, error: t('sip.serverUnreachable') });
     }
+  }
+
+  /** Asks the PBX web server whether this site is blocked; shows the countdown and returns true when it is. */
+  private async checkBlock(): Promise<boolean> {
+    const url = this.config.statusUrl, ask = this.environment.blockStatus;
+    if (!url || !ask) return false;
+    const status: BlockStatus | null = await ask(url).catch(() => null);
+    if (!status?.blocked || !(status.remaining > 0)) return false;
+    this.startBlock(Date.now() + Math.ceil(status.remaining) * 1000);
+    return true;
+  }
+
+  private startBlock(until: number) {
+    clearInterval(this.blockTicker);
+    this.update({ connection: 'blocked', account: null, blockedUntil: until });
+    const tick = () => {
+      const left = Math.ceil((until - Date.now()) / 1000);
+      if (left > 0) return this.update({ error: t('sip.blocked', { time: blockDuration(left) }) });
+      clearInterval(this.blockTicker); this.blockTicker = undefined;
+      this.update({ connection: 'offline', blockedUntil: undefined, error: t('sip.blockLifted') });
+    };
+    tick();
+    if (this.blockTicker === undefined && (this.snapshot.blockedUntil ?? 0) > Date.now()) this.blockTicker = setInterval(tick, 1000);
   }
 
   private delegate: ManagerDelegate = {
@@ -169,8 +213,11 @@ export class SipPhoneController implements PhoneController {
             const status = response.message.statusCode ?? 0;
             const refused = status === 401 || status === 403 || status === 404 || status === 407;
             void this.teardown();
+            // Five refusals in ten minutes block the whole site: say it with the refusal, before it happens.
             this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
-                          error: refused ? t('sip.authRefused') : t('sip.registerRefused', { status }) });
+                          error: refused ? `${t('sip.authRefused')} ${t('sip.lockWarning')}` : t('sip.registerRefused', { status }) });
+            // The refusal that triggered the block is answered before the block: check right away.
+            if (refused) void this.checkBlock();
           },
         },
       }).catch(() => undefined);
@@ -378,7 +425,8 @@ export class SipPhoneController implements PhoneController {
     if (this.session && this.manager) await this.manager.hangup(this.session).catch(() => undefined);
     await this.teardown();
     this.credentials = undefined;
-    this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false });
+    clearInterval(this.blockTicker); this.blockTicker = undefined;
+    this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false, blockedUntil: undefined });
   }
 
   call(rawInput: string, dialTarget: string, remoteName?: string) {

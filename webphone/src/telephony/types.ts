@@ -3,7 +3,9 @@ import type { CallDirection, CallOutcome } from '../domain/types';
 /** An open WebSocket is not a registered account; a registered account is not an established call. */
 export type ConnectionState =
   | 'offline' | 'connecting' | 'registering' | 'ready'
-  | 'auth-error' | 'network-error' | 'reconnecting' | 'other-tab-active';
+  | 'auth-error' | 'network-error' | 'reconnecting' | 'other-tab-active'
+  /** The PBX refuses every connection from this site for a while, after too many refused sign-ins. */
+  | 'blocked';
 
 export type CallPhase = 'dialing' | 'ringing-out' | 'ringing-in' | 'active' | 'held' | 'ending' | 'ended';
 
@@ -42,6 +44,8 @@ export interface PhoneSnapshot {
   audioBlocked?: boolean;
   /** The server stopped checking on this browser: the line was most likely opened somewhere else. */
   lineTaken?: boolean;
+  /** When the site-wide block ends (ms since epoch); `error` carries the countdown text. */
+  blockedUntil?: number;
 }
 
 export interface Credentials {

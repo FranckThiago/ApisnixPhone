@@ -24,6 +24,7 @@ const CONNECTION: Record<ConnectionState, [MessageKey, 'ok' | 'wait' | 'bad']> =
   ready: ['connection.ready', 'ok'], connecting: ['connection.connecting', 'wait'], registering: ['connection.registering', 'wait'],
   reconnecting: ['connection.reconnecting', 'wait'], offline: ['connection.offline', 'bad'], 'auth-error': ['connection.authError', 'bad'],
   'network-error': ['connection.networkError', 'bad'], 'other-tab-active': ['connection.otherTab', 'bad'],
+  blocked: ['connection.blocked', 'bad'],
 };
 
 export function ConnectionPill() {
