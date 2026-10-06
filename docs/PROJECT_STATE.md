@@ -2,7 +2,8 @@
 
 ## Audio sur 30 jours et formats des numéros — 6 octobre 2026
 
-Version préparée, publication suivie dans OPERATIONS : `month` couvre aujourd’hui
+Version **20261006-audio-numbers en service**, source 2ff280d, retour dans
+OPERATIONS : `month` couvre aujourd’hui
 et les 29 jours précédents, selon le calendrier local (passages de mois/année).
 L’API existante accepte 93 jours ; pas de changement du service ou de ses droits.
 Les limites serveur restent actives, avec avertissement si la liste est tronquée.

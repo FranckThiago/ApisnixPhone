@@ -1,10 +1,39 @@
 # Construction et validation
 
-## Préparation du 6 octobre 2026
+## Audio 30 jours et numéros — publiés le 6 octobre 2026
 
-La version 30 jours / formats de numéros est validée localement (76 tests,
-typage, lint, build et contrôle navigateur). Elle conserve le service Audio
-existant et ses limites. La publication et le retour seront consignés ici.
+Release active **20261006-audio-numbers**, source **2ff280d**, à 12:48:50
+Africa/Douala (11:48:50 UTC). Audio : Aujourd’hui / Hier / 7 / 30 jours,
+message si résultats limités. Numérotation : +33 → 0033, autres + retirés,
+préfixes carrier conservés. Pays d’un entrant national français de neuf chiffres
+et du préfixe sortant 90033 ; numéros reçus bruts inchangés. Contacts/rappels
+compatibles avec les numéros déjà enregistrés. Limites dans WEBPHONE_PLAN.
+
+76 tests, typage, lint ; contrôle intégré en démo FR/EN/ES, captures utiles
+et trois PDF huit pages refaits. PDF rendus depuis le HTML local du générateur,
+sans piloter une session navigateur ; rendu et sommaires contrôlés.
+Build live isolé depuis git archive, npm ci et trois variables publiques usuelles.
+266 fichiers ; SHA-256 de l’archive ustar :
+`caf83ec5a12c79aa2e0de7897205277edfeec43a80d29456c4de89a41d4923d2`.
+
+Sauvegarde protégée `/root/apisnix-phone-backups/20261006-audio-numbers/` :
+ancienne cible, manifeste précédent, nouvelle archive, manifeste, source et
+heure de bascule. Ancienne release `20260930-sign-in-link` conservée.
+Hôte/IP Hermes vérifiés ; empreintes contrôlées avant et après extraction,
+droits root 0755/0644, lecture Caddy sans écriture, lien basculé atomiquement.
+Pas de redémarrage Caddy ni du service Audio, pas de migration de données.
+
+HTTPS : index 200 no-cache, JS `index-Cc4JAuZt.js` et CSS
+`index-BL9yqqXC.css` 200 immuables, octets identiques au build ; API anonyme
+401. Navigateur intégré : écran live, nouveau JS chargé, aucune erreur console.
+Aucun onglet client rechargé, aucune connexion SIP ou conversation extérieure
+lancée pendant ce contrôle. Le nouvel affichage est disponible au prochain
+chargement, hors appel. La qualité audio doit être contrôlée par un appel réel.
+
+Retour : vérifier que current vise encore cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20260930-sign-in-link`, sans
+recharger Caddy ni restaurer une base. Les changements PBX de cette demande
+(8502 et route Canada) sont indépendants et documentés dans le dépôt privé.
 
 
 ## Téléchargements publics — 17 septembre 2026
