@@ -2,7 +2,8 @@
 
 ## Numéros entrants et tonalités — 6 octobre 2026
 
-Correctif préparé : plus de déduction France/Pérou à partir d’un entrant
+**En service : 20261006-incoming-identity**, source `6383a37`, publié
+à 17:18 Douala. Plus de déduction France/Pérou à partir d’un entrant
 national ambigu. Les numéros internationaux complets restent identifiés ;
 identité SIP ou nom numérique concordant utilisable pour retrouver l’indicatif,
 sinon « Pays non déterminé ». Numéro brut conservé dans le journal local.
@@ -12,7 +13,9 @@ central sans indicatif ne peut pas être enrichi rétrospectivement.
 Retour d’appel local renforcé (gain 0,13 → 0,21) et signal de décroché ×1,6,
 avec volume utilisateur, silence et limiteur conservés. Sonnerie entrante,
 voix, micro et sons du clavier inchangés. Aucun changement PBX/opérateur.
-86 tests, typage, lint et build réussis. Publication et contrôles live à suivre.
+86 tests, typage, lint et build réussis ; fixture navigateur, HTTPS et formulaire
+live vérifiés. Guides FR/EN/ES et PDF huit pages alignés. Aucun appel opérateur
+de validation. [Publication et retour](OPERATIONS.md#numéros-entrants-et-sons--publié-le-6-octobre-2026).
 
 
 ## Appeler ferme la carte de fin d'appel — 6 octobre 2026

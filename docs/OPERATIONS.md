@@ -1,8 +1,9 @@
 # Construction et validation
 
-## Numéros entrants et sons — validation du 6 octobre 2026
+## Numéros entrants et sons — publié le 6 octobre 2026
 
-Version préparée : entrants nationaux ambigus sans pays forcé, récupération
+**En service : 20261006-incoming-identity**, source `6383a37`, bascule à
+**17:18:03 Africa/Douala** (16:18:03 UTC). Entrants nationaux ambigus sans pays forcé, récupération
 conditionnelle d’une identité internationale fournie par SIP P-Asserted-Identity
 ou nom numérique concordant. Numéro initial conservé en local, rappel/contact
 avec numéro récupéré. Le PBX doit transmettre l’identité complète : le client
@@ -22,6 +23,25 @@ sans erreur console. Aucun appel réel ni onglet client rechargé. Guides FR/EN/
 alignés sur la prudence d’affichage ; captures existantes non affectées par
 ce correctif de métadonnées/son, trois PDF reconstruits.
 
+
+Build live isolé depuis Git, npm ci et variables publiques usuelles ; archive
+ustar 266 fichiers, SHA-256
+`d0d24ac1883e08a7dad58757de97a0cff1d2e55dde68b3597ad8e6bf189e1fd7`.
+Hermes 167.233.244.152 identifié ; ancien lien vérifié à deux reprises,
+manifestes avant/après contrôlés, root 0755/0644, Caddy lit sans écrire.
+Sauvegarde protégée `/root/apisnix-phone-backups/20261006-incoming-identity/` :
+ancienne cible, deux manifestes, archive, empreinte, source et heure.
+Bascule atomique, aucun rechargement de service. Index et assets HTTPS
+identiques au build : JS `index-Cf4_ZASg.js`, CSS `index-soO7B-ST.css`.
+Formulaire live ouvert dans le navigateur intégré, bon JS, aucune erreur
+console. Les trois guides restent à huit pages ; page modifiée rendue et relue.
+Pas de migration ni test d’appel opérateur. La récupération depuis les
+identités SIP est validée par tests simulés, pas par un nouvel appel DIDWW.
+
+Retour : contrôler que `current` pointe encore sur cette release puis le
+rebasculer atomiquement sur `/srv/apisnixphone/releases/20261006-call-closes-wrapup`,
+conservée intacte ; aucune restauration de base ou de configuration PBX.
+Un onglet déjà ouvert doit être rechargé **hors appel** pour obtenir la correction.
 
 ## Appeler ferme la carte de fin d'appel — publié le 6 octobre 2026
 
