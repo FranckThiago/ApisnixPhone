@@ -1,5 +1,13 @@
 # État du projet
 
+## Appeler ferme la carte de fin d'appel — 6 octobre 2026
+
+Depuis le commit suivant la release `20261006-settings-identity` (pas encore
+publié) : lancer un appel depuis le Journal, les Contacts, les Rappels ou la
+palette alors qu'un appel terminé attend « Terminer » ferme la carte et passe
+l'appel. Un appel en cours (sonnerie, conversation, attente) garde le refus
+« Un appel est déjà en cours ». [Changelog](AI_CHANGELOG.md).
+
 ## Poste connecté dans les Réglages — 6 octobre 2026
 
 **En service : 20261006-settings-identity**, source d7bc5c6, le 6 octobre

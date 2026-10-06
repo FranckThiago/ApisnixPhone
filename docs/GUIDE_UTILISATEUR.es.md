@@ -114,7 +114,9 @@ La aplicación indica el resultado y la duración. En pocos segundos puedes:
 - **programar una devolución**: «En 15 min», «En 1 h», «Mañana 9 h»,
   «Lunes 9 h» o una fecha concreta, con un motivo opcional;
 - **Volver a llamar** enseguida, **Añadir** el número a tus contactos o
-  **Terminar**.
+  **Terminar**. Llamar a otra persona desde el Registro, los Contactos o las
+  Devoluciones también cierra esta tarjeta: no se pierde nada, las etiquetas
+  y la nota ya están guardadas.
 
 Si una llamada falla, por el micrófono o por un rechazo del servidor, un
 recuadro rojo indica la causa. Si se repite, comunica a tu administrador el

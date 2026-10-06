@@ -122,7 +122,9 @@ L'application indique l'issue et la durée. Vous pouvez, en quelques secondes :
 - **planifier un rappel** : « Dans 15 min », « Dans 1 h », « Demain 9 h »,
   « Lundi 9 h » ou une date précise, avec un motif facultatif ;
 - **Rappeler** tout de suite, **Ajouter** le numéro à vos contacts, ou
-  **Terminer**.
+  **Terminer**. Appeler quelqu'un d'autre depuis le Journal, les Contacts ou
+  les Rappels ferme aussi cette carte : rien n'est perdu, tags et note sont
+  déjà enregistrés.
 
 Si un appel échoue, à cause du micro ou d'un refus du serveur, un encadré rouge
 en donne la cause. Si cela se répète, transmettez le code affiché à votre

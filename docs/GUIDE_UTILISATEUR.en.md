@@ -107,7 +107,8 @@ The app shows the outcome and the duration. In a few seconds, you can:
 - **schedule a callback**: “In 15 min”, “In 1 hour”, “Tomorrow 9 am”,
   “Monday 9 am” or an exact date, with an optional reason;
 - **Call back** right away, **Add** the number to your contacts, or click
-  **Done**.
+  **Done**. Calling someone else from the Call log, Contacts or Callbacks
+  also closes this card: nothing is lost, tags and note are already saved.
 
 If a call fails, because of the microphone or a refusal by the server, a red
 box gives the reason. If it happens again, pass the code shown on to your

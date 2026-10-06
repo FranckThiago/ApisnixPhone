@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-06 — Un nouvel appel ferme la carte de fin d'appel
+
+Demande de Franck : des clients appelaient depuis le Journal alors que la carte
+de fin d'appel attendait encore « Terminer », surtout sur mobile où le
+téléphone et le Journal sont deux onglets différents, et recevaient « Un appel
+est déjà en cours ». Appeler depuis le Journal, les Contacts, les Rappels ou
+la palette ferme désormais cette carte comme « Terminer » ; tags et note sont
+déjà enregistrés au fil de la saisie. Un appel réellement en cours garde le
+refus. Guide aligné en trois langues, sans nouvelle capture. Typage, lint et
+81 tests ; vérifié en démo. Non publié sur Hermes pour l'instant.
+
 ## 2026-10-06 — Poste connecté visible dans les Réglages
 
 Demande de Franck : sur téléphone ou fenêtre réduite, la barre latérale masque

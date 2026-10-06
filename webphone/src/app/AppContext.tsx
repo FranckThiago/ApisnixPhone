@@ -146,7 +146,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const state = phone.getSnapshot();
     if (!input.valid) return notify(t(input.reason === 'empty' ? 'dial.empty' : 'dial.invalid'), 'danger');
     if (state.connection !== 'ready') return notify(t('dial.notConnected'), 'danger');
-    if (state.call) return notify(t('dial.busy'), 'danger');
+    // A finished call still showing its wrap-up card is not « busy »: calling from the journal,
+    // a contact or a callback closes the card, as « Terminer » would. Tags and notes are already saved.
+    if (state.call?.phase === 'ended') phone.dismiss();
+    else if (state.call) return notify(t('dial.busy'), 'danger');
     const contact = findContact(store.getSnapshot().contacts, input.dialTarget);
     phone.call(rawInput, input.dialTarget, contact?.name);
     setDial('');
