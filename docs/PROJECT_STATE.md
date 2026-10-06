@@ -1,9 +1,19 @@
 # État du projet
 
+## Poste connecté dans les Réglages — 6 octobre 2026
+
+**En service : 20261006-settings-identity**, source d7bc5c6, le 6 octobre
+à 15:31 Douala. Les Réglages commencent par une carte « Poste connecté » : identifiant de la
+ligne, serveur et pastille d'état, lisible sur téléphone où la barre latérale
+masque le compte. Une capture de cet écran suffit au support pour identifier le
+poste. La rubrique Compte indique aussi le serveur. Guide et captures à jour
+dans les trois langues. 81 tests, build live, HTTPS et navigateur vérifiés.
+[Publication et retour](OPERATIONS.md#poste-connecté-dans-les-réglages--publié-le-6-octobre-2026).
+
 ## Récupération de l’affichage — 6 octobre 2026
 
-**En service : 20261006-display-recovery**, source 4b671aa, le 6 octobre
-à 15:17 Douala. 81 tests ; build live, HTTPS et formulaire manuel vérifiés.
+Release précédente `20261006-display-recovery`, source 4b671aa, le 6 octobre
+à 15:17 Douala, conservée pour retour. 81 tests ; build live, HTTPS et formulaire manuel vérifiés.
 Erreurs de rendu isolées par rubrique, écran de secours général et accès
 `?connexion=manuelle` sans reconnexion automatique ni effacement de données.
 Marqueur de récupération par onglet ; erreurs d’initialisation affichées au
@@ -215,14 +225,6 @@ Africa/Douala ; fichiers servis identiques au build. Un onglet ouvert avant la
 bascule doit être actualisé pour obtenir les sonneries, ce qui reconnecte la
 ligne. [Preuves et retour](OPERATIONS.md#apisnixphone-web--construire-et-héberger).
 Les applications Android et Windows ne sont pas concernées.
-
-## Poste connecté dans les Réglages — 6 octobre 2026
-
-Les Réglages commencent par une carte « Poste connecté » : identifiant de la
-ligne, serveur et pastille d'état, lisible sur téléphone où la barre latérale
-masque le compte. Une capture de cet écran suffit au support pour identifier le
-poste. La rubrique Compte indique aussi le serveur. Guide et captures à jour
-dans les trois langues.
 
 ## Rappels dans le Journal — 24 septembre 2026
 

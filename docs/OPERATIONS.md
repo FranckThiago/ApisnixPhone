@@ -1,5 +1,34 @@
 # Construction et validation
 
+## Poste connecté dans les Réglages — publié le 6 octobre 2026
+
+**En service : 20261006-settings-identity**, source `d7bc5c6`, bascule le
+6 octobre à **15:31:00 Africa/Douala** (14:31:00 UTC). Carte « Poste
+connecté » en tête des Réglages (identifiant, serveur, état de la ligne) et
+serveur dans la rubrique Compte, pour identifier un poste depuis une capture
+téléphone. Aucun changement SIP, PBX, API ni Caddy ; pas de migration.
+
+Build live isolé depuis `git archive` du commit, npm ci, trois variables
+publiques usuelles ; 266 fichiers, archive ustar SHA-256
+`ae6fad3eb8c9fdec05ea869f6a4010ab0737284ed76c1e1d2d76b2b36dcf0f80`.
+Hôte et IP Hermes vérifiés ; cible de `current` relevée avant transfert
+(`20261006-display-recovery`) ; 266 empreintes de fichiers identiques entre le
+build local et le dossier extrait ; droits root 0755/0644, lecture Caddy sans
+écriture ; lien basculé atomiquement, sans rechargement Caddy. Sauvegarde
+protégée `/root/apisnix-phone-backups/20261006-settings-identity/` :
+ancienne cible, manifestes ancien et nouveau, archive, empreinte, source et
+heure. Release précédente conservée.
+
+HTTPS : index 200 no-cache, JS `index-sQm09a3C.js` et CSS `index-soO7B-ST.css`
+200 immuables, octets identiques au build ; `/api/me` anonyme 401. Navigateur
+intégré : écran de connexion live, nouveau JS chargé, aucune erreur console.
+Aucune connexion SIP ni appel lancé, aucun onglet client rechargé ; le nouvel
+affichage apparaît au prochain chargement de page, hors appel.
+
+Retour : vérifier que `current` vise encore cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261006-display-recovery`,
+sans recharger Caddy ni restaurer de base.
+
 ## Récupération de l’affichage — 6 octobre 2026
 
 Protection des erreurs de rendu React : une rubrique défaillante est isolée

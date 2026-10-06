@@ -9,6 +9,8 @@ connecté » : identifiant, serveur et pastille d'état de la ligne ; la rubriqu
 Compte affiche aussi le serveur. Textes dans les trois langues, guide et
 captures mis à jour. Typage, lint et 81 tests réussis ; vérifié en démo à 375
 px et 1 400 px. Aucune migration ni changement serveur.
+Publiée sur Hermes : **20261006-settings-identity**, source d7bc5c6, 15:31:00
+Douala ; empreintes, HTTPS et navigateur vérifiés. [Détails et retour](OPERATIONS.md#poste-connecté-dans-les-réglages--publié-le-6-octobre-2026).
 
 ## Récupération de l’affichage — 6 octobre 2026
 
