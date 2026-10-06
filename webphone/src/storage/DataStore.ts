@@ -1,5 +1,5 @@
 import { fold } from '../domain/format';
-import { parseDialInput } from '../domain/numbers';
+import { parseDialInput, sameNumber } from '../domain/numbers';
 import { DEFAULT_PREFERENCES, type Callback, type CallRecord, type Contact, type Preferences } from '../domain/types';
 import type { Persistence } from './persistence';
 
@@ -108,7 +108,7 @@ export class DataStore {
 
   /** The person was reached: every pending callback for that exact number is fulfilled. */
   completeCallbacksFor(dialTarget: string, now = Date.now()): number {
-    const matches = this.data.callbacks.filter(callback => !callback.doneAt && parseDialInput(callback.number).dialTarget === dialTarget);
+    const matches = this.data.callbacks.filter(callback => !callback.doneAt && sameNumber(callback.number, dialTarget));
     if (matches.length) this.commit({ callbacks: this.data.callbacks.map(callback => (matches.includes(callback) ? { ...callback, doneAt: now } : callback)) });
     return matches.length;
   }
@@ -154,7 +154,7 @@ export class DataStore {
 
 export function findContact(contacts: Contact[], dialTarget: string): Contact | undefined {
   if (!dialTarget) return undefined;
-  return contacts.find(contact => contact.numbers.some(number => parseDialInput(number.value).dialTarget === dialTarget));
+  return contacts.find(contact => contact.numbers.some(number => sameNumber(number.value, dialTarget)));
 }
 
 export function searchContacts(contacts: Contact[], query: string): Contact[] {

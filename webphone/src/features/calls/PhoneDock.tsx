@@ -209,7 +209,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
   const { contacts } = useData();
   const { t } = useI18n();
   const [keypad, setKeypad] = useState(false);
-  const info = describeNumber(call.dialTarget);
+  const info = describeNumber(call.dialTarget, call.direction);
   const contact = findContact(contacts, call.dialTarget);
   // The remote identity is untrusted: React renders it as text, never as markup.
   const name = contact?.name ?? call.remoteName;

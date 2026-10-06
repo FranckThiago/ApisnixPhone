@@ -231,7 +231,7 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 | Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative |
 | Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés ; pas d'import système automatique. Bascule **Tous / Favoris** dans la page : les favoris n'ont plus d'entrée de menu |
 | Favoris | Vue de Contacts : cartes des raccourcis, action Appeler distincte pour éviter les appels accidentels |
-| Audio | Enregistrements du poste de la personne, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; ouverture automatique avec la ligne (`POST /api/line-session`, vérification du mot de passe par le PBX en lecture seule), session de service, jamais de lien public |
+| Audio | Enregistrements du poste de la personne, périodes Aujourd’hui / Hier / 7 / 30 derniers jours, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; ouverture automatique avec la ligne (`POST /api/line-session`, vérification du mot de passe par le PBX en lecture seule), session de service, jamais de lien public |
 | Disponible | Panneau de composition, état connecté, saisie et collage ; bouton désactivé tant qu'un prérequis manque |
 | Appel sortant | Identité, pays, étapes connexion/sonnerie, Annuler ; le temps de conversation commence au décroché |
 | Appel entrant | Identité/numéro, Accepter/Refuser ; aucune réponse automatique héritée de VICIdial |
@@ -393,7 +393,9 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
 
 1. Conserver le contenu saisi pour l'affichage et le diagnostic local.
 2. Nettoyer uniquement les séparateurs visuels explicitement permis
-   (espaces, parenthèses, tirets), sans changer les chiffres, le + ou les zéros.
+   (espaces, parenthèses, tirets). Depuis le 6 octobre, adapter le `+` initial :
+   `+33` → `0033`, autres indicatifs → chiffres sans `+`. Ne pas ajouter un
+   préfixe de carrier ; conserver les numéros nationaux, codes et zéros.
 3. Montrer le numéro qui sera composé avant Appeler ; ne pas convertir
    silencieusement `00` en `+`, ni un numéro national en international.
 4. Utiliser libphonenumber-js pour **afficher** pays/indicatif ; ne pas remplacer
@@ -411,6 +413,11 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
    `00` et sans `0` initial est donc lu avec son indicatif. `1001` et les numéros
    de 6 chiffres au plus restent « Numéro interne » ; indicatif inconnu : globe
    et « Pays non déterminé ».
+   Depuis le 6 octobre, un entrant de neuf chiffres validable comme national
+   français après ajout du zéro reçoit le pays France (numéro reçu conservé).
+   C’est un repli lié au format national du PBX, pas une preuve universelle du
+   pays. Les indicatifs explicites +/00 restent prioritaires. Le préfixe carrier
+   `90033` suivi de neuf chiffres est affiché France sur les sortants.
 6. Un choix explicite dans un sélecteur d'indicatif peut insérer ce préfixe en
    le montrant ; le simple changement de langue/région ne modifie jamais la saisie.
 7. Filtrer les caractères de contrôle et les URL SIP arbitraires ; construire

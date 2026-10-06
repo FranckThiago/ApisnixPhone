@@ -2,12 +2,17 @@ import { describe, expect, it } from 'vitest';
 import { describeNumber, filterDialCharacters, parseDialInput } from '../src/domain/numbers';
 
 describe('dial input', () => {
-  it('keeps digits, zeros, + and extensions exactly', () => {
-    expect(parseDialInput('+33 1 00 00 00 01').dialTarget).toBe('+33100000001');
+  it('adapts leading + while preserving national zeros and carrier/service prefixes', () => {
+    expect(parseDialInput('+33 1 00 00 00 01').dialTarget).toBe('0033100000001');
     expect(parseDialInput('06 99 00 (01)-02').dialTarget).toBe('0699000102');
     expect(parseDialInput('0033100000001').dialTarget).toBe('0033100000001');
     expect(parseDialInput('699000102').dialTarget).toBe('699000102');
     expect(parseDialInput('*72#').dialTarget).toBe('*72#');
+    expect(parseDialInput('+1 514 555 0100').dialTarget).toBe('15145550100');
+    expect(parseDialInput('+41 44 220 15 15').dialTarget).toBe('41442201515');
+    expect(parseDialInput('90033100000001').dialTarget).toBe('90033100000001');
+    expect(parseDialInput('815145550100').dialTarget).toBe('815145550100');
+    expect(parseDialInput('+*72').valid).toBe(false);
     expect(parseDialInput('8523').dialTarget).toBe('8523');
   });
 
@@ -55,4 +60,17 @@ describe('display metadata', () => {
     expect(describeNumber('999000102')).toMatchObject({ kind: 'international', country: undefined });
     expect(describeNumber('*72#').kind).toBe('unknown');
   });
+});
+
+// Synthetic numbers only: incoming national IDs do not become US numbers.
+it('uses the French incoming format without changing caller IDs or explicit international codes', () => {
+  for (const number of ['612345678', '123456789']) {
+    expect(describeNumber(number, 'inbound')).toMatchObject({ country: 'FR', display: number });
+  }
+  expect(describeNumber('15145550100', 'inbound').country).toBe('CA');
+  expect(describeNumber('12125550100', 'inbound').country).toBe('US');
+  expect(describeNumber('+41220000001', 'inbound').country).toBe('CH');
+  expect(describeNumber('1001', 'inbound').country).toBeUndefined();
+  expect(describeNumber('90033123456789', 'outbound')).toMatchObject({ country: 'FR', display: '90033123456789' });
+  expect(describeNumber(parseDialInput('+33123456789').dialTarget).country).toBe('FR');
 });

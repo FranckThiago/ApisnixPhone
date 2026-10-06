@@ -1,5 +1,12 @@
 # Construction et validation
 
+## Préparation du 6 octobre 2026
+
+La version 30 jours / formats de numéros est validée localement (76 tests,
+typage, lint, build et contrôle navigateur). Elle conserve le service Audio
+existant et ses limites. La publication et le retour seront consignés ici.
+
+
 ## Téléchargements publics — 17 septembre 2026
 
 À la demande de Franck, deux boutons sous le formulaire de contact de

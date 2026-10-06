@@ -26,6 +26,8 @@ export interface RecordingsIdentity {
 }
 
 export interface RecordingsListing {
+  /** The server limited the result; older files may not be shown. */
+  truncated?: boolean;
   calls: RecordedCall[];
   /** The service is still importing recent calls: the list may grow on the next refresh. */
   catchingUp: boolean;
@@ -51,7 +53,7 @@ export interface LineHistory {
   stale: boolean;
 }
 
-export type Period = 'today' | 'yesterday' | 'week';
+export type Period = 'today' | 'yesterday' | 'week' | 'month';
 
 /**
  * Access to the recordings of one's own phone. The service has the PBX confirm the

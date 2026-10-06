@@ -1,9 +1,10 @@
-import { AsYouType, type CountryCode } from 'libphonenumber-js';
+import { AsYouType, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js';
 import { locale, t } from '../i18n';
 
 /**
  * What the user typed, what will really be dialled, and display-only metadata
- * are kept apart: the digits, the + and leading zeros are never rewritten.
+ * are kept apart. A leading + uses the PBX format: +33 becomes 0033, otherwise
+ * only + is removed. Carrier prefixes and national zeros stay unchanged.
  */
 export interface DialInput {
   rawInput: string;
@@ -24,11 +25,15 @@ const VISUAL_SEPARATORS = /[\s\u00a0().-]/g;
 const regionNames = new Map<string, Intl.DisplayNames>();
 
 export function parseDialInput(rawInput: string): DialInput {
-  const dialTarget = rawInput.replace(VISUAL_SEPARATORS, '');
+  let dialTarget = rawInput.replace(VISUAL_SEPARATORS, '');
   if (!dialTarget) return { rawInput, dialTarget, valid: false, reason: 'empty' };
   if (!/^[+\d*#]+$/.test(dialTarget)) return { rawInput, dialTarget, valid: false, reason: 'characters' };
   if (dialTarget.lastIndexOf('+') > 0) return { rawInput, dialTarget, valid: false, reason: 'plus' };
   if (dialTarget.length > 32 || dialTarget === '+') return { rawInput, dialTarget, valid: false, reason: 'length' };
+  if (dialTarget.startsWith('+')) {
+    if (!/^\+\d+$/.test(dialTarget)) return { rawInput, dialTarget, valid: false, reason: 'plus' };
+    dialTarget = dialTarget.startsWith('+33') ? '00' + dialTarget.slice(1) : dialTarget.slice(1);
+  }
   return { rawInput, dialTarget, valid: true };
 }
 
@@ -92,9 +97,18 @@ function withCountryCode(dialTarget: string): string | null {
  * Display only: the flag describes the numbering plan of the number, not where
  * the person is, and nothing here ever changes the digits that are dialled.
  */
-export function describeNumber(dialTarget: string): NumberInfo {
+export function describeNumber(dialTarget: string, direction?: 'inbound' | 'outbound' | 'unknown'): NumberInfo {
   if (!dialTarget || /[*#]/.test(dialTarget)) return { kind: 'unknown', display: dialTarget };
-  const international = withCountryCode(dialTarget);
+  // The PBX can deliver a French national caller ID without its trunk zero.
+  // Restrict this fallback to incoming, complete nine-digit French numbers;
+  // keep the actual caller ID intact and never reinterpret explicit +/00 codes.
+  if (direction === 'inbound' && /^[1-9]\d{8}$/.test(dialTarget)
+      && parsePhoneNumberFromString('0' + dialTarget, 'FR')?.isValid()) {
+    return { kind: 'national', country: 'FR', countryName: countryName('FR'), display: dialTarget };
+  }
+  // Known France carrier selector: metadata only, the leading 9 is still dialled.
+  const countryTarget = /^90033[1-9]\d{8}$/.test(dialTarget) && direction !== 'inbound' ? dialTarget.slice(1) : dialTarget;
+  const international = withCountryCode(countryTarget);
   if (international) {
     const typer = new AsYouType();
     const formatted = typer.input(international);

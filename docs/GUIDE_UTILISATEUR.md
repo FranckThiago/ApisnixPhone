@@ -83,10 +83,10 @@ Tapez le numéro au clavier de l'ordinateur ou sur le pavé, puis **Appeler** ou
 la touche **Entrée**. Vous pouvez aussi taper un **nom** : les contacts
 correspondants sont proposés.
 
-**Le numéro est composé exactement comme vous le saisissez** : aucun indicatif
-n'est ajouté. Le drapeau et le pays sont une aide à la lecture ; la ligne grise
-à droite montre les chiffres qui partiront réellement. Pour un `+`, maintenez la
-touche **0** du pavé.
+**Le `+` est accepté** : `+33` devient `0033` ; pour les autres indicatifs,
+seul le `+` est retiré. La ligne grise montre le numéro réellement composé.
+Le pays reste affiché. Vos préfixes de ligne restent nécessaires. Pour saisir
+un `+`, maintenez **0**.
 
 Chaque touche du pavé émet une courte tonalité, comme sur un téléphone
 classique. Pour la couper : Réglages → Audio, **Sons du clavier**.
@@ -172,7 +172,7 @@ La page **Audio** rassemble les enregistrements des appels de votre poste. Ils
 apparaissent **quelques minutes après la fin de l'appel** (« En traitement » en
 attendant).
 
-Choisissez la période, puis **Écouter** dans la page ou **Télécharger** le
+Choisissez Aujourd’hui, Hier, 7 ou **30 derniers jours**, puis **Écouter** dans la page ou **Télécharger** le
 fichier. Vous ne voyez que les enregistrements de votre poste.
 
 Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,

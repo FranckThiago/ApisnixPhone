@@ -114,7 +114,7 @@ export const fr = {
   'dialer.backspace': 'Effacer le dernier caractère',
   'dialer.exact': 'Numéro exactement composé',
   'dialer.allowed': 'Chiffres, +, * et # uniquement.',
-  'dialer.asTyped': 'Le numéro est composé tel que vous le saisissez.',
+  'dialer.asTyped': 'Le + est adapté au format de la ligne ; le numéro composé est affiché ci-dessus.',
   'dialer.suggestions': 'Contacts correspondants',
   'dialer.openContact': 'Ouvrir la fiche de {name}',
   'volume.label': 'Volume d’écoute',
@@ -301,7 +301,9 @@ export const fr = {
   'contacts.selectHint': 'Sa fiche, ses numéros et vos derniers échanges s’affichent ici.',
 
   // Recordings
+  'rec.truncated': 'Seuls les résultats les plus récents sont affichés. Réduisez la période pour retrouver les précédents.',
   'rec.week': '7 derniers jours',
+  'rec.month': '30 derniers jours',
   'rec.unreachable': 'Le service des enregistrements est momentanément injoignable.',
   'rec.signIn': 'Connectez-vous pour accéder à vos enregistrements.',
   'rec.serviceRefused': 'Le service des enregistrements a refusé la demande ({status}).',
@@ -375,7 +377,7 @@ export const fr = {
   'settings.autoAnswerHint': 'Toujours désactivée : vous décidez de chaque appel.',
   'settings.off': 'Désactivée',
   'settings.autoPrefix': 'Indicatif ajouté automatiquement',
-  'settings.autoPrefixHint': 'Aucun : le numéro est composé tel que saisi.',
+  'settings.autoPrefixHint': 'Le + est adapté : +33 devient 0033 ; les autres indicatifs gardent leurs chiffres.',
   'settings.none': 'Aucun',
   'settings.simulate': 'Simuler un appel entrant',
   'settings.data': 'Données de cet appareil',

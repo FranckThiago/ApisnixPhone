@@ -116,7 +116,7 @@ export const en: Record<MessageKey, string> = {
   'dialer.backspace': 'Delete the last character',
   'dialer.exact': 'Number exactly as dialled',
   'dialer.allowed': 'Digits, +, * and # only.',
-  'dialer.asTyped': 'The number is dialled exactly as you type it.',
+  'dialer.asTyped': 'A leading + is adapted for your line; the dialled number is shown above.',
   'dialer.suggestions': 'Matching contacts',
   'dialer.openContact': 'Open {name}’s card',
   'volume.label': 'Listening volume',
@@ -303,7 +303,9 @@ export const en: Record<MessageKey, string> = {
   'contacts.selectHint': 'Their card, numbers and your recent calls appear here.',
 
   // Recordings
+  'rec.truncated': 'Only the most recent results are shown. Select a shorter period to find earlier recordings.',
   'rec.week': 'Last 7 days',
+  'rec.month': 'Last 30 days',
   'rec.unreachable': 'The recordings service cannot be reached right now.',
   'rec.signIn': 'Sign in to access your recordings.',
   'rec.serviceRefused': 'The recordings service refused the request ({status}).',
@@ -377,7 +379,7 @@ export const en: Record<MessageKey, string> = {
   'settings.autoAnswerHint': 'Always off: you decide on every call.',
   'settings.off': 'Off',
   'settings.autoPrefix': 'Automatic dialling prefix',
-  'settings.autoPrefixHint': 'None: the number is dialled exactly as typed.',
+  'settings.autoPrefixHint': 'A leading + is adapted: +33 becomes 0033; other country codes keep their digits.',
   'settings.none': 'None',
   'settings.simulate': 'Simulate an incoming call',
   'settings.data': 'Data on this device',

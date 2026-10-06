@@ -116,7 +116,7 @@ export const es: Record<MessageKey, string> = {
   'dialer.backspace': 'Borrar el último carácter',
   'dialer.exact': 'Número marcado tal cual',
   'dialer.allowed': 'Solo cifras, +, * y #.',
-  'dialer.asTyped': 'El número se marca tal como lo escribes.',
+  'dialer.asTyped': 'El + se adapta al formato de tu línea; el número marcado se muestra arriba.',
   'dialer.suggestions': 'Contactos que coinciden',
   'dialer.openContact': 'Abrir la ficha de {name}',
   'volume.label': 'Volumen de escucha',
@@ -303,7 +303,9 @@ export const es: Record<MessageKey, string> = {
   'contacts.selectHint': 'Su ficha, sus números y tus últimas llamadas aparecen aquí.',
 
   // Recordings
+  'rec.truncated': 'Solo se muestran los resultados más recientes. Elige un periodo más corto para ver los anteriores.',
   'rec.week': 'Últimos 7 días',
+  'rec.month': 'Últimos 30 días',
   'rec.unreachable': 'El servicio de grabaciones no está disponible en este momento.',
   'rec.signIn': 'Inicia sesión para acceder a tus grabaciones.',
   'rec.serviceRefused': 'El servicio de grabaciones rechazó la solicitud ({status}).',
@@ -377,7 +379,7 @@ export const es: Record<MessageKey, string> = {
   'settings.autoAnswerHint': 'Siempre desactivada: tú decides cada llamada.',
   'settings.off': 'Desactivada',
   'settings.autoPrefix': 'Prefijo añadido automáticamente',
-  'settings.autoPrefixHint': 'Ninguno: el número se marca tal como se escribe.',
+  'settings.autoPrefixHint': 'El + se adapta: +33 pasa a 0033; los demás indicativos conservan sus cifras.',
   'settings.none': 'Ninguno',
   'settings.simulate': 'Simular una llamada entrante',
   'settings.data': 'Datos de este dispositivo',

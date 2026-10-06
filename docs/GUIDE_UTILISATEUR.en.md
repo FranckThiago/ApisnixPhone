@@ -70,10 +70,10 @@ Type the number on the computer keyboard or on the keypad, then **Call** or
 the **Enter** key. You can also type a **name**: matching contacts are
 suggested.
 
-**The number is dialled exactly as you type it**: no prefix is added. The
-flag and the country help you read it; the grey line on the right shows the
-digits that will really be dialled. For a `+`, hold the **0** key of the
-keypad.
+**A leading `+` is accepted**: `+33` becomes `0033`; for other country codes,
+only `+` is removed. The grey line shows the number actually dialled.
+The country stays visible. Your line’s routing prefixes are still required.
+To enter a `+`, hold **0**.
 
 Each key of the keypad plays a short tone, like a classic phone. To turn it
 off: Settings → Audio, **Keypad sounds**.
@@ -155,7 +155,7 @@ For each callback: **Call**, postpone by one hour, mark as done or delete.
 The **Audio** page gathers the recordings of your extension's calls. They
 appear **a few minutes after the call ends** (“Processing” until then).
 
-Choose the period, then **Listen** in the page or **Download** the file. You
+Choose Today, Yesterday, Last 7 or **Last 30 days**, then **Listen** in the page or **Download** the file. You
 only see the recordings of your own extension.
 
 Nothing to type: access opens with your line. If it fails, **Try again**;

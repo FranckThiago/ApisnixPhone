@@ -50,6 +50,8 @@ describe('recordings client', () => {
     const noon = new Date(2026, 8, 24, 12).getTime();
     expect(periodBounds('today', noon)).toEqual({ from: '2026-09-24', to: '2026-09-24' });
     expect(periodBounds('yesterday', noon)).toEqual({ from: '2026-09-23', to: '2026-09-23' });
+    expect(periodBounds('month', noon)).toEqual({ from: '2026-08-26', to: '2026-09-24' });
+    expect(periodBounds('month', new Date(2026, 0, 5, 12).getTime())).toEqual({ from: '2025-12-07', to: '2026-01-05' });
     expect(periodBounds('week', noon)).toEqual({ from: '2026-09-18', to: '2026-09-24' });
   });
 
@@ -58,7 +60,7 @@ describe('recordings client', () => {
       'GET /me': () => me('agent'),
       'POST /line-session': init => (JSON.parse(String(init.body)).password === 'good' ? { status: 200, body: { ok: true } } : { status: 401, body: { error: 'Identifiant ou mot de passe de la ligne incorrect.' } }),
       'POST /logout': init => ((init.headers as Record<string, string>)['X-CSRF-Token'] === 'token-1' ? { status: 200, body: { ok: true } } : { status: 403, body: { error: 'Accès refusé.' } }),
-      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, outcome: 'ANSWERED', complete: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false } }),
+      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, outcome: 'ANSWERED', complete: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false, truncated: true } }),
     });
     const source = new HttpRecordingsSource('/api', fetchImpl);
     await expect(source.openWithLine('D1001', 'bad')).rejects.toMatchObject({ status: 401, message: 'Identifiant ou mot de passe de la ligne incorrect.' });
@@ -67,6 +69,9 @@ describe('recordings client', () => {
     const listing = await source.list('today');
     expect(listing.calls).toHaveLength(1);
     expect(listing.catchingUp).toBe(true);
+    expect(listing.truncated).toBe(true);
+    await source.list('month');
+    expect(calls.at(-1)!.url).toBe(`/api/dashboard?from=${periodBounds('month').from}&to=${periodBounds('month').to}`);
     const history = await source.history(30);
     expect(history.calls).toMatchObject([{ id: 'call:1', number: '0100', outcome: 'answered' }]);
     expect(history.catchingUp).toBe(true);

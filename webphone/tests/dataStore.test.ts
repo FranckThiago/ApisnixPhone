@@ -58,6 +58,7 @@ describe('data store', () => {
     expect(contact.numbers).toHaveLength(1);
     const { contacts } = store.getSnapshot();
     expect(findContact(contacts, '+33100000001')?.id).toBe(contact.id);
+    expect(findContact(contacts, '0033100000001')?.id).toBe(contact.id);
     expect(findContact(contacts, '33100000001')).toBeUndefined();
     expect(searchContacts(contacts, 'elodie')).toHaveLength(1);
     expect(searchContacts(contacts, '00 00 01')).toHaveLength(1);

@@ -9,7 +9,7 @@ import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentit
 import { findContact } from '../../storage/DataStore';
 import { t, useI18n, type MessageKey } from '../../i18n';
 
-const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week']];
+const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week'], ['month', 'rec.month']];
 
 function message(error: unknown): string {
   return error instanceof RecordingsError ? error.message : t('rec.unreachable');
@@ -38,7 +38,7 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
   const { recordings } = useApp();
   const { contacts } = useData();
   const { t } = useI18n();
-  const info = describeNumber(call.number);
+  const info = describeNumber(call.number, call.direction);
   const contact = call.number ? findContact(contacts, call.number) : undefined;
   const name = contact?.name ?? (call.number ? info.display : t('rec.unknownNumber'));
   return (
@@ -151,6 +151,7 @@ export function Recordings() {
                   : tp('rec.pending', pending)}
               </p>
             )}
+            {listing?.truncated && <p className="audio-notice" role="status">{t('rec.truncated')}</p>}
             {groups.length === 0 ? (
               <div className="empty"><AudioLines size={28} /><b>{t(loading && !listing ? 'rec.loading' : 'rec.empty')}</b>
                 <p>{t('rec.emptyHint')}</p></div>

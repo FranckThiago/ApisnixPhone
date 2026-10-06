@@ -76,10 +76,10 @@ Escribe el número con el teclado del ordenador o en el teclado numérico y
 pulsa **Llamar** o la tecla **Intro**. También puedes escribir un **nombre**:
 se proponen los contactos que coinciden.
 
-**El número se marca exactamente como lo escribes**: no se añade ningún
-prefijo. La bandera y el país ayudan a leerlo; la línea gris de la derecha
-muestra las cifras que se marcarán realmente. Para un `+`, mantén pulsada la
-tecla **0**.
+**Se acepta el `+`**: `+33` pasa a `0033`; en los demás indicativos solo
+se elimina el `+`. La línea gris muestra el número que se marcará.
+El país sigue visible. Los prefijos de tu línea siguen siendo necesarios.
+Para introducir un `+`, mantén pulsada la tecla **0**.
 
 Cada tecla emite un tono corto, como en un teléfono clásico. Para quitarlo:
 Ajustes → Audio, **Sonidos del teclado**.
@@ -165,7 +165,7 @@ La página **Audio** reúne las grabaciones de las llamadas de tu extensión.
 Aparecen **unos minutos después del final de la llamada** («En proceso»
 mientras tanto).
 
-Elige el periodo y pulsa **Escuchar** en la página o **Descargar** el archivo.
+Elige Hoy, Ayer, Últimos 7 o **Últimos 30 días** y pulsa **Escuchar** en la página o **Descargar** el archivo.
 Solo ves las grabaciones de tu extensión.
 
 Nada que escribir: el acceso se abre con tu línea. Si falla, **Reintentar**;

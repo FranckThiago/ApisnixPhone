@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-06 — Audio 30 jours et numérotation
+
+Période de 30 jours calendaires, avertissement de liste tronquée, +33 adapté en
+0033 et autres + retirés ; correspondance contacts/rappels conservée. Pays des
+entrants nationaux français de neuf chiffres et des sortants 90033 corrigés
+pour l’affichage seul. 76 tests, typage, lint, build, captures intégrées en trois
+langues et guides PDF de huit pages contrôlés. Pas de migration de données.
+État de publication et retour : OPERATIONS.md.
+
 ## 2026-10-03 — Guide client : arriver sur ApisnixPhone depuis l'accueil
 
 - Demande de Franck, en s'inspirant du manuel agent : « Se connecter » indique

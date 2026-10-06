@@ -5,7 +5,7 @@ type Fetch = typeof fetch;
 
 interface ServiceRecording { id: string; state: string; duration: number | null; created_at: number }
 interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; answered_at?: number | null; ended_at?: number | null; outcome?: string; complete?: number; recordings?: ServiceRecording[] }
-interface ServiceDashboard { journal?: ServiceEntry[]; truncated?: boolean; journal_fresh?: boolean; journal_caught_up?: boolean }
+interface ServiceDashboard { journal?: ServiceEntry[]; truncated?: boolean; recordings_truncated?: boolean; journal_fresh?: boolean; journal_caught_up?: boolean }
 interface ServiceMe { user: { name: string; role: string }; endpoint: { extension: string; alias: string } | null; csrf: string }
 
 
@@ -16,8 +16,9 @@ export function dayString(stamp: number): string {
 }
 
 export function periodBounds(period: Period, now = Date.now()): { from: string; to: string } {
-  const day = (offset: number) => dayString(now - offset * 86_400_000);
+  const day = (offset: number) => { const date = new Date(now); date.setDate(date.getDate() - offset); return dayString(date.getTime()); };
   if (period === 'yesterday') return { from: day(1), to: day(1) };
+  if (period === 'month') return { from: day(29), to: day(0) };
   if (period === 'week') return { from: day(6), to: day(0) };
   return { from: day(0), to: day(0) };
 }
@@ -123,7 +124,7 @@ export class HttpRecordingsSource implements RecordingsSource {
   async list(period: Period): Promise<RecordingsListing> {
     const { from, to } = periodBounds(period);
     const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}`);
-    return { calls: toRecordedCalls(data.journal ?? []), catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
+    return { calls: toRecordedCalls(data.journal ?? []), truncated: data.truncated === true || data.recordings_truncated === true, catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
   }
 
 

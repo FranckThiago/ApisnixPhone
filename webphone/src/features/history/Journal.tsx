@@ -78,7 +78,7 @@ export function Journal() {
       if (!text) return true;
       const name = findContact(contacts, call.dialTarget)?.name ?? call.remoteName ?? '';
       // Country names and tag labels are searched in the language on screen.
-      const country = countryName(describeNumber(call.dialTarget).country, language) ?? '';
+      const country = countryName(describeNumber(call.dialTarget, call.direction).country, language) ?? '';
       return fold(name).includes(text) || fold(country).includes(text) || (digits.length > 1 && call.dialTarget.includes(digits))
         || call.tags.some(tag => fold(tag).includes(text) || fold(tagLabel(tag)).includes(text));
     });
@@ -143,7 +143,7 @@ export function Journal() {
             <ul className="call-list">
               {group.calls.map(call => {
                 const contact = findContact(contacts, call.dialTarget);
-                const info = describeNumber(call.dialTarget);
+                const info = describeNumber(call.dialTarget, call.direction);
                 const name = contact?.name ?? call.remoteName;
                 const open = openId === call.id;
                 const seconds = talkSeconds(call);

@@ -1,5 +1,26 @@
 # État du projet
 
+## Audio sur 30 jours et formats des numéros — 6 octobre 2026
+
+Version préparée, publication suivie dans OPERATIONS : `month` couvre aujourd’hui
+et les 29 jours précédents, selon le calendrier local (passages de mois/année).
+L’API existante accepte 93 jours ; pas de changement du service ou de ses droits.
+Les limites serveur restent actives, avec avertissement si la liste est tronquée.
+Le `+` initial est adapté au PBX : +33 → 0033, autres indicatifs → chiffres sans +.
+La saisie originale est conservée, la cible composée reste visible ; pas d’ajout
+automatique d’un préfixe carrier. Les contacts/rappels comparent les deux formats.
+
+Pour les entrants seulement, neuf chiffres valides comme numéro national
+français une fois préfixés par 0 reçoivent France ; le numéro brut reste intact.
+C’est une hypothèse du plan national PBX, pas une géolocalisation universelle.
+Les numéros internationaux explicites et les numéros canadiens complets gardent
+leur pays. Le préfixe sortant 90033 suivi de neuf chiffres affiche France.
+
+76 tests, typage, lint et build réussis. Interface Audio et composition contrôlées
+dans le navigateur intégré ; captures concernées FR/EN/ES et trois guides PDF
+réactualisés (8 pages chacun). Aucun appel réel utilisé dans ces tests.
+
+
 ## Guide client : accès par l'accueil APISNIX — 3 octobre 2026
 
 Demande de Franck : le guide ne disait pas comment arriver sur ApisnixPhone.
