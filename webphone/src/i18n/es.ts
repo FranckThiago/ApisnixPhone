@@ -2,6 +2,13 @@ import type { MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  "recovery.title": "Se ha producido un problema de visualización",
+  "recovery.page": "Vuelve al inicio de sesión manual para recuperar el acceso.",
+  "recovery.section": "No se puede mostrar esta sección. Los controles del teléfono siguen disponibles.",
+  "recovery.kept": "Tus datos guardados se conservan.",
+  "recovery.signIn": "Volver al inicio de sesión",
+  "recovery.confirm": "Volver al inicio de sesión finalizará cualquier llamada en curso. ¿Continuar?",
+  "recovery.loginFailed": "No se puede abrir tu espacio. Inténtalo de nuevo o contacta con tu administrador.",
   // Shared words
   'action.call': 'Llamar',
   'action.callName': 'Llamar a {name}',

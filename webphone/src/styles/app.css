@@ -393,3 +393,9 @@ a.ghost { text-decoration: none; }
   .access-panel { grid-template-columns: 1fr; }
   .audio-row .where { display: none; } .audio-row .audio-files { margin-left: 0; justify-content: flex-start; }
 }
+
+/* Recovery keeps the existing phone alive until the person explicitly leaves. */
+.recovery-page { max-width: 640px; margin: 12vh auto; padding: 32px; }
+.recovery-panel { padding: 24px; }
+.recovery-page h1, .recovery-panel h1 { font-size: 24px; }
+.recovery-page p, .recovery-panel p { margin: 16px 0; }

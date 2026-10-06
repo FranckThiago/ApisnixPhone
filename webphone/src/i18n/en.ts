@@ -2,6 +2,13 @@ import type { MessageKey } from './fr';
 
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
+  "recovery.title": "Something went wrong with the display",
+  "recovery.page": "Return to manual sign-in to regain access.",
+  "recovery.section": "This section cannot be displayed. Phone controls remain available.",
+  "recovery.kept": "Your saved data is preserved.",
+  "recovery.signIn": "Return to sign-in",
+  "recovery.confirm": "Returning to sign-in will end any ongoing call. Continue?",
+  "recovery.loginFailed": "Unable to open your workspace. Try again or contact your administrator.",
   // Shared words
   'action.call': 'Call',
   'action.callName': 'Call {name}',

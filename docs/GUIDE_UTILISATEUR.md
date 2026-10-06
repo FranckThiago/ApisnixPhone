@@ -220,7 +220,7 @@ bouton **Raccrocher**.
 | --- | --- |
 | « Cette ligne est ouverte sur un autre appareil » | **Un compte = un seul appareil à la fois** : ce poste se met en pause. **Reprendre la ligne ici** la récupère. Si ce n'est pas vous, prévenez votre administrateur. |
 | « Connexion perdue », « Appel interrompu » ou deux notes descendantes | Le réseau a coupé. Patientez quelques secondes, vérifiez votre réseau et rappelez : un appel n'est **jamais** rappelé automatiquement. |
-| Attente : « Patientez… » puis un message | Connexion instable : réessayez, ou changez de réseau. |
+| Affichage bloqué | Hors appel, ouvrez [la connexion manuelle](https://phone.apisnix-crm.com/?connexion=manuelle). Vos données sont conservées. |
 | « Le microphone est bloqué » | Réglages → Audio → **Autorisation du micro**, ou icône à gauche de l'adresse → Microphone → Autoriser. |
 | « Aucun microphone trouvé » | Rebranchez le casque, puis vérifiez Réglages → Audio. |
 | Bouton « Activer le son » | Cliquez dessus : le navigateur avait bloqué le son. |

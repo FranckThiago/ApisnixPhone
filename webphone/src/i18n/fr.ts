@@ -1,5 +1,13 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  "recovery.title": "L’affichage a rencontré un problème",
+  "recovery.page": "Revenez à la connexion manuelle pour reprendre la main.",
+  "recovery.section": "Cette rubrique ne peut pas s’afficher. Les commandes du téléphone restent disponibles.",
+  "recovery.kept": "Vos données enregistrées sont conservées.",
+  "recovery.signIn": "Revenir à la connexion",
+  "recovery.confirm": "Revenir à la connexion interrompra un éventuel appel en cours. Continuer ?",
+  "recovery.loginFailed": "Impossible d’ouvrir votre espace. Réessayez ou contactez votre administrateur.",
+
   // Shared words
   'action.call': 'Appeler',
   'action.callName': 'Appeler {name}',

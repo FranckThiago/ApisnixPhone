@@ -202,7 +202,7 @@ button.
 | --- | --- |
 | “This line is open on another device” | **One account = one device at a time**: this phone is paused. **Take the line back here** gets it back. If it is not you, tell your administrator. |
 | “Connection lost”, “Call interrupted” or two falling notes | The network dropped. Wait a few seconds, check your network and call again: a call is **never** redialled automatically. |
-| Hold: “Please wait…” then a message | Unstable connection: try again, or change network. |
+| Display stuck | Outside a call, open [manual sign-in](https://phone.apisnix-crm.com/?connexion=manuelle). Your saved data is kept. |
 | “The microphone is blocked” | Settings → Audio → **Microphone permission**, or the icon to the left of the address → Microphone → Allow. |
 | “No microphone found” | Plug the headset back in, then check Settings → Audio. |
 | “Turn on sound” button | Click it: the browser had blocked the sound. |

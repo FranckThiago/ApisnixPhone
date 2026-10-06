@@ -176,8 +176,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const { account, connection } = phone.getSnapshot();
     if (connection !== 'ready' || !account) return false;
     const profile = `${account.domain}:${account.username}`;
-    await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
-    store.setPreferences({ theme: storedTheme() });
+    try {
+      await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
+      store.setPreferences({ theme: storedTheme() });
+    } catch (error) {
+      // A profile initialization failure must not leave an invisible registered line.
+      await phone.disconnect();
+      store.close();
+      throw error;
+    }
     setSessionOpen(true);
     // The line is proven: open its recordings in the background, without asking anything.
     lineCredentials.current = credentials;

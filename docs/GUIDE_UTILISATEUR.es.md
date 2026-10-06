@@ -213,7 +213,7 @@ botón **Colgar**.
 | --- | --- |
 | «Esta línea está abierta en otro dispositivo» | **Una cuenta = un solo dispositivo a la vez**: este queda en pausa. **Recuperar la línea aquí** la recupera. Si no has sido tú, avisa a tu administrador. |
 | «Conexión perdida», «Llamada interrumpida» o dos notas descendentes | Se cortó la red. Espera unos segundos, comprueba tu red y vuelve a llamar: una llamada **nunca** se repite automáticamente. |
-| Espera: «Un momento…» y luego un mensaje | Conexión inestable: vuelve a intentarlo o cambia de red. |
+| Pantalla bloqueada | Fuera de una llamada, abre [el inicio de sesión manual](https://phone.apisnix-crm.com/?connexion=manuelle). Tus datos se conservan. |
 | «El micrófono está bloqueado» | Ajustes → Audio → **Permiso del micrófono**, o el icono a la izquierda de la dirección → Micrófono → Permitir. |
 | «No se encontró ningún micrófono» | Vuelve a conectar los auriculares y revisa Ajustes → Audio. |
 | Botón «Activar el sonido» | Púlsalo: el navegador había bloqueado el sonido. |

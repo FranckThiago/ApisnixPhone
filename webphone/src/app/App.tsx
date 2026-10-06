@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { AlarmClock, AudioLines, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Sun, WifiOff } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
@@ -172,11 +173,13 @@ function Workspace() {
             <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> {t('journal.tabCalls')}</button>
             <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> {t('journal.tabCallbacks')}{unseenDue > 0 && <i className="badge badge-yellow" aria-label={t('callbacks.newDue', { count: unseenDue })}>{unseenDue}</i>}</button>
           </nav>}
-          {(view === 'journal' || view === 'phone') && <Journal />}
-          {view === 'contacts' && <Contacts />}
-          {view === 'audio' && <Recordings />}
-          {view === 'callbacks' && <Callbacks />}
-          {view === 'settings' && <Settings />}
+          <ErrorBoundary key={view}>
+            {(view === 'journal' || view === 'phone') && <Journal />}
+            {view === 'contacts' && <Contacts />}
+            {view === 'audio' && <Recordings />}
+            {view === 'callbacks' && <Callbacks />}
+            {view === 'settings' && <Settings />}
+          </ErrorBoundary>
         </div>
       </div>
       {/* Mounted once, outside the views: the call survives every navigation. */}

@@ -1,3 +1,4 @@
+import { clearRecoveryMarker } from './recovery';
 import { ArrowRight, Eye, EyeOff, Headphones, Languages, Link2, ShieldCheck, Zap } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useApp, usePhone } from '../../app/AppContext';
@@ -25,6 +26,7 @@ export function Login() {
   const [username, setUsername] = useState(link?.username ?? '');
   const [password, setPassword] = useState(link?.password ?? '');
   const [visible, setVisible] = useState(false);
+  const [setupFailed, setSetupFailed] = useState(false);
   // Each sign-in link to send: the one that opened the page, then any pasted into this open tab.
   const [linkRound, setLinkRound] = useState(link ? 1 : 0);
   const sentRound = useRef(0);
@@ -51,14 +53,20 @@ export function Login() {
   useEffect(() => {
     if (link || demo || tried.current || connection !== 'offline') return;
     tried.current = true;
-    void savedCredentials().then(saved => { if (saved) void login(saved); });
+    void savedCredentials().then(async saved => { if (saved) await login(saved); }).catch(() => setSetupFailed(true));
   }, [link, demo, connection, login]);
 
   const submit = async () => {
     if (busy) return;
     primeAudio();
     const credentials = { username, password };
-    if (await login(credentials) && !demo) void offerToSave(credentials);
+    setSetupFailed(false);
+    try {
+      if (await login(credentials)) {
+        clearRecoveryMarker();
+        if (!demo) void offerToSave(credentials);
+      }
+    } catch { setSetupFailed(true); }
   };
 
   return (
@@ -85,6 +93,7 @@ export function Login() {
           <label>{t('login.password')}
             <span className="password"><input name="password" type={visible ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" maxLength={256} required />
               <button type="button" className="icon-button" aria-label={t(visible ? 'login.hidePassword' : 'login.showPassword')} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span></label>
+          {setupFailed && <p className="form-error" role="alert">{t('recovery.loginFailed')}</p>}
           {error && <p className="form-error" role="alert">{error}</p>}
           {connection === 'other-tab-active' && <p className="fine">{t('login.otherTab')}</p>}
           <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>

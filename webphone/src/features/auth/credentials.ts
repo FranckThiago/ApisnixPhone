@@ -1,3 +1,4 @@
+import { automaticSignInAllowed } from './recovery';
 import type { Credentials } from '../../telephony/types';
 
 /**
@@ -15,11 +16,11 @@ const container = typeof navigator === 'undefined' ? undefined : navigator.crede
 export const browserVaultAvailable = Boolean(Constructor && container);
 
 export async function savedCredentials(): Promise<Credentials | null> {
-  if (!Constructor || !container) return null;
+  if (!automaticSignInAllowed() || !Constructor || !container) return null;
   try {
     // Silent when one access was saved and the person did not sign out; otherwise the browser asks or returns nothing.
     const found = await container.get({ password: true, mediation: 'optional' } as CredentialRequestOptions) as PasswordCredentialLike | null;
-    return found?.type === 'password' && found.password ? { username: found.id, password: found.password } : null;
+    return automaticSignInAllowed() && found?.type === 'password' && found.password ? { username: found.id, password: found.password } : null;
   } catch {
     return null;
   }
@@ -59,7 +60,7 @@ function takeSignInLink() {
   if (typeof location === 'undefined' || !location.hash) return null;
   const found = parseSignInLink(location.hash);
   history.replaceState(history.state, '', location.pathname + location.search);
-  return found;
+  return automaticSignInAllowed() ? found : null;
 }
 
 // Read at page load, before anything is drawn.

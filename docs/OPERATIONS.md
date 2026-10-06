@@ -1,5 +1,28 @@
 # Construction et validation
 
+## Récupération de l’affichage — 6 octobre 2026
+
+Protection des erreurs de rendu React : une rubrique défaillante est isolée
+sans démonter les commandes du téléphone ; une erreur plus haute affiche un
+écran de récupération. Aucun rechargement automatique. Revenir à la connexion
+exige un second clic après avertissement d’interruption d’un éventuel appel.
+Le lien `https://phone.apisnix-crm.com/?connexion=manuelle` ignore le coffre du
+navigateur et les liens de connexion automatiques ; il conserve les données.
+Un marqueur par onglet bloque aussi la reconnexion automatique après une erreur
+de rendu, jusqu’à une connexion manuelle réussie. Une erreur d’initialisation
+du profil referme la ligne et s’affiche sur le formulaire.
+
+Les erreurs de scripts avant démarrage, extensions du navigateur et profils
+locaux défectueux ne sont pas automatiquement réparés. L’incident signalé
+fonctionne en navigation privée selon Franck ; sa cause exacte reste inconnue.
+Aucun effacement de contacts, historique, réglages ou mots de passe. Aucun
+changement SIP, PBX ou API. Pas de nouvelle dépendance. Guides FR/EN/ES alignés.
+81 tests, typage et lint réussis. Test navigateur sur erreur synthétique :
+isolation de rubrique, commandes voisines conservées, FR/EN/ES, annulation et
+retour au formulaire manuel. Guides PDF régénérés, huit pages chacun.
+Publication en préparation : cette section décrit le code validé.
+
+
 ## Audio 30 jours et numéros — publiés le 6 octobre 2026
 
 Release active **20261006-audio-numbers**, source **2ff280d**, à 12:48:50

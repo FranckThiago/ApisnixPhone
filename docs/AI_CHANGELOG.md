@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Récupération de l’affichage — 6 octobre 2026
+
+Erreurs de rendu isolées par rubrique, écran de secours général et accès
+`?connexion=manuelle` sans reconnexion automatique ni effacement de données.
+Marqueur de récupération par onglet ; erreurs d’initialisation affichées au
+formulaire. Cause du blocage Chrome initial non établie ; navigation privée
+fonctionnelle confirmée par Franck. [Fonctionnement, limites et publication](OPERATIONS.md#récupération-de-laffichage--6-octobre-2026).
+
+
 ## 2026-10-06 — Audio 30 jours et numérotation
 
 Période de 30 jours calendaires, avertissement de liste tronquée, +33 adapté en
