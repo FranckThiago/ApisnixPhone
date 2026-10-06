@@ -214,7 +214,8 @@ button.
 
 ## Good to know
 
-- Closing the tab or reloading the page during a call **ends the call**.
+- **Hang up before closing or reloading the page.** A safeguard attempts to
+  end the call when you leave; an abrupt interruption may delay its release.
 - The flag shows the country of the **number**, not where the person is. A
   received number without a reliable country code has an unknown country.
 - For any question about your account or your calling rights, contact your

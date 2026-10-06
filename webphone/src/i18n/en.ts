@@ -520,7 +520,7 @@ export const en: Record<MessageKey, string> = {
   'sip.outputFailed': 'This headset cannot be selected; the system output is used.',
   'sip.403': 'SIP 403 Forbidden — call not allowed by the server.',
   'sip.404': 'SIP 404 Not Found — number or destination not found.',
-  'sip.480': 'SIP 480 Temporarily Unavailable — the other person is temporarily unavailable.',
+  'sip.480': 'SIP 480 — call temporarily refused. A previous call may still occupy your line; if this persists, contact your administrator.',
   'sip.486': 'SIP 486 Busy Here — line busy.',
   'sip.488': 'SIP 488 Not Acceptable Here — media or codec refused.',
   'sip.503': 'SIP 503 Service Unavailable — telephone service unavailable.',

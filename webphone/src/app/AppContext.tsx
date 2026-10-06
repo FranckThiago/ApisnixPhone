@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
+import { bindPageLifecycle } from '../telephony/pageLifecycle';
 import { t } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence, persistChoice } from '../storage/persistence';
@@ -70,6 +71,7 @@ const store = new DataStore(typeof indexedDB === 'undefined' ? undefined : index
 const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, ''));
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  useEffect(() => bindPageLifecycle(phone), []);
   const [view, setView] = useState<View>('journal');
   const [dial, setDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);

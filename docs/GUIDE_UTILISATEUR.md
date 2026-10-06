@@ -233,7 +233,8 @@ bouton **Raccrocher**.
 
 ## Bon à savoir
 
-- Fermer l'onglet ou recharger la page pendant un appel **coupe l'appel**.
+- **Raccrochez avant de fermer ou recharger la page.** Une protection tente
+  de terminer l’appel au départ ; une coupure brutale peut retarder sa libération.
 - Le drapeau indique le pays du **numéro**, pas l'endroit où se trouve la
   personne. Pour un appel reçu sans indicatif fiable, le pays reste indéterminé.
 - Pour toute question sur votre compte ou vos droits d'appel, contactez votre

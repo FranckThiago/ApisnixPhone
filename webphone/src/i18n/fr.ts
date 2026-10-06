@@ -519,7 +519,7 @@ export const fr = {
   'sip.outputFailed': 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.',
   'sip.403': 'SIP 403 Forbidden — appel interdit par le serveur.',
   'sip.404': 'SIP 404 Not Found — numéro ou destination introuvable.',
-  'sip.480': 'SIP 480 Temporarily Unavailable — correspondant temporairement indisponible.',
+  'sip.480': 'SIP 480 — appel temporairement refusé. Un ancien appel peut encore occuper votre ligne ; si cela persiste, contactez votre administrateur.',
   'sip.486': 'SIP 486 Busy Here — ligne occupée.',
   'sip.488': 'SIP 488 Not Acceptable Here — média ou codec refusé.',
   'sip.503': 'SIP 503 Service Unavailable — service téléphonique indisponible.',

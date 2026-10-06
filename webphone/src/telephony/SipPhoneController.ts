@@ -180,6 +180,9 @@ export class SipPhoneController implements PhoneController {
       // A dropped call is never resumed or redialled automatically.
       const call = this.snapshot.call;
       if (call && call.phase !== 'ended') {
+        // Keep the session until termination has been requested, including a clean socket
+        // close: SIP.js only disposes sessions automatically on an errored disconnect.
+        if (this.session && this.manager) void this.manager.hangup(this.session).catch(() => undefined);
         // A conversation that took place stays « answered »; only say how it ended.
         this.interruption = t('sip.interrupted');
         this.finish(call.answeredAt ? 'answered' : 'failed');

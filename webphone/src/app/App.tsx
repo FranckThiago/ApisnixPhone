@@ -60,13 +60,6 @@ function Workspace() {
   const now = useNow();
 
   useEffect(() => { document.documentElement.dataset.density = preferences.density; }, [preferences.density]);
-  // Leaving with a live call would drop it: ask first.
-  useEffect(() => {
-    const warn = (event: BeforeUnloadEvent) => { const current = phone.getSnapshot().call; if (current && current.phase !== 'ended') event.preventDefault(); };
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [phone]);
-
   // A callback that comes due is announced once: in the page, and by the system when the person allowed it.
   const announced = useRef(new Set<string>());
   const dueCallbacks = callbacks.filter(callback => !callback.doneAt && callback.dueAt <= now);

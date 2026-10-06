@@ -156,7 +156,7 @@ describe('SIP controller', () => {
     const cases = [
       [403, 'failed', 'Forbidden — appel interdit par le serveur'],
       [404, 'failed', 'Not Found — numéro ou destination introuvable'],
-      [480, 'failed', 'Temporarily Unavailable — correspondant temporairement indisponible'],
+      [480, 'failed', '— appel temporairement refusé. Un ancien appel peut encore occuper votre ligne ; si cela persiste, contactez votre administrateur'],
       [486, 'busy', 'Busy Here — ligne occupée'],
       [488, 'failed', 'Not Acceptable Here — média ou codec refusé'],
       [503, 'failed', 'Service Unavailable — service téléphonique indisponible'],
@@ -275,6 +275,17 @@ describe('SIP controller', () => {
     expect(h.manager.unregister).toHaveBeenCalled();
     expect(h.released).toHaveBeenCalled();
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'offline', call: null, account: null });
+  });
+
+  it('requests call termination even when the server socket closes without an error', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    h.delegate.onCallAnswered(session('out'));
+    h.delegate.onServerDisconnect();
+    expect(h.manager.hangup).toHaveBeenCalledWith(expect.objectContaining({ id: 'out' }));
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', outcome: 'answered' });
+    expect(h.manager.call).toHaveBeenCalledTimes(1);
   });
 
   it('waits for the browser lock to be let go before reporting offline, so a sign-in right after works', async () => {

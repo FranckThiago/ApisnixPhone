@@ -28,6 +28,13 @@ Journal et contacts locaux en V1, raccordement à un historique central séparé
 si demandé. Aucun mot de passe SIP persistant dans l'application.
 
 Le contrôleur téléphonique reste actif pendant la navigation entre les vues.
+`telephony/pageLifecycle.ts`, installé au niveau AppProvider, avertit avant
+le départ puis demande `disconnect()` sur `pagehide`. Il ne traite ni
+`visibilitychange` ni les navigations internes. Un `pageshow.persisted`
+recharge le document afin de ne pas réutiliser une session détruite. La perte
+WSS demande la terminaison SIP avant de vider la référence locale. Ces chemins
+sont au mieux : l’expiration d’un dialogue inaccessible relève aussi du PBX.
+
 Une implémentation démo sans réseau permet les tests d'interface. Les sources
 sont dans `webphone/`, car `apps/` reste ignoré pour les checkouts natifs.
 

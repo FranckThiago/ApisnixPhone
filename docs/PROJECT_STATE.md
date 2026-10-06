@@ -1,5 +1,22 @@
 # État du projet
 
+## Départ de page et appels abandonnés — 6 octobre 2026
+
+Correctif préparé pour `20261006-call-lifecycle` : le contrôleur global demande
+le raccrochage lors de `pagehide`, après l’avertissement natif `beforeunload`.
+Annuler le départ, changer de rubrique ou masquer l’onglet ne coupe pas l’appel.
+Un retour depuis le cache de navigation recharge une session propre. Une perte
+WSS demande aussi la terminaison de la session avant de perdre sa référence,
+y compris une fermeture propre du transport ; aucun rappel automatique.
+
+La remise du BYE/CANCEL reste une tentative : un navigateur tué ou une coupure
+réseau exige aussi un garde-fou PBX, suivi dans le dépôt privé. Le code 480
+n’accuse plus systématiquement le correspondant. 92 tests, typage, lint et
+build live réussis. Les guides conseillent de raccrocher avant de quitter ;
+leurs illustrations de navigation ne changent pas. Publication détaillée dans
+[OPERATIONS.md](OPERATIONS.md).
+
+
 ## Numéros entrants et tonalités — 6 octobre 2026
 
 **En service : 20261006-incoming-identity**, source `6383a37`, publié

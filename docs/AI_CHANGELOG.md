@@ -1,5 +1,13 @@
 # Journal des changements
 
+## 2026-10-06 — Terminer les sessions au départ de page
+
+Correctif du cycle de vie de la page et de la perte WSS, sans interrompre
+les navigations internes. Message 480 prudent dans les trois langues.
+92 tests, typage et lint réussis ; build live produit. Architecture, état,
+exploitation et guides synchronisés ; publication suivie dans OPERATIONS.
+Aucune migration ni dépendance ajoutée.
+
 ## Numéros entrants et tonalités — 6 octobre 2026
 
 **En service : 20261006-incoming-identity**, source `6383a37`, publié

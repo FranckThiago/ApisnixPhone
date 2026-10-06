@@ -226,8 +226,8 @@ botón **Colgar**.
 
 ## Conviene saber
 
-- Cerrar la pestaña o recargar la página durante una llamada **corta la
-  llamada**.
+- **Cuelga antes de cerrar o recargar la página.** Una protección intenta
+  finalizar la llamada al salir; un corte brusco puede retrasar su liberación.
 - La bandera indica el país del **número**, no dónde está la persona. Un
   número recibido sin indicativo fiable aparece con país no determinado.
 - Para cualquier duda sobre tu cuenta o tus permisos de llamada, contacta con

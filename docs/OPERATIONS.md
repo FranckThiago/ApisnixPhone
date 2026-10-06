@@ -1,5 +1,22 @@
 # Construction et validation
 
+## Raccrochage au départ de page — 6 octobre 2026
+
+Release préparée `20261006-call-lifecycle`, retour prévu vers
+`20261006-incoming-identity`. Correctif `pagehide` installé au niveau global,
+avertissement avant départ conservé ; retour bfcache rechargé et terminaison
+explicitement demandée à la perte WSS. Pas de coupure au simple changement de
+rubrique ou de visibilité. Message 480 prudent FR/EN/ES. Tests de régression
+sur les cinq chemins de navigation et la fermeture WSS propre : 92 tests au
+total, typage, lint, build live réussis. Aucune migration, dépendance ni compte
+modifié dans le frontend. Les garanties PBX sont documentées dans le dépôt
+privé ; un envoi au départ n’est jamais garanti en cas de crash ou de coupure.
+
+Après publication, recharger hors appel pour charger le nouveau JavaScript.
+Les captures des guides ne montrent aucun des chemins techniques modifiés ;
+les trois textes de fin de guide sont corrigés sans nouvelle mise en page.
+
+
 ## Numéros entrants et sons — publié le 6 octobre 2026
 
 **En service : 20261006-incoming-identity**, source `6383a37`, bascule à
