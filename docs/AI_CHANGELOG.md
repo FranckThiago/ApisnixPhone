@@ -2,6 +2,9 @@
 
 ## Récupération de l’affichage — 6 octobre 2026
 
+Publié sur Hermes : **20261006-display-recovery**, source 4b671aa,
+15:17 Douala. 81 tests, typage, lint, build, HTTPS et navigateur ; trois PDF
+huit pages. Aucun changement PBX/API ni migration.
 Erreurs de rendu isolées par rubrique, écran de secours général et accès
 `?connexion=manuelle` sans reconnexion automatique ni effacement de données.
 Marqueur de récupération par onglet ; erreurs d’initialisation affichées au

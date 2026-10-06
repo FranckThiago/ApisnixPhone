@@ -2,6 +2,8 @@
 
 ## Récupération de l’affichage — 6 octobre 2026
 
+**En service : 20261006-display-recovery**, source 4b671aa, le 6 octobre
+à 15:17 Douala. 81 tests ; build live, HTTPS et formulaire manuel vérifiés.
 Erreurs de rendu isolées par rubrique, écran de secours général et accès
 `?connexion=manuelle` sans reconnexion automatique ni effacement de données.
 Marqueur de récupération par onglet ; erreurs d’initialisation affichées au
@@ -11,7 +13,7 @@ fonctionnelle confirmée par Franck. [Fonctionnement, limites et publication](OP
 
 ## Audio sur 30 jours et formats des numéros — 6 octobre 2026
 
-Version **20261006-audio-numbers en service**, source 2ff280d, retour dans
+Version précédente **20261006-audio-numbers**, source 2ff280d, retour dans
 OPERATIONS : `month` couvre aujourd’hui
 et les 29 jours précédents, selon le calendrier local (passages de mois/année).
 L’API existante accepte 93 jours ; pas de changement du service ou de ses droits.

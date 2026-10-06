@@ -20,12 +20,27 @@ changement SIP, PBX ou API. Pas de nouvelle dépendance. Guides FR/EN/ES aligné
 81 tests, typage et lint réussis. Test navigateur sur erreur synthétique :
 isolation de rubrique, commandes voisines conservées, FR/EN/ES, annulation et
 retour au formulaire manuel. Guides PDF régénérés, huit pages chacun.
-Publication en préparation : cette section décrit le code validé.
+**En service : 20261006-display-recovery**, source `4b671aa`, publication le
+6 octobre à **15:17:18 Africa/Douala** (14:17:18 UTC). Build live isolé depuis
+le commit, npm ci, variables publiques habituelles ; 266 fichiers. Archive
+SHA-256 `04ca596b8109a314ee1b32fc147f5b103819652e7d56257464264c10b39e30e9`.
+Hermes 167.233.244.152 vérifié, permissions root 0755/0644, manifeste et lecture
+Caddy contrôlés. Sauvegarde protégée
+`/root/apisnix-phone-backups/20261006-display-recovery/` : ancienne cible,
+manifestes, archive, source et heure. Bascule atomique sans redémarrage.
+
+Index public normal et manuel, JS `index-D1bJ0PrW.js` et CSS
+`index-DR8OwYTZ.css` identiques au build. Formulaire manuel vérifié dans le
+navigateur intégré, aucune erreur console. Aucun appel réel lancé et aucun
+onglet client rechargé. Le nouveau code se charge au prochain chargement de
+page, hors appel. Retour : après contrôle de la cible courante, repointer
+atomiquement `/srv/apisnixphone/current` vers la release conservée
+`/srv/apisnixphone/releases/20261006-audio-numbers`. Aucune restauration DB.
 
 
 ## Audio 30 jours et numéros — publiés le 6 octobre 2026
 
-Release active **20261006-audio-numbers**, source **2ff280d**, à 12:48:50
+Release précédente **20261006-audio-numbers**, source **2ff280d**, à 12:48:50
 Africa/Douala (11:48:50 UTC). Audio : Aujourd’hui / Hier / 7 / 30 jours,
 message si résultats limités. Numérotation : +33 → 0033, autres + retirés,
 préfixes carrier conservés. Pays d’un entrant national français de neuf chiffres
