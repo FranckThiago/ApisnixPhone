@@ -2,16 +2,17 @@
 
 ## Appeler ferme la carte de fin d'appel — 6 octobre 2026
 
-Depuis le commit suivant la release `20261006-settings-identity` (pas encore
-publié) : lancer un appel depuis le Journal, les Contacts, les Rappels ou la
+**En service : 20261006-call-closes-wrapup**, source 0141698, le 6 octobre
+à 17:00 Douala. Lancer un appel depuis le Journal, les Contacts, les Rappels ou la
 palette alors qu'un appel terminé attend « Terminer » ferme la carte et passe
 l'appel. Un appel en cours (sonnerie, conversation, attente) garde le refus
-« Un appel est déjà en cours ». [Changelog](AI_CHANGELOG.md).
+« Un appel est déjà en cours ». 81 tests, build live, HTTPS et navigateur vérifiés.
+[Publication et retour](OPERATIONS.md#appeler-ferme-la-carte-de-fin-dappel--publié-le-6-octobre-2026).
 
 ## Poste connecté dans les Réglages — 6 octobre 2026
 
-**En service : 20261006-settings-identity**, source d7bc5c6, le 6 octobre
-à 15:31 Douala. Les Réglages commencent par une carte « Poste connecté » : identifiant de la
+Release précédente `20261006-settings-identity`, source d7bc5c6, le 6 octobre
+à 15:31 Douala, conservée pour retour. Les Réglages commencent par une carte « Poste connecté » : identifiant de la
 ligne, serveur et pastille d'état, lisible sur téléphone où la barre latérale
 masque le compte. Une capture de cet écran suffit au support pour identifier le
 poste. La rubrique Compte indique aussi le serveur. Guide et captures à jour

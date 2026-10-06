@@ -9,7 +9,9 @@ est déjà en cours ». Appeler depuis le Journal, les Contacts, les Rappels ou
 la palette ferme désormais cette carte comme « Terminer » ; tags et note sont
 déjà enregistrés au fil de la saisie. Un appel réellement en cours garde le
 refus. Guide aligné en trois langues, sans nouvelle capture. Typage, lint et
-81 tests ; vérifié en démo. Non publié sur Hermes pour l'instant.
+81 tests ; vérifié en démo. Publiée sur Hermes : **20261006-call-closes-wrapup**,
+source 0141698, 17:00:37 Douala ; empreintes, HTTPS et navigateur vérifiés.
+[Détails et retour](OPERATIONS.md#appeler-ferme-la-carte-de-fin-dappel--publié-le-6-octobre-2026).
 
 ## 2026-10-06 — Poste connecté visible dans les Réglages
 

@@ -1,5 +1,34 @@
 # Construction et validation
 
+## Appeler ferme la carte de fin d'appel — publié le 6 octobre 2026
+
+**En service : 20261006-call-closes-wrapup**, source `0141698`, bascule le
+6 octobre à **17:00:37 Africa/Douala** (16:00:37 UTC). Lancer un appel depuis
+le Journal, les Contacts, les Rappels ou la palette alors qu'un appel terminé
+attend « Terminer » ferme la carte et passe l'appel ; un appel en cours garde
+le refus. Aucun changement SIP, PBX, API ni Caddy ; pas de migration.
+
+Build live isolé depuis `git archive` du commit, npm ci, trois variables
+publiques usuelles ; 266 fichiers, archive ustar SHA-256
+`9b4a1abd46baef6bddc8b9c57b26391a3502d910d7b4e39c337014516d8e8261`.
+Hôte Hermes vérifié ; cible de `current` contrôlée avant extraction et avant
+bascule (`20261006-settings-identity`) ; 266 empreintes identiques entre le
+build local et le dossier extrait ; droits root 0755/0644, lecture Caddy sans
+écriture ; lien basculé atomiquement, sans rechargement Caddy. Sauvegarde
+protégée `/root/apisnix-phone-backups/20261006-call-closes-wrapup/` :
+ancienne cible, manifestes ancien et nouveau, archive, empreinte, source et
+heure. Release précédente conservée.
+
+HTTPS : index 200 no-cache, JS `index-D5GY42xK.js` et CSS `index-soO7B-ST.css`
+200 immuables, JS servi identique au build ; `/api/me` anonyme 401. Navigateur
+intégré : écran de connexion live, nouveau JS chargé, aucune erreur console.
+Aucune connexion SIP ni appel lancé, aucun onglet client rechargé ; le
+comportement s'applique au prochain chargement de page, hors appel.
+
+Retour : vérifier que `current` vise encore cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261006-settings-identity`,
+sans recharger Caddy ni restaurer de base.
+
 ## Poste connecté dans les Réglages — publié le 6 octobre 2026
 
 **En service : 20261006-settings-identity**, source `d7bc5c6`, bascule le
