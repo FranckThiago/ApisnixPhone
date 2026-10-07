@@ -74,9 +74,10 @@ Le journal observé est limité à 1000 appels / 30 jours, le journal central et
 audios aux 30 derniers jours calendaires et à la date de nouvelle attribution,
 y compris les exports, lectures directes et téléchargements.
 
-Une révision protège contre les écrasements concurrents (409). Les échecs restent
-visibles : réessai du dernier état en mémoire, attente des écritures à la
-déconnexion, avertissement avant abandon. Une réattribution impose une nouvelle
+Une révision protège contre les écrasements concurrents (409). L’état de sauvegarde
+et son bouton Réessayer sont affichés uniquement dans Réglages → Données, sans
+bandeau global. Réessai du dernier état en mémoire, attente des écritures à la
+déconnexion et avertissement avant abandon sont conservés. Une réattribution impose une nouvelle
 session ; l’ancien état n’est pas réimporté. L’import automatique IndexedDB est
 arrêté, les anciennes copies locales restent intactes. Aucun secret SIP conservé.
 Le login reste dépendant du chargement HTTP : l’échec revient au formulaire et

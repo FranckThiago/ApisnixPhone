@@ -1,5 +1,28 @@
 # Construction et validation
 
+## Messages dans les réglages — publication du 7 octobre 2026
+
+**Frontend actif `20261007-messages-reglages`, 13:58:13 Africa/Douala** ;
+backend conservé sur `20261007-line-controls`. Le bandeau global de sauvegarde
+indisponible est supprimé. État et Réessayer restent dans Réglages → Données.
+Le message d’autre onglet ajoute « ACTUALISEZ la page svp » (FR/EN/ES).
+Guides, captures et PDF inchangés à la demande explicite de Franck.
+
+102 tests, typage, lint et build live réussis. Archive de 266 fichiers SHA-256
+`1bdad80f7a65cf1029d4d71f42a4f4c93da580875817ccbcb2f491ddcc40e102` ;
+JS `index-VIPiB8NC.js`, bibliothèque `lib-BjmX-dWB.js`, CSS `index-soO7B-ST.css`.
+Index et JS/CSS HTTPS identiques au build, santé 200, accès anonyme `/api/me` 401.
+Navigateur intégré : formulaire live, nouveau JS chargé, aucune erreur console.
+Pas de connexion SIP ni de panne de sauvegarde provoquée en production.
+
+Sauvegarde protégée `/root/apisnix-phone-backups/20261007-messages-reglages/` :
+ancienne release archivée et index vérifié, ancienne cible, archive publiée,
+manifeste et reçu. Lecture Caddy vérifiée avant bascule atomique. Aucun service
+redémarré, aucune migration ni mutation des données. Retour ciblé : vérifier que
+`/srv/apisnixphone/current` pointe toujours vers cette release, puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261007-line-controls`.
+Recharger les onglets hors appel pour recevoir ces changements.
+
 ## Conservation et contrôle des lignes — publication du 7 octobre 2026
 
 **Frontend et backend `20261007-line-controls`, actifs à 13:31:06 Africa/Douala**.

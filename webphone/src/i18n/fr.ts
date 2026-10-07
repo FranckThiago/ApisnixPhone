@@ -512,7 +512,7 @@ export const fr = {
 
   // Line messages
   'sip.missingCredentials': 'Saisissez votre identifiant et votre mot de passe.',
-  'sip.otherTab': 'Cette ligne est déjà ouverte dans un autre onglet de ce navigateur.',
+  'sip.otherTab': 'Cette ligne est déjà ouverte dans un autre onglet de ce navigateur. ACTUALISEZ la page svp',
   'sip.serverUnreachable': 'Connexion au serveur impossible. Vérifiez votre réseau, puis réessayez.',
   'sip.authRefused': 'Identifiant ou mot de passe refusé.',
   'sip.registerRefused': 'Le serveur a refusé l’enregistrement ({status}).',

@@ -1,5 +1,13 @@
 # Journal des changements
 
+## 2026-10-07 — Messages discrets de sauvegarde
+
+Retrait du bandeau global de sauvegarde indisponible ; état et Réessayer conservés
+dans Réglages → Données. Le message de ligne ouverte dans un autre onglet demande
+d’actualiser la page, en FR/EN/ES. 102 tests, typage, lint et build live réussis.
+Guides, captures et PDF laissés inchangés sur demande explicite de Franck.
+Publication et retour ciblé dans OPERATIONS.
+
 ## 2026-10-07 — Choix de conservation et remise à zéro
 
 Réglages FR/EN/ES : activer/désactiver la sauvegarde et effacer les données du

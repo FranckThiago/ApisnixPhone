@@ -1,5 +1,13 @@
 # État du projet
 
+## Messages de sauvegarde — 7 octobre 2026
+
+**Frontend en service : `20261007-messages-reglages`, 13:58:13 Douala.**
+L’état de sauvegarde et Réessayer restent uniquement dans Réglages → Données ;
+le bandeau global est supprimé. Le message d’autre onglet demande d’actualiser
+la page, en FR/EN/ES. Backend `20261007-line-controls` inchangé. Guides, captures
+et PDF inchangés sur demande de Franck. Validation et retour dans OPERATIONS.
+
 ## Conservation et nouvelle attribution — 7 octobre 2026
 
 **En service : `20261007-line-controls`, 13:31:06 Douala.**
