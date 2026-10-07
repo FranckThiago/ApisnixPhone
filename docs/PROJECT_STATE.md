@@ -1,5 +1,17 @@
 # État du projet
 
+## Audit de propriété des profils — 7 octobre 2026, correctif en attente
+
+Le profil persistant actuellement lié à l'ID du poste n'isole pas deux clients
+successifs lors d'une réutilisation. Le filtre habituel journal/audio sur 30 jours
+n'est pas imposé par l'API ; les appels observés du profil restent bornés à 90 jours.
+Le login dépend du chargement HTTP : une panne peut fermer un SIP déjà validé.
+Risques reproduits sur bases fictives ; aucune exposition réelle établie par le
+contrôle de production en lecture seule. Aucun nouveau déploiement effectué.
+Recommandation à appliquer après décision : propriétaire et période d'attribution,
+30 jours côté serveur sans purge d'archives, SIP indépendant des données.
+Détails/procédure dans le dépôt privé, `docs/AUDIT_PROPRIETE_WEBPHONE_20261007.md`.
+
 ## Données du téléphone sur le serveur — 7 octobre 2026
 
 **En service : `20261007-server-data`**, publiée sur Hermes à 12:18:52 Douala.

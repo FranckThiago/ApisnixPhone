@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-10-07 — Limites de propriété et disponibilité vérifiées
+
+Audit sans changement de production : profil attaché à l'ID technique,
+réutilisation non isolée, filtre journal/audio 30 jours seulement dans l'interface,
+profil observé 90 jours et login SIP dépendant du service HTTP. Reproductions sur
+bases fictives ; aucune fuite réelle établie. État et architecture signalent ces
+limites, détail dans le dépôt privé. Recommandation : propriétaire/période
+d'attribution et fenêtre serveur de 30 jours, archives préservées ; correction
+fonctionnelle pas encore appliquée.
+
 ## 2026-10-07 — Conservation serveur et pavé simplifié
 
 Retrait de la phrase du +. Profil réel automatiquement sauvegardé dans l'API

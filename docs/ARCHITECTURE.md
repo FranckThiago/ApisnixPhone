@@ -58,7 +58,11 @@ d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés.
 `src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
 pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le
 profil via `/api/webphone-profile`, dans la base de supervision Hermes, sous
-l'identité du poste authentifié par `/api/line-session`. Contacts, notes/tags,
+l'identité du poste authentifié par `/api/line-session`. **Limite confirmée le
+7 octobre :** ce profil n'a pas de propriétaire client ni de période
+commerciale distincte. Une réutilisation du poste peut exposer les données du
+précédent titulaire. La fenêtre affichée de 30 jours ne protège pas les routes
+API/audio directes ; séparation et restrictions serveur restent à corriger. Contacts, notes/tags,
 rappels, appels observés (1 000 / 90 jours) et préférences sont conservés à la
 déconnexion. La session HTTP est requise pour ouvrir le profil ; si le chargement
 échoue, l'application refuse l'ouverture et ferme la ligne SIP invisible, sans
