@@ -199,9 +199,12 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
   Douce) pour un bureau tranquille ; les **bruyantes** (Rétro, Trille, Alarme,
   Clairon) pour un open space. Touchez un son pour le choisir ; ▶ l'écoute sans
   le choisir.
-- **Données de la ligne** : contacts, notes, rappels, journal et réglages
-  sauvegardés sur APISNIX, disponibles sur un autre appareil. Attendez la
-  confirmation de sauvegarde. Casque et autorisations propres à l'appareil.
+- **Données de la ligne** : activez **Conserver mes données sur APISNIX**
+  pour les retrouver ailleurs. Désactiver efface la sauvegarde ; **Supprimer mes
+  données** efface contacts, notes, rappels et journal du téléphone. Attendez la confirmation.
+- **Conservation** : sans renouvellement ou après résiliation, APISNIX ne garantit
+  pas la continuité des données. Une réattribution peut les supprimer définitivement.
+  Appels et audios consultables sur 30 jours.
 - **Compte** : votre identifiant, la version, **Se déconnecter**.
 
 ## 11. Sur téléphone ou petite fenêtre

@@ -58,32 +58,29 @@ d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés.
 `src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
 pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le
 profil via `/api/webphone-profile`, dans la base de supervision Hermes, sous
-l'identité du poste authentifié par `/api/line-session`. **Limite confirmée le
-7 octobre :** ce profil n'a pas de propriétaire client ni de période
-commerciale distincte. Une réutilisation du poste peut exposer les données du
-précédent titulaire. La fenêtre affichée de 30 jours ne protège pas les routes
-API/audio directes ; séparation et restrictions serveur restent à corriger. Contacts, notes/tags,
-rappels, appels observés (1 000 / 90 jours) et préférences sont conservés à la
-déconnexion. La session HTTP est requise pour ouvrir le profil ; si le chargement
-échoue, l'application refuse l'ouverture et ferme la ligne SIP invisible, sans
-écraser un profil par des données vides. Les détails de l'API, du schéma additif
-et de la sauvegarde restent dans le dépôt privé de gestion.
+l'identité du poste authentifié par `/api/line-session`. Le profil reste lié au
+poste ; une attribution explicite à un nouveau client le remet à zéro, incrémente
+une version d’attribution et ferme les sessions. Cette version et la révision du
+profil protègent les écritures contre les anciens appareils ; la version du compte
+est aussi vérifiée avant sauvegarde. Changer d’abord le mot de passe SIP dans
+VICIdial reste nécessaire lors d’une remise à un nouveau client.
 
-Une révision protège chaque écriture contre l'écrasement concurrent (409) ; les
-échecs restent visibles dans toutes les rubriques. Les modifications restent en
-mémoire, Réessayer renvoie le dernier état, le retour réseau réessaie aussi ; un
-conflit exige de se reconnecter à la version serveur, avec confirmation avant
-l'abandon d'une modification non sauvegardée. La déconnexion attend les écritures ;
-quitter/recharger avec des données non sauvegardées produit l'avertissement natif.
-Un navigateur tué brutalement peut perdre les dernières modifications non confirmées.
+La conservation est activée par défaut et peut être désactivée dans les réglages.
+Le serveur ne garde alors que le refus de conservation ; les données et réglages
+utilisés ensuite restent en mémoire jusqu’à la fermeture de la session. Le bouton
+d’effacement retire les collections en conservant les réglages et le choix de
+conservation. Il ne touche pas au journal central ni aux fichiers audio.
+Le journal observé est limité à 1000 appels / 30 jours, le journal central et les
+audios aux 30 derniers jours calendaires et à la date de nouvelle attribution,
+y compris les exports, lectures directes et téléchargements.
 
-L'ancien IndexedDB n'est plus écrit en mode réel. À la première ouverture sur
-chaque appareil, ses contacts, appels et rappels rejoignent le serveur, à ID
-identique la version serveur prime. Les préférences locales sont reprises seulement
-pour un profil serveur encore neuf. Un marqueur local est posé après sauvegarde
-réussie pour éviter de réimporter les données ; l'ancienne copie reste intacte.
-Un appareil qui a déjà perdu ses données de session ne peut pas les récupérer.
-La démonstration reste fictive, en mémoire et sans API.
+Une révision protège contre les écrasements concurrents (409). Les échecs restent
+visibles : réessai du dernier état en mémoire, attente des écritures à la
+déconnexion, avertissement avant abandon. Une réattribution impose une nouvelle
+session ; l’ancien état n’est pas réimporté. L’import automatique IndexedDB est
+arrêté, les anciennes copies locales restent intactes. Aucun secret SIP conservé.
+Le login reste dépendant du chargement HTTP : l’échec revient au formulaire et
+ferme le SIP invisible sans écraser le profil. La démo reste fictive.
 
 Les identifiants de périphériques audio et l'autorisation des notifications ne
 voyagent pas entre appareils ; les volumes, sonneries, thème, langue, densité et

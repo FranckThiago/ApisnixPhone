@@ -1,5 +1,14 @@
 # ApisnixPhone Web — plan de réalisation et de reprise
 
+## Choix de conservation — 7 octobre 2026
+
+Le stockage réel est sur APISNIX, facultatif dans Réglages ; désactivation et
+bouton d’effacement explicites. Conditions de continuité après non-renouvellement
+et guides FR/EN/ES alignés. Import automatique local arrêté. Nouvelle attribution
+avec remise à zéro, 30 jours côté serveur et coupure d’appel admin dans le service
+privé. ARCHITECTURE et PROJECT_STATE décrivent le fonctionnement courant ; les
+choix V1 ci-dessous restent historiques.
+
 **Référence produit et technique préparée le 18 septembre 2026.**
 Début de réalisation envisagé le 19 septembre, sur demande de Franck.
 Statut au 21 septembre : **lots 1 à 4 réalisés dans `webphone/`** (interface

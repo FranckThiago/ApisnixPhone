@@ -1,5 +1,38 @@
 # Construction et validation
 
+## Conservation et contrôle des lignes — publication du 7 octobre 2026
+
+**Frontend et backend `20261007-line-controls`, actifs à 13:31:06 Africa/Douala**.
+Réglages : conserver sur APISNIX ou retirer la sauvegarde, effacer le profil,
+conditions de continuité après non-renouvellement/résiliation. Profil protégé par
+version d’attribution et version de compte ; import local automatique arrêté.
+Journal observé 30 jours. Backend : attribution avec remise à zéro, consultation
+journal/audio/export bornée à 30 jours et à l’attribution, coupure admin ciblée.
+La dépendance du login au service HTTP reste inchangée.
+
+102 tests téléphone, typage/lint/build live ; 175 tests backend et 15 ciblés
+après lecture atomique profil/attribution. Navigateur intégré : réglages, nouvelle
+attribution et coupure fictive ; formulaire live et assets publiés contrôlés.
+Guides/captures FR/EN/ES reconstruits, PDF de 8 pages relus. Archive frontend
+SHA256 `99f54f40c6fbc700653543002adeb956fb8176ac19ac767a8c2885419dbf0456`,
+JS `index-ek_Ezc3W.js` ; HTTPS identique, santé 200, accès profil anonyme 401.
+
+Une première bascule a été automatiquement annulée : permissions du dossier de
+release incompatibles avec le compte du service. Dossiers corrigés et lecture
+vérifiée sous les comptes de service avant publication réussie. Sauvegardes
+protégées et reçu sous `/root/apisnix-phone-backups/20261007-line-controls-retry/`
+et l’équivalent supervision. Base conservée, migration additive de trois champs.
+Le PBX accepte uniquement la nouvelle commande de coupure filtrée ; détail de la
+permission AMI et du snapshot dans le dépôt privé, `docs/CONTROLES_LIGNE_20261007.md`.
+Aucun compte réattribué ni appel client coupé pendant le déploiement.
+
+**Recharger hors appel** : le contrat PUT ajoute `assignment_version` ; l’ancienne
+page ne peut plus sauvegarder. Retour coordonné : frontend `20261007-server-data`,
+backend `20261007-webphone-data`, base courante conservée. Ce retour retire les
+restrictions d’attribution/30 jours ; réserver à un incident et ne pas réattribuer
+pendant ce retour. Procédure PBX et limites dans le dépôt privé.
+
+
 ## Données du téléphone sur le serveur — publication du 7 octobre 2026
 
 Frontend **`20261007-server-data`** activé à **12:18:52 Africa/Douala**,

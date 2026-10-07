@@ -1,5 +1,5 @@
 import { BellRing, Database, Headphones, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
-import { useSyncExternalStore, type ReactNode } from 'react';
+import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { ConnectionPill } from '../calls/PhoneDock';
@@ -26,6 +26,12 @@ export function Settings() {
   const { account, demo } = usePhone();
   const { t, tp, language } = useI18n();
   const sync = useSyncExternalStore(store.subscribeSync, store.getSyncSnapshot);
+  const [dataBusy, setDataBusy] = useState(false);
+  const changeData = async (action: () => Promise<void>) => {
+    setDataBusy(true);
+    try { await action(); } catch (error) { notify(error instanceof Error ? error.message : t('settings.saveError'), 'danger'); }
+    finally { setDataBusy(false); }
+  };
   const set = store.setPreferences.bind(store);
 
   return (
@@ -87,8 +93,18 @@ export function Settings() {
         <Section icon={<Database size={18} />} title={t('settings.data')}>
           <div className="setting"><span><b>{t(demo ? 'settings.demoData' : 'settings.serverData')}</b>
             <small>{t(demo ? 'settings.demoDataHint' : 'settings.serverDataHint')}</small></span></div>
-          {!demo && <p role="status" className={sync === 'error' ? 'form-error' : 'muted'}>{sync === 'error' ? store.getSyncMessage() : t(sync === 'saving' ? 'settings.saving' : 'settings.saved')}</p>}
+          <fieldset disabled={dataBusy} style={{ border: 0, padding: 0, margin: 0 }}>
+            <Toggle label={t('settings.keepData')} hint={t('settings.keepDataHint')} checked={preferences.persist} onChange={value => {
+              if (!value && !window.confirm(t('settings.stopKeepingConfirm'))) return;
+              void changeData(() => store.setPersist(value));
+            }} />
+            <button type="button" className="ghost danger" onClick={() => {
+              if (window.confirm(t('settings.eraseConfirm'))) void changeData(() => store.eraseDevice());
+            }}>{t('settings.eraseData')}</button>
+          </fieldset>
+          {!demo && <p role="status" className={sync === 'error' ? 'form-error' : 'muted'}>{sync === 'error' ? store.getSyncMessage() : t(sync === 'saving' ? 'settings.saving' : preferences.persist ? 'settings.saved' : 'settings.sessionData')}</p>}
           {!demo && sync === 'error' && <button type="button" className="ghost" onClick={() => { void store.retrySave().catch(() => notify(store.getSyncMessage(), 'danger')); }}>{t('action.retry')}</button>}
+          <p className="muted">{t('settings.dataTerms')}</p>
           <p className="muted">{tp('settings.contacts', contacts.length)} · {tp('settings.callCount', calls.length)}. {t('settings.noPassword')}</p>
         </Section>
 

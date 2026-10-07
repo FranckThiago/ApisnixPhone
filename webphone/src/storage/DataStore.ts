@@ -12,7 +12,7 @@ export interface AppData {
 }
 
 export const MAX_CALLS = 1000;
-export const MAX_AGE_DAYS = 90;
+export const MAX_AGE_DAYS = 30;
 
 export const emptyData = (): AppData => ({ schema: 1, contacts: [], calls: [], callbacks: [], preferences: { ...DEFAULT_PREFERENCES } });
 
@@ -62,7 +62,7 @@ export class DataStore {
     this.profile = profile;
     this.setSync('saved');
     // Data saved before callbacks existed simply has none.
-    this.data = loaded?.schema === 1 ? { ...loaded, callbacks: loaded.callbacks ?? [], preferences: { ...DEFAULT_PREFERENCES, ...loaded.preferences, persist: true } }
+    this.data = loaded?.schema === 1 ? { ...loaded, callbacks: loaded.callbacks ?? [], preferences: { ...DEFAULT_PREFERENCES, ...loaded.preferences } }
       : { ...(seed ?? emptyData()), preferences: { ...(seed?.preferences ?? DEFAULT_PREFERENCES), persist: persist || this.server } };
     this.prune();
     this.emit(this.server);
@@ -79,7 +79,7 @@ export class DataStore {
 
   private emit(save = true) {
     this.listeners.forEach(listener => listener());
-    if (save && this.profile && this.data.preferences.persist && this.persistence) {
+    if (save && this.profile && (this.server || this.data.preferences.persist) && this.persistence) {
       const profile = this.profile, data = this.data, persistence = this.persistence;
       const version = ++this.saveVersion;
       this.pending++;
@@ -170,19 +170,22 @@ export class DataStore {
 
   /** Turning conservation off also removes what this device had kept for the profile. */
   async setPersist(persist: boolean) {
-    if (this.server) return;
+    await this.flush();
     this.data = { ...this.data, preferences: { ...this.data.preferences, persist } };
-    if (!persist && this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
+    if (!persist && this.server) this.data = { ...emptyData(), preferences: { ...this.data.preferences, persist: false } };
+    if (!this.server && !persist && this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
     this.emit();
+    await this.flush();
   }
 
-  /** Local data only: the central journal of the server is never touched. */
+  /** Phone profile only: the central journal of the server is never touched. */
   async eraseDevice() {
-    if (this.server) return;
+    await this.flush();
     const preferences = this.data.preferences;
     this.data = { ...emptyData(), preferences };
-    if (this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
+    if (!this.server && this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
     this.emit();
+    await this.flush();
   }
 
   flush = async () => {

@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-07 — Choix de conservation et remise à zéro
+
+Réglages FR/EN/ES : activer/désactiver la sauvegarde et effacer les données du
+profil ; conditions après non-renouvellement/résiliation. Les réattributions ne
+peuvent plus recevoir un ancien profil en mémoire ni un import local automatique.
+Journal observé ramené à 30 jours. Guides, captures et PDF alignés ; tests de
+persistance et génération, typage/lint/build. Backend et exploitation dans le
+dépôt privé ; état de publication dans OPERATIONS.
+
 ## 2026-10-07 — Limites de propriété et disponibilité vérifiées
 
 Audit sans changement de production : profil attaché à l'ID technique,

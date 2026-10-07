@@ -163,15 +163,12 @@ persona.**
 
 ![Grabaciones de la línea](guide/es/18-audio.png "gauche")
 
-La página **Audio** reúne las grabaciones de las llamadas de tu extensión.
-Aparecen **unos minutos después del final de la llamada** («En proceso»
-mientras tanto).
+**Audio** reúne las grabaciones de tu extensión, disponibles unos minutos
+tras finalizar la llamada («En proceso» mientras tanto).
 
-Elige Hoy, Ayer, Últimos 7 o **Últimos 30 días** y pulsa **Escuchar** en la página o **Descargar** el archivo.
-Solo ves las grabaciones de tu extensión.
-
-Nada que escribir: el acceso se abre con tu línea. Si falla, **Reintentar**;
-si no, contacta con APISNIX.
+Elige Hoy, Ayer, Últimos 7 o Últimos 30 días y pulsa **Escuchar** o **Descargar**.
+Solo ves tus grabaciones. El acceso se abre con tu línea; si falla, **Reintentar**
+o contacta con APISNIX.
 
 ## 10. Ajustes
 
@@ -192,9 +189,12 @@ si no, contacta con APISNIX.
   Marimba, Suave) para una oficina tranquila; los **potentes** (Retro, Trino,
   Alarma, Clarín) para una oficina abierta. Pulsa un sonido para elegirlo; ▶ lo
   escucha sin elegirlo.
-- **Datos de la línea**: contactos, notas, recordatorios, registro y ajustes
-  guardados en APISNIX, disponibles en otro dispositivo. Espera la confirmación.
-  El casco y los permisos siguen siendo propios del dispositivo.
+- **Datos de la línea**: activa **Conservar mis datos en APISNIX** para
+  recuperarlos en otro dispositivo. Desactivar elimina la copia guardada; **Eliminar
+  mis datos** borra contactos, notas, recordatorios y registro del teléfono. Espera la confirmación.
+- **Conservación**: sin renovación o tras cancelar la suscripción, APISNIX no garantiza
+  la continuidad de los datos. Reasignar el puesto puede eliminarlos definitivamente.
+  Llamadas y audios disponibles durante 30 días.
 - **Cuenta**: tu usuario, la versión, **Cerrar sesión**.
 
 ## 11. En un teléfono o en una ventana pequeña

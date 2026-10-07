@@ -1,23 +1,22 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { DataStore, emptyData, type AppData } from '../src/storage/DataStore';
 import { ServerPersistence, serverData } from '../src/storage/serverPersistence';
-import type { Persistence } from '../src/storage/persistence';
+import { indexedDbPersistence } from '../src/storage/persistence';
 
-function fixture(local: AppData | null = null, extension = 'alice') {
-  let stored: AppData | null = null, revision = 0, fail = false;
+function fixture(extension = 'alice') {
+  let stored: AppData | null = null, revision = 0, fail = false, version = 1;
   const requests: Array<{ path: string; init?: RequestInit }> = [];
   const fetchImpl = async (url: RequestInfo | URL, init?: RequestInit) => {
     const path = String(url); requests.push({ path, init });
     if (fail) throw new Error('offline');
-    if (path.endsWith('/me')) return Response.json({ user: { role: 'agent' }, endpoint: { extension }, csrf: 'fictional-token' });
-    if (init?.method !== 'PUT') return Response.json({ data: stored, revision });
+    if (path.endsWith('/me')) return Response.json({ user: { role: 'agent', version }, endpoint: { extension }, csrf: 'fictional-token' });
+    if (init?.method !== 'PUT') return Response.json({ data: stored, revision, assignment_version: 0 });
     const body = JSON.parse(String(init.body));
     if (body.revision !== revision) return Response.json({}, { status: 409 });
     stored = structuredClone(body.data); return Response.json({ revision: ++revision });
   };
-  const legacy: Persistence = { load: async () => local, save: async () => { throw new Error('Never write legacy'); }, clear: async () => { throw new Error('Never erase legacy'); } };
-  const persistence = new ServerPersistence('/api', fetchImpl, legacy);
-  return { persistence, requests, stored: () => stored, fail: (value: boolean) => { fail = value; }, concurrent: () => { revision++; } };
+  const persistence = new ServerPersistence('/api', fetchImpl);
+  return { persistence, requests, stored: () => stored, fail: (value: boolean) => { fail = value; }, concurrent: () => { revision++; }, reassign: () => { version++; stored = null; revision++; } };
 }
 
 const contact = { name: 'Fiction', numbers: [{ label: '', value: '1001' }], favorite: true };
@@ -42,20 +41,35 @@ describe('server profiles', () => {
     expect(JSON.stringify(f.stored())).not.toMatch(/password|local-mic|local-speaker/);
     await second.setPersist(false);
     await second.eraseDevice();
-    expect(second.getSnapshot().contacts).toHaveLength(1);
+    expect(second.getSnapshot().contacts).toHaveLength(0);
+    expect(f.stored()?.preferences.persist).toBe(false);
+    second.saveContact(contact);
+    await second.flush();
+    expect(f.stored()?.contacts).toHaveLength(0);
+    second.close(); await second.open('pbx:alice', true);
+    expect(second.getSnapshot().preferences.persist).toBe(false);
+    expect(second.getSnapshot().contacts).toHaveLength(0);
+    await second.setPersist(true);
+    second.saveContact(contact); await second.flush();
+    expect(f.stored()?.contacts).toHaveLength(1);
+    await second.eraseDevice();
+    expect(f.stored()?.contacts).toHaveLength(0);
   });
 
-  it('imports contacts, notes and callbacks from legacy IndexedDB without erasing the source', async () => {
+  it('does not resurrect a previous holder’s old local profile', async () => {
     const local = emptyData();
     local.contacts = [{ ...contact, id: 'legacy', note: 'Keep me', createdAt: 1, updatedAt: 1 }];
     local.callbacks = [{ id: 'callback', number: '1001', dueAt: Date.now(), createdAt: 1 }];
     local.preferences.volume = 170;
-    const f = fixture(local), store = new DataStore(f.persistence);
+    const legacyRead = vi.spyOn(indexedDbPersistence, 'load').mockResolvedValue(local);
+    const f = fixture(), store = new DataStore(f.persistence);
     await store.open('pbx:alice', true);
-    expect(f.stored()?.contacts[0]?.note).toBe('Keep me');
-    expect(f.stored()?.callbacks).toHaveLength(1);
-    expect(f.stored()?.preferences.volume).toBe(170);
+    expect(f.stored()?.contacts).toHaveLength(0);
+    expect(f.stored()?.callbacks).toHaveLength(0);
+    expect(f.stored()?.preferences.volume).not.toBe(170);
     expect(local.contacts).toHaveLength(1);
+    expect(legacyRead).not.toHaveBeenCalled();
+    legacyRead.mockRestore();
   });
 
   it('reports failed saves, retains changes and retries the latest snapshot', async () => {
@@ -79,7 +93,7 @@ describe('server profiles', () => {
     const store = new DataStore(f.persistence);
     await expect(store.open('pbx:alice', true)).rejects.toThrow();
     expect(f.requests.some(r => r.init?.method === 'PUT')).toBe(false);
-    const mismatch = fixture(null, 'bob');
+    const mismatch = fixture('bob');
     await expect(new DataStore(mismatch.persistence).open('pbx:alice', true)).rejects.toThrow();
     expect(mismatch.requests).toHaveLength(1);
   });
@@ -94,6 +108,14 @@ describe('server profiles', () => {
     store.close();
     await store.open('pbx:alice', true);
     expect(store.getSnapshot().contacts).toHaveLength(0);
+  });
+
+  it('refuses an old in-memory profile after the account reopens for a new client', async () => {
+    const f = fixture(), store = new DataStore(f.persistence);
+    await store.open('pbx:alice', true);
+    f.reassign(); store.saveContact(contact);
+    await expect(store.flush()).rejects.toThrow(/autre appareil/);
+    expect(f.stored()).toBeNull();
   });
 
   it('does not mutate local device preferences when serializing', () => {

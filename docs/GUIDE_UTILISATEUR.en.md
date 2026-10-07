@@ -181,9 +181,12 @@ otherwise, contact APISNIX.
   Gentle) for a quiet office; the **loud** ones (Retro, Trill, Alarm, Bugle)
   for an open-plan office. Tap a sound to choose it; ▶ plays it without
   choosing it.
-- **Line data**: contacts, notes, callbacks, phone history and settings saved
-  on APISNIX, available on another device. Wait for the save confirmation.
-  Headsets and permissions remain specific to the device.
+- **Line data**: enable **Keep my data on APISNIX** to find it on another device.
+  Turning it off deletes the saved copy; **Delete my data** clears contacts,
+  notes, reminders and phone journal. Wait for confirmation.
+- **Retention**: if the subscription is not renewed or is cancelled, APISNIX does
+  not guarantee data continuity. Reassigning the phone may permanently delete it.
+  Calls and recordings remain accessible for 30 days.
 - **Account**: your username, the version, **Sign out**.
 
 ## 11. On a phone or a small window

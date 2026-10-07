@@ -1,5 +1,19 @@
 # État du projet
 
+## Conservation et nouvelle attribution — 7 octobre 2026
+
+**En service : `20261007-line-controls`, 13:31:06 Douala.**
+Réglages : **Conserver mes données sur APISNIX**, activé par défaut ; désactiver
+retire le profil sauvegardé et passe en mémoire pour la session. **Supprimer mes
+données** efface contacts/notes/rappels/journal observé, garde les réglages.
+Conditions FR/EN/ES : continuité non garantie après non-renouvellement/résiliation.
+La supervision fournit la nouvelle attribution avec remise à zéro et fermeture
+des sessions, borne journal/audio/export à 30 jours et au début d’attribution,
+et permet à l’administrateur de couper un appel précis. Pas de référentiel CRM
+supplémentaire. Import local automatique arrêté pour prévenir une restauration
+ancienne. Le login dépend encore du service HTTP. Publication dans OPERATIONS.
+Les sections suivantes sont les constats des versions antérieures.
+
 ## Audit de propriété des profils — 7 octobre 2026, correctif en attente
 
 Le profil persistant actuellement lié à l'ID du poste n'isole pas deux clients
