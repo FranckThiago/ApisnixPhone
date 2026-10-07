@@ -513,7 +513,7 @@ export const es: Record<MessageKey, string> = {
   'sip.connectionLost': 'Conexión perdida. Comprueba tu red y vuelve a conectarte.',
   'sip.blocked': 'Teléfono bloqueado para tu sede tras demasiados intentos fallidos. Podrás volver a intentarlo en {time}.',
   'sip.blockLifted': 'Bloqueo levantado: puedes volver a conectarte. Un nuevo bloqueo duraría más.',
-  'sip.lockWarning': 'Atención: diez rechazos en diez minutos bloquean el teléfono para toda tu sede, 1 minuto al principio y luego más tiempo.',
+  'sip.lockWarning': 'Tras diez rechazos en diez minutos, el teléfono queda bloqueado para tu sede durante un tiempo.',
   'sip.silentMic': 'Tu interlocutor no te oye: tu micrófono no envía nada. Cuelga, revisa el micrófono en Ajustes y vuelve a llamar.',
   'sip.callFailed': 'No se pudo iniciar la llamada.',
   'sip.answerFailed': 'No se puede contestar esta llamada.',

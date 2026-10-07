@@ -512,7 +512,7 @@ export const fr = {
   'sip.connectionLost': 'Connexion perdue. Vérifiez votre réseau, puis reconnectez-vous.',
   'sip.blocked': 'Téléphone bloqué pour votre site après trop d’échecs de connexion. Nouvel essai possible dans {time}.',
   'sip.blockLifted': 'Blocage levé : vous pouvez vous reconnecter. Un nouveau blocage durerait plus longtemps.',
-  'sip.lockWarning': 'Attention : dix refus en dix minutes bloquent le téléphone pour tout votre site, 1 minute d’abord, puis plus longtemps.',
+  'sip.lockWarning': 'Après dix refus en dix minutes, le téléphone est bloqué pour votre site pendant un moment.',
   'sip.silentMic': 'Votre correspondant ne vous entend pas : votre micro n’émet rien. Raccrochez, vérifiez le micro dans Réglages, puis rappelez.',
   'sip.callFailed': 'L’appel n’a pas pu être lancé.',
   'sip.answerFailed': 'Impossible de répondre à cet appel.',

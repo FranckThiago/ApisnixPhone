@@ -513,7 +513,7 @@ export const en: Record<MessageKey, string> = {
   'sip.connectionLost': 'Connection lost. Check your network, then sign in again.',
   'sip.blocked': 'Phone blocked for your site after too many failed sign-ins. You can try again in {time}.',
   'sip.blockLifted': 'Block lifted: you can sign in again. A new block would last longer.',
-  'sip.lockWarning': 'Warning: ten refusals in ten minutes block the phone for your whole site, 1 minute at first, then longer.',
+  'sip.lockWarning': 'After ten refusals in ten minutes, the phone is blocked for your site for a while.',
   'sip.silentMic': 'The other person cannot hear you: your microphone sends nothing. Hang up, check the microphone in Settings, then call again.',
   'sip.callFailed': 'The call could not be started.',
   'sip.answerFailed': 'Unable to answer this call.',
