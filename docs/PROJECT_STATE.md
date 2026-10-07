@@ -2,11 +2,11 @@
 
 ## Blocage du site affiché avec compte à rebours — 7 octobre 2026
 
-**En service : `20261007-blocage-site`**, source `567f2c3`, 00:58 Douala : quand
+**En service : `20261007-messages-courts`**, source `3c91e14`, 01:22 Douala (avertissement raccourci ; `20261007-blocage-site` à 00:58) : quand
 le PBX refuse la connexion WSS, le webphone lit la page d'état du serveur web
 du PBX et, si le site est bloqué, affiche « Téléphone bloqué » avec le temps
 restant seconde par seconde, puis « Blocage levé ». Un refus d'identifiants
-prévient que dix refus en dix minutes bloquent tout le site, 1 minute d'abord.
+prévient qu'après dix refus en dix minutes le téléphone est bloqué pour le site pendant un moment.
 Nouvel état `blocked`, `blockedUntil` dans l'instantané, `statusUrl` dans la
 configuration (défaut sur le domaine SIP, `VITE_BLOCK_STATUS_URL` pour
 changer). CSP Caddy élargie à `https://apisnix-crm.com`. 95 tests, typage,

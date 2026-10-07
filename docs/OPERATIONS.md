@@ -2,8 +2,17 @@
 
 ## Blocage du site et compte à rebours — 7 octobre 2026
 
-**En service : `20261007-blocage-site`**, source `567f2c3`, publiée le
-7 octobre à 00:58:49 Africa/Douala. Retour vers `20261006-call-lifecycle`.
+**En service : `20261007-messages-courts`**, source `3c91e14`, publiée le
+7 octobre à 01:22:23 Africa/Douala : même contenu que `20261007-blocage-site`
+(00:58:49, source `567f2c3`) avec l'avertissement raccourci voulu par Franck,
+« Après dix refus en dix minutes, le téléphone est bloqué pour votre site
+pendant un moment ». Archive SHA-256
+`79aa74dad05f9cac95c5fe7f5e57735a306f85747daa40b34d307b300dabba54`, JS
+`index-CVZbJqjX.js`, 266 fichiers, sans AppleDouble (`COPYFILE_DISABLE=1`,
+extraction `--no-same-owner`), sauvegarde
+`/root/apisnix-phone-backups/20261007-messages-courts/`. Franck a vu le compte
+à rebours en réel sur le formulaire (« Nouvel essai possible dans 2 min 25 s »).
+Retour vers `20261007-blocage-site`, puis `20261006-call-lifecycle`.
 Demande de Franck : le webphone doit afficher le message et le compte à
 rebours quand le PBX bloque le site, comme l'écran agent. Quand la connexion
 WSS est refusée, le contrôleur interroge la page d'état du PBX

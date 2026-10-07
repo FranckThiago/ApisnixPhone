@@ -1,5 +1,11 @@
 # Journal des changements
 
+## 2026-10-07 — Avertissement raccourci
+
+Phrase après un refus d'identifiants ramenée à une seule, sans détail de
+l'escalade, dans les trois langues ; release `20261007-messages-courts`
+publiée à 01:22 Douala. Compte à rebours vu en réel par Franck.
+
 ## 2026-10-07 — Compte à rebours du blocage de site
 
 Le webphone demande au PBX si le site est bloqué quand la connexion WSS est
