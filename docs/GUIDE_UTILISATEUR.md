@@ -153,7 +153,7 @@ l'appel ; un clic sur la ligne ouvre son détail.
 
 - **Tous les appels du poste** : les 30 derniers jours, y compris les appels
   passés depuis un autre appareil. Actualisé chaque minute.
-- **Cet appareil** : les appels vus par ce navigateur, avec vos tags et notes.
+- **Journal du téléphone** : les appels vus par ApisnixPhone, avec vos tags et notes, sauvegardés sur votre ligne.
 
 ## 8. Les rappels
 
@@ -184,19 +184,14 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
 
 ![Réglages](guide/13-reglages.png "droite")
 
-- **Poste connecté** : en tête de la page, l'identifiant de votre ligne, son
-  serveur et son état. Sur téléphone, c'est ici qu'on le lit ; une capture de
-  cet écran suffit pour que le support sache quel poste est connecté.
-- **Audio** : autorisation et choix du micro et du casque, **sensibilité du
-  micro**, **Tester le micro**, annulation d'écho, réduction de bruit, sons de
-  la ligne et du clavier.
-- **Volume d'écoute** : 100 % par défaut, jusqu'à **200 %** si votre
-  correspondant reste trop faible. Au-delà de 100 %, préférez un casque pour
-  éviter l'écho.
-- **Apparence** : langue (Français, English, Español), thème Clair, Sombre ou
-  Système, densité d'affichage.
-- **Appels** : notifications du système, utiles si vous travaillez souvent dans
-  une autre fenêtre.
+- **Poste connecté** : identifiant, serveur et état de la ligne. Une capture
+  de cet écran aide le support.
+- **Audio** : autorisation et choix du micro et du casque, sensibilité,
+  **Tester le micro**, réduction de bruit et sons.
+- **Volume d'écoute** : 100 % par défaut, jusqu'à **200 %**. Préférez un
+  casque au-delà de 100 %.
+- **Apparence** : langue, thème Clair, Sombre ou Système, densité.
+- **Appels** : notifications du système.
 
 ![Choix de la sonnerie](guide/19-sonneries.png "gauche 60mm")
 
@@ -204,9 +199,9 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
   Douce) pour un bureau tranquille ; les **bruyantes** (Rétro, Trille, Alarme,
   Clairon) pour un open space. Touchez un son pour le choisir ; ▶ l'écoute sans
   le choisir.
-- **Données de cet appareil** : par défaut, contacts, notes et journal local
-  disparaissent à la déconnexion. **Conserver sur cet appareil** les garde :
-  **jamais sur un ordinateur partagé.**
+- **Données de la ligne** : contacts, notes, rappels, journal et réglages
+  sauvegardés sur APISNIX, disponibles sur un autre appareil. Attendez la
+  confirmation de sauvegarde. Casque et autorisations propres à l'appareil.
 - **Compte** : votre identifiant, la version, **Se déconnecter**.
 
 ## 11. Sur téléphone ou petite fenêtre

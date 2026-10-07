@@ -454,39 +454,39 @@ neutre ; les emoji de drapeaux ne sont pas un rendu fiable sur tous les Windows.
 
 ## 10. Données, confidentialité et sécurité de l'application
 
-### V1 sans backend supplémentaire
+### Conservation sur le serveur — décision du 7 octobre 2026
 
-Depuis le 25 septembre, le Journal réel affiche par défaut les appels du poste
-sur 30 jours via la session agent de la supervision (`/api/dashboard`), y
-compris les appels sans audio et ceux d’un autre appareil. L’API borne chaque
-réponse à 500 activités ; la limite et l’état de synchronisation sont montrés.
-La vue **Cet appareil** garde les appels observés localement, leurs notes et
-leurs tags ; elle reste soumise au choix de conservation locale. En
-démonstration, seul le journal local fictif apparaît. Les statistiques portent
-sur la vue affichée. Pas d'invention de coût ou de facturation.
+La ligne réelle conserve automatiquement contacts, notes/tags, rappels, journal
+du téléphone et réglages dans la base Hermes du service existant de supervision,
+via `/api/webphone-profile`. L'option de conservation facultative sur l'appareil
+et l'effacement global de la copie locale disparaissent des Réglages. La
+déconnexion ferme les données en mémoire, sans supprimer celles du serveur.
+Le chargement doit réussir avant l'ouverture du téléphone ; aucun repli vide
+silencieux si le service est inaccessible. Erreurs de sauvegarde visibles et
+réessai, attente des écritures au logout, confirmation d'un abandon non sauvegardé.
+Le profil suit le poste, sans accès superviseur via cette API ; le secret SIP
+n'est pas conservé. Une révision refuse les écrasements concurrents.
 
-| Donnée | Schéma minimal proposé |
-| --- | --- |
-| Profil local | Clé domaine+identifiant, préférences de conservation, aucun secret SIP |
-| Contact | UUID, profil, nom, entreprise facultative, liste de numéros bruts/libellés, favori, note, dates |
-| Appel local | UUID, profil, direction, numéro composé, pays facultatif, début/décroché/fin, issue, durée calculée, contact facultatif |
-| Préférences | Version de schéma, appareils audio choisis, volumes, apparence, notifications, conservation |
+Le Journal réel garde ses deux sources : **Cette ligne**, les appels PBX sur 30
+jours, et **Journal du téléphone**, les appels observés par ApisnixPhone, notes et
+tags compris, désormais conservés sur le serveur (1 000 appels ou 90 jours).
+La supervision borne le journal central à 500 activités par réponse ; ses limites
+et son état de synchronisation restent montrés. La démonstration reste fictive,
+en mémoire, sans API. Statistiques sur la vue affichée, aucune facturation inventée.
 
-Mémoire pour la session ; IndexedDB uniquement si conservation sur l'appareil
-choisie. Contacts/notes/historique propres au profil, limite initiale proposée
-1 000 appels ou 90 jours, clairement affichée et modifiable. N'effacer aucune
-donnée existante du serveur. Proposer « Effacer les données de cet appareil »
-avec confirmation et portée précise ; cela ne supprime pas le journal central.
+Les anciennes données IndexedDB présentes sur cet appareil sont importées une
+fois, sans effacer leur source : fusion par ID, priorité serveur ; préférences
+locales reprises uniquement pour un profil serveur encore neuf. Le marqueur local
+est posé après sauvegarde. Les données de session déjà disparues sont irrécupérables.
+Langue, thème, volumes et options audio suivent la ligne ; casque, identifiants de
+périphériques et autorisations du navigateur restent propres à l'appareil.
+Ne pas enregistrer de mot de passe SIP dans localStorage, IndexedDB,
+sessionStorage, URL, crash report ou télémétrie.
 
-Le cloisonnement local par profil évite les mélanges accidentels ; il n'est pas
-une frontière de sécurité sur un poste partagé ou face à du JavaScript compromis.
-Fermer les données du profil au logout. Pas de mot de passe dans localStorage,
-IndexedDB, sessionStorage, URL, crash report ou télémétrie.
-
-L'authentification SIP valide une connexion téléphonique ; elle n'est pas un
-jeton d'accès à la supervision. Le journal central/audio nécessite une session
-backend et une autorisation par compte. Ne pas réutiliser un compte superviseur
-ou exposer une URL d'enregistrement pour « compléter » vite l'interface.
+L'authentification SIP ne vaut pas un jeton de supervision. La session HTTP
+agent ouverte par `/api/line-session`, les droits courants du poste et CSRF sont
+vérifiés avant accès. Aucun compte superviseur ni URL publique d'enregistrement
+n'est utilisé pour les données privées. Détails : ARCHITECTURE et dépôt privé.
 
 ### Frontend livré
 
@@ -644,7 +644,7 @@ audio ; une connexion WSS n'est pas une autorisation d'appeler toutes les routes
 | Compte pilote disponible | À désigner avant connexion réelle ; aucune copie de compte active automatique |
 | Destination et créneau d'essai | Avant le premier appel ; pas de numéro client pris au hasard |
 | URL et hébergement | https://phone.apisnix-crm.com, hébergement statique Hermes publié le 21 septembre |
-| Historique central et audios | V1 locale honnêtement libellée ; raccordement séparé si demandé |
+| Historique central, audios et données du téléphone | Journal/audio via session agent ; profil conservé sur Hermes depuis le 7 octobre |
 | Transfert et double appel | Masqués au départ ; activation après contrôle des droits et essais |
 | TURN | Aucun achat/déploiement préventif ; décision selon échec réseau identifié |
 

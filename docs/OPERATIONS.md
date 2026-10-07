@@ -1,5 +1,51 @@
 # Construction et validation
 
+## Données du téléphone sur le serveur — publication du 7 octobre 2026
+
+Frontend **`20261007-server-data`** activé à **12:18:52 Africa/Douala**,
+backend Hermes **`20261007-webphone-data`** à **12:18:11**. Le relais `/api`
+et la session agent existants servent maintenant `/api/webphone-profile`.
+Contacts, notes/tags, rappels, journal du téléphone et préférences sont conservés
+avec la ligne. Ancien IndexedDB importé une fois par appareil, sans effacer sa
+copie ; données de session déjà disparues irrécupérables. Appareils audio et
+autorisations restent locaux. Réglages affichant la sauvegarde, message du +
+retiré du pavé, trois langues. Journal central et audios inchangés.
+
+Validation : 101 tests frontend, typage/lint et build live ; 163 tests backend
+sur une base fictive isolée dans le venv Hermes. Sources de supervision en service
+comparées intégralement au HEAD local avant préparation : aucune divergence.
+266 fichiers live, sans `.env`, source map ou métadonnées Apple ; archive SHA-256
+`6e7c2af7eaa589b5ce91331c86854a60fe3317ac3914d2801b50b9c9d23f6045`,
+JS `index-DhCMc5qI.js`. Index, JS, bibliothèque et CSS HTTPS identiques au build.
+Téléphone et supervision : santé 200, `/api/me` et `/api/webphone-profile`
+anonymes 401. Intégrité SQLite `ok`, quatre collecteurs connectés et frais (2–4 s).
+Interface démonstration contrôlée dans le navigateur intégré ; pas de connexion
+SIP ni d'appel réel de validation. Guides/captures FR/EN/ES et PDF huit pages alignés.
+
+Sauvegardes protégées Hermes :
+`/root/apisnix-supervision-backups/20261007-webphone-data/` (SQLite API backup
+vérifiée, configuration, sources/tests, ancienne cible et reçu) et
+`/root/apisnix-phone-backups/20261007-server-data/` (cible, archive, manifestes,
+reçu). Une table additive seulement dans la base Hermes ; seule l'unité de
+supervision arrêtée/reprise pour sa sauvegarde et son activation. Aucun changement
+PBX, comptes, groupes, DNS, pare-feu ou configuration Caddy.
+
+Retour ciblé : vérifier les deux cibles encore sur ces releases. Revenir d'abord
+au frontend `/srv/apisnixphone/releases/20261007-messages-courts`, puis à
+`/opt/apisnix-supervision/releases/20261005-did-native-audio` et redémarrer
+uniquement `apisnix-supervision`. Garder la base courante : l'ancienne version
+ignore la table additive, une restauration globale ferait perdre des données.
+Le retour frontend retrouverait la conservation locale de l'ancienne version.
+Procédure backend détaillée : dépôt privé, `docs/WEBPHONE_DONNEES.md`.
+
+Recharger hors appel pour prendre la version publiée. Le chargement du profil
+exige le service HTTP disponible : si son accès échoue, la connexion SIP est
+fermée avant de revenir au formulaire, aucune sauvegarde vide. Une erreur de
+sauvegarde garde les modifications en mémoire et propose Réessayer (aussi au
+retour réseau). Un conflit de révision demande une reconnexion ; quitter avec
+modifications non sauvegardées exige confirmation. Le navigateur peut perdre
+les toutes dernières modifications s'il est tué brutalement.
+
 ## Blocage du site et compte à rebours — 7 octobre 2026
 
 **En service : `20261007-messages-courts`**, source `3c91e14`, publiée le

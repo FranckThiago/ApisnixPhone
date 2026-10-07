@@ -136,7 +136,7 @@ click on the row opens its details.
 
 - **All calls of the extension**: the last 30 days, including calls made from
   another device. Refreshed every minute.
-- **This device**: calls seen by this browser, with your tags and notes.
+- **Phone history**: calls seen by ApisnixPhone, with your tags and notes, saved for your line.
 
 ## 8. Callbacks
 
@@ -166,18 +166,14 @@ otherwise, contact APISNIX.
 
 ![Settings](guide/en/13-reglages.png "droite")
 
-- **Connected extension**: at the top of the page, your line's username, its
-  server and its status. On a phone this is where you read it; a screenshot
-  of this screen tells support which extension is connected.
-- **Audio**: microphone permission and choice of microphone and headset,
-  **microphone sensitivity**, **Test the microphone**, echo cancellation,
-  noise reduction, line and keypad sounds.
-- **Listening volume**: 100 % by default, up to **200 %** if the other person
-  is still too quiet. Above 100 %, prefer a headset to avoid echo.
-- **Appearance**: language (Français, English, Español), Light, Dark or
-  System theme, display density.
-- **Calls**: system notifications, useful if you often work in another
-  window.
+- **Connected line**: your username, server and line status. A screenshot
+  helps support identify your line.
+- **Audio**: microphone permission, microphone and headset selection,
+  sensitivity, **Test microphone**, noise reduction and sounds.
+- **Listening volume**: 100 % by default, up to **200 %**. Prefer a headset
+  above 100 %.
+- **Appearance**: language, Light, Dark or System theme, density.
+- **Calls**: system notifications.
 
 ![Ringtone choice](guide/en/19-sonneries.png "gauche 60mm")
 
@@ -185,9 +181,9 @@ otherwise, contact APISNIX.
   Gentle) for a quiet office; the **loud** ones (Retro, Trill, Alarm, Bugle)
   for an open-plan office. Tap a sound to choose it; ▶ plays it without
   choosing it.
-- **Data on this device**: by default, contacts, notes and the local call log
-  are erased when you sign out. **Keep on this device** keeps them: **never on
-  a shared computer.**
+- **Line data**: contacts, notes, callbacks, phone history and settings saved
+  on APISNIX, available on another device. Wait for the save confirmation.
+  Headsets and permissions remain specific to the device.
 - **Account**: your username, the version, **Sign out**.
 
 ## 11. On a phone or a small window

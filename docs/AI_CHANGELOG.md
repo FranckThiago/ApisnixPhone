@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-07 — Conservation serveur et pavé simplifié
+
+Retrait de la phrase du +. Profil réel automatiquement sauvegardé dans l'API
+agent existante : contacts, notes/tags, rappels, journal du téléphone et réglages.
+Import non destructif de l'ancien IndexedDB ; erreurs visibles, réessai, protection
+contre les écritures concurrentes et attente au logout. Casques/autorisations
+locaux. Documentation d'architecture, plan, état, exploitation et guides FR/EN/ES
+mis à jour dans ce commit. 101 tests, typage/lint/build live ; 163 tests backend.
+Frontend `20261007-server-data` et backend `20261007-webphone-data` publiés avec
+sauvegarde intègre et retour ciblé ; aucune mutation PBX, compte ou réseau.
+
 ## 2026-10-07 — Avertissement raccourci
 
 Phrase après un refus d'identifiants ramenée à une seule, sans détail de

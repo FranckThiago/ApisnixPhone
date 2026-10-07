@@ -144,7 +144,7 @@ llamar; un clic en la fila abre su detalle.
 
 - **Todas las llamadas de la extensión**: los últimos 30 días, incluidas las
   hechas desde otro dispositivo. Se actualiza cada minuto.
-- **Este dispositivo**: las llamadas vistas por este navegador, con tus
+- **Registro del teléfono**: las llamadas vistas por ApisnixPhone y guardadas en tu línea, con tus
   etiquetas y notas.
 
 ## 8. Las devoluciones de llamada
@@ -177,19 +177,14 @@ si no, contacta con APISNIX.
 
 ![Ajustes](guide/es/13-reglages.png "droite")
 
-- **Extensión conectada**: en la parte superior de la página, el usuario de su
-  línea, su servidor y su estado. En el teléfono es aquí donde se lee; una
-  captura de esta pantalla indica al soporte qué extensión está conectada.
-- **Audio**: permiso y elección del micrófono y de los auriculares,
-  **sensibilidad del micrófono**, **Probar el micrófono**, cancelación de eco,
-  reducción de ruido, sonidos de la línea y del teclado.
-- **Volumen de escucha**: 100 % por defecto, hasta **200 %** si tu
-  interlocutor sigue oyéndose bajo. Por encima del 100 %, usa auriculares para
-  evitar el eco.
-- **Apariencia**: idioma (Français, English, Español), tema Claro, Oscuro o
-  Sistema, densidad de visualización.
-- **Llamadas**: notificaciones del sistema, útiles si sueles trabajar en otra
-  ventana.
+- **Línea conectada**: usuario, servidor y estado de la línea. Una captura
+  de esta pantalla ayuda al soporte.
+- **Audio**: permiso y elección del micrófono y del casco, sensibilidad,
+  **Probar el micrófono**, reducción de ruido y sonidos.
+- **Volumen de escucha**: 100 % por defecto, hasta **200 %**. Usa un casco
+  por encima del 100 %.
+- **Apariencia**: idioma, tema Claro, Oscuro o Sistema, densidad.
+- **Llamadas**: notificaciones del sistema.
 
 ![Elección del tono](guide/es/19-sonneries.png "gauche 60mm")
 
@@ -197,9 +192,9 @@ si no, contacta con APISNIX.
   Marimba, Suave) para una oficina tranquila; los **potentes** (Retro, Trino,
   Alarma, Clarín) para una oficina abierta. Pulsa un sonido para elegirlo; ▶ lo
   escucha sin elegirlo.
-- **Datos de este dispositivo**: por defecto, los contactos, las notas y el
-  registro local se borran al cerrar sesión. **Guardar en este dispositivo**
-  los conserva: **nunca en un ordenador compartido.**
+- **Datos de la línea**: contactos, notas, recordatorios, registro y ajustes
+  guardados en APISNIX, disponibles en otro dispositivo. Espera la confirmación.
+  El casco y los permisos siguen siendo propios del dispositivo.
 - **Cuenta**: tu usuario, la versión, **Cerrar sesión**.
 
 ## 11. En un teléfono o en una ventana pequeña

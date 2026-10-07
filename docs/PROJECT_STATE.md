@@ -1,5 +1,23 @@
 # État du projet
 
+## Données du téléphone sur le serveur — 7 octobre 2026
+
+**En service : `20261007-server-data`**, publiée sur Hermes à 12:18:52 Douala.
+Contacts, notes/tags, rappels, journal du téléphone et réglages suivent la ligne
+sur le serveur. Conservation automatique ; l'option « Conserver sur cet appareil »
+et son effacement global retirés. Données IndexedDB existantes reprises une fois,
+source conservée. Casque et permissions restent propres à l'appareil. Phrase
+« Le + est adapté au format de la ligne… » retirée du pavé, numéro composé inchangé.
+
+101 tests téléphone, typage, lint et build live ; 163 tests backend. Sauvegarde
+SQLite cohérente et migration additive sur Hermes, HTTPS/empreintes servis et
+collecteurs frais contrôlés. Aucun changement PBX, compte, groupe, DNS ou Caddy.
+Guides FR/EN/ES, captures et PDF huit pages mis à jour. Aucun appel réel ni
+changement d'appareil client testé pendant l'intervention ; le parcours de
+restauration et les échecs sont couverts en tests. Chargement serveur requis au
+login ; modifications non confirmées susceptibles d'être perdues si le navigateur
+est tué. Détails et retour dans [OPERATIONS.md](OPERATIONS.md).
+
 ## Blocage du site affiché avec compte à rebours — 7 octobre 2026
 
 **En service : `20261007-messages-courts`**, source `3c91e14`, 01:22 Douala (avertissement raccourci ; `20261007-blocage-site` à 00:58) : quand

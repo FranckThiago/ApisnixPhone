@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
 import { bindPageLifecycle } from '../telephony/pageLifecycle';
-import { t } from '../i18n';
+import { t, language, setLanguage } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
-import { indexedDbPersistence, persistChoice } from '../storage/persistence';
+import { indexedDbPersistence } from '../storage/persistence';
+import { ServerPersistence } from '../storage/serverPersistence';
 import { chime } from '../telephony/audio';
 import { DemoPhoneController } from '../telephony/DemoPhoneController';
 import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
@@ -13,7 +14,7 @@ import type { Credentials, PhoneController } from '../telephony/types';
 import { forgetSilentAccess } from '../features/auth/credentials';
 import { DemoRecordingsSource, HttpRecordingsSource } from '../recordings/client';
 import type { RecordingsSource } from '../recordings/types';
-import { storedTheme } from './theme';
+import { applyTheme, storedTheme } from './theme';
 
 export type View = 'journal' | 'contacts' | 'audio' | 'callbacks' | 'settings' | 'phone';
 
@@ -66,12 +67,22 @@ const AppContext = createContext<AppValue | null>(null);
 const sipConfig = sipConfigFromEnv(import.meta.env);
 const demoPhone = sipConfig ? null : new DemoPhoneController();
 const phone: PhoneController = demoPhone ?? new SipPhoneController(sipConfig!, browserSipEnvironment);
-const store = new DataStore(typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence);
+const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '');
+const store = new DataStore(demoPhone ? (typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence) : new ServerPersistence(apiBase));
 // Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
-const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, ''));
+const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(apiBase);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => bindPageLifecycle(phone), []);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (store.server && store.getSyncSnapshot() !== 'saved') { event.preventDefault(); event.returnValue = ''; }
+    };
+    const retry = () => { if (store.server && store.getSyncSnapshot() === 'error') void store.retrySave().catch(() => undefined); };
+    window.addEventListener('beforeunload', warn);
+    window.addEventListener('online', retry);
+    return () => { window.removeEventListener('beforeunload', warn); window.removeEventListener('online', retry); };
+  }, []);
   const [view, setView] = useState<View>('journal');
   const [dial, setDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -183,18 +194,27 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (connection !== 'ready' || !account) return false;
     const profile = `${account.domain}:${account.username}`;
     try {
-      await store.open(profile, persistChoice.get(profile), demoPhone ? demoSeed() : undefined);
-      store.setPreferences({ theme: storedTheme() });
+      if (!demoPhone) {
+        await recordings.openWithLine(credentials.username, credentials.password);
+        setRecordingsAccess({ state: 'open' });
+      }
+      await store.open(profile, !demoPhone, demoPhone ? demoSeed() : undefined);
+      if (demoPhone) store.setPreferences({ theme: storedTheme() });
+      applyTheme(store.getSnapshot().preferences.theme);
+      const savedLanguage = store.getSnapshot().preferences.language;
+      if (savedLanguage) setLanguage(savedLanguage);
+      else store.setPreferences({ language: language() });
     } catch (error) {
       // A profile initialization failure must not leave an invisible registered line.
       await phone.disconnect();
       store.close();
+      await recordings.signOut();
       throw error;
     }
     setSessionOpen(true);
     // The line is proven: open its recordings in the background, without asking anything.
     lineCredentials.current = credentials;
-    void reopenRecordings();
+    if (demoPhone) void reopenRecordings();
     return true;
   }, [reopenRecordings]);
 
@@ -209,6 +229,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }), []);
 
   const logout = useCallback(async () => {
+    try { await store.flush(); }
+    catch {
+      if (!window.confirm(t('settings.unsavedLogout'))) return;
+    }
     setSessionOpen(false);
     // An explicit sign-out must not be undone by the browser signing back in on the next reload.
     void forgetSilentAccess();

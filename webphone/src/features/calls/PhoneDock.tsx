@@ -100,7 +100,7 @@ function Dialer() {
           <p id="dial-hint" className="dial-hint">
             {input.valid ? <><Flag info={info} size={18} /><span>{known ? `${known.name} · ` : ''}{countryLabel(info)}</span><span className="dial-exact" title={t('dialer.exact')}>{input.dialTarget}</span></>
               : dial && suggestions.length === 0 ? <span>{t('dialer.allowed')}</span>
-              : <span>{t('dialer.asTyped')}</span>}
+              : null}
           </p>
         </div>
         {suggestions.length > 0 && (

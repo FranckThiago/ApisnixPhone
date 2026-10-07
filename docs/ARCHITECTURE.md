@@ -54,16 +54,41 @@ Audio (périphérique → gain → piste envoyée) ne s'intercale que si le rég
 `ringtoneSound` des préférences, identifiant inconnu ramené à Classique). `keypadTone` joue localement la
 double fréquence DTMF d'une touche du pavé ; le DTMF envoyé pendant un appel reste celui de SIP.js.
 `src/domain/numbers.ts` sépare saisie, numéro composé et métadonnées
-d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés, stockés avec
-les autres données locales. `src/storage/` garde les données en
-mémoire et n'écrit dans IndexedDB qu'après le choix « Conserver sur cet
-appareil ». `src/app/AppContext.tsx` monte un contrôleur unique hors des vues et
-inscrit au journal les seuls appels observés. `src/i18n/` porte les textes :
-dictionnaire français de référence (`fr.ts`), traductions `en.ts` et `es.ts`
-typées sur les mêmes clés, `t`/`tp` utilisables hors React (contrôleurs,
-formats) et `useI18n` pour rafraîchir les vues ; langue gardée dans
-`localStorage` (`apisnixphone.language`), français par défaut. Rien n'est déployé. Capacités et
-validations restantes : voir le plan, référence de ce périmètre.
+d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés.
+`src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
+pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le
+profil via `/api/webphone-profile`, dans la base de supervision Hermes, sous
+l'identité du poste authentifié par `/api/line-session`. Contacts, notes/tags,
+rappels, appels observés (1 000 / 90 jours) et préférences sont conservés à la
+déconnexion. La session HTTP est requise pour ouvrir le profil ; si le chargement
+échoue, l'application refuse l'ouverture et ferme la ligne SIP invisible, sans
+écraser un profil par des données vides. Les détails de l'API, du schéma additif
+et de la sauvegarde restent dans le dépôt privé de gestion.
+
+Une révision protège chaque écriture contre l'écrasement concurrent (409) ; les
+échecs restent visibles dans toutes les rubriques. Les modifications restent en
+mémoire, Réessayer renvoie le dernier état, le retour réseau réessaie aussi ; un
+conflit exige de se reconnecter à la version serveur, avec confirmation avant
+l'abandon d'une modification non sauvegardée. La déconnexion attend les écritures ;
+quitter/recharger avec des données non sauvegardées produit l'avertissement natif.
+Un navigateur tué brutalement peut perdre les dernières modifications non confirmées.
+
+L'ancien IndexedDB n'est plus écrit en mode réel. À la première ouverture sur
+chaque appareil, ses contacts, appels et rappels rejoignent le serveur, à ID
+identique la version serveur prime. Les préférences locales sont reprises seulement
+pour un profil serveur encore neuf. Un marqueur local est posé après sauvegarde
+réussie pour éviter de réimporter les données ; l'ancienne copie reste intacte.
+Un appareil qui a déjà perdu ses données de session ne peut pas les récupérer.
+La démonstration reste fictive, en mémoire et sans API.
+
+Les identifiants de périphériques audio et l'autorisation des notifications ne
+voyagent pas entre appareils ; les volumes, sonneries, thème, langue, densité et
+options audio sont enregistrés avec la ligne. Aucun secret SIP dans le profil.
+`src/app/AppContext.tsx` monte un contrôleur unique hors des vues et inscrit au
+journal les seuls appels observés. `src/i18n/` porte les trois dictionnaires
+français/anglais/espagnol et `useI18n` ; langue et thème gardent aussi un choix
+local pour l'écran de connexion, puis suivent le profil serveur connecté.
+Le téléphone est en service ; références courantes dans PROJECT_STATE et OPERATIONS.
 
 ## Sources de référence
 

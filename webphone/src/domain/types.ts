@@ -54,6 +54,7 @@ export type Theme = 'light' | 'dark' | 'system';
 
 export interface Preferences {
   theme: Theme;
+  language?: 'fr' | 'en' | 'es';
   density: 'comfortable' | 'compact';
   /** Listening volume, 0–200 %: above 100 % the voice and the sounds are amplified. */
   volume: number;
@@ -71,7 +72,7 @@ export interface Preferences {
   inputDevice: string;
   outputDevice: string;
   notifications: boolean;
-  /** « Conserver sur cet appareil » : off on a first visit. */
+  /** Always on for live server profiles; legacy opt-in for device profiles. */
   persist: boolean;
   /** Missed calls older than this were already looked at: they no longer raise the badge. */
   missedSeenAt: number;

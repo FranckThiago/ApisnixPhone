@@ -1,6 +1,7 @@
 import type { AppData } from './DataStore';
 
 export interface Persistence {
+  readonly server?: boolean;
   load(profile: string): Promise<AppData | null>;
   save(profile: string, data: AppData): Promise<void>;
   clear(profile: string): Promise<void>;

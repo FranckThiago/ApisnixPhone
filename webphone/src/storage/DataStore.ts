@@ -19,7 +19,7 @@ export const emptyData = (): AppData => ({ schema: 1, contacts: [], calls: [], c
 const uuid = () => globalThis.crypto.randomUUID();
 
 /**
- * Session memory by default; written to this device only after the user opted in.
+ * Live profiles are saved on the server; the demo and legacy device adapter stay separate.
  * Profiles keep accounts apart by accident-proofing, not as a security boundary.
  */
 export class DataStore {
@@ -27,6 +27,20 @@ export class DataStore {
   private profile: string | null = null;
   private listeners = new Set<() => void>();
   private writing: Promise<void> = Promise.resolve();
+  private sync: 'saved' | 'saving' | 'error' = 'saved';
+  private syncMessage = '';
+  private syncListeners = new Set<() => void>();
+  private pending = 0;
+  private saveVersion = 0;
+  get server() { return this.persistence?.server === true; }
+  getSyncSnapshot = () => this.sync;
+  getSyncMessage = () => this.syncMessage;
+  subscribeSync = (listener: () => void) => { this.syncListeners.add(listener); return () => { this.syncListeners.delete(listener); }; };
+  private setSync(state: typeof this.sync, message = '') {
+    this.sync = state; this.syncMessage = message;
+    this.syncListeners.forEach(listener => listener());
+  }
+  retrySave = async () => { await this.writing; this.setSync('saved'); this.emit(); await this.flush(); };
 
   constructor(private persistence?: Persistence) {}
 
@@ -40,19 +54,25 @@ export class DataStore {
   async open(profile: string, persist: boolean, seed?: AppData) {
     // Signing in again after a network failure must not wipe what this session holds in memory.
     if (this.profile === profile) return;
-    this.profile = profile;
+    await this.flush();
     let loaded: AppData | null = null;
-    if (persist && this.persistence) loaded = await this.persistence.load(profile).catch(() => null);
+    if ((persist || this.server) && this.persistence) {
+      loaded = this.server ? await this.persistence.load(profile) : await this.persistence.load(profile).catch(() => null);
+    }
+    this.profile = profile;
+    this.setSync('saved');
     // Data saved before callbacks existed simply has none.
     this.data = loaded?.schema === 1 ? { ...loaded, callbacks: loaded.callbacks ?? [], preferences: { ...DEFAULT_PREFERENCES, ...loaded.preferences, persist: true } }
-      : { ...(seed ?? emptyData()), preferences: { ...(seed?.preferences ?? DEFAULT_PREFERENCES), persist } };
+      : { ...(seed ?? emptyData()), preferences: { ...(seed?.preferences ?? DEFAULT_PREFERENCES), persist: persist || this.server } };
     this.prune();
-    this.emit(false);
+    this.emit(this.server);
+    if (this.server) await this.flush();
   }
 
   /** Logout closes the profile's data in memory. */
   close() {
     this.profile = null;
+    this.setSync('saved');
     this.data = emptyData();
     this.emit(false);
   }
@@ -61,7 +81,21 @@ export class DataStore {
     this.listeners.forEach(listener => listener());
     if (save && this.profile && this.data.preferences.persist && this.persistence) {
       const profile = this.profile, data = this.data, persistence = this.persistence;
-      this.writing = this.writing.then(() => persistence.save(profile, data)).catch(() => undefined);
+      const version = ++this.saveVersion;
+      this.pending++;
+      if (this.sync !== 'error') this.setSync('saving');
+      this.writing = this.writing.then(async () => {
+        if (this.sync === 'error' || version !== this.saveVersion) return;
+        if (this.server) {
+          await new Promise(resolve => setTimeout(resolve, 300));
+          if (version !== this.saveVersion) return;
+        }
+        try { await persistence.save(profile, data); }
+        catch (error) { this.setSync('error', error instanceof Error ? error.message : ''); }
+      }).finally(() => {
+        this.pending--;
+        if (!this.pending && this.sync !== 'error') this.setSync('saved');
+      });
     }
   }
 
@@ -136,6 +170,7 @@ export class DataStore {
 
   /** Turning conservation off also removes what this device had kept for the profile. */
   async setPersist(persist: boolean) {
+    if (this.server) return;
     this.data = { ...this.data, preferences: { ...this.data.preferences, persist } };
     if (!persist && this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
     this.emit();
@@ -143,13 +178,18 @@ export class DataStore {
 
   /** Local data only: the central journal of the server is never touched. */
   async eraseDevice() {
+    if (this.server) return;
     const preferences = this.data.preferences;
     this.data = { ...emptyData(), preferences };
     if (this.profile && this.persistence) await this.persistence.clear(this.profile).catch(() => undefined);
     this.emit();
   }
 
-  flush = () => this.writing;
+  flush = async () => {
+    let writing: Promise<void>;
+    do { writing = this.writing; await writing; } while (writing !== this.writing);
+    if (this.sync === 'error') throw new Error(this.syncMessage);
+  };
 }
 
 export function findContact(contacts: Contact[], dialTarget: string): Contact | undefined {

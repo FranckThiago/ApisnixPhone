@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { AlarmClock, AudioLines, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Sun, WifiOff } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
 import { Toasts } from '../components/Toasts';
@@ -53,6 +53,7 @@ function useShortcuts() {
 
 function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
+  const sync = useSyncExternalStore(store.subscribeSync, store.getSyncSnapshot);
   const { account, call, demo, connection, lineTaken } = usePhone();
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
@@ -143,6 +144,10 @@ function Workspace() {
           {/* Always within reach, whatever the height of the window. */}
           <button type="button" className="icon-button sign-out" aria-label={t('action.signOut')} title={t('action.signOut')} onClick={signOut}><LogOut size={18} /></button>
         </header>
+        {!demo && sync === 'error' && <div className="line-alert" role="alert">
+          <ShieldAlert size={22} /><p>{store.getSyncMessage()}</p>
+          <button type="button" onClick={() => { void store.retrySave().catch(() => notify(store.getSyncMessage(), 'danger')); }}>{t('action.retry')}</button>
+        </div>}
         {lineTaken && (
           <div className="line-alert" role="alert">
             <ShieldAlert size={22} aria-hidden="true" />

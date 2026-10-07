@@ -1,13 +1,11 @@
 import { BellRing, Database, Headphones, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useSyncExternalStore, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { ConnectionPill } from '../calls/PhoneDock';
 import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
 import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
-import { MAX_AGE_DAYS, MAX_CALLS } from '../../storage/DataStore';
-import { persistChoice } from '../../storage/persistence';
 import { AudioSettings } from './AudioSettings';
 import { RingtonePicker } from './RingtonePicker';
 
@@ -27,7 +25,7 @@ export function Settings() {
   const { preferences, calls, contacts } = useData();
   const { account, demo } = usePhone();
   const { t, tp, language } = useI18n();
-  const profile = account ? `${account.domain}:${account.username}` : '';
+  const sync = useSyncExternalStore(store.subscribeSync, store.getSyncSnapshot);
   const set = store.setPreferences.bind(store);
 
   return (
@@ -56,7 +54,7 @@ export function Settings() {
             <div className="segmented" role="group" aria-label={t('language.label')}>
               {LANGUAGES.map(({ id, name }) => (
                 <button key={id} type="button" lang={id} aria-pressed={language === id} className={language === id ? 'active' : ''}
-                  onClick={() => setLanguage(id)}>{name}</button>))}
+                  onClick={() => { setLanguage(id); set({ language: id }); }}>{name}</button>))}
             </div></div>
           <div className="setting"><span><b>{t('settings.theme')}</b></span>
             <div className="segmented" role="group" aria-label={t('settings.theme')}>
@@ -87,14 +85,11 @@ export function Settings() {
         </Section>
 
         <Section icon={<Database size={18} />} title={t('settings.data')}>
-          <Toggle label={t('settings.persist')} hint={t('settings.persistHint', { calls: MAX_CALLS, days: MAX_AGE_DAYS })}
-            checked={preferences.persist} onChange={async persist => { persistChoice.set(profile, persist); await store.setPersist(persist); notify(t(persist ? 'settings.persistOn' : 'settings.persistOff')); }} />
+          <div className="setting"><span><b>{t(demo ? 'settings.demoData' : 'settings.serverData')}</b>
+            <small>{t(demo ? 'settings.demoDataHint' : 'settings.serverDataHint')}</small></span></div>
+          {!demo && <p role="status" className={sync === 'error' ? 'form-error' : 'muted'}>{sync === 'error' ? store.getSyncMessage() : t(sync === 'saving' ? 'settings.saving' : 'settings.saved')}</p>}
+          {!demo && sync === 'error' && <button type="button" className="ghost" onClick={() => { void store.retrySave().catch(() => notify(store.getSyncMessage(), 'danger')); }}>{t('action.retry')}</button>}
           <p className="muted">{tp('settings.contacts', contacts.length)} · {tp('settings.callCount', calls.length)}. {t('settings.noPassword')}</p>
-          <button type="button" className="ghost danger" onClick={async () => {
-            if (!window.confirm(t('settings.eraseConfirm'))) return;
-            await store.eraseDevice();
-            notify(t('settings.erased'));
-          }}>{t('settings.erase')}</button>
         </Section>
 
         <Section icon={<Info size={18} />} title={t('settings.account')}>
