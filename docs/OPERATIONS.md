@@ -1,5 +1,45 @@
 # Construction et validation
 
+## Blocage du site et compte à rebours — 7 octobre 2026
+
+**En service : `20261007-blocage-site`**, source `567f2c3`, publiée le
+7 octobre à 00:58:49 Africa/Douala. Retour vers `20261006-call-lifecycle`.
+Demande de Franck : le webphone doit afficher le message et le compte à
+rebours quand le PBX bloque le site, comme l'écran agent. Quand la connexion
+WSS est refusée, le contrôleur interroge la page d'état du PBX
+(`https://apisnix-crm.com/agc/apisnix/etat-telephonie.php`, réglable par
+`VITE_BLOCK_STATUS_URL`) ; si l'adresse du site est bloquée, l'état
+« Téléphone bloqué » remplace « Réseau indisponible » avec le temps restant,
+seconde par seconde, puis « Blocage levé » ; une nouvelle tentative pendant le
+blocage est ignorée. Après un refus d'identifiants, le message prévient : dix
+refus en dix minutes bloquent le téléphone pour tout le site, 1 minute
+d'abord, puis plus longtemps (1 min → 5 → 15 → 60 min → 24 h côté PBX).
+Trois langues ; 95 tests (quatre nouveaux), typage, lint, build live.
+
+Build isolé `git archive` / `npm ci`, 266 fichiers, archive SHA-256
+`fc2987cf060b0d3588a4cbfbcd54dbfa3451fa3565cf572deab3df331cac9072`.
+JS `index-DfoAF0VB.js`, CSS `index-soO7B-ST.css` inchangée. Sauvegarde
+`/root/apisnix-phone-backups/20261007-blocage-site/` sur Hermes : ancienne
+cible, Caddyfile d'avant, manifeste. L'archive créée sur le Mac contenait des
+fichiers AppleDouble `._*` et un propriétaire inconnu : supprimés et remis à
+root après la bascule, manifeste régénéré (266 lignes). Créer les prochaines
+archives avec `COPYFILE_DISABLE=1` et extraire avec `--no-same-owner`.
+
+**CSP Caddy modifiée** dans le seul bloc `phone.apisnix-crm.com` :
+`connect-src 'self' wss://apisnix-crm.com:8089 https://apisnix-crm.com`, validée
+puis rechargée gracieusement à 00:58:48. Côté PBX, la page d'état autorise
+l'origine `https://phone.apisnix-crm.com` (CORS) et ne renvoie que l'état de
+l'adresse appelante. Vérifications : HTTPS 200 avec la nouvelle CSP, JS servi
+(620 436 octets) contenant l'adresse de la page d'état, `fetch` depuis la page
+réelle accepté (JSON `bloque:false`), aucune erreur console. Le compte à
+rebours à l'écran n'a pas été provoqué par une vraie tentative (aucun
+identifiant saisi en production) ; il est couvert par les tests. Guides
+inchangés : ils n'expliquent pas les messages d'erreur.
+
+Retour : vérifier `current` encore sur cette release puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261006-call-lifecycle` ; la
+ligne CSP peut rester. Pas de restauration DB/PBX.
+
 ## Raccrochage au départ de page — 6 octobre 2026
 
 **En service : `20261006-call-lifecycle`**, source `bd386ae`, publiée le
@@ -524,11 +564,13 @@ sur les fichiers actuels, sans présenter ces validations comme terminées.
 Application statique : l'hébergement sert des fichiers, il ne transporte ni la
 signalisation ni l'audio, qui vont du navigateur au PBX (WSS 8089, RTP).
 
-Fail2ban protège le WSS depuis le 23 septembre 2026 : des échecs d'identification
-répétés depuis une même IP, tous postes du site confondus, bloquent le 8089
-pendant plusieurs jours. Symptôme : le téléphone web ne se connecte plus depuis
-ce site mais fonctionne ailleurs. Seuils et levée ciblée : dépôt privé de gestion,
-`docs/PARE_FEU_ET_FAIL2BAN.md` ; ne pas les publier ici.
+Fail2ban protège le WSS : des échecs d'identification répétés depuis une même
+IP, tous postes du site confondus, bloquent le 8089. Depuis le 7 octobre 2026
+le blocage est progressif et court d'abord (1 minute, puis plus long à chaque
+récidive), et le webphone l'affiche avec le temps restant grâce à la page
+d'état du PBX. Symptôme sans cette page : le téléphone web ne se connecte plus
+depuis ce site mais fonctionne ailleurs. Seuils et levée ciblée : dépôt privé
+de gestion, `docs/PARE_FEU_ET_FAIL2BAN.md` ; ne pas les publier ici.
 
 ```sh
 cd webphone
@@ -566,7 +608,7 @@ phone.apisnix-crm.com {
         X-Content-Type-Options "nosniff"
         Referrer-Policy "no-referrer"
         Permissions-Policy "microphone=(self), camera=(), geolocation=()"
-        Content-Security-Policy "default-src 'self'; connect-src 'self' wss://apisnix-crm.com:8089; img-src 'self' data:; style-src 'self' 'unsafe-inline'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'"
+        Content-Security-Policy "default-src 'self'; connect-src 'self' wss://apisnix-crm.com:8089 https://apisnix-crm.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; media-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'"
     }
 }
 ```

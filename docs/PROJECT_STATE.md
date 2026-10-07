@@ -1,5 +1,18 @@
 # État du projet
 
+## Blocage du site affiché avec compte à rebours — 7 octobre 2026
+
+**En service : `20261007-blocage-site`**, source `567f2c3`, 00:58 Douala : quand
+le PBX refuse la connexion WSS, le webphone lit la page d'état du serveur web
+du PBX et, si le site est bloqué, affiche « Téléphone bloqué » avec le temps
+restant seconde par seconde, puis « Blocage levé ». Un refus d'identifiants
+prévient que dix refus en dix minutes bloquent tout le site, 1 minute d'abord.
+Nouvel état `blocked`, `blockedUntil` dans l'instantané, `statusUrl` dans la
+configuration (défaut sur le domaine SIP, `VITE_BLOCK_STATUS_URL` pour
+changer). CSP Caddy élargie à `https://apisnix-crm.com`. 95 tests, typage,
+lint et build live réussis ; `fetch` vérifié depuis la page réelle, compte à
+rebours non provoqué en production. Détails dans [OPERATIONS.md](OPERATIONS.md).
+
 ## Départ de page et appels abandonnés — 6 octobre 2026
 
 **En service : `20261006-call-lifecycle`**, source `bd386ae`, 23:40 Douala : le contrôleur global demande

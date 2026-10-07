@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-07 — Compte à rebours du blocage de site
+
+Le webphone demande au PBX si le site est bloqué quand la connexion WSS est
+refusée, affiche le temps restant puis la levée, et prévient après un refus
+d'identifiants (dix refus en dix minutes). Trois langues, quatre tests,
+`VITE_BLOCK_STATUS_URL` facultatif. Release `20261007-blocage-site` publiée
+à 00:58 Douala avec la CSP Caddy élargie ; archive nettoyée des fichiers
+AppleDouble après bascule. Guides inchangés.
+
 ## 2026-10-06 — Terminer les sessions au départ de page
 
 Correctif du cycle de vie de la page et de la perte WSS, sans interrompre
