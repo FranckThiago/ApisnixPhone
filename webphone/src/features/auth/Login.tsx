@@ -95,7 +95,6 @@ export function Login() {
               <button type="button" className="icon-button" aria-label={t(visible ? 'login.hidePassword' : 'login.showPassword')} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span></label>
           {setupFailed && <p className="form-error" role="alert">{t('recovery.loginFailed')}</p>}
           {error && <p className="form-error" role="alert">{error}</p>}
-          {connection === 'other-tab-active' && <p className="fine">{t('login.otherTab')}</p>}
           <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'ready' ? 'login.opening' : connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>
           <p className="fine">{t('login.help')}</p>
           {/* For the administrator, out of the way: the page that prepares a customer's sign-in link. */}

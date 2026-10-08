@@ -5,9 +5,8 @@ import type { CallProgressSoundPlayer } from '../src/telephony/audio';
 
 const session = (id: string, user = '', displayName = ''): ManagedSession => ({ id, remoteIdentity: { displayName, uri: { user } } });
 
-function harness(lineFree = true) {
+function harness() {
   let delegate!: ManagerDelegate;
-  const released = vi.fn();
   let registerReject!: (status: number) => void;
   let invite!: { onProgress(): void; onReject(status: number): void };
   const manager = {
@@ -37,13 +36,12 @@ function harness(lineFree = true) {
   const environment: SipEnvironment = {
     createManager: (_config, _credentials, given) => { delegate = given; return manager; },
     createRemoteAudio: () => undefined,
-    acquireLine: async () => (lineFree ? released : null),
   };
   const callProgress: CallProgressSoundPlayer = {
     startRingback: vi.fn(), answered: vi.fn(), stop: vi.fn(),
   };
   const phone = new SipPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example:8089/ws', statusUrl: 'https://pbx.example/etat' }, environment, callProgress);
-  return { phone, manager, released, environment, callProgress, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
+  return { phone, manager, environment, callProgress, get delegate() { return delegate; }, reject: (status: number) => registerReject(status), get invite() { return invite; } };
 }
 
 async function ready(h: ReturnType<typeof harness>) {
@@ -93,7 +91,7 @@ describe('SIP controller', () => {
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'auth-error', account: null });
     expect(h.phone.getSnapshot().error).toContain(t('sip.lockWarning'));
     expect(h.manager.register).toHaveBeenCalledTimes(1);
-    expect(h.released).toHaveBeenCalled();
+    expect(h.manager.holdsLine).not.toHaveBeenCalled();
   });
 
   it('shows the site block with a countdown when the socket is refused, then lifts it', async () => {
@@ -134,11 +132,28 @@ describe('SIP controller', () => {
     expect(h.phone.getSnapshot().connection).toBe('blocked');
   });
 
-  it('does not register when another tab holds the line', async () => {
-    const h = harness(false);
-    await h.phone.connect({ username: 'alice', password: 'fictional' });
-    expect(h.phone.getSnapshot().connection).toBe('other-tab-active');
-    expect(h.manager.connect).not.toHaveBeenCalled();
+  it('allows two browser tabs to register without a local lock', async () => {
+    const first = harness(), second = harness();
+    await ready(first); await ready(second);
+    expect(first.phone.getSnapshot().connection).toBe('ready');
+    expect(second.phone.getSnapshot().connection).toBe('ready');
+    expect(second.manager.register).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([false, null])('does not unregister a newer tab when ownership is %s', async owns => {
+    const h = harness(); await ready(h);
+    h.manager.holdsLine.mockResolvedValue(owns);
+    await h.phone.disconnect();
+    expect(h.manager.unregister).not.toHaveBeenCalled();
+    expect(h.manager.dropSilently).toHaveBeenCalledOnce();
+    expect(h.phone.getSnapshot().connection).toBe('offline');
+  });
+
+  it.each([403, 404])('does not blame the password for a server refusal %s', async status => {
+    const h = harness();
+    await h.phone.connect({ username: 'alice', password: 'fictional' }); h.reject(status);
+    expect(h.phone.getSnapshot().error).toContain(t('sip.accessRefused'));
+    expect(h.phone.getSnapshot().error).not.toContain(t('sip.authRefused'));
   });
 
   it('dials the exact digits once and counts talk time from the answer', async () => {
@@ -313,7 +328,6 @@ describe('SIP controller', () => {
     await h.phone.disconnect();
     expect(h.manager.hangup).toHaveBeenCalled();
     expect(h.manager.unregister).toHaveBeenCalled();
-    expect(h.released).toHaveBeenCalled();
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'offline', call: null, account: null });
   });
 
@@ -328,20 +342,19 @@ describe('SIP controller', () => {
     expect(h.manager.call).toHaveBeenCalledTimes(1);
   });
 
-  it('waits for the browser lock to be let go before reporting offline, so a sign-in right after works', async () => {
+  it('finishes disconnecting before a fresh sign-in', async () => {
     const h = harness();
-    let letGo!: () => void;
-    const release = vi.fn(() => new Promise<void>(resolve => { letGo = resolve; }));
-    h.environment.acquireLine = async () => release;
     await ready(h);
+    let finish!: () => void;
+    h.manager.disconnect.mockImplementationOnce(() => new Promise<undefined>(resolve => { finish = () => resolve(undefined); }));
     let offline = false;
     const done = h.phone.disconnect().then(() => { offline = true; });
     await vi.advanceTimersByTimeAsync(0);
-    expect(release).toHaveBeenCalled();
     expect(offline).toBe(false);
-    letGo();
-    await done;
+    finish(); await done;
     expect(h.phone.getSnapshot().connection).toBe('offline');
+    await ready(h);
+    expect(h.phone.getSnapshot().connection).toBe('ready');
   });
 });
 

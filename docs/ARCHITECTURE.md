@@ -45,7 +45,7 @@ et ne demande jamais le micro. `SipPhoneController` adapte `Web.SessionManager`
 de SIP.js 0.21.2 avec les options du plan (une session, pas de boucle de
 REGISTER, DTMF RTP, journaux SIP coupés, mot de passe en mémoire) ;
 `sipEnvironment.ts` charge SIP.js à la demande, crée l'élément audio hors des
-vues et tient un Web Lock par compte. Le contrôleur est choisi au chargement :
+vues. Depuis le 8 octobre, aucun Web Lock ne bloque l’authentification. Le contrôleur est choisi au chargement :
 `VITE_APP_MODE=live` avec `VITE_SIP_DOMAIN` et `VITE_SIP_WSS_URL`, sinon démo.
 `audio.ts` transmet le micro tel quel à 100 % de sensibilité ; une chaîne Web
 Audio (périphérique → gain → piste envoyée) ne s'intercale que si le réglage a
@@ -88,7 +88,22 @@ les réglages demande de se reconnecter hors appel. Aucun import ni fusion de ce
 ajouts temporaires lors de la reprise. Si seul le premier enregistrement du profil
 chargé échoue, les données chargées et leur réessai sont conservés. Les requêtes HTTP
 expirent à 15 secondes chacune ; le carillon initial annonce l’ouverture de l’espace,
-pas le seul REGISTER. Les droits HTTP restent contrôlés par le service. La démo reste fictive.
+pas le seul REGISTER. `lineSounds.ts` est installé dans Workspace : contrôle de la
+ligne prête et du compte au prochain rendu, annulation au démontage/perte de ligne,
+respect du volume et des sons désactivés, sans double annonce sous StrictMode.
+Les droits HTTP restent contrôlés par le service. La démo reste fictive.
+
+Plusieurs onglets peuvent se connecter. Le PBX conserve un contact par compte ;
+`watchLine()` interroge ce contact toutes les 45 s. Deux réponses successives
+indiquant un autre contact mettent l’ancien poste en pause, hors appel seulement.
+Une réponse inconnue ne déclenche aucune pause. Une petite bannière jaune propose
+« Reprendre ici », sans rechargement ni reprise automatique. Les contrôles en
+arrière-plan peuvent être retardés par le navigateur. La fermeture d’un poste
+n’envoie un désenregistrement que si le contact lui appartient encore ; sinon,
+fermeture silencieuse pour préserver la nouvelle session. Après un refus de
+connexion, pas de requête supplémentaire de vérification du contact.
+Un refus SIP final 403/404 signale un refus serveur (compte/configuration possible)
+au lieu d’affirmer que le mot de passe est incorrect.
 
 Les identifiants de périphériques audio et l'autorisation des notifications ne
 voyagent pas entre appareils ; les volumes, sonneries, thème, langue, densité et

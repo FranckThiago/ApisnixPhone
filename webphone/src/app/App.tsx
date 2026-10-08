@@ -13,6 +13,7 @@ import { Journal } from '../features/history/Journal';
 import { Recordings } from '../features/recordings/Recordings';
 import { Settings } from '../features/settings/Settings';
 import { useI18n, type MessageKey } from '../i18n';
+import { bindWorkspaceLineSounds } from '../telephony/lineSounds';
 import { keypadTone } from '../telephony/audio';
 import { useApp, useData, usePhone, type View } from './AppContext';
 import { useNow } from './clock';
@@ -57,6 +58,7 @@ function Workspace() {
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
   useShortcuts();
+  useEffect(() => bindWorkspaceLineSounds(phone, store), [phone, store]);
   const now = useNow();
 
   useEffect(() => { document.documentElement.dataset.density = preferences.density; }, [preferences.density]);
@@ -144,8 +146,8 @@ function Workspace() {
           <button type="button" className="icon-button sign-out" aria-label={t('action.signOut')} title={t('action.signOut')} onClick={signOut}><LogOut size={18} /></button>
         </header>
         {lineTaken && (
-          <div className="line-alert" role="alert">
-            <ShieldAlert size={22} aria-hidden="true" />
+          <div className="line-alert" role="status">
+            <ShieldAlert size={17} aria-hidden="true" />
             <p><b>{t('line.takenTitle')}</b> {t('line.takenText')}</p>
             <button type="button" onClick={() => phone.retakeLine()}>{t('line.retake')}</button>
           </div>

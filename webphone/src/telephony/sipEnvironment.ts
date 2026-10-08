@@ -101,18 +101,6 @@ export const browserSipEnvironment: SipEnvironment = {
       clearTimeout(timer);
     }
   },
-  acquireLine(name) {
-    if (!navigator.locks) return Promise.resolve(() => undefined);
-    return new Promise(resolve => {
-      const held = navigator.locks.request(name, { ifAvailable: true }, lock => {
-        if (!lock) return resolve(null);
-        // The lock is held until this promise settles, i.e. until the line is released.
-        // Releasing waits for the lock manager to let go, so a sign-in right after a sign-out
-        // does not find its own lock still there.
-        return new Promise<void>(release => resolve(() => { release(); return held.then(() => undefined); }));
-      });
-    });
-  },
 };
 
 export function sipConfigFromEnv(env: ImportMetaEnv) {

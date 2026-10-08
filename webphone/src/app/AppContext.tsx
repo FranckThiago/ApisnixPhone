@@ -5,7 +5,6 @@ import { t, language, setLanguage } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence } from '../storage/persistence';
 import { ServerPersistence } from '../storage/serverPersistence';
-import { chime } from '../telephony/audio';
 import { DemoPhoneController } from '../telephony/DemoPhoneController';
 import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
 import { SipPhoneController } from '../telephony/SipPhoneController';
@@ -134,17 +133,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lastError.current = error;
   }), [notify]);
 
-  // Hearing that the line is ready (or lost) spares a look at the screen, as agents are used to.
-  const wasReady = useRef(false);
-  useEffect(() => phone.subscribe(() => {
-    const isReady = phone.getSnapshot().connection === 'ready';
-    if (isReady === wasReady.current) return;
-    const { lineSounds, volume } = store.getSnapshot().preferences;
-    // Signing out on purpose is silent; only a line that drops by itself is announced.
-    if (sessionOpen && lineSounds && (isReady || phone.getSnapshot().connection === 'reconnecting')) chime(isReady ? 'ready' : 'lost', volume / 100);
-    wasReady.current = isReady;
-  }), [sessionOpen]);
-
   // Volume, microphone sensitivity and devices follow the settings live, even during a call.
   useEffect(() => {
     let previous = store.getSnapshot().preferences;
@@ -208,8 +196,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (!await signIn(credentials)) return false;
         lineCredentials.current = { ...credentials, username: credentials.username.trim() };
         setSessionOpen(true);
-        const { lineSounds, volume } = store.getSnapshot().preferences;
-        if (lineSounds) chime('ready', volume / 100);
         if (demoPhone) void reopenRecordings();
         return true;
       } catch (error) {

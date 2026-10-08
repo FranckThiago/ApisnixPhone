@@ -1,5 +1,35 @@
 # Construction et validation
 
+## Multi-onglets et confirmation sonore — 8 octobre 2026
+
+Publication préparée : `20261008-tabs-sound`, frontend statique uniquement.
+Cible actuelle à revérifier avant bascule : `20261008-login-independent`.
+Backend `20261007-line-controls`, PBX, comptes et groupes inchangés.
+
+Aucun Web Lock à la connexion ; ancien poste déplacé en pause hors appel,
+bannière jaune compacte et bouton « Reprendre ici ». Détection par deux contrôles
+successifs du contact PBX, espacés de 45 s (plus si navigateur ralenti en arrière-plan).
+Un contact inconnu ne provoque pas de pause ; au départ, il impose une fermeture
+silencieuse plutôt qu’un désenregistrement risquant de couper la nouvelle session.
+Aucun contrôle du contact après refus d’authentification. Refus 403/404 formulé
+comme un refus serveur, sans accuser systématiquement le mot de passe.
+Carillon au montage réel de l’espace avec compte et ligne prêts, contrôlés au
+prochain rendu ; annulation au démontage, volume/muet respectés.
+
+Validation : 116 tests, typage, lint et build live ; deux onglets fictifs dans le navigateur
+intégré, HTTP refusé et connexion sonore instrumentée. Reprise manuelle sans
+rechargement ; aucune connexion client réelle ni appel provoqué. Manuels,
+captures de guides et PDF inchangés. Publication à consigner.
+
+Sauvegarder la cible précédente sous
+`/root/apisnix-phone-backups/20261008-tabs-sound/`, vérifier l’archive, les droits
+Caddy, les empreintes du build et la cible toujours inchangée, puis bascule
+atomique. Vérifier index/JS/CSS servis par HTTPS ; revenir automatiquement à
+`/srv/apisnixphone/releases/20261008-login-independent` si vérification échoue.
+Retour manuel : vérifier que current vise encore cette nouvelle release avant
+repointage atomique. Aucune restauration de base/service ni rechargement client.
+Les onglets déjà ouverts recevront le correctif après actualisation hors appel.
+
 ## Connexion indépendante des données — 8 octobre 2026
 
 **En service `20261008-login-independent`, source `2a3c22e`, 10:26:43 Douala.** Retour frontend

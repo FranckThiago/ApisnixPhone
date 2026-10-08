@@ -305,9 +305,9 @@ input[type=range] { accent-color: var(--brand); }
 .toast { pointer-events: auto; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; padding: 11px 16px; border-radius: 12px; font-weight: 600; font-size: 13px; color: #fff; background: var(--navy); box-shadow: var(--shadow-lg); border-left: 4px solid var(--yellow); animation: rise .2s ease-out; }
 .toast span { opacity: .6; font-size: 17px; line-height: 1; } .toast:hover span { opacity: 1; }
 .line-banner { display: flex; align-items: center; gap: 9px; margin: 0 28px 8px; padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 13px; background: var(--yellow-soft); color: var(--text); border-left: 3px solid var(--yellow-strong); }
-.line-alert { display: flex; align-items: center; gap: 14px; margin: 0 28px 10px; padding: 14px 16px; border-radius: 14px; color: #fff; background: linear-gradient(180deg, #e0404c, #b81f2c); box-shadow: 0 12px 26px -12px #b81f2c; animation: rise .2s ease-out; }
-.line-alert p { flex: 1; font-size: 13.5px; line-height: 1.45; } .line-alert b { display: block; font-size: 15px; } .line-alert svg { flex: none; }
-.line-alert button { flex: none; padding: 9px 13px; border-radius: 10px; font-weight: 700; background: #fff; color: #b81f2c; } .line-alert button:hover { background: var(--yellow); color: var(--on-yellow); }
+.line-alert { display: flex; align-items: center; gap: 10px; margin: 0 28px 8px; padding: 9px 12px; border-radius: 10px; color: var(--text); background: var(--yellow-soft); border-left: 3px solid var(--yellow-strong); }
+.line-alert p { flex: 1; margin: 0; font-size: 12px; line-height: 1.4; } .line-alert b { font-weight: 650; } .line-alert svg { flex: none; color: var(--yellow-strong); }
+.line-alert button { flex: none; padding: 7px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--on-yellow); } .line-alert button:hover { background: var(--yellow-strong); }
 .call-failure { padding: 11px 13px; border-radius: 12px; background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 50%, transparent); color: var(--text); font-weight: 600; font-size: 13px; text-align: left; }
 .toast-danger { border-left-color: var(--danger); } .toast-success { border-left-color: #16bd84; }
 

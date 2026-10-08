@@ -69,8 +69,6 @@ export interface BlockStatus { blocked: boolean; remaining: number }
 export interface SipEnvironment {
   createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined): Promise<Manager> | Manager;
   createRemoteAudio(): HTMLAudioElement | undefined;
-  /** Resolves to a release function, or null when another tab of this origin holds the line. */
-  acquireLine(name: string): Promise<(() => void | Promise<void>) | null>;
   /** Reads the block status of this site; null when the page cannot be reached. */
   blockStatus?(url: string): Promise<BlockStatus | null>;
 }
@@ -101,7 +99,6 @@ export class SipPhoneController implements PhoneController {
   private listeners = new Set<() => void>();
   private manager?: Manager;
   private session?: ManagedSession;
-  private releaseLine?: () => void | Promise<void>;
   private wanted = false;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private rejection?: CallOutcome;
@@ -158,13 +155,8 @@ export class SipPhoneController implements PhoneController {
     }
     this.update({ connection: 'connecting', error: undefined });
     try {
-      // One registration per browser: a second tab must not silently take the line.
-      const release = await this.environment.acquireLine(`apisnixphone:${this.config.domain}:${username}`);
-      if (!release) {
-        this.wanted = false;
-        return this.update({ connection: 'other-tab-active', error: t('sip.otherTab') });
-      }
-      this.releaseLine = release;
+      // A stale browser lock must never prevent sign-in. The PBX owns registration;
+      // watchLine() asks displaced sessions to stop renewing without un-registering the new one.
       this.applyAudio(this.audio);
       this.manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.delegate, () => this.openMicrophone(), this.remoteAudio);
       this.update({ account: { username, domain: this.config.domain } });
@@ -213,9 +205,9 @@ export class SipPhoneController implements PhoneController {
             const status = response.message.statusCode ?? 0;
             const refused = status === 401 || status === 403 || status === 404 || status === 407;
             void this.teardown();
-            // Five refusals in ten minutes block the whole site: say it with the refusal, before it happens.
+            // Repeated refusals can block the whole site: warn before it happens.
             this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
-                          error: refused ? `${t('sip.authRefused')} ${t('sip.lockWarning')}` : t('sip.registerRefused', { status }) });
+                          error: refused ? `${t(status === 401 || status === 407 ? 'sip.authRefused' : 'sip.accessRefused')} ${t('sip.lockWarning')}` : t('sip.registerRefused', { status }) });
             // The refusal that triggered the block is answered before the block: check right away.
             if (refused) void this.checkBlock();
           },
@@ -353,8 +345,6 @@ export class SipPhoneController implements PhoneController {
     this.manager = undefined;
     this.update({ connection: 'other-tab-active', lineTaken: true, error: undefined });
     await manager?.dropSilently().catch(() => undefined);
-    await this.releaseLine?.();
-    this.releaseLine = undefined;
   }
 
   retakeLine() {
@@ -414,11 +404,13 @@ export class SipPhoneController implements PhoneController {
     this.manager = undefined;
     this.session = undefined;
     if (manager) {
-      await manager.unregister().catch(() => undefined);
-      await manager.disconnect().catch(() => undefined);
+      // A later tab may already own the PBX contact. Never unregister its line.
+      const mine = this.snapshot.connection === 'ready' ? await manager.holdsLine().catch(() => null) : null;
+      if (mine === true) {
+        await manager.unregister().catch(() => undefined);
+        await manager.disconnect().catch(() => undefined);
+      } else await manager.dropSilently().catch(() => undefined);
     }
-    await this.releaseLine?.();
-    this.releaseLine = undefined;
   }
 
   async disconnect() {

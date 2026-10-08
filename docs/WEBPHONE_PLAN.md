@@ -129,9 +129,9 @@ pas un test d'appel. Ne pas recopier les options de l'ancien script sans examen.
 - [Lecture audio automatique](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) :
   le son peut être bloqué. Traiter le rejet de `play()` et proposer « Activer le
   son », sans annoncer un casque fonctionnel avant lecture réussie.
-- [Verrou entre onglets](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API) :
-  coordonner une seule session sur une même origine. Ne protège pas contre un
-  softphone, une autre origine ou un autre ordinateur connecté au même compte.
+- Multi-onglets (décision du 8 octobre 2026) : aucun verrou local à la connexion.
+  Le contact PBX détermine le poste actif ; bannière jaune compacte et bouton
+  « Reprendre ici » sur le poste déplacé, sans demander d’actualiser.
 - [Pays et numéros](https://github.com/catamphetamine/libphonenumber-js) :
   métadonnées utilisables pour l'affichage ; éviter une validation trop stricte
   qui bloquerait des extensions ou préfixes autorisés par le PBX.
@@ -288,7 +288,7 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Recherche | V1 | Noms, numéros et pays affichés ; recherche insensible aux accents pour les noms |
 | États réseau et messages utiles | V1 | Reconnexion bornée, aucune fausse garantie de reprise d'un appel coupé |
 | Raccourcis clavier | V1 | Entrée pour appeler seulement depuis la saisie prête ; Échap ferme un panneau, ne raccroche pas par surprise |
-| Un seul onglet actif | V1 | Second onglet informe et ne s'enregistre pas silencieusement |
+| Plusieurs onglets autorisés | V1 révisée le 8 octobre | Connexion autorisée ; ancien poste en pause avec bannière jaune et reprise explicite |
 | Notifications système | Option V1 | Sur demande explicite, facultatives ; interface utilisable si refus |
 | Statistiques personnelles | V1 limité | Calculées sur la vue du Journal choisie, portée affichée |
 | Transfert simple | Pilote complémentaire | SIP REFER supporté par la bibliothèque ; droits et routage vérifiés avant activation |
@@ -407,10 +407,13 @@ Appel : `idle → dialing/ringing-in → ringing-out/connecting → active → h
   un échec d'authentification terminal, un 403 ou un refus équivalent.
 - En cas de perte réseau, ne pas rappeler ni reprendre un appel terminé
   automatiquement. Distinguer fin distante connue et interruption observée.
-- Libérer pistes, sons, timers et verrou à la déconnexion. Une fermeture brutale
+- Libérer pistes, sons et timers à la déconnexion. Une fermeture brutale
   de navigateur ne garantit pas l'envoi d'un BYE ; le serveur conserve ses règles.
-- Web Lock par origine/domaine/compte, `ifAvailable`, sans `steal`. Pas de reprise
-  automatique de l'autre onglet en cours d'appel. Pas de promesse interappareils.
+- Aucun Web Lock. Vérifier le contact PBX toutes les 45 s ; deux réponses certaines
+  indiquant un autre poste le mettent en pause, jamais en plein appel. Bannière
+  jaune avec reprise explicite ; pas de bataille de réenregistrements automatiques.
+  À la déconnexion, vérifier le contact avant tout désenregistrement ; si inconnu
+  ou déplacé, fermer silencieusement. Le contrôle peut être retardé en arrière-plan.
 
 ## 9. Numéros, pays et drapeaux
 
@@ -627,7 +630,7 @@ fictives ; aucun appel externe automatique lors d'un build ou d'une CI.
 - Sonnerie/183/décroché/fin : durée et issue correctes, aucun appel manqué sortant.
 - Attente refusée, micro muté, permission ignorée/refusée, casque absent ou retiré.
 - Erreur terminale d'authentification sans retry agressif ; réseau perdu sans
-  rappel automatique ; deuxième onglet n'écrase pas la session active.
+  rappel automatique ; deuxième onglet autorisé, ancien poste en pause hors appel et reprise explicite par bannière jaune.
 - Identité distante ou note contenant du HTML rendue comme texte.
 - Aucun secret dans stockage persistant, logs, URL ou export ; profils locaux
   séparés et mode demo distinct des données d'un compte réel.

@@ -1,5 +1,22 @@
 # Journal des changements
 
+## Multi-onglets et confirmation sonore — 8 octobre 2026
+
+Correction validée localement, publication à effectuer. Aucun verrou de navigateur
+ne bloque la connexion. Le poste déplacé affiche une petite bannière jaune
+« Ligne active ailleurs » et « Reprendre ici ». Détection par le contact PBX
+(45 s, deux réponses certaines, hors appel ; arrière-plan potentiellement retardé).
+Pas de reprise automatique ; déconnexion silencieuse si le contact appartient
+à un autre poste ou reste inconnu. Aucun contrôle supplémentaire après refus SIP.
+
+Le carillon attend le montage effectif de l’espace et une ligne encore prête,
+avec annulation si elle se déconnecte ou si l’espace disparaît. Les refus 403/404
+ne sont plus présentés comme un mot de passe forcément incorrect. FR/EN/ES alignés.
+116 tests, typage, lint et build live réussis ; scénario fictif navigateur à deux onglets,
+refus HTTP et carillon instrumenté. Aucun appel réel ni compte client connecté
+pour ces essais. Manuels, captures des guides et PDF inchangés sur instruction.
+Aucune migration ni modification PBX/backend pour cette publication.
+
 ## Connexion indépendante des données — 8 octobre 2026
 
 Publié sur Hermes : `20261008-login-independent`, source `2a3c22e`, 10:26:43 Douala.
