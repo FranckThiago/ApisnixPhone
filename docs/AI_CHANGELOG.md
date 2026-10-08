@@ -9,7 +9,10 @@ L’échelle complète : rouge sous 40 %, orange de 40 à 69 %, vert de 70 à 11
 marron, puis noir. En thème sombre, le noir garde un fin liseré clair pour rester
 visible. L’indication en mots suit (« fortement amplifié », « amplification
 maximale ») en FR/EN/ES. Typage, lint, 122 tests ; rendu vérifié dans la démo en
-clair et sombre à 130 % et 170 %. Manuels, captures et PDF inchangés.
+clair et sombre à 130 % et 170 %. Release `20261008-volume-ampli` publiée sur Hermes
+à 22:29:44 Douala par-dessus `20261008-audio-blocs`, servie identique au build
+isolé (archive SHA-256 `4c2492c3…94a37`, JS `index-BJb4fe9a.js`). Manuels,
+captures et PDF inchangés.
 
 ## 2026-10-08 — Volume coloré, blocs Audio et logo mobile
 

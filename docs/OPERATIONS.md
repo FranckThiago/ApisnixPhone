@@ -1,5 +1,27 @@
 # Construction et validation
 
+## Marron et noir pour l'amplification — 8 octobre 2026
+
+**En service `20261008-volume-ampli`, source `aa1cfd9`, 22:29:44 Douala.**
+Frontend statique uniquement, ancienne cible vérifiée : `20261008-audio-blocs`
+(ses fonctions sont incluses). Backend, PBX, comptes et groupes inchangés.
+Volume d'écoute : marron de 120 à 150 %, noir au-delà de 150 %, en plus du
+rouge, de l'orange et du vert ; liseré clair du noir en thème sombre ; indication
+en mots FR/EN/ES. Archive SHA-256
+`4c2492c33365fe7ee2c1c475eb7a09e74df6cf730e3ee03817c332b997094a37`, 266
+fichiers, JS `index-BJb4fe9a.js`, bibliothèque `lib-C1OvzmKd.js`, CSS
+`index-BDzVEMz8.css`, servis identiques au build isolé du commit (`npm ci`,
+typage, lint, 122 tests, build live). Sauvegarde protégée
+`/root/apisnix-phone-backups/20261008-volume-ampli/` (0700/0600) : ancienne
+cible, copie et manifeste de la release précédente, archive, empreinte,
+manifeste, `source-*.json`, heure de bascule. Empreinte et manifeste vérifiés
+après extraction, droits root 755/644, cible inchangée contrôlée avant bascule
+atomique. HTTPS vérifié : index `no-cache`, assets immuables, Permissions-Policy
+inchangée ; page live chargée dans le navigateur intégré sans erreur console,
+aucune connexion client ni appel réel. Caddy non rechargé. Retour : repointer
+atomiquement `current` vers `/srv/apisnixphone/releases/20261008-audio-blocs`.
+Manuels inchangés.
+
 ## Volume coloré, blocs Audio et logo mobile — 8 octobre 2026
 
 **En service `20261008-audio-blocs`, source `33be5fa`, 22:11:43 Douala.**
