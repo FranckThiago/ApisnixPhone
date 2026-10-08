@@ -1,5 +1,29 @@
 # Construction et validation
 
+## Volume coloré, blocs Audio et logo mobile — 8 octobre 2026
+
+**En service `20261008-audio-blocs`, source `33be5fa`, 22:11:43 Douala.**
+Frontend statique uniquement, ancienne cible vérifiée : `20261008-compteur-echecs`
+(ses fonctions sont incluses). Backend, PBX, comptes et groupes inchangés.
+Volume d'écoute coloré selon le niveau (vert à partir de 70 %, orange de 40 à
+69 %, rouge en dessous, icône assortie, sous le pavé et dans Réglages) ;
+Réglages → Audio en trois blocs (Micro, Écoute, Sonnerie et sons) ; monogramme
+en tête du composeur sur téléphone et tablette. Archive SHA-256
+`7b9796e5e5af1ade0847858dc54b96fa1e92dedacb4e75ceecb26ab5ba16e7ac`, 266
+fichiers, JS `index-BQJyZauF.js`, bibliothèque `lib-CrDvc0ul.js`, CSS
+`index-DuMdUGUC.css`, servis identiques au build isolé du commit (`npm ci`,
+typage, lint, 120 tests, build live). Sauvegarde protégée
+`/root/apisnix-phone-backups/20261008-audio-blocs/` (0700/0600) : ancienne
+cible (`current-avant.txt`), copie et manifeste de la release précédente,
+archive, empreinte, manifeste, `source-*.json`, heure de bascule. Empreinte et
+manifeste vérifiés après extraction, droits root 755/644 en lecture seule pour
+Caddy, cible inchangée contrôlée avant bascule atomique. HTTPS vérifié : index
+`no-cache`, assets immuables, CSP et Permissions-Policy inchangées ; page live
+chargée dans le navigateur intégré sans erreur console, aucune connexion client
+ni appel réel. Caddy non rechargé. Retour : repointer atomiquement `current`
+vers `/srv/apisnixphone/releases/20261008-compteur-echecs`. Les postes ouverts
+reçoivent la version après actualisation hors appel. Manuels inchangés.
+
 ## Compteur avant blocage de site — 8 octobre 2026
 
 **En service `20261008-compteur-echecs`, source `ab77c88`, 11:19:05 Douala.**

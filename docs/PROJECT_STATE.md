@@ -2,7 +2,8 @@
 
 ## Volume coloré, blocs Audio et logo mobile — 8 octobre 2026
 
-Demandes de Franck, en source, non publiées. **Volume d’écoute** : barre et icône du
+Demandes de Franck. **En service `20261008-audio-blocs`, source `33be5fa`,
+22:11:43 Douala**, par-dessus `20261008-compteur-echecs`. **Volume d’écoute** : barre et icône du
 haut-parleur colorées selon le niveau — vert à partir de 70 %, orange de 40 à 69 %,
 rouge en dessous — sous le pavé comme dans Réglages, avec l’indication en mots.
 **Réglages → Audio** en trois blocs encadrés : Micro (autorisation, périphérique,

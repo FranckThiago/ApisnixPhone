@@ -13,7 +13,10 @@ Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier).
 au-dessus du pavé, puisque la barre basse n’affiche plus la marque. FR/EN/ES alignés.
 Typage, lint, 120 tests et build réussis ; vérifié dans le navigateur intégré (démo)
 en clair et sombre, à 40 % orange, 30 % rouge et 100 % vert, en formats bureau,
-tablette et téléphone. Non publié sur Hermes. Manuels, captures et PDF inchangés.
+tablette et téléphone. Release `20261008-audio-blocs` publiée sur Hermes à 22:11:43
+Douala par-dessus `20261008-compteur-echecs`, servie identique au build isolé
+(archive SHA-256 `7b9796e5…16e7ac`, JS `index-BQJyZauF.js`). Manuels, captures
+et PDF inchangés.
 
 ## 2026-10-08 — Échecs restants avant blocage
 
