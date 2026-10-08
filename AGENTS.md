@@ -17,14 +17,15 @@
   `npm run test -- --run`, `npm run build`.
   L'interface existe en français (défaut), anglais et espagnol : tout texte
   visible passe par `webphone/src/i18n/` et s'ajoute dans les trois
-  dictionnaires. Le guide client est `docs/GUIDE_UTILISATEUR.md`, avec ses
-  éditions `.en.md` et `.es.md` à garder alignées ; après un changement visible,
-  régénérer les captures avec `node scripts/guide-screenshots.mjs` puis
-  `GUIDE_LANG=en` et `GUIDE_LANG=es` (serveur de démonstration sur le port 5185),
-  relire les textes concernés, puis reconstruire les trois PDF remis aux clients
-  avec `node scripts/build-guide-pdf.mjs`. Les garder courts (8 pages, captures
-  et texte en colonnes réglés dans le Markdown), sans explication des codes
-  d'erreur ni des fonctions secondaires.
+  dictionnaires. **Manuels clients : ne modifier ni les textes, ni les captures,
+  ni les PDF sans demande explicite de Franck**, même après un changement visible
+  de l’application. Cette règle prime sur les anciennes consignes de régénération
+  automatique. La documentation technique du projet reste à maintenir normalement.
+  Si Franck demande une mise à jour des manuels : le guide est
+  `docs/GUIDE_UTILISATEUR.md`, avec ses éditions `.en.md` et `.es.md` à aligner ;
+  captures par `node scripts/guide-screenshots.mjs`, puis `GUIDE_LANG=en` et
+  `GUIDE_LANG=es` (démo port 5185), PDF par `node scripts/build-guide-pdf.mjs`.
+  Garder les trois guides courts (8 pages), sans codes d’erreur ni fonctions secondaires.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord
   le dépôt privé `FranckThiago/Gestion_CRM-APISNIX` : `AGENTS.md`, puis
