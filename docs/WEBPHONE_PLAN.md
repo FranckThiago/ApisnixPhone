@@ -1,5 +1,12 @@
 # ApisnixPhone Web — plan de réalisation et de reprise
 
+## Connexion corrigée — 8 octobre 2026
+
+Un SIP accepté ouvre aussi l’espace lorsque les données HTTP sont indisponibles,
+en mémoire protégée sans écrasement du profil. Le formulaire empêche les tentatives
+concurrentes jusqu’à la fin de l’ouverture. ARCHITECTURE décrit les garanties et
+PROJECT_STATE les validations ; droits d’accès et classements serveur inchangés.
+
 ## Choix de conservation — 7 octobre 2026
 
 Le stockage réel est sur APISNIX, facultatif dans Réglages ; désactivation et

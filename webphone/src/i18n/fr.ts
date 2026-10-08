@@ -73,6 +73,8 @@ export const fr = {
   'login.hidePassword': 'Masquer le mot de passe',
   'login.otherTab': 'Fermez l’autre onglet ApisnixPhone, puis reconnectez-vous ici. Si vous venez de vous déconnecter dans cet onglet, actualisez la page avant de réessayer.',
   'login.connecting': 'Connexion…',
+  'login.opening': 'Ouverture de votre espace…',
+  'settings.profileUnavailable': 'La ligne fonctionne, mais vos données serveur sont indisponibles. Les ajouts restent ici jusqu’à la fermeture. Hors appel, reconnectez-vous pour réessayer ou contactez votre administrateur.',
   'login.registering': 'Enregistrement de la ligne…',
   'login.submit': 'Se connecter',
   'login.help': 'Le domaine est préconfiguré par APISNIX. Besoin d’aide ? Contactez votre administrateur.',

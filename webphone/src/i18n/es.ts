@@ -74,6 +74,8 @@ export const es: Record<MessageKey, string> = {
   'login.hidePassword': 'Ocultar la contraseña',
   'login.otherTab': 'Cierra la otra pestaña de ApisnixPhone y vuelve a conectarte aquí. Si acabas de cerrar sesión en esta pestaña, recarga la página antes de volver a intentarlo.',
   'login.connecting': 'Conectando…',
+  'login.opening': 'Abriendo tu espacio…',
+  'settings.profileUnavailable': 'La línea funciona, pero tus datos del servidor no están disponibles. Las nuevas entradas permanecen aquí hasta cerrar la sesión. Fuera de una llamada, vuelve a iniciar sesión o contacta con tu administrador.',
   'login.registering': 'Registrando la línea…',
   'login.submit': 'Iniciar sesión',
   'login.help': 'APISNIX configura el dominio de antemano. ¿Necesitas ayuda? Contacta con tu administrador.',

@@ -74,6 +74,8 @@ export const en: Record<MessageKey, string> = {
   'login.hidePassword': 'Hide password',
   'login.otherTab': 'Close the other ApisnixPhone tab, then sign in again here. If you have just signed out in this tab, reload the page before trying again.',
   'login.connecting': 'Connecting…',
+  'login.opening': 'Opening your workspace…',
+  'settings.profileUnavailable': 'The line works, but your server data is unavailable. New entries stay here until you close this session. When not on a call, sign in again to retry or contact your administrator.',
   'login.registering': 'Registering the line…',
   'login.submit': 'Sign in',
   'login.help': 'The domain is preset by APISNIX. Need help? Contact your administrator.',

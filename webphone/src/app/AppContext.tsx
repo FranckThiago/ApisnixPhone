@@ -11,6 +11,8 @@ import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
 import { SipPhoneController } from '../telephony/SipPhoneController';
 import { browserSipEnvironment, sipConfigFromEnv } from '../telephony/sipEnvironment';
 import type { Credentials, PhoneController } from '../telephony/types';
+import { createLineLogin } from '../features/auth/lineLogin';
+import { openLiveWorkspace, type RecordingsAccess } from '../features/auth/workspace';
 import { forgetSilentAccess } from '../features/auth/credentials';
 import { DemoRecordingsSource, HttpRecordingsSource } from '../recordings/client';
 import type { RecordingsSource } from '../recordings/types';
@@ -36,6 +38,7 @@ interface AppValue {
   placeCall(rawInput: string): void;
   /** Resolves to true once the line is registered and the session is open. */
   login(credentials: Credentials): Promise<boolean>;
+  signingIn: boolean;
   logout(): Promise<void>;
   paletteOpen: boolean;
   setPaletteOpen(open: boolean): void;
@@ -58,7 +61,7 @@ interface AppValue {
   reopenRecordings(): Promise<void>;
 }
 
-export type RecordingsAccess = { state: 'idle' | 'opening' | 'open' } | { state: 'failed'; message: string };
+export type { RecordingsAccess } from '../features/auth/workspace';
 
 const AppContext = createContext<AppValue | null>(null);
 
@@ -90,6 +93,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [wrapUpRecordId, setWrapUpRecordId] = useState<string | null>(null);
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
   const [sessionOpen, setSessionOpen] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [recordingsAccess, setRecordingsAccess] = useState<RecordingsAccess>({ state: 'idle' });
   // The line's credentials, in memory for this session only: the recordings access reuses them, nothing else.
@@ -137,9 +141,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (isReady === wasReady.current) return;
     const { lineSounds, volume } = store.getSnapshot().preferences;
     // Signing out on purpose is silent; only a line that drops by itself is announced.
-    if (lineSounds && (isReady || phone.getSnapshot().connection === 'reconnecting')) chime(isReady ? 'ready' : 'lost', volume / 100);
+    if (sessionOpen && lineSounds && (isReady || phone.getSnapshot().connection === 'reconnecting')) chime(isReady ? 'ready' : 'lost', volume / 100);
     wasReady.current = isReady;
-  }), []);
+  }), [sessionOpen]);
 
   // Volume, microphone sensitivity and devices follow the settings live, even during a call.
   useEffect(() => {
@@ -181,42 +185,44 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = useCallback(async (credentials: Credentials) => {
-    await phone.connect(credentials);
-    // The real line answers in two steps: the socket opens, then the PBX accepts the registration.
-    // Wait for the final word, otherwise the first click leaves the person on the sign-in screen.
-    await new Promise<void>(resolve => {
-      const settled = () => !['connecting', 'registering'].includes(phone.getSnapshot().connection);
-      if (settled()) return resolve();
-      const stop = phone.subscribe(() => { if (settled()) { stop(); resolve(); } });
-    });
-    const { account, connection } = phone.getSnapshot();
-    if (connection !== 'ready' || !account) return false;
-    const profile = `${account.domain}:${account.username}`;
-    try {
-      if (!demoPhone) {
-        await recordings.openWithLine(credentials.username, credentials.password);
-        setRecordingsAccess({ state: 'open' });
-      }
-      await store.open(profile, !demoPhone, demoPhone ? demoSeed() : undefined);
-      if (demoPhone) store.setPreferences({ theme: storedTheme() });
-      applyTheme(store.getSnapshot().preferences.theme);
-      const savedLanguage = store.getSnapshot().preferences.language;
-      if (savedLanguage) setLanguage(savedLanguage);
-      else store.setPreferences({ language: language() });
-    } catch (error) {
-      // A profile initialization failure must not leave an invisible registered line.
-      await phone.disconnect();
-      store.close();
-      await recordings.signOut();
-      throw error;
+  const signIn = useMemo(() => createLineLogin(phone, async (credentials, profile) => {
+    if (demoPhone) {
+      await store.open(profile, false, demoSeed());
+      store.setPreferences({ theme: storedTheme() });
+    } else {
+      setRecordingsAccess({ state: 'opening' });
+      setRecordingsAccess(await openLiveWorkspace(store, recordings, credentials, profile));
     }
-    setSessionOpen(true);
-    // The line is proven: open its recordings in the background, without asking anything.
-    lineCredentials.current = credentials;
-    if (demoPhone) void reopenRecordings();
-    return true;
-  }, [reopenRecordings]);
+    applyTheme(store.getSnapshot().preferences.theme);
+    const savedLanguage = store.getSnapshot().preferences.language;
+    if (savedLanguage) setLanguage(savedLanguage);
+    else store.setPreferences({ language: language() });
+  }), []);
+
+  const loginAttempt = useRef<Promise<boolean> | null>(null);
+  const login = useCallback((credentials: Credentials): Promise<boolean> => {
+    if (loginAttempt.current) return loginAttempt.current;
+    setSigningIn(true);
+    loginAttempt.current = (async () => {
+      try {
+        if (!await signIn(credentials)) return false;
+        lineCredentials.current = { ...credentials, username: credentials.username.trim() };
+        setSessionOpen(true);
+        const { lineSounds, volume } = store.getSnapshot().preferences;
+        if (lineSounds) chime('ready', volume / 100);
+        if (demoPhone) void reopenRecordings();
+        return true;
+      } catch (error) {
+        await phone.disconnect();
+        store.close();
+        lineCredentials.current = null;
+        setRecordingsAccess({ state: 'idle' });
+        await recordings.signOut();
+        throw error;
+      } finally { setSigningIn(false); loginAttempt.current = null; }
+    })();
+    return loginAttempt.current;
+  }, [signIn, reopenRecordings]);
 
   // The line gave up (network lost for good, registration refused): back to sign-in, data kept for the same account.
   useEffect(() => phone.subscribe(() => { if (!phone.getSnapshot().account) setSessionOpen(false); }), []);
@@ -261,9 +267,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    phone, store, recordings, view, setView, dial, setDial, placeCall, login, logout, paletteOpen, setPaletteOpen,
+    phone, store, recordings, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
-  }), [view, dial, placeCall, login, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
+  }), [view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

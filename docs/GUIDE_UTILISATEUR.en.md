@@ -184,6 +184,8 @@ otherwise, contact APISNIX.
 - **Line data**: enable **Keep my data on APISNIX** to find it on another device.
   Turning it off deletes the saved copy; **Delete my data** clears contacts,
   notes, reminders and phone journal. Wait for confirmation.
+  If server data is unavailable, the line still works; new entries stay in this
+  session. Outside a call, sign in again or contact your administrator.
 - **Retention**: if the subscription is not renewed or is cancelled, APISNIX does
   not guarantee data continuity. Reassigning the phone may permanently delete it.
   Calls and recordings remain accessible for 30 days.

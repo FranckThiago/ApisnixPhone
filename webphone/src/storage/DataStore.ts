@@ -25,6 +25,8 @@ const uuid = () => globalThis.crypto.randomUUID();
 export class DataStore {
   private data: AppData = emptyData();
   private profile: string | null = null;
+  private temporary = false;
+  get temporarySession() { return this.temporary; }
   private listeners = new Set<() => void>();
   private writing: Promise<void> = Promise.resolve();
   private sync: 'saved' | 'saving' | 'error' = 'saved';
@@ -40,7 +42,10 @@ export class DataStore {
     this.sync = state; this.syncMessage = message;
     this.syncListeners.forEach(listener => listener());
   }
-  retrySave = async () => { await this.writing; this.setSync('saved'); this.emit(); await this.flush(); };
+  retrySave = async () => {
+    if (this.temporary) throw new Error(this.syncMessage);
+    await this.writing; this.setSync('saved'); this.emit(); await this.flush();
+  };
 
   constructor(private persistence?: Persistence) {}
 
@@ -72,14 +77,26 @@ export class DataStore {
   /** Logout closes the profile's data in memory. */
   close() {
     this.profile = null;
+    this.temporary = false;
     this.setSync('saved');
     this.data = emptyData();
     this.emit(false);
   }
 
+  /** Unknown server data must never be replaced with this session's empty fallback. */
+  openTemporary(profile: string, message: string) {
+    // Loading succeeded but its initial save failed: retain the loaded data and normal retry.
+    if (this.profile === profile) return;
+    this.profile = profile;
+    this.temporary = true;
+    this.data = emptyData();
+    this.setSync('error', message);
+    this.emit(false);
+  }
+
   private emit(save = true) {
     this.listeners.forEach(listener => listener());
-    if (save && this.profile && (this.server || this.data.preferences.persist) && this.persistence) {
+    if (save && !this.temporary && this.profile && (this.server || this.data.preferences.persist) && this.persistence) {
       const profile = this.profile, data = this.data, persistence = this.persistence;
       const version = ++this.saveVersion;
       this.pending++;

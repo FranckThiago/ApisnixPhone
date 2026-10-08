@@ -80,8 +80,15 @@ bandeau global. Réessai du dernier état en mémoire, attente des écritures à
 déconnexion et avertissement avant abandon sont conservés. Une réattribution impose une nouvelle
 session ; l’ancien état n’est pas réimporté. L’import automatique IndexedDB est
 arrêté, les anciennes copies locales restent intactes. Aucun secret SIP conservé.
-Le login reste dépendant du chargement HTTP : l’échec revient au formulaire et
-ferme le SIP invisible sans écraser le profil. La démo reste fictive.
+Le login est verrouillé jusqu’à la fin de l’ouverture SIP puis du profil. Un refus
+ou une panne HTTP ne déconnecte plus un SIP accepté : une session mémoire protégée
+s’ouvre, sans écriture serveur ni réessai de sauvegarde sur un profil jamais chargé.
+Les commandes de conservation/effacement sont alors désactivées ; un message dans
+les réglages demande de se reconnecter hors appel. Aucun import ni fusion de ces
+ajouts temporaires lors de la reprise. Si seul le premier enregistrement du profil
+chargé échoue, les données chargées et leur réessai sont conservés. Les requêtes HTTP
+expirent à 15 secondes chacune ; le carillon initial annonce l’ouverture de l’espace,
+pas le seul REGISTER. Les droits HTTP restent contrôlés par le service. La démo reste fictive.
 
 Les identifiants de périphériques audio et l'autorisation des notifications ne
 voyagent pas entre appareils ; les volumes, sonneries, thème, langue, densité et

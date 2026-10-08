@@ -192,6 +192,8 @@ o contacta con APISNIX.
 - **Datos de la línea**: activa **Conservar mis datos en APISNIX** para
   recuperarlos en otro dispositivo. Desactivar elimina la copia guardada; **Eliminar
   mis datos** borra contactos, notas, recordatorios y registro del teléfono. Espera la confirmación.
+  Si los datos no están disponibles, la línea sigue funcionando; las nuevas entradas
+  quedan en esta sesión. Fuera de una llamada, reconéctate o consulta al administrador.
 - **Conservación**: sin renovación o tras cancelar la suscripción, APISNIX no garantiza
   la continuidad de los datos. Reasignar el puesto puede eliminarlos definitivamente.
   Llamadas y audios disponibles durante 30 días.

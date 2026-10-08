@@ -20,7 +20,7 @@ export function LanguagePicker() {
 }
 
 export function Login() {
-  const { login } = useApp();
+  const { login, signingIn } = useApp();
   const { connection, error, demo } = usePhone();
   const [link] = useState(pendingSignInLink);
   const [username, setUsername] = useState(link?.username ?? '');
@@ -32,7 +32,7 @@ export function Login() {
   const sentRound = useRef(0);
   const form = useRef<HTMLFormElement>(null);
   const { t } = useI18n();
-  const busy = connection === 'connecting' || connection === 'registering';
+  const busy = signingIn || connection === 'connecting' || connection === 'registering';
 
   useEffect(() => onSignInLink(pasted => {
     setUsername(pasted.username);
@@ -96,7 +96,7 @@ export function Login() {
           {setupFailed && <p className="form-error" role="alert">{t('recovery.loginFailed')}</p>}
           {error && <p className="form-error" role="alert">{error}</p>}
           {connection === 'other-tab-active' && <p className="fine">{t('login.otherTab')}</p>}
-          <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>
+          <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'ready' ? 'login.opening' : connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>
           <p className="fine">{t('login.help')}</p>
           {/* For the administrator, out of the way: the page that prepares a customer's sign-in link. */}
           <a className="discreet-link" href="/lien"><Link2 size={13} /> {t('login.linkGenerator')}</a>

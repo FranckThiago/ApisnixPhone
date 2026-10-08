@@ -93,7 +93,7 @@ export function Settings() {
         <Section icon={<Database size={18} />} title={t('settings.data')}>
           <div className="setting"><span><b>{t(demo ? 'settings.demoData' : 'settings.serverData')}</b>
             <small>{t(demo ? 'settings.demoDataHint' : 'settings.serverDataHint')}</small></span></div>
-          <fieldset disabled={dataBusy} style={{ border: 0, padding: 0, margin: 0 }}>
+          <fieldset disabled={dataBusy || store.temporarySession} style={{ border: 0, padding: 0, margin: 0 }}>
             <Toggle label={t('settings.keepData')} hint={t('settings.keepDataHint')} checked={preferences.persist} onChange={value => {
               if (!value && !window.confirm(t('settings.stopKeepingConfirm'))) return;
               void changeData(() => store.setPersist(value));
@@ -103,7 +103,7 @@ export function Settings() {
             }}>{t('settings.eraseData')}</button>
           </fieldset>
           {!demo && <p role="status" className={sync === 'error' ? 'form-error' : 'muted'}>{sync === 'error' ? store.getSyncMessage() : t(sync === 'saving' ? 'settings.saving' : preferences.persist ? 'settings.saved' : 'settings.sessionData')}</p>}
-          {!demo && sync === 'error' && <button type="button" className="ghost" onClick={() => { void store.retrySave().catch(() => notify(store.getSyncMessage(), 'danger')); }}>{t('action.retry')}</button>}
+          {!demo && sync === 'error' && !store.temporarySession && <button type="button" className="ghost" onClick={() => { void store.retrySave().catch(() => notify(store.getSyncMessage(), 'danger')); }}>{t('action.retry')}</button>}
           <p className="muted">{t('settings.dataTerms')}</p>
           <p className="muted">{tp('settings.contacts', contacts.length)} · {tp('settings.callCount', calls.length)}. {t('settings.noPassword')}</p>
         </Section>

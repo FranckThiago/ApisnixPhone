@@ -1,5 +1,25 @@
 # Journal des changements
 
+## Connexion indépendante des données — 8 octobre 2026
+
+Correctif préparé : après REGISTER accepté, un refus ou une panne HTTP ne ferme
+plus la ligne SIP. L’ouverture du formulaire est verrouillée sur toute la tentative
+(SIP puis données) et le carillon initial attend l’ouverture de l’espace. Identifiant
+normalisé de la même façon pour SIP et HTTP ; délai HTTP limité à 15 s par requête.
+
+Si le profil n’a pas pu être chargé, session mémoire sans aucune écriture serveur,
+aucun import ni fusion automatique. Avertissement dans Réglages → Données ;
+conservation/effacement désactivés. Se reconnecter hors appel pour retenter le
+chargement ; les ajouts temporaires ne sont pas sauvegardés et un départ avertit.
+Si le profil est chargé mais sa première sauvegarde échoue, son contenu est conservé
+et le réessai normal reste disponible. Refus SIP et droits HTTP inchangés.
+
+107 tests, typage, lint et build réussis ; scénario navigateur fictif avec refus
+HTTP retardé : ouverture, ligne prête et protections des réglages vérifiées.
+Aucune migration, aucun compte/groupe ou réglage PBX modifié. Publication et retour
+à consigner dans OPERATIONS ; validation réelle de connexion par le client attendue.
+
+
 ## 2026-10-07 — Messages discrets de sauvegarde
 
 Retrait du bandeau global de sauvegarde indisponible ; état et Réessayer conservés

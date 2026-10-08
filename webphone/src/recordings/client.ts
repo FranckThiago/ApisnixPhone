@@ -74,7 +74,7 @@ export class HttpRecordingsSource implements RecordingsSource {
     let response: Response;
     try {
       response = await this.fetchImpl(this.base + path, {
-        credentials: 'include', ...init,
+        credentials: 'include', ...init, signal: AbortSignal.timeout(15000),
         headers: { 'Content-Type': 'application/json', ...(this.csrf ? { 'X-CSRF-Token': this.csrf } : {}), ...(init.headers ?? {}) },
       });
     } catch {

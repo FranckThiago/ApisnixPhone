@@ -1,5 +1,36 @@
 # Construction et validation
 
+## Connexion indépendante des données — 8 octobre 2026
+
+Release prévue `20261008-login-independent`, retour frontend
+`20261007-messages-reglages` (cible revérifiée sur Hermes). Backend
+`20261007-line-controls` conservé. Aucun service à redémarrer, aucune migration,
+aucune modification de compte, groupe, PBX ou droits HTTP.
+
+Un refus de `/api/line-session` ou un échec de chargement du profil ouvre une
+session mémoire protégée après SIP accepté. Aucun PUT ni import dans ce mode,
+conservation/effacement désactivés ; message dans Réglages → Données. Reconnexion
+hors appel pour retenter le chargement, après avertissement d’abandon des ajouts
+non sauvegardés. Un échec de sauvegarde après chargement conserve le profil et
+son réessai. Le bouton reste occupé pendant toute l’ouverture ; carillon seulement
+à l’entrée dans l’espace. Délai HTTP : 15 s par requête.
+
+Diagnostic : vérifier séparément l’état SIP et les accès HTTP. Un poste dans
+l’équipe de contrôle ADMIN est volontairement exclu des données et audios ;
+ne pas changer son classement pour réparer la connexion téléphonique.
+
+Validation : 107 tests, typage/lint/build ; navigateur intégré sur une copie
+fictive sans PBX, avec refus HTTP retardé, espace ouvert et réglages protégés.
+Guides FR/EN/ES et captures régénérés ; trois PDF huit pages, pages modifiées relues. Aucun nouvel
+REGISTER ni appel client provoqué. Vérification finale réelle à faire par l’utilisateur.
+
+Publication : archiver la cible précédente sous
+`/root/apisnix-phone-backups/20261008-login-independent/`, contrôler les SHA-256,
+les droits de lecture Caddy et la cible inchangée avant repointage atomique.
+Retour : contrôler que `current` vise encore cette release, puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261007-messages-reglages`.
+Ne pas restaurer de base ni recharger un onglet client en appel.
+
 ## Messages dans les réglages — publication du 7 octobre 2026
 
 **Frontend actif `20261007-messages-reglages`, 13:58:13 Africa/Douala** ;
