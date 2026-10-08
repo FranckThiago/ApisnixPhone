@@ -1,5 +1,13 @@
 # État du projet
 
+## Compteur avant blocage de site — 8 octobre 2026
+
+**En service `20261008-compteur-echecs`, source `ab77c88`, 11:19 Douala.** Après un
+refus d'identifiants, le refus seul s'affiche jusqu'au cinquième échec compté par
+le PBX, puis « Encore N échecs avant un blocage de X » d'après la page d'état
+appelée avec `?echecs=1`. Les fonctions de `20261008-tabs-sound` sont incluses.
+117 tests. Détails dans [OPERATIONS.md](OPERATIONS.md).
+
 ## Multi-onglets et confirmation sonore — 8 octobre 2026
 
 **En service `20261008-tabs-sound`, source `5b5f691`, 11:04:56 Douala.** Aucun verrou de navigateur

@@ -1,5 +1,12 @@
 # Journal des changements
 
+## 2026-10-08 — Échecs restants avant blocage
+
+Après un refus, le webphone lit le compteur du PBX et, à partir du sixième
+échec compté, annonce les échecs restants et la durée du blocage suivant ;
+plus d'avertissement générique. Release `20261008-compteur-echecs` publiée à
+11:19 Douala par-dessus `20261008-tabs-sound`. Guides inchangés.
+
 ## Multi-onglets et confirmation sonore — 8 octobre 2026
 
 **En service `20261008-tabs-sound`, source `5b5f691`, 11:04:56 Douala.** Aucun verrou de navigateur

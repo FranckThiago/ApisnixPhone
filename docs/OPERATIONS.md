@@ -1,5 +1,21 @@
 # Construction et validation
 
+## Compteur avant blocage de site — 8 octobre 2026
+
+**En service `20261008-compteur-echecs`, source `ab77c88`, 11:19:05 Douala.**
+Frontend statique uniquement, ancienne cible vérifiée : `20261008-tabs-sound`
+(ses fonctions sont incluses). Règle de Franck : rien de plus que le refus pour
+une ou deux erreurs ; à partir du sixième échec compté par le PBX, « Encore N
+échecs avant un blocage de X » (singulier géré, trois langues). Le compteur
+vient de la page d'état du PBX appelée avec `?echecs=1` après un refus ; sans
+compteur ou page injoignable, le refus seul s'affiche. L'avertissement
+générique « pendant un moment » disparaît. Archive SHA-256
+`390faadaa9da8ac94e364890e9fc48341cc5edfc691f2c9a77d8e49134319737`, 266
+fichiers, JS `index-9aS6BXRO.js`, sauvegarde
+`/root/apisnix-phone-backups/20261008-compteur-echecs/`. 117 tests, typage,
+lint, build live. CSP Caddy inchangée depuis le 7 octobre. Retour : repointer
+`current` vers `20261008-tabs-sound`.
+
 ## Multi-onglets et confirmation sonore — 8 octobre 2026
 
 **En service `20261008-tabs-sound`, source `5b5f691`, 11:04:56 Douala.**
