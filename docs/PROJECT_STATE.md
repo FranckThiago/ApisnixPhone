@@ -2,7 +2,7 @@
 
 ## Multi-onglets et confirmation sonore — 8 octobre 2026
 
-Correction validée localement, publication à effectuer. Aucun verrou de navigateur
+**En service `20261008-tabs-sound`, source `5b5f691`, 11:04:56 Douala.** Aucun verrou de navigateur
 ne bloque la connexion. Le poste déplacé affiche une petite bannière jaune
 « Ligne active ailleurs » et « Reprendre ici ». Détection par le contact PBX
 (45 s, deux réponses certaines, hors appel ; arrière-plan potentiellement retardé).

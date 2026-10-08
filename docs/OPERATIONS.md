@@ -2,8 +2,8 @@
 
 ## Multi-onglets et confirmation sonore — 8 octobre 2026
 
-Publication préparée : `20261008-tabs-sound`, frontend statique uniquement.
-Cible actuelle à revérifier avant bascule : `20261008-login-independent`.
+**En service `20261008-tabs-sound`, source `5b5f691`, 11:04:56 Douala.**
+Frontend statique uniquement, ancienne cible vérifiée : `20261008-login-independent`.
 Backend `20261007-line-controls`, PBX, comptes et groupes inchangés.
 
 Aucun Web Lock à la connexion ; ancien poste déplacé en pause hors appel,
@@ -19,13 +19,18 @@ prochain rendu ; annulation au démontage, volume/muet respectés.
 Validation : 116 tests, typage, lint et build live ; deux onglets fictifs dans le navigateur
 intégré, HTTP refusé et connexion sonore instrumentée. Reprise manuelle sans
 rechargement ; aucune connexion client réelle ni appel provoqué. Manuels,
-captures de guides et PDF inchangés. Publication à consigner.
+captures de guides et PDF inchangés. Publication vérifiée : archive 266 fichiers, SHA-256
+`07d32838bdeba40f0c14e9568bf3db6f8416f4f6acdab9741f2b40380faa885e`.
+Index, JS `index-DRVK_DyS.js`, bibliothèque `lib-ChL6Bewu.js` et CSS
+`index-CubzrLH3.css` servis identiques au build isolé du commit. Formulaire live
+chargé dans le navigateur intégré avec ce JS, sans erreur console.
+Avertissement habituel du build : paquet principal minifié supérieur à 500 kB.
 
-Sauvegarder la cible précédente sous
-`/root/apisnix-phone-backups/20261008-tabs-sound/`, vérifier l’archive, les droits
-Caddy, les empreintes du build et la cible toujours inchangée, puis bascule
-atomique. Vérifier index/JS/CSS servis par HTTPS ; revenir automatiquement à
-`/srv/apisnixphone/releases/20261008-login-independent` si vérification échoue.
+Cible précédente sauvegardée et archive relue sous
+`/root/apisnix-phone-backups/20261008-tabs-sound/` (0700/0600, manifeste et reçu).
+Droits Caddy lecture seule, empreintes et cible inchangée vérifiés avant bascule
+atomique. Vérification HTTPS réussie ; le script aurait restauré automatiquement
+`/srv/apisnixphone/releases/20261008-login-independent` en cas d’échec.
 Retour manuel : vérifier que current vise encore cette nouvelle release avant
 repointage atomique. Aucune restauration de base/service ni rechargement client.
 Les onglets déjà ouverts recevront le correctif après actualisation hors appel.
