@@ -93,8 +93,9 @@ export const browserSipEnvironment: SipEnvironment = {
     try {
       const response = await fetch(url, { cache: 'no-store', signal: control.signal });
       if (!response.ok) return null;
-      const body = await response.json() as { bloque?: unknown; reste?: unknown };
-      return { blocked: body.bloque === true, remaining: Number(body.reste) || 0 };
+      const body = await response.json() as { bloque?: unknown; reste?: unknown; ponderes?: unknown; restants?: unknown; prochain?: unknown };
+      const counter = body.restants === undefined ? {} : { weighted: Number(body.ponderes) || 0, left: Number(body.restants) || 0, nextBlock: Number(body.prochain) || 0 };
+      return { blocked: body.bloque === true, remaining: Number(body.reste) || 0, ...counter };
     } catch {
       return null;
     } finally {

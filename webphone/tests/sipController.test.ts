@@ -89,9 +89,30 @@ describe('SIP controller', () => {
     h.reject(403);
     await vi.advanceTimersByTimeAsync(60000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'auth-error', account: null });
-    expect(h.phone.getSnapshot().error).toContain(t('sip.lockWarning'));
+    expect(h.phone.getSnapshot().error).toBe(t('sip.accessRefused'));
     expect(h.manager.register).toHaveBeenCalledTimes(1);
     expect(h.manager.holdsLine).not.toHaveBeenCalled();
+  });
+
+  it('says nothing more for a couple of mistakes, then how many attempts are left before a block', async () => {
+    const h = harness();
+    const asked: string[] = [];
+    h.environment.blockStatus = async url => { asked.push(url); return { blocked: false, remaining: 0, weighted: 2, left: 8, nextBlock: 60 }; };
+    await h.phone.connect({ username: 'alice', password: 'wrong' });
+    h.reject(401);
+    await vi.advanceTimersByTimeAsync(10);
+    expect(h.phone.getSnapshot().error).toBe(t('sip.authRefused'));
+    expect(asked).toEqual(['https://pbx.example/etat?echecs=1']);
+    h.environment.blockStatus = async () => ({ blocked: false, remaining: 0, weighted: 6, left: 4, nextBlock: 60 });
+    await h.phone.connect({ username: 'alice', password: 'wrong' });
+    h.reject(401);
+    await vi.advanceTimersByTimeAsync(10);
+    expect(h.phone.getSnapshot().error).toBe(`${t('sip.authRefused')} ${t('sip.attemptsLeft', { count: 4, time: '1 min' })}`);
+    h.environment.blockStatus = async () => ({ blocked: false, remaining: 0, weighted: 9, left: 1, nextBlock: 300 });
+    await h.phone.connect({ username: 'alice', password: 'wrong' });
+    h.reject(401);
+    await vi.advanceTimersByTimeAsync(10);
+    expect(h.phone.getSnapshot().error).toBe(`${t('sip.authRefused')} ${t('sip.attemptLeft', { count: 1, time: '5 min' })}`);
   });
 
   it('shows the site block with a countdown when the socket is refused, then lifts it', async () => {

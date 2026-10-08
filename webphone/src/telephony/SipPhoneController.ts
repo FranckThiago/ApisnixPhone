@@ -63,8 +63,11 @@ export interface SipConfig {
   statusUrl?: string;
 }
 
-/** Answer of the block-status page: blocked for `remaining` more seconds, or not blocked. */
-export interface BlockStatus { blocked: boolean; remaining: number }
+/**
+ * Answer of the block-status page: blocked for `remaining` more seconds, or not blocked. With the counter:
+ * `weighted` failures as the PBX counts them, `left` before a block, `nextBlock` length of that block in seconds.
+ */
+export interface BlockStatus { blocked: boolean; remaining: number; weighted?: number; left?: number; nextBlock?: number }
 
 export interface SipEnvironment {
   createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined): Promise<Manager> | Manager;
@@ -76,6 +79,14 @@ export interface SipEnvironment {
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
 const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
 const RECONNECT_GRACE = 3 * 4000 + 6000;
+
+/** Whole lengths only: « 1 min », « 15 min », « 1 h », « 24 h ». */
+export function blockLength(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  if (s >= 3600 && s % 3600 === 0) return `${s / 3600} h`;
+  if (s >= 60 && s % 60 === 0) return `${s / 60} min`;
+  return blockDuration(s);
+}
 
 /** « 4 min 12 s », « 1 h 05 min » or « 40 s »: readable in the three languages of the interface. */
 export function blockDuration(seconds: number): string {
@@ -171,13 +182,30 @@ export class SipPhoneController implements PhoneController {
   }
 
   /** Asks the PBX web server whether this site is blocked; shows the countdown and returns true when it is. */
-  private async checkBlock(): Promise<boolean> {
-    const url = this.config.statusUrl, ask = this.environment.blockStatus;
-    if (!url || !ask) return false;
-    const status: BlockStatus | null = await ask(url).catch(() => null);
+  private async checkBlock(withCounter = false): Promise<boolean> {
+    const status = await this.blockStatus(withCounter);
     if (!status?.blocked || !(status.remaining > 0)) return false;
     this.startBlock(Date.now() + Math.ceil(status.remaining) * 1000);
     return true;
+  }
+
+  private async blockStatus(withCounter: boolean): Promise<BlockStatus | null> {
+    const url = this.config.statusUrl, ask = this.environment.blockStatus;
+    if (!url || !ask) return null;
+    return ask(withCounter ? `${url}${url.includes('?') ? '&' : '?'}echecs=1` : url).catch(() => null);
+  }
+
+  /**
+   * After a refused sign-in: the block may have just started (countdown), or be close. Nothing alarming for one
+   * or two mistakes; from the sixth counted failure, say how many are left and how long the block would last.
+   */
+  private async afterRefusal() {
+    const status = await this.blockStatus(true);
+    if (this.snapshot.connection !== 'auth-error') return;
+    if (status?.blocked && status.remaining > 0) return this.startBlock(Date.now() + Math.ceil(status.remaining) * 1000);
+    if (!status || !(status.weighted! >= 6) || !(status.left! > 0) || !(status.nextBlock! > 0)) return;
+    const left = status.left!, time = blockLength(status.nextBlock!);
+    this.update({ error: `${this.snapshot.error ?? t('sip.authRefused')} ${t(left === 1 ? 'sip.attemptLeft' : 'sip.attemptsLeft', { count: left, time })}` });
   }
 
   private startBlock(until: number) {
@@ -205,11 +233,10 @@ export class SipPhoneController implements PhoneController {
             const status = response.message.statusCode ?? 0;
             const refused = status === 401 || status === 403 || status === 404 || status === 407;
             void this.teardown();
-            // Repeated refusals can block the whole site: warn before it happens.
             this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
-                          error: refused ? `${t(status === 401 || status === 407 ? 'sip.authRefused' : 'sip.accessRefused')} ${t('sip.lockWarning')}` : t('sip.registerRefused', { status }) });
-            // The refusal that triggered the block is answered before the block: check right away.
-            if (refused) void this.checkBlock();
+                          error: refused ? t(status === 401 || status === 407 ? 'sip.authRefused' : 'sip.accessRefused') : t('sip.registerRefused', { status }) });
+            // Repeated refusals block the whole site: warn when it gets close, show the countdown once it started.
+            if (refused) void this.afterRefusal();
           },
         },
       }).catch(() => undefined);
