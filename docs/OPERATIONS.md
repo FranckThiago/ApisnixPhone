@@ -2,7 +2,7 @@
 
 ## Connexion indépendante des données — 8 octobre 2026
 
-Release prévue `20261008-login-independent`, retour frontend
+**En service `20261008-login-independent`, source `2a3c22e`, 10:26:43 Douala.** Retour frontend
 `20261007-messages-reglages` (cible revérifiée sur Hermes). Backend
 `20261007-line-controls` conservé. Aucun service à redémarrer, aucune migration,
 aucune modification de compte, groupe, PBX ou droits HTTP.
@@ -24,12 +24,20 @@ fictive sans PBX, avec refus HTTP retardé, espace ouvert et réglages protégé
 Guides FR/EN/ES et captures régénérés ; trois PDF huit pages, pages modifiées relues. Aucun nouvel
 REGISTER ni appel client provoqué. Vérification finale réelle à faire par l’utilisateur.
 
-Publication : archiver la cible précédente sous
-`/root/apisnix-phone-backups/20261008-login-independent/`, contrôler les SHA-256,
-les droits de lecture Caddy et la cible inchangée avant repointage atomique.
+Publication effectuée : cible précédente archivée sous
+`/root/apisnix-phone-backups/20261008-login-independent/` ; les SHA-256,
+les droits de lecture Caddy et la cible inchangée ont été vérifiés avant repointage atomique.
 Retour : contrôler que `current` vise encore cette release, puis le repointer
 atomiquement vers `/srv/apisnixphone/releases/20261007-messages-reglages`.
 Ne pas restaurer de base ni recharger un onglet client en appel.
+
+Archive de 266 fichiers, SHA-256
+`c5688f7b5ffe76ce5c8cac32f1dd9091849caa31b19733fc5e5d53e3bc5fed0a`.
+Index, JS `index-ByMDzQSp.js`, bibliothèque `lib-Cr0XlZvG.js` et CSS servis
+par HTTPS identiques au build isolé. Formulaire live chargé dans le navigateur
+intégré avec le nouveau JS, sans erreur console. Sauvegarde de l’ancienne version
+vérifiée, manifeste et reçu protégés. Les onglets ouverts gardent leur version
+jusqu’à une actualisation volontaire hors appel.
 
 ## Messages dans les réglages — publication du 7 octobre 2026
 

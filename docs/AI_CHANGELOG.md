@@ -2,7 +2,8 @@
 
 ## Connexion indépendante des données — 8 octobre 2026
 
-Correctif préparé : après REGISTER accepté, un refus ou une panne HTTP ne ferme
+Publié sur Hermes : `20261008-login-independent`, source `2a3c22e`, 10:26:43 Douala.
+Après REGISTER accepté, un refus ou une panne HTTP ne ferme
 plus la ligne SIP. L’ouverture du formulaire est verrouillée sur toute la tentative
 (SIP puis données) et le carillon initial attend l’ouverture de l’espace. Identifiant
 normalisé de la même façon pour SIP et HTTP ; délai HTTP limité à 15 s par requête.
@@ -17,7 +18,7 @@ et le réessai normal reste disponible. Refus SIP et droits HTTP inchangés.
 107 tests, typage, lint et build réussis ; scénario navigateur fictif avec refus
 HTTP retardé : ouverture, ligne prête et protections des réglages vérifiées.
 Aucune migration, aucun compte/groupe ou réglage PBX modifié. Publication et retour
-à consigner dans OPERATIONS ; validation réelle de connexion par le client attendue.
+dans OPERATIONS ; validation réelle de connexion par le client attendue.
 
 
 ## 2026-10-07 — Messages discrets de sauvegarde
