@@ -464,6 +464,14 @@ export const en: Record<MessageKey, string> = {
   'audio.volumeHint': '{value} % — {state}. Up to {max} %.',
   'audio.volumeAmplified': 'voice and sounds amplified; a headset avoids echo for the other person',
   'audio.volumeNormal': 'separate from the computer volume',
+  'audio.volumeModerate': 'moderate, the other person may sound distant',
+  'audio.volumeLow': 'low, the other person will be hard to hear',
+  'audio.micBlock': 'Microphone',
+  'audio.micBlockHint': 'What the other person hears from you.',
+  'audio.listenBlock': 'Listening',
+  'audio.listenBlockHint': 'What you hear in your headset.',
+  'audio.soundsBlock': 'Ringtone and sounds',
+  'audio.soundsBlockHint': 'Incoming call, line and keypad.',
 
   // Ringtones
   'ringtones.label': 'Ringtone choice',

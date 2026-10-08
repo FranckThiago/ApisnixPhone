@@ -1,7 +1,8 @@
-import { Mic, RotateCcw, Square } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Headphones, Mic, RotateCcw, Square } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
-import { MAX_VOLUME } from '../../domain/types';
+import { VolumeMark } from '../../components/VolumeMark';
+import { MAX_VOLUME, volumeTone } from '../../domain/types';
 import { rich, useI18n, type MessageKey } from '../../i18n';
 import { MicPipeline, microphoneErrorMessage } from '../../telephony/audio';
 
@@ -149,7 +150,18 @@ function MicTest({ onAllowed }: { onAllowed(): void }) {
   );
 }
 
-export function AudioSettings() {
+/** A framed, titled block of the Audio settings, so the microphone, the listening and the sounds are not mistaken for one another. */
+export function AudioBlock({ icon, title, hint, children }: { icon: ReactNode; title: string; hint: string; children: ReactNode }) {
+  return (
+    <div className="audio-block" role="group" aria-label={title}>
+      <header>{icon}<b>{title}</b><small>{hint}</small></header>
+      {children}
+    </div>
+  );
+}
+
+/** Microphone block, then listening block; `micOptions` are the toggles that belong to the microphone (echo, noise). */
+export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
   const { store } = useApp();
   const { preferences } = useData();
   const { demo } = usePhone();
@@ -161,6 +173,7 @@ export function AudioSettings() {
   return (
     <>
       {demo && <p className="callout">{t('audio.demo')}</p>}
+      <AudioBlock icon={<Mic size={15} />} title={t('audio.micBlock')} hint={t('audio.micBlockHint')}>
       <MicPermission demo={demo} onAllowed={refreshDevices} />
       <label className="setting"><span><b>{t('audio.microphone')}</b><small>{t(devices.inputs.length ? 'audio.nextCall' : 'audio.systemMicHint')}</small></span>
         <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}>
@@ -171,14 +184,20 @@ export function AudioSettings() {
           state: t(preferences.micGain === 100 ? 'audio.gainOriginal' : preferences.micGain > 100 ? 'audio.gainLouder' : 'audio.gainSofter') })}</small></span>
         <input type="range" min={0} max={200} step={5} value={preferences.micGain} aria-label={t('audio.sensitivity')} onChange={event => set({ micGain: Number(event.target.value) })} /></label>
       {!demo && <MicTest onAllowed={refreshDevices} />}
+      {micOptions}
+      </AudioBlock>
+      <AudioBlock icon={<Headphones size={15} />} title={t('audio.listenBlock')} hint={t('audio.listenBlockHint')}>
       <label className="setting"><span><b>{t('audio.output')}</b><small>{t(sinkSupported ? 'audio.outputDefault' : 'audio.outputUnsupported')}</small></span>
         <select value={preferences.outputDevice} disabled={!sinkSupported} onChange={event => set({ outputDevice: event.target.value })}>
           <option value="default">{t('audio.systemOutput')}</option>
           {devices.outputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>{t('volume.label')}</b><small>{t('audio.volumeHint', { value: preferences.volume, max: MAX_VOLUME,
-          state: t(preferences.volume > 100 ? 'audio.volumeAmplified' : 'audio.volumeNormal') })}</small></span>
-        <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')} onChange={event => set({ volume: Number(event.target.value) })} /></label>
+      {/* Same colours as under the keypad: green from 70 %, orange from 40 %, red below; the hint says it in words. */}
+      <label className={'setting tone-' + volumeTone(preferences.volume)}><span><b>{t('volume.label')}</b><small>{t('audio.volumeHint', { value: preferences.volume, max: MAX_VOLUME,
+          state: t(preferences.volume > 100 ? 'audio.volumeAmplified' : preferences.volume >= 70 ? 'audio.volumeNormal' : preferences.volume >= 40 ? 'audio.volumeModerate' : 'audio.volumeLow') })}</small></span>
+        <span className="volume"><VolumeMark volume={preferences.volume} />
+          <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')} onChange={event => set({ volume: Number(event.target.value) })} /></span></label>
+      </AudioBlock>
     </>
   );
 }

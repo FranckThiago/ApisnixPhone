@@ -464,6 +464,14 @@ export const es: Record<MessageKey, string> = {
   'audio.volumeHint': '{value} % — {state}. Hasta {max} %.',
   'audio.volumeAmplified': 'voz y sonidos amplificados; unos auriculares evitan el eco a tu interlocutor',
   'audio.volumeNormal': 'independiente del volumen del ordenador',
+  'audio.volumeModerate': 'moderado, el interlocutor puede sonar lejano',
+  'audio.volumeLow': 'bajo, costará oír al interlocutor',
+  'audio.micBlock': 'Micrófono',
+  'audio.micBlockHint': 'Lo que tu interlocutor oye de ti.',
+  'audio.listenBlock': 'Escucha',
+  'audio.listenBlockHint': 'Lo que oyes en los auriculares.',
+  'audio.soundsBlock': 'Tono y sonidos',
+  'audio.soundsBlockHint': 'Llamada entrante, línea y teclado.',
 
   // Ringtones
   'ringtones.label': 'Elección del tono',

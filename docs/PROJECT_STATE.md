@@ -1,5 +1,17 @@
 # État du projet
 
+## Volume coloré, blocs Audio et logo mobile — 8 octobre 2026
+
+Demandes de Franck, en source, non publiées. **Volume d’écoute** : barre et icône du
+haut-parleur colorées selon le niveau — vert à partir de 70 %, orange de 40 à 69 %,
+rouge en dessous — sous le pavé comme dans Réglages, avec l’indication en mots.
+**Réglages → Audio** en trois blocs encadrés : Micro (autorisation, périphérique,
+sensibilité, test, écho, bruit), Écoute (casque/sortie, volume), Sonnerie et sons.
+**Téléphone et tablette** : le monogramme signe l’en-tête du composeur, au-dessus du
+pavé. FR/EN/ES alignés ; typage, lint, 120 tests et build réussis ; vérifié dans le
+navigateur intégré (démo) en clair et sombre, bureau, tablette et téléphone.
+Manuels, captures et PDF inchangés.
+
 ## Compteur avant blocage de site — 8 octobre 2026
 
 **En service `20261008-compteur-echecs`, source `ab77c88`, 11:19 Douala.** Après un

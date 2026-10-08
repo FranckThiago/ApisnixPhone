@@ -463,6 +463,14 @@ export const fr = {
   'audio.volumeHint': '{value} % — {state}. Jusqu’à {max} %.',
   'audio.volumeAmplified': 'voix et sons amplifiés ; un casque évite l’écho chez votre correspondant',
   'audio.volumeNormal': 'distinct du volume de l’ordinateur',
+  'audio.volumeModerate': 'modéré, le correspondant peut sembler lointain',
+  'audio.volumeLow': 'faible, le correspondant sera difficile à entendre',
+  'audio.micBlock': 'Micro',
+  'audio.micBlockHint': 'Ce que votre correspondant entend de vous.',
+  'audio.listenBlock': 'Écoute',
+  'audio.listenBlockHint': 'Ce que vous entendez dans le casque.',
+  'audio.soundsBlock': 'Sonnerie et sons',
+  'audio.soundsBlockHint': 'Appel entrant, ligne et clavier.',
 
   // Ringtones
   'ringtones.label': 'Choix de la sonnerie',

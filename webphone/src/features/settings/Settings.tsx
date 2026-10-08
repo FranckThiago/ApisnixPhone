@@ -1,4 +1,4 @@
-import { BellRing, Database, Headphones, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
+import { AudioLines, Bell, BellRing, Database, Info, LogOut, Palette, PhoneIncoming } from 'lucide-react';
 import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
@@ -6,7 +6,7 @@ import { ConnectionPill } from '../calls/PhoneDock';
 import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
 import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
-import { AudioSettings } from './AudioSettings';
+import { AudioBlock, AudioSettings } from './AudioSettings';
 import { RingtonePicker } from './RingtonePicker';
 
 function Section({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
@@ -45,14 +45,18 @@ export function Settings() {
           <ConnectionPill />
         </div></header>
       <div className="settings-grid">
-        <Section icon={<Headphones size={18} />} title={t('settings.audio')}>
-          <AudioSettings />
-          <Toggle label={t('settings.ringtone')} hint={t('settings.ringtoneHint')} checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
-          <RingtonePicker />
-          <Toggle label={t('settings.lineSounds')} hint={t('settings.lineSoundsHint')} checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
-          <Toggle label={t('settings.keypadTones')} hint={t('settings.keypadTonesHint')} checked={preferences.keypadTones} onChange={keypadTones => set({ keypadTones })} />
-          <Toggle label={t('settings.echo')} checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
-          <Toggle label={t('settings.noise')} hint={t('settings.noiseHint')} checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
+        <Section icon={<AudioLines size={18} />} title={t('settings.audio')}>
+          {/* Three framed blocks: what the other person hears, what this person hears, the sounds the phone plays. */}
+          <AudioSettings micOptions={<>
+            <Toggle label={t('settings.echo')} checked={preferences.echoCancellation} onChange={echoCancellation => set({ echoCancellation })} />
+            <Toggle label={t('settings.noise')} hint={t('settings.noiseHint')} checked={preferences.noiseSuppression} onChange={noiseSuppression => set({ noiseSuppression })} />
+          </>} />
+          <AudioBlock icon={<Bell size={15} />} title={t('audio.soundsBlock')} hint={t('audio.soundsBlockHint')}>
+            <Toggle label={t('settings.ringtone')} hint={t('settings.ringtoneHint')} checked={preferences.ringtone} onChange={ringtone => set({ ringtone })} />
+            <RingtonePicker />
+            <Toggle label={t('settings.lineSounds')} hint={t('settings.lineSoundsHint')} checked={preferences.lineSounds} onChange={lineSounds => set({ lineSounds })} />
+            <Toggle label={t('settings.keypadTones')} hint={t('settings.keypadTonesHint')} checked={preferences.keypadTones} onChange={keypadTones => set({ keypadTones })} />
+          </AudioBlock>
         </Section>
 
         <Section icon={<Palette size={18} />} title={t('settings.appearance')}>

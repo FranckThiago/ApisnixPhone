@@ -21,6 +21,7 @@
   --danger: #d93a45;
   --danger-soft: #fdecee;
   --warning: #8a5d00;
+  --orange: #f28c1a;
   --shadow-sm: 0 1px 2px rgb(16 24 64 / 5%), 0 1px 1px rgb(16 24 64 / 3%);
   --shadow-md: 0 10px 30px -12px rgb(16 24 64 / 18%), 0 2px 6px rgb(16 24 64 / 5%);
   --shadow-lg: 0 30px 80px -20px rgb(8 12 40 / 45%);
@@ -76,6 +77,7 @@
   --danger: #ff6b74;
   --danger-soft: #3a1620;
   --warning: #ffcf5c;
+  --orange: #ffa133;
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
   --shadow-md: 0 12px 32px -12px rgb(0 0 0 / 60%);
   --side-bg: radial-gradient(120% 60% at 0% 0%, #1b2a8a55, transparent 60%), radial-gradient(90% 40% at 100% 100%, #ffd21f14, transparent 70%), var(--navy);

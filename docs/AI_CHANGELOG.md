@@ -1,5 +1,20 @@
 # Journal des changements
 
+## 2026-10-08 — Volume coloré, blocs Audio et logo mobile
+
+Demandes de Franck. **Volume d’écoute** : la barre et l’icône du haut-parleur
+prennent la couleur du niveau — vert à partir de 70 %, orange de 40 à 69 %, rouge
+en dessous — sous le pavé comme dans Réglages ; l’indication en mots suit
+(« modéré », « faible »). **Réglages → Audio** en trois blocs encadrés pour ne plus
+confondre micro et volume d’écoute : Micro (autorisation, périphérique, sensibilité,
+test, annulation d’écho, réduction de bruit), Écoute (casque/sortie, volume),
+Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier).
+**Téléphone et tablette** : le monogramme APISNIX signe l’en-tête du composeur,
+au-dessus du pavé, puisque la barre basse n’affiche plus la marque. FR/EN/ES alignés.
+Typage, lint, 120 tests et build réussis ; vérifié dans le navigateur intégré (démo)
+en clair et sombre, à 40 % orange, 30 % rouge et 100 % vert, en formats bureau,
+tablette et téléphone. Non publié sur Hermes. Manuels, captures et PDF inchangés.
+
 ## 2026-10-08 — Échecs restants avant blocage
 
 Après un refus, le webphone lit le compteur du PBX et, à partir du sixième

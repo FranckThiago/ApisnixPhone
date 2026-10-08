@@ -1,4 +1,4 @@
-import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, Volume2, X } from 'lucide-react';
+import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -7,9 +7,10 @@ import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { formatDue, groupCallbacks } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
+import { VolumeMark } from '../../components/VolumeMark';
 import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
-import { CALL_TAGS, CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel } from '../../domain/types';
+import { CALL_TAGS, CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel, volumeTone } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact, searchContacts } from '../../storage/DataStore';
 import { keypadTone } from '../../telephony/audio';
@@ -87,7 +88,10 @@ function Dialer() {
   return (
     <>
       <section className="dock-card dialer" aria-label={t('dialer.label')}>
-        <header className="dock-head"><h2>{t('dialer.title')}</h2><ConnectionPill /></header>
+        <header className="dock-head">
+          {/* The menu hides the brand on a phone or tablet: the mark signs the dialer there. */}
+          <span className="brand-mark dock-mark only-narrow" aria-hidden="true"><img src="/apisnix-mark.png" alt="" width={30} height={30} /></span>
+          <h2>{t('dialer.title')}</h2><ConnectionPill /></header>
         <div className={'dial-field' + (dial && !input.valid ? ' invalid' : '')}>
           <label htmlFor="dial-input">{t('dialer.field')}</label>
           <div className="dial-row">
@@ -124,7 +128,7 @@ function Dialer() {
       <section className="dock-card audio-card" aria-label={t('nav.audio')}>
         <Headphones size={20} aria-hidden="true" />
         <div><b>{t('volume.label')}</b><small>{preferences.volume} %</small></div>
-        <label className="volume"><Volume2 size={16} aria-hidden="true" />
+        <label className={'volume tone-' + volumeTone(preferences.volume)}><VolumeMark volume={preferences.volume} />
           <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')}
             onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
         </label>

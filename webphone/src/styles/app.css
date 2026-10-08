@@ -190,6 +190,12 @@ fieldset { border: 1px solid var(--border); border-radius: 12px; padding: 12px; 
 .setting span b { display: block; font-weight: 600; } .setting select { width: auto; max-width: 190px; } .setting input[type=range] { width: 150px; }
 .settings-section > .ghost, .settings-section > .muted { margin-top: 10px; justify-self: start; }
 input[type=range] { accent-color: var(--brand); }
+/* Audio: three framed blocks, so the microphone, the listening and the sounds are not mistaken for one another. */
+.audio-block { display: grid; padding: 4px 14px 2px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); } .audio-block + .audio-block { margin-top: 8px; }
+.audio-block > header { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 8px; padding: 9px 0 3px; } .audio-block > header svg { flex: none; color: var(--yellow-strong); }
+.audio-block > header b { font-weight: 650; font-size: 13.5px; } .audio-block > header small { color: var(--muted); }
+/* The listening volume shows its level: green from 70 %, orange from 40 %, red below. The speaker icon follows. */
+.tone-ok { --tone: var(--success); } .tone-warn { --tone: var(--orange); } .tone-bad { --tone: var(--danger); }
 .switch { appearance: none; flex: none; width: 42px; height: 24px; border-radius: 999px; background: var(--border); position: relative; cursor: pointer; transition: background .18s; }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 30%); transition: transform .18s; }
 .switch:checked { background: var(--brand); } .switch:checked::after { transform: translateX(18px); background: var(--yellow); }
@@ -213,7 +219,8 @@ input[type=range] { accent-color: var(--brand); }
 .dock > * { min-width: 0; flex: none; }
 .dock-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); }
 .dialer { padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.dock-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .dock-head h2 { font-size: 16px; letter-spacing: -.2px; }
+.dock-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; } .dock-head h2 { flex: 1; min-width: 0; font-size: 16px; letter-spacing: -.2px; }
+.dock-mark { width: 38px; height: 38px; border-radius: 12px; justify-content: center; }
 .dial-field { padding: 12px 14px 10px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface-2); transition: border-color .15s, box-shadow .15s; }
 .dial-field:focus-within { border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-soft); } .dial-field.invalid:not(:focus-within) { border-color: var(--yellow-strong); }
 .dial-field label { font-size: 11.5px; color: var(--muted); font-weight: 600; }
@@ -235,7 +242,7 @@ input[type=range] { accent-color: var(--brand); }
 .call-button:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); } .call-button:disabled { background: var(--border); color: var(--faint); box-shadow: none; opacity: 1; }
 .call-button .kbd { background: rgb(255 255 255 / 18%); border-color: transparent; color: #fff; } .call-button:disabled .kbd { display: none; }
 .audio-card { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: 16px; box-shadow: var(--shadow-sm); } .audio-card > svg { color: var(--yellow-strong); }
-.audio-card div { flex: 1; min-width: 0; } .audio-card b, .audio-card small { display: block; } .volume { display: flex; align-items: center; gap: 6px; color: var(--muted); } .volume input { width: 84px; }
+.audio-card div { flex: 1; min-width: 0; } .audio-card b, .audio-card small { display: block; } .volume { display: flex; align-items: center; gap: 6px; color: var(--tone, var(--muted)); } .volume input { width: 84px; accent-color: var(--tone, var(--brand)); }
 .dock-note { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); padding: 0 6px; }
 
 /* The call card follows the theme (--call-* tokens): the brand glow and its yellow ring, navy at night. */
