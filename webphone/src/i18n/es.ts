@@ -463,6 +463,8 @@ export const es: Record<MessageKey, string> = {
   'audio.systemOutput': 'Salida del sistema',
   'audio.volumeHint': '{value} % — {state}. Hasta {max} %.',
   'audio.volumeAmplified': 'voz y sonidos amplificados; unos auriculares evitan el eco a tu interlocutor',
+  'audio.volumeHigh': 'muy amplificado; sin auriculares, tu interlocutor puede oír su propio eco',
+  'audio.volumeMax': 'amplificación máxima, puede saturar; auriculares imprescindibles para evitar el eco a tu interlocutor',
   'audio.volumeNormal': 'independiente del volumen del ordenador',
   'audio.volumeModerate': 'moderado, el interlocutor puede sonar lejano',
   'audio.volumeLow': 'bajo, costará oír al interlocutor',

@@ -4,8 +4,9 @@
 
 Demandes de Franck. **En service `20261008-audio-blocs`, source `33be5fa`,
 22:11:43 Douala**, par-dessus `20261008-compteur-echecs`. **Volume d’écoute** : barre et icône du
-haut-parleur colorées selon le niveau — vert à partir de 70 %, orange de 40 à 69 %,
-rouge en dessous — sous le pavé comme dans Réglages, avec l’indication en mots.
+haut-parleur colorées selon le niveau — rouge sous 40 %, orange de 40 à 69 %, vert
+de 70 à 119 %, marron de 120 à 150 %, noir au-delà (risques de l’amplification) —
+sous le pavé comme dans Réglages, avec l’indication en mots.
 **Réglages → Audio** en trois blocs encadrés : Micro (autorisation, périphérique,
 sensibilité, test, écho, bruit), Écoute (casque/sortie, volume), Sonnerie et sons.
 **Téléphone et tablette** : le monogramme signe l’en-tête du composeur, au-dessus du

@@ -462,6 +462,8 @@ export const fr = {
   'audio.systemOutput': 'Sortie du système',
   'audio.volumeHint': '{value} % — {state}. Jusqu’à {max} %.',
   'audio.volumeAmplified': 'voix et sons amplifiés ; un casque évite l’écho chez votre correspondant',
+  'audio.volumeHigh': 'fortement amplifié ; sans casque, votre correspondant risque d’entendre son écho',
+  'audio.volumeMax': 'amplification maximale, saturation possible ; casque indispensable pour éviter l’écho chez votre correspondant',
   'audio.volumeNormal': 'distinct du volume de l’ordinateur',
   'audio.volumeModerate': 'modéré, le correspondant peut sembler lointain',
   'audio.volumeLow': 'faible, le correspondant sera difficile à entendre',

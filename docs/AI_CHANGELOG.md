@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-08 — Marron et noir pour l’amplification
+
+Demande de Franck. Le volume d’écoute prend deux couleurs de plus au-delà de
+100 % : marron de 120 à 150 %, noir au-delà de 150 % jusqu’à 200 %, parce que
+l’amplification comporte des risques (écho chez le correspondant, saturation).
+L’échelle complète : rouge sous 40 %, orange de 40 à 69 %, vert de 70 à 119 %,
+marron, puis noir. En thème sombre, le noir garde un fin liseré clair pour rester
+visible. L’indication en mots suit (« fortement amplifié », « amplification
+maximale ») en FR/EN/ES. Typage, lint, 122 tests ; rendu vérifié dans la démo en
+clair et sombre à 130 % et 170 %. Manuels, captures et PDF inchangés.
+
 ## 2026-10-08 — Volume coloré, blocs Audio et logo mobile
 
 Demandes de Franck. **Volume d’écoute** : la barre et l’icône du haut-parleur

@@ -82,9 +82,13 @@ export interface Preferences {
 
 /** Top of the listening volume, in %: a media element stops at 100, the rest is amplified. */
 export const MAX_VOLUME = 200;
-/** Colour of the listening volume: green from 70 %, orange from 40 %, red below. The speaker icon follows it. */
-export type VolumeTone = 'ok' | 'warn' | 'bad';
-export const volumeTone = (volume: number): VolumeTone => (volume >= 70 ? 'ok' : volume >= 40 ? 'warn' : 'bad');
+/**
+ * Colour of the listening volume: red below 40 %, orange to 69 %, green to 119 %, then brown from 120 % and
+ * black above 150 %, because amplifying carries risks (echo for the other person, distortion). The icon follows it.
+ */
+export type VolumeTone = 'bad' | 'warn' | 'ok' | 'hot' | 'max';
+export const volumeTone = (volume: number): VolumeTone =>
+  (volume > 150 ? 'max' : volume >= 120 ? 'hot' : volume >= 70 ? 'ok' : volume >= 40 ? 'warn' : 'bad');
 
 export const DEFAULT_PREFERENCES: Preferences = {
   theme: 'system',

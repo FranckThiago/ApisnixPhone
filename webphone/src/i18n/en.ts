@@ -463,6 +463,8 @@ export const en: Record<MessageKey, string> = {
   'audio.systemOutput': 'System output',
   'audio.volumeHint': '{value} % — {state}. Up to {max} %.',
   'audio.volumeAmplified': 'voice and sounds amplified; a headset avoids echo for the other person',
+  'audio.volumeHigh': 'strongly amplified; without a headset, the other person may hear their own echo',
+  'audio.volumeMax': 'maximum amplification, may distort; a headset is essential to avoid echo for the other person',
   'audio.volumeNormal': 'separate from the computer volume',
   'audio.volumeModerate': 'moderate, the other person may sound distant',
   'audio.volumeLow': 'low, the other person will be hard to hear',

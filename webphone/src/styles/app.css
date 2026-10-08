@@ -194,8 +194,10 @@ input[type=range] { accent-color: var(--brand); }
 .audio-block { display: grid; padding: 4px 14px 2px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); } .audio-block + .audio-block { margin-top: 8px; }
 .audio-block > header { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 8px; padding: 9px 0 3px; } .audio-block > header svg { flex: none; color: var(--yellow-strong); }
 .audio-block > header b { font-weight: 650; font-size: 13.5px; } .audio-block > header small { color: var(--muted); }
-/* The listening volume shows its level: green from 70 %, orange from 40 %, red below. The speaker icon follows. */
-.tone-ok { --tone: var(--success); } .tone-warn { --tone: var(--orange); } .tone-bad { --tone: var(--danger); }
+/* The listening volume shows its level: red below 40 %, orange to 69 %, green to 119 %, brown from 120 %, black above 150 %. The speaker icon follows. */
+.tone-bad { --tone: var(--danger); } .tone-warn { --tone: var(--orange); } .tone-ok { --tone: var(--success); } .tone-hot { --tone: var(--brown); } .tone-max { --tone: var(--ink); }
+/* Black would vanish on the night theme: a thin light halo keeps the thumb and the icon visible. */
+:root[data-theme='dark'] .tone-max .volume { filter: drop-shadow(0 0 1px rgb(255 255 255 / 85%)); }
 .switch { appearance: none; flex: none; width: 42px; height: 24px; border-radius: 999px; background: var(--border); position: relative; cursor: pointer; transition: background .18s; }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 30%); transition: transform .18s; }
 .switch:checked { background: var(--brand); } .switch:checked::after { transform: translateX(18px); background: var(--yellow); }

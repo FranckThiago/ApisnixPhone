@@ -192,9 +192,10 @@ export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
           <option value="default">{t('audio.systemOutput')}</option>
           {devices.outputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      {/* Same colours as under the keypad: green from 70 %, orange from 40 %, red below; the hint says it in words. */}
+      {/* Same colours as under the keypad: red, orange, green, then brown from 120 % and black above 150 %; the hint says it in words. */}
       <label className={'setting tone-' + volumeTone(preferences.volume)}><span><b>{t('volume.label')}</b><small>{t('audio.volumeHint', { value: preferences.volume, max: MAX_VOLUME,
-          state: t(preferences.volume > 100 ? 'audio.volumeAmplified' : preferences.volume >= 70 ? 'audio.volumeNormal' : preferences.volume >= 40 ? 'audio.volumeModerate' : 'audio.volumeLow') })}</small></span>
+          state: t(preferences.volume > 150 ? 'audio.volumeMax' : preferences.volume >= 120 ? 'audio.volumeHigh' : preferences.volume > 100 ? 'audio.volumeAmplified'
+            : preferences.volume >= 70 ? 'audio.volumeNormal' : preferences.volume >= 40 ? 'audio.volumeModerate' : 'audio.volumeLow') })}</small></span>
         <span className="volume"><VolumeMark volume={preferences.volume} />
           <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')} onChange={event => set({ volume: Number(event.target.value) })} /></span></label>
       </AudioBlock>
