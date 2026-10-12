@@ -2,16 +2,31 @@
 
 ## Reprise de connexion — 12 octobre 2026
 
-Candidat `20261012-connection-recovery`, prévu sur Hermes en frontend statique
-seulement ; cible précédente vérifiée `20261008-volume-ampli`. Contrôles :
-135 tests, typage, lint, build live. Sauvegarder l'ancienne cible et la release,
-construire depuis le commit, comparer manifeste/empreintes après extraction,
-revérifier current avant remplacement atomique. Aucun service à redémarrer,
-aucune migration, aucun changement PBX ou de compte. Retour ciblé : remettre
-current sur `20261008-volume-ampli` seulement si le candidat est toujours actif.
-Les onglets déjà ouverts doivent être actualisés hors appel pour le charger.
-Le relevé de publication ci-dessous sera complété après la bascule vérifiée.
+**En service `20261012-connection-recovery`, source `0cfddbd`, 14:19:10 Douala.**
+Frontend statique seul sur Hermes 167.233.244.152, ancienne cible vérifiée
+`20261008-volume-ampli`. 135 tests, dont intégration SIP.js réel/réseau fictif,
+typage et lint. Build live isolé depuis le commit avec npm ci, 266 fichiers,
+archive SHA-256 `14a37158a82238ae1478ad0b3c22c127614962832bfecf6cf5987034a57d14f6`.
+JS `index-DcK_FC9x.js`, module SIP `lib-Bu8ABm24.js`, CSS `index-BDzVEMz8.css`.
 
+Sauvegarde 0700 `/root/apisnix-phone-backups/20261012-connection-recovery/` :
+ancienne cible, copie complète et manifeste de la version précédente,
+archive, manifeste, source-commit.json et receipt.json. Empreintes et cible
+revérifiées avant bascule atomique. Le premier contrôle HTTPS a trouvé une
+403 (répertoire racine créé 0700 à cause du umask) et a automatiquement remis
+l'ancienne cible. Répertoire corrigé 0755 et lecture par caddy testée avant
+la seconde bascule ; fichiers 0644, root propriétaire. Index et trois assets
+principaux reçus en HTTPS, hashes identiques au manifeste. Index no-cache,
+assets immuables ; formulaire chargé dans le navigateur intégré avec le
+nouveau JS, aucune erreur console, aucune connexion client initiée.
+
+Aucun service redémarré, migration, changement PBX, compte, pare-feu ou manuel.
+Caddy et supervision actifs après publication. Retour ciblé : vérifier current
+encore sur cette release, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261008-volume-ampli`. Ne pas restaurer de base.
+Les onglets ouverts gardent leur version jusqu'à actualisation hors appel.
+La reprise sur les appareils concernés et la qualité audio restent à observer
+après actualisation ; aucune garantie de maintien d'un onglet gelé/fermé.
 
 ## Marron et noir pour l'amplification — 8 octobre 2026
 

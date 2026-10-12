@@ -11,6 +11,11 @@ typage, lint et build live ; périmètre frontend seul. ARCHITECTURE, WEBPHONE_P
 PROJECT_STATE et OPERATIONS actualisés ; aucun manuel ni backend modifié.
 
 
+Publication `20261012-connection-recovery`, source `0cfddbd`, 14:19:10 Douala :
+build isolé, sauvegarde protégée, manifeste et HTTPS identiques, page sans
+erreur console ; contrôles et retour dans OPERATIONS. Validation sur les
+appareils clients après actualisation encore nécessaire.
+
 ## 2026-10-08 — Marron et noir pour l’amplification
 
 Demande de Franck. Le volume d’écoute prend deux couleurs de plus au-delà de

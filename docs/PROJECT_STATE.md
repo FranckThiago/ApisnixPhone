@@ -2,7 +2,9 @@
 
 ## Reprise de connexion du téléphone web — 12 octobre 2026
 
-Correctif validé, publication préparée sous `20261012-connection-recovery`.
+**En service `20261012-connection-recovery`, source `0cfddbd`,
+12 octobre à 14:19:10 Douala.** Publication HTTPS et formulaire vérifiés ;
+les onglets déjà ouverts chargent la correction après actualisation hors appel.
 Après une première connexion acceptée, les pertes de transport sont reprises
 avec délais progressifs de 1 à 60 s, sans l'ancien abandon à 18 s. Contrôle
 hors appel toutes les 45 s et au retour visible/événement online/resume : un
