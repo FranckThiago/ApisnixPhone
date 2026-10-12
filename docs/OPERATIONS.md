@@ -1,5 +1,18 @@
 # Construction et validation
 
+## Reprise de connexion — 12 octobre 2026
+
+Candidat `20261012-connection-recovery`, prévu sur Hermes en frontend statique
+seulement ; cible précédente vérifiée `20261008-volume-ampli`. Contrôles :
+135 tests, typage, lint, build live. Sauvegarder l'ancienne cible et la release,
+construire depuis le commit, comparer manifeste/empreintes après extraction,
+revérifier current avant remplacement atomique. Aucun service à redémarrer,
+aucune migration, aucun changement PBX ou de compte. Retour ciblé : remettre
+current sur `20261008-volume-ampli` seulement si le candidat est toujours actif.
+Les onglets déjà ouverts doivent être actualisés hors appel pour le charger.
+Le relevé de publication ci-dessous sera complété après la bascule vérifiée.
+
+
 ## Marron et noir pour l'amplification — 8 octobre 2026
 
 **En service `20261008-volume-ampli`, source `aa1cfd9`, 22:29:44 Douala.**

@@ -286,7 +286,7 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Journal du navigateur | V1 | Appels réellement observés, filtre et rappel, portée indiquée |
 | Contacts/favoris/notes | V1 | Stockage local selon choix utilisateur, modification durable si activée |
 | Recherche | V1 | Noms, numéros et pays affichés ; recherche insensible aux accents pour les noms |
-| États réseau et messages utiles | V1 | Reconnexion bornée, aucune fausse garantie de reprise d'un appel coupé |
+| États réseau et messages utiles | V1 | Reconnexion progressive après connexion acceptée, aucune garantie de reprise d'un appel coupé |
 | Raccourcis clavier | V1 | Entrée pour appeler seulement depuis la saisie prête ; Échap ferme un panneau, ne raccroche pas par surprise |
 | Plusieurs onglets autorisés | V1 révisée le 8 octobre | Connexion autorisée ; ancien poste en pause avec bannière jaune et reprise explicite |
 | Notifications système | Option V1 | Sur demande explicite, facultatives ; interface utilisable si refus |
@@ -320,7 +320,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Réduction de bruit / gain automatique | Préférences activées ; ne pas garantir leur prise en compte par tous les matériels |
 | Réponse automatique | Désactivée |
 | Notifications système | Non demandées au chargement ; activation volontaire |
-| Reconnexion réseau | Bornée ; pas de nouvelle tentative après rejet définitif d'identifiants |
+| Reconnexion réseau | Persistante après connexion acceptée, cadence plafonnée ; arrêt après rejet définitif ou départ volontaire |
 | Pays par défaut | Aucun préfixe ajouté automatiquement |
 | Historique persistant | Choix explicite « Conserver sur cet appareil », désactivé sur la première visite |
 | Mot de passe mémorisé | Aucun stockage applicatif ; depuis le 21 septembre, enregistrement **proposé par le navigateur** dans son propre gestionnaire (Chrome, Edge) pour reconnecter après une actualisation, désactivé par une déconnexion volontaire |
@@ -376,7 +376,10 @@ Options SIP.js dont le nom a été vérifié dans le paquet 0.21.2 :
 | `userAgentOptions.contactParams` | `{ transport: 'wss' }`, conforme au parcours observé |
 | `userAgentOptions.logConfiguration` / `logBuiltinEnabled` | `false` ; pas de trace SIP détaillée en production |
 | `registrationRetry` | `false` : pas de boucle de REGISTER après refus |
-| `reconnectionAttempts` / `reconnectionDelay` | Valeurs initiales 3 / 4 secondes de la bibliothèque ; une seule stratégie de retry |
+| `reconnectionAttempts` | `0` : reprise gérée par le contrôleur, délais de 1 à 60 s après connexion acceptée |
+| `registererOptions` | `expires=300`, `refreshFrequency=50` : marge avant expiration négociée |
+| `userAgentOptions.transportOptions` | URL WSS explicite, keep-alive 30 s (réel 24–30 s), trace SIP désactivée |
+| `registerGuard` | Après connexion acceptée, interdit une reprise si contact différent ou inconnu |
 | `optionsPingInterval` | Non défini au départ ; aucun ping agressif ajouté au PBX |
 | `sendDTMFUsingSessionDescriptionHandler` | `true` pour le mode RTP correspondant au parcours existant |
 

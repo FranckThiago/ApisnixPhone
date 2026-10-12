@@ -1,5 +1,31 @@
 # État du projet
 
+## Reprise de connexion du téléphone web — 12 octobre 2026
+
+Correctif validé, publication préparée sous `20261012-connection-recovery`.
+Après une première connexion acceptée, les pertes de transport sont reprises
+avec délais progressifs de 1 à 60 s, sans l'ancien abandon à 18 s. Contrôle
+hors appel toutes les 45 s et au retour visible/événement online/resume : un
+REGISTER de consultation distingue notre contact, un autre appareil, une
+liaison absente et une réponse inconnue. Une liaison explicitement absente
+est réenregistrée ; une réponse inconnue n'autorise pas à reprendre la ligne.
+Refus définitif d'accès et déconnexion volontaire arrêtent les reprises.
+
+L'enregistrement demandé dure 300 s, renouvelé à 50 % de l'expiration acceptée.
+Transport WSS maintenu par double CRLF toutes les 24–30 s (SIP.js 0.21.2).
+Le contrôleur pilote la reprise ; les tentatives propres à SessionManager sont
+désactivées. Son garde d'enregistrement protège les reprises contre une ligne
+ouverte ailleurs. Pas de rappel ni restauration automatique d'un appel coupé,
+aucune reconnexion imposée pendant une conversation ni mot de passe persisté.
+
+135 tests, dont essais avec SIP.js réel et réseau fictif : expiration du
+contact sur socket ouvert, panne de 90 s, reprise, autre appareil, keep-alive,
+renouvellement, réponses retardées pendant un appel et refus d'accès. Typage,
+lint et build live validés. Cela ne prouve pas encore le résultat sur les
+appareils clients ni leur audio. Aucun navigateur ne garantit l'exécution
+pendant un gel système ou la fermeture de la page. Manuels inchangés.
+
+
 ## Volume coloré, blocs Audio et logo mobile — 8 octobre 2026
 
 Demandes de Franck. **En service `20261008-volume-ampli`, source `aa1cfd9`,

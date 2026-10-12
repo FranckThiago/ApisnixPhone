@@ -20,6 +20,7 @@ export interface ManagerDelegate {
   onServerDisconnect(error?: Error): void;
   onRegistered(): void;
   onUnregistered(): void;
+  onLineTaken?(): void;
   onCallCreated(session: ManagedSession): void;
   onCallReceived(session: ManagedSession): void;
   onCallAnswered(session: ManagedSession): void;
@@ -29,8 +30,9 @@ export interface ManagerDelegate {
 
 export interface Manager {
   connect(): Promise<void>;
+  isConnected(): boolean;
   disconnect(): Promise<void>;
-  register(options: { requestDelegate: { onReject(response: Rejection): void } }): Promise<void>;
+  register(options: { requestDelegate: { onAccept?(): void; onReject(response: Rejection): void } }): Promise<void>;
   unregister(): Promise<void>;
   call(destination: string, inviterOptions: undefined, inviteOptions: {
     requestDelegate: { onProgress(response: Rejection): void; onReject(response: Rejection): void };
@@ -48,8 +50,8 @@ export interface Manager {
    * the device that lost the line would disconnect the device that now holds it.
    */
   dropSilently(): Promise<void>;
-  /** True when the PBX says this browser holds the account, false when another device does, null when unknown. */
-  holdsLine(): Promise<boolean | null>;
+  /** True = our contact, false = another device, 'missing' = no binding, null = no usable answer. */
+  holdsLine(): Promise<boolean | 'missing' | null>;
   /** Audio packets sent so far on this call, or null when the browser cannot tell. */
   sentAudioPackets(session: ManagedSession): Promise<number | null>;
 }
@@ -78,7 +80,7 @@ export interface SipEnvironment {
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
 const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
-const RECONNECT_GRACE = 3 * 4000 + 6000;
+const RECOVERY_DELAYS = [1000, 2000, 4000, 8000, 15000, 30000, 60000];
 
 /** Whole lengths only: « 1 min », « 15 min », « 1 h », « 24 h ». */
 export function blockLength(seconds: number): string {
@@ -112,6 +114,11 @@ export class SipPhoneController implements PhoneController {
   private session?: ManagedSession;
   private wanted = false;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private established = false;
+  private recoveryAttempt = 0;
+  private checkingLine = false;
+  private lineStrikes = 0;
+  private lastCheck = 0;
   private rejection?: CallOutcome;
   private rejectionReason?: string;
   private localHangup = false;
@@ -156,6 +163,10 @@ export class SipPhoneController implements PhoneController {
     const username = credentials.username.trim();
     if (!username || !credentials.password) return this.update({ connection: 'auth-error', error: t('sip.missingCredentials') });
     this.wanted = true;
+    this.established = false;
+    this.recoveryAttempt = 0;
+    this.lineStrikes = 0;
+    this.lastCheck = 0;
     this.credentials = { username, password: credentials.password };
     // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
     // Without it the first incoming call is silent, because nothing was clicked just before the sound starts.
@@ -225,21 +236,9 @@ export class SipPhoneController implements PhoneController {
     onServerConnect: () => {
       if (!this.wanted || !this.manager) return;
       clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = undefined;
       this.update({ connection: 'registering' });
-      this.manager.register({
-        requestDelegate: {
-          // A 401/407 challenge is answered by the library; only a final refusal lands here.
-          onReject: response => {
-            const status = response.message.statusCode ?? 0;
-            const refused = status === 401 || status === 403 || status === 404 || status === 407;
-            void this.teardown();
-            this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
-                          error: refused ? t(status === 401 || status === 407 ? 'sip.authRefused' : 'sip.accessRefused') : t('sip.registerRefused', { status }) });
-            // Repeated refusals block the whole site: warn when it gets close, show the countdown once it started.
-            if (refused) void this.afterRefusal();
-          },
-        },
-      }).catch(() => undefined);
+      this.registerLine();
     },
     onServerDisconnect: () => {
       if (!this.wanted) return;
@@ -253,20 +252,31 @@ export class SipPhoneController implements PhoneController {
         this.interruption = t('sip.interrupted');
         this.finish(call.answeredAt ? 'answered' : 'failed');
       }
-      this.update({ connection: 'reconnecting', error: undefined });
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = setTimeout(() => {
-        if (this.snapshot.connection !== 'reconnecting') return;
+      if (!this.established) {
         void this.teardown();
         this.update({ connection: 'network-error', account: null, error: t('sip.connectionLost') });
-      }, RECONNECT_GRACE);
+        return;
+      }
+      this.update({ connection: 'reconnecting', error: undefined });
+      this.scheduleRecovery();
     },
     onRegistered: () => {
       if (!this.wanted) return;
+      this.established = true;
+      this.recoveryAttempt = 0;
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = undefined;
       this.update({ connection: 'ready', error: undefined, lineTaken: false });
       this.watchLine();
     },
-    onUnregistered: () => { if (this.wanted && this.snapshot.connection === 'ready') this.update({ connection: 'registering' }); },
+    onUnregistered: () => {
+      if (!this.wanted) return;
+      this.update({ connection: 'registering' });
+      this.scheduleRecovery();
+    },
+    onLineTaken: () => {
+      if (this.wanted && (!this.snapshot.call || this.snapshot.call.phase === 'ended')) void this.stepAside();
+    },
     onCallCreated: session => { this.session = session; },
     onCallReceived: session => {
       this.session = session;
@@ -343,20 +353,76 @@ export class SipPhoneController implements PhoneController {
    */
   private watchLine() {
     clearInterval(this.lineWatch);
-    let strikes = 0;
-    this.lineWatch = setInterval(() => {
-      const manager = this.manager;
-      if (this.snapshot.connection !== 'ready' || !manager || this.snapshot.lineTaken) return;
-      void manager.holdsLine().then(holds => {
-        if (manager !== this.manager) return;
-        strikes = holds === false ? strikes + 1 : 0;
-        // Two consecutive answers, so one odd reply during a re-registration changes nothing.
-        if (strikes < 2) return;
-        // Never in the middle of a conversation: the call in progress is still ours.
+    this.lineWatch = setInterval(() => { void this.checkConnection(); }, LINE_CHECK);
+  }
+
+  /** Wake/network events may arrive in bursts. Never disturb a live conversation. */
+  async checkConnection() {
+    const manager = this.manager;
+    if (!this.wanted || !this.established || !manager || this.checkingLine || this.snapshot.lineTaken) return;
+    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    if (Date.now() - this.lastCheck < 1000) {
+      if (this.snapshot.connection !== 'ready') this.scheduleRecovery();
+      return;
+    }
+    this.lastCheck = Date.now();
+    this.checkingLine = true;
+    try {
+      if (!manager.isConnected()) {
+        this.update({ connection: 'reconnecting' });
+        await manager.connect();
+      } else {
+        const holds = await manager.holdsLine();
+        if (manager !== this.manager || !this.wanted) return;
         if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
-        void this.stepAside();
-      }).catch(() => undefined);
-    }, LINE_CHECK);
+        this.lineStrikes = holds === false ? this.lineStrikes + 1 : 0;
+        if (this.lineStrikes >= 2) { await this.stepAside(); return; }
+        if (holds === 'missing' || (holds === true && this.snapshot.connection !== 'ready')) {
+          this.update({ connection: 'registering' });
+          this.registerLine();
+        }
+      }
+    } catch {
+      // An outage is retried at a bounded pace, without discarding the signed-in account.
+    } finally {
+      this.checkingLine = false;
+      if (manager === this.manager && this.wanted && this.snapshot.connection !== 'ready') this.scheduleRecovery();
+    }
+  }
+
+  private scheduleRecovery() {
+    if (!this.wanted || this.reconnectTimer !== undefined || !this.established) return;
+    const delay = RECOVERY_DELAYS[Math.min(this.recoveryAttempt++, RECOVERY_DELAYS.length - 1)];
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = undefined;
+      void this.checkConnection();
+    }, delay);
+  }
+
+  private registerLine() {
+    const manager = this.manager;
+    if (!manager || !this.wanted) return;
+    manager.register({
+      requestDelegate: {
+        onAccept: () => { if (manager === this.manager && this.wanted) this.delegate.onRegistered(); },
+        // A 401/407 challenge is answered by the library; only a final refusal lands here.
+        onReject: response => {
+          if (manager !== this.manager || !this.wanted) return;
+          const status = response.message.statusCode ?? 0;
+          const refused = status === 401 || status === 403 || status === 404 || status === 407;
+          if (this.established && [408, 500, 502, 503, 504].includes(status)) {
+            this.update({ connection: 'reconnecting', error: undefined });
+            this.scheduleRecovery();
+            return;
+          }
+          void this.teardown();
+          this.update({ connection: refused ? 'auth-error' : 'network-error', account: null,
+                        error: refused ? t(status === 401 || status === 407 ? 'sip.authRefused' : 'sip.accessRefused') : t('sip.registerRefused', { status }) });
+          // Repeated refusals block the whole site: warn when it gets close, show the countdown once it started.
+          if (refused) void this.afterRefusal();
+        },
+      },
+    }).catch(() => { if (manager === this.manager && this.wanted) this.scheduleRecovery(); });
   }
 
   /**
@@ -368,6 +434,7 @@ export class SipPhoneController implements PhoneController {
     this.wanted = false;
     clearInterval(this.lineWatch);
     clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
     const manager = this.manager;
     this.manager = undefined;
     this.update({ connection: 'other-tab-active', lineTaken: true, error: undefined });
@@ -422,6 +489,7 @@ export class SipPhoneController implements PhoneController {
   private async teardown() {
     this.wanted = false;
     clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = undefined;
     clearInterval(this.lineWatch);
     this.ringer.stop();
     this.callProgress.stop();

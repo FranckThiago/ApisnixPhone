@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-12 — Réparer les pertes de connexion du webphone
+
+Demande de Franck après comparaison avec Zoiper. Reprise progressive persistante
+après une connexion acceptée ; réparation des bindings absents sur WSS ouvert,
+contrôle au retour de l'onglet/réseau, renouvellement anticipé et keep-alive.
+Protection du contact détenu ailleurs, des refus définitifs, des appels et de la
+déconnexion volontaire. 135 tests dont intégration avec SIP.js réel/réseau fictif,
+typage, lint et build live ; périmètre frontend seul. ARCHITECTURE, WEBPHONE_PLAN,
+PROJECT_STATE et OPERATIONS actualisés ; aucun manuel ni backend modifié.
+
+
 ## 2026-10-08 — Marron et noir pour l’amplification
 
 Demande de Franck. Le volume d’écoute prend deux couleurs de plus au-delà de

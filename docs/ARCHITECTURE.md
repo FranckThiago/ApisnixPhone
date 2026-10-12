@@ -196,3 +196,24 @@ Le client Desktop peut servir de base à macOS. iPhone nécessitera une adaptati
 du client iOS, sa signature et son propre cycle de validation ; rien n'est encore
 compilé pour ces deux plateformes. Les prérequis vérifiés et les accès Apple
 à préciser sont dans [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
+
+## Reprise de session web — 12 octobre 2026
+
+`SipPhoneController` conserve la session souhaitée après une première
+inscription acceptée et retente le transport avec délai croissant plafonné à
+60 s ; le contrôle périodique de 45 s peut aussi déclencher la reprise. SIP.js
+ne pilote plus une seconde boucle de reconnexion. `holdsLine()` renvoie true,
+false, missing ou null : seul missing prouve une liaison effacée et réparable.
+Le garde SessionManager bloque les inscriptions automatiques si un autre
+contact détient le compte ou si le résultat est inconnu. Réparation hors appel,
+réponses asynchrones revérifiées et contrôle unique en vol. Le renouvellement
+natif REGISTER et son acquittement restent gérés par SIP.js ; le contrôleur
+réaffiche ready seulement après acceptation, y compris lors d'un rafraîchissement.
+
+`pageLifecycle` recontrôle au retour visible, online et resume. Le transport
+envoie un double CRLF toutes les 24–30 s ; expiration demandée 300 s et
+renouvellement à mi-parcours selon la valeur négociée. Aucun Worker ou nouveau
+service de fond : une page gelée ne peut pas promettre de rester joignable.
+Comparaison : [Zoiper réagit aux changements réseau du système](https://www.zoiper.com/en/support/home/article/66/Network%20change%20detected) ;
+[Chrome peut geler les tâches d'un onglet](https://developer.chrome.com/docs/web-platform/page-lifecycle-api).
+Aucun constat public sur des comptes clients dans ce dépôt.

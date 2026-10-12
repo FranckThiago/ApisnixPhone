@@ -3,9 +3,10 @@ import { bindPageLifecycle } from '../src/telephony/pageLifecycle';
 import type { PhoneController, PhoneSnapshot } from '../src/telephony/types';
 
 function harness() {
-  const target = Object.assign(new EventTarget(), { location: { reload: vi.fn() } });
+  const document = Object.assign(new EventTarget(), { visibilityState: 'visible' });
+  const target = Object.assign(new EventTarget(), { document, location: { reload: vi.fn() } });
   let call: PhoneSnapshot['call'] = { id: 'test', direction: 'outbound', rawInput: '123', dialTarget: '123', phase: 'active', muted: false, holdPending: false, startedAt: 1, dtmf: '' };
-  const phone = { getSnapshot: () => ({ call }), disconnect: vi.fn(async () => undefined) };
+  const phone = { getSnapshot: () => ({ call }), disconnect: vi.fn(async () => undefined), checkConnection: vi.fn(async () => undefined) };
   const cleanup = bindPageLifecycle(phone as unknown as PhoneController, target as unknown as Window);
   return { target, phone, cleanup, end: () => { call = null; } };
 }
@@ -41,6 +42,19 @@ describe('page lifecycle', () => {
     const cached = Object.assign(new Event('pageshow'), { persisted: true });
     h.target.dispatchEvent(cached);
     expect(h.target.location.reload).toHaveBeenCalledTimes(1);
+  });
+  it('checks after network recovery and foreground, but not when hidden', () => {
+    const h = harness();
+    h.target.dispatchEvent(new Event('online'));
+    h.target.document.dispatchEvent(new Event('visibilitychange'));
+    expect(h.phone.checkConnection).toHaveBeenCalledTimes(2);
+    h.target.document.visibilityState = 'hidden';
+    h.target.document.dispatchEvent(new Event('visibilitychange'));
+    expect(h.phone.checkConnection).toHaveBeenCalledTimes(2);
+    h.cleanup();
+    h.target.document.visibilityState = 'visible';
+    h.target.dispatchEvent(new Event('online'));
+    expect(h.phone.checkConnection).toHaveBeenCalledTimes(2);
   });
   it('removes listeners without disconnecting on a React cleanup', () => {
     const h = harness(); h.cleanup();

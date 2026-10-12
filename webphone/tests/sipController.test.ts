@@ -11,6 +11,7 @@ function harness() {
   let invite!: { onProgress(): void; onReject(status: number): void };
   const manager = {
     connect: vi.fn(async () => delegate.onServerConnect()),
+    isConnected: vi.fn(() => true),
     disconnect: vi.fn(async () => undefined),
     register: vi.fn(async (options: Parameters<Manager['register']>[0]) => {
       registerReject = status => options.requestDelegate.onReject({ message: { statusCode: status } });
@@ -30,7 +31,7 @@ function harness() {
     unmute: vi.fn(),
     sendDTMF: vi.fn(async () => undefined),
     dropSilently: vi.fn(async () => undefined),
-    holdsLine: vi.fn(async (): Promise<boolean | null> => true),
+    holdsLine: vi.fn(async (): Promise<boolean | 'missing' | null> => true),
     sentAudioPackets: vi.fn(async (): Promise<number | null> => 250),
   };
   const environment: SipEnvironment = {
@@ -326,19 +327,100 @@ describe('SIP controller', () => {
     expect(h.phone.getSnapshot().call?.muted).toBe(true);
   });
 
-  it('ends a dropped call without redialling and gives up reconnecting after the grace period', async () => {
+  it('ends a dropped call without redialling and keeps recovering beyond a short outage', async () => {
     const h = harness();
     await ready(h);
     h.phone.call('x', '+33100000001');
     await vi.advanceTimersByTimeAsync(0);
     h.delegate.onCallAnswered(session('out'));
+    h.manager.isConnected.mockReturnValue(false);
+    h.manager.connect.mockRejectedValue(new Error('offline'));
     h.delegate.onServerDisconnect(new Error('lost'));
     // The conversation took place: it stays answered, with the reason it stopped.
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'reconnecting', call: { phase: 'ended', outcome: 'answered' } });
     expect(h.phone.getSnapshot().call?.failure).toMatch(/interrompu/);
     await vi.advanceTimersByTimeAsync(20000);
-    expect(h.phone.getSnapshot().connection).toBe('network-error');
+    expect(h.phone.getSnapshot().connection).toBe('reconnecting');
+    expect(h.manager.connect.mock.calls.length).toBeGreaterThan(2);
     expect(h.manager.call).toHaveBeenCalledTimes(1);
+  });
+
+  it('repairs an explicitly missing binding on an open socket, without mistaking an unknown answer for absence', async () => {
+    const h = harness(); await ready(h);
+    h.manager.holdsLine.mockResolvedValue(null);
+    await vi.advanceTimersByTimeAsync(45_000);
+    expect(h.manager.register).toHaveBeenCalledTimes(1);
+    h.manager.holdsLine.mockResolvedValue('missing');
+    await vi.advanceTimersByTimeAsync(45_000);
+    expect(h.manager.register).toHaveBeenCalledTimes(2);
+    expect(h.phone.getSnapshot().connection).toBe('registering');
+    h.manager.register.mock.calls[1]![0].requestDelegate.onAccept?.();
+    expect(h.phone.getSnapshot().connection).toBe('ready');
+    expect(h.manager.disconnect).not.toHaveBeenCalled();
+  });
+
+  it('recovers a clean socket close and stops all recovery on manual sign-out', async () => {
+    const h = harness(); await ready(h);
+    h.manager.isConnected.mockReturnValue(false);
+    h.manager.connect.mockRejectedValue(new Error('offline'));
+    h.delegate.onServerDisconnect();
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(h.phone.getSnapshot().connection).toBe('reconnecting');
+    const attempts = h.manager.connect.mock.calls.length;
+    expect(attempts).toBeGreaterThan(3);
+    expect(attempts).toBeLessThan(12);
+    await h.phone.disconnect();
+    await vi.advanceTimersByTimeAsync(180_000);
+    expect(h.manager.connect).toHaveBeenCalledTimes(attempts);
+    expect(h.phone.getSnapshot().connection).toBe('offline');
+  });
+
+  it('retries temporary registration failures but stops on an access refusal after recovery', async () => {
+    const h = harness(); await ready(h);
+    h.reject(503);
+    await vi.advanceTimersByTimeAsync(1100);
+    expect(h.manager.register).toHaveBeenCalledTimes(2);
+    h.reject(403);
+    await vi.advanceTimersByTimeAsync(90_000);
+    expect(h.manager.register).toHaveBeenCalledTimes(2);
+    expect(h.phone.getSnapshot().connection).toBe('auth-error');
+  });
+
+  it('checks once after wake and never repairs a binding in the middle of a call', async () => {
+    const h = harness(); await ready(h);
+    h.manager.holdsLine.mockResolvedValue('missing');
+    await Promise.all([h.phone.checkConnection(), h.phone.checkConnection()]);
+    expect(h.manager.holdsLine).toHaveBeenCalledTimes(1);
+    h.delegate.onRegistered();
+    h.phone.call('123', '123'); await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    await vi.advanceTimersByTimeAsync(90_000);
+    expect(h.manager.register).toHaveBeenCalledTimes(2);
+    expect(h.manager.hangup).not.toHaveBeenCalled();
+  });
+
+  it('does not step aside when a call starts while an ownership query is pending', async () => {
+    const h = harness(); await ready(h);
+    h.manager.holdsLine.mockResolvedValue(false);
+    await h.phone.checkConnection(); await vi.advanceTimersByTimeAsync(1000);
+    let resolve!: (value: false) => void;
+    h.manager.holdsLine.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+    const check = h.phone.checkConnection();
+    h.delegate.onCallReceived(session('incoming', '123'));
+    h.delegate.onCallAnswered(session('incoming'));
+    resolve(false); await check;
+    expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', call: { phase: 'active' } });
+    expect(h.manager.dropSilently).not.toHaveBeenCalled();
+  });
+
+  it('ignores a late ownership answer after sign-out', async () => {
+    const h = harness(); await ready(h);
+    let resolve!: (value: 'missing') => void;
+    h.manager.holdsLine.mockImplementationOnce(() => new Promise(done => { resolve = done; }));
+    const check = h.phone.checkConnection();
+    await h.phone.disconnect(); resolve('missing'); await check;
+    expect(h.manager.register).toHaveBeenCalledTimes(1);
+    expect(h.phone.getSnapshot().connection).toBe('offline');
   });
 
   it('hangs up, unregisters and frees the line on disconnect', async () => {
@@ -443,7 +525,7 @@ describe('SIP controller — microphone and shared line', () => {
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', call: { phase: 'active' } });
     h.delegate.onCallHangup(session('out'));
     h.phone.dismiss();
-    await vi.advanceTimersByTimeAsync(50_000);
+    await vi.advanceTimersByTimeAsync(95_000);
     expect(h.phone.getSnapshot().lineTaken).toBe(true);
   });
 

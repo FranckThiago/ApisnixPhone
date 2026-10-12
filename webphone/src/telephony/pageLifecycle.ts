@@ -18,10 +18,20 @@ export function bindPageLifecycle(phone: PhoneController, target: Window = windo
     // A cached document must not resurrect a destroyed SIP session or a held browser lock.
     if (event.persisted) target.location.reload();
   };
+  const resume = () => {
+    if (target.document?.visibilityState === 'hidden') return;
+    void phone.checkConnection?.().catch(() => undefined);
+  };
+  target.addEventListener('online', resume);
+  target.document?.addEventListener('visibilitychange', resume);
+  target.document?.addEventListener('resume', resume);
   target.addEventListener('beforeunload', warn);
   target.addEventListener('pagehide', leave);
   target.addEventListener('pageshow', restore);
   return () => {
+    target.removeEventListener('online', resume);
+    target.document?.removeEventListener('visibilitychange', resume);
+    target.document?.removeEventListener('resume', resume);
     target.removeEventListener('beforeunload', warn);
     target.removeEventListener('pagehide', leave);
     target.removeEventListener('pageshow', restore);

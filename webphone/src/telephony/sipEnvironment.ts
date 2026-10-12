@@ -4,22 +4,32 @@ import type { Manager, SipEnvironment } from './SipPhoneController';
 export const browserSipEnvironment: SipEnvironment = {
   async createManager(config, credentials, delegate, microphone, remoteAudio) {
     const { Web, UserAgent } = await import('sip.js');
+    let registeredOnce = false;
     const manager = new Web.SessionManager(config.wssUrl, {
       aor: `sip:${credentials.username}@${config.domain}`,
-      delegate,
+      delegate: { ...delegate, onRegistered: () => { registeredOnce = true; delegate.onRegistered(); } },
+      // Do not steal the line from another device after an outage.
+      registerGuard: async () => {
+        if (!registeredOnce) return false;
+        const holds = await holdsLine();
+        if (holds === false) delegate.onLineTaken?.();
+        return holds === false || holds === null;
+      },
       // One call at a time for the first pilot; attended transfer is out of scope.
       maxSimultaneousSessions: 1,
       media: { constraints: { audio: true, video: false }, remote: { audio: remoteAudio } },
       // A refused REGISTER is final: no loop of attempts against the PBX.
       registrationRetry: false,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 4,
+      // One recovery loop, owned by the controller, including clean socket closes.
+      reconnectionAttempts: 0,
+      registererOptions: { expires: 300, refreshFrequency: 50 },
       // RFC 2833 telephone-event over RTP, as the existing WebRTC path does.
       sendDTMFUsingSessionDescriptionHandler: true,
       userAgentOptions: {
         authorizationUsername: credentials.username,
         // In memory for this session only.
         authorizationPassword: credentials.password,
+        transportOptions: { server: config.wssUrl, keepAliveInterval: 30, traceSip: false },
         contactParams: { transport: 'wss' },
         // Recognisable in the PBX's peer list and in supervision.
         userAgentString: 'ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2',
@@ -40,20 +50,20 @@ export const browserSipEnvironment: SipEnvironment = {
      * it changes nothing and the answer lists the registered contact. Ours carries a random user part,
      * so the comparison is exact. null = no usable answer: never conclude anything from it.
      */
-    const holdsLine = () => new Promise<boolean | null>(resolve => {
+    const holdsLine = () => new Promise<boolean | 'missing' | null>(resolve => {
       const server = UserAgent.makeURI(`sip:${config.domain}`);
       const account = UserAgent.makeURI(`sip:${credentials.username}@${config.domain}`);
       const mine = manager.userAgent.contact.uri.user;
       if (!server || !account || !mine || !transport.isConnected()) return resolve(null);
       const timer = setTimeout(() => resolve(null), 8000);
-      const settle = (value: boolean | null) => { clearTimeout(timer); resolve(value); };
+      const settle = (value: boolean | 'missing' | null) => { clearTimeout(timer); resolve(value); };
       try {
         const core = manager.userAgent.userAgentCore;
         core.request(core.makeOutgoingRequestMessage('REGISTER', server, account, account, {}), {
           onAccept: response => {
             const contacts = response.message.getHeaders('contact');
-            // No contact at all: nobody is registered, which is not « someone else ».
-            settle(contacts.length ? contacts.some(contact => contact.includes(`sip:${mine}@`)) : null);
+            // A confirmed empty binding can be repaired; an unanswered query cannot.
+            settle(contacts.length ? contacts.some(contact => contact.includes(`sip:${mine}@`)) : 'missing');
           },
           onReject: () => settle(null),
         });

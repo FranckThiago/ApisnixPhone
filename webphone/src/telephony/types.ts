@@ -59,6 +59,8 @@ export interface PhoneController {
   subscribe(listener: () => void): () => void;
   connect(credentials: Credentials): Promise<void>;
   disconnect(): Promise<void>;
+  /** Recheck a signed-in line after wake/network recovery. */
+  checkConnection?(): Promise<void>;
   call(rawInput: string, dialTarget: string, remoteName?: string): void;
   answer(): void;
   decline(): void;
