@@ -2,7 +2,8 @@
 
 ## Changement de réseau et reprise manuelle — 13 octobre 2026
 
-Correctif validé localement, publication en préparation. Après 10 s de reprise
+**En service `20261013-network-reconnect`, source `f20ef8d`, 15:06:29 Douala.**
+Inclut la correction des numéros opérateur `633` publiée en parallèle. Après 10 s de reprise
 infructueuse, le bandeau commun propose **Se reconnecter**, sans déconnexion,
 sans rechargement du profil et sans ressaisie des identifiants. Clics espacés
 de 10 s ; bouton absent pendant un appel. Les essais automatiques utilisent
@@ -13,8 +14,8 @@ en mémoire et garde de propriété maintenu : un autre appareil n'est pas repri
 implicitement, une réponse inconnue ne permet pas d'enregistrer la ligne.
 Événements de changement réseau écoutés quand le navigateur les fournit.
 
-143 tests, typage et lint réussis ; build live et contrôle final de publication
-à consigner dans OPERATIONS. Navigateur intégré, scénario fictif : bandeau,
+146 tests après intégration, typage, lint et build live isolé réussis.
+HTTPS/empreintes et formulaire live contrôlés ; détails dans OPERATIONS. Navigateur intégré, scénario fictif : bandeau,
 format mobile, clic désactivé pendant la tentative, retour au même espace.
 Aucun test audio réel ni reproduction sur le réseau mobile du client ; onglets
 gelés/fermés toujours hors garantie. Manuels clients inchangés.

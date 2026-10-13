@@ -2,7 +2,29 @@
 
 ## Changement de réseau et bouton de reprise — 13 octobre 2026
 
-Correctif frontend validé localement ; publication en préparation.
+**En service `20261013-network-reconnect`, source `f20ef8d`, à 15:06:29 Douala.**
+L'état réel avant publication était `20261013-carrier-633`, publié pendant le
+travail. Sa source `a9aab2f` a été intégrée au correctif `9ba80ce` par merge,
+puis les validations relancées : les deux corrections sont conservées.
+Build live isolé depuis le commit, npm ci, 266 fichiers. Archive SHA-256
+`a79369ef8e7623b0b36210d99fcad3c8b1f7d2809777a692822c522f091b53ff`.
+JS `index-CS18aJQd.js`, SIP `lib-BhiDZ92L.js`, CSS `index-DCTHujNE.css`.
+
+Hermes 167.233.244.152 identifié, ancienne cible et empreintes revérifiées
+juste avant la bascule atomique. Sauvegarde protégée 0700 :
+`/root/apisnix-phone-backups/20261013-network-reconnect/` contient ancienne
+cible, copie intégrale et manifeste de la précédente release, archive/source/
+manifeste publiés et reçu. Répertoires 0755, fichiers 0644 et lecture des
+266 fichiers par caddy contrôlés avant bascule. Index/JS/CSS et module SIP
+servis en HTTPS avec hashes identiques ; formulaire live chargé dans le
+navigateur intégré, nouveau JS confirmé, aucune erreur console. Caddy et
+supervision actifs, aucun redémarrage. Aucun compte client connecté pour la QA.
+
+Retour ciblé : vérifier que `current` vise encore cette release, puis repointer
+atomiquement `/srv/apisnixphone/current` vers
+`/srv/apisnixphone/releases/20261013-carrier-633`. Ne restaurer aucune base.
+Les onglets déjà ouverts reçoivent le correctif après actualisation hors appel.
+
 **Se reconnecter** apparaît après 10 s de reprise continue, conserve le compte,
 le profil et les données en mémoire. Une liaison WSS ouverte mais sans réponse
 utile au contrôle PBX est remplacée ; le contact aléatoire de cette session
@@ -10,7 +32,7 @@ reste identique. Les anciens callbacks sont ignorés et l'ancienne connexion
 est arrêtée sans désenregistrer une autre session. Le garde de propriété reste
 obligatoire sur la nouvelle connexion. Aucun mot de passe persisté.
 
-Validation : 143 tests, typage et lint ; intégration SIP.js réel sur réseau
+Validation : 146 tests après intégration, typage et lint ; intégration SIP.js réel sur réseau
 fictif (socket muette, fermeture bloquée, panne prolongée, reprise manuelle,
 double clic, autre appareil, réponse inconnue) ; interface vérifiée dans le
 navigateur intégré à 390 et 1366 px, retour au même espace après un clic.

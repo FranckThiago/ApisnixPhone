@@ -9,8 +9,12 @@ du changement réseau quand disponible. Protection des contacts d'autres
 appareils, des appels actifs et des réponses retardées ; identifiants mémoire
 seulement. Contrôleur, adaptateur SIP.js, cycle de page, App et textes FR/EN/ES
 modifiés ; tests de régression et documentation d'état/architecture/plan/
-exploitation alignés. 143 tests, typage/lint ; aucun manuel ni migration.
-Publication et limites de validation dans OPERATIONS.
+exploitation alignés. 143 tests du correctif, puis 146 après intégration de
+la correction 633 publiée en parallèle ; typage/lint/build live isolé validés.
+Publication `20261013-network-reconnect`, source combinée `f20ef8d`, à
+15:06:29 Douala ; sauvegarde protégée et HTTPS/navigateur vérifiés. Aucun
+manuel, backend, compte, routage ou migration modifié par cette publication.
+Retour vers `20261013-carrier-633` et limites dans OPERATIONS.
 
 
 ## 2026-10-13 — Séparer le préfixe opérateur 633 du numéro client
