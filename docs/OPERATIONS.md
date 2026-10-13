@@ -1,39 +1,39 @@
 # Construction et validation
 
-## Annonces APISNIX — version préparée le 13 octobre 2026, non publiée
+## Annonces APISNIX dans le téléphone web — 13 octobre 2026
 
-**Non publiée : la version en service reste `20261013-network-reconnect`.**
-Publication soumise à l'accord explicite de Franck. Source `8892cd2`, branche
-`claude/webphone-annonces`. Build live isolé depuis ce commit après `npm ci`,
-typage, lint et 160 tests : 266 fichiers, JS `index-JaC6q2wz.js`, module SIP
-`lib-Bm5HuPxA.js`, CSS `index-GUAu2Rvv.css`. Archive
-`apisnixphone-20261013-annonces.tar.gz` SHA-256
-`ffcc47eac925693987f38ed7b902d23dfd4cf6d7ffcce4325fe9e0bbf0240975`, avec le
-manifeste SHA-256 des 266 fichiers, le commit source et trois captures de la
-démonstration (sombre, clair après masquage, 375 px) dans
-`.work/annonces-20261013/`, hors Git. Build servi localement par `vite
-preview` : formulaire live chargé avec le JS du manifeste, aucune erreur
-console. Aucune connexion client effectuée ; le rendu des annonces réelles
-avec un compte autorisé reste à voir sur la page publiée.
+**En service `20261013-annonces`, source `1b7c03c`, à 17:44:22 Douala.**
+Ancienne cible vérifiée `20261013-network-reconnect` juste avant la bascule
+atomique. Build live isolé depuis le commit, npm ci, typage, lint, 160 tests,
+266 fichiers. Archive `phone.tar.gz` SHA-256
+`3c40870f7b994e83a13804ec4c5200b83f4bf203a05416ad4c52e482e2c3a113`.
+JS `index-mb3vJRQW.js`, module SIP `lib-c5PeqIeE.js`, CSS `index-GUAu2Rvv.css`.
 
-Aucun changement Caddy requis : la CSP `connect-src` autorise déjà
-`https://apisnix-crm.com`, origine de la page d'annonces lue directement par
-le navigateur (`agc/apisnix/annonces.json.php?cible=telephone`, lecture seule,
-CORS ouvert, cache 60 s côté PBX). Aucune migration ni changement PBX, compte,
-DNS, pare-feu, supervision ou manuel.
+Hermes 167.233.244.152. Sauvegarde protégée 0700
+`/root/apisnix-phone-backups/20261013-annonces/` : ancienne cible, copie
+intégrale et manifeste de la release précédente, archive, empreinte, manifeste
+source, commit source et reçu. Première extraction annulée avant bascule : le
+tar de macOS avait ajouté 268 fichiers AppleDouble `._*` ; archive refaite sans
+métadonnées Apple (`COPYFILE_DISABLE=1`, `--no-mac-metadata --no-xattrs`),
+dossier supprimé puis recréé, 266 fichiers vérifiés un à un contre le
+manifeste. Répertoires 0755, fichiers 0644, root propriétaire, lecture par
+caddy testée et écriture refusée. Après bascule : index 200 `no-cache`, assets
+immuables, index/JS/CSS/SIP servis en HTTPS avec hashes identiques, CSP, HSTS
+et Permissions-Policy inchangées, repli SPA 200, Caddy et supervision actifs
+sans redémarrage. Page publiée chargée dans le navigateur intégré : nouveau JS
+et CSS, aucune erreur console ; depuis cette origine, la page d'annonces du PBX
+répond 200 sous la CSP en service avec les deux annonces du jour. Aucune
+connexion client effectuée : les cartes elles-mêmes restent à voir sur un
+compte autorisé.
 
-Publication, le moment venu : procédure « Publier une release suivante »
-ci-dessous, nom `20261013-annonces`, sauvegarde protégée 0700
-`/root/apisnix-phone-backups/20261013-annonces/` (ancienne cible, copie et
-manifeste de la release précédente, archive, manifeste, commit source, reçu),
-cible réelle de `current` relevée juste avant la bascule atomique, répertoires
-0755 et fichiers 0644 lisibles par caddy, index/JS/CSS servis en HTTPS avec les
-hashes du manifeste, puis cartes visibles après connexion d'un compte autorisé,
-hors heures de forte activité. Retour ciblé : repointer atomiquement
-`/srv/apisnixphone/current` vers
+Lecture unique à l'ouverture de l'espace, choix de Franck ; aucun relais ni
+modification Caddy, PBX, compte, DNS, pare-feu, supervision, migration ou
+manuel. Retour ciblé : vérifier que `current` vise encore cette release, puis
+repointer atomiquement `/srv/apisnixphone/current` vers
 `/srv/apisnixphone/releases/20261013-network-reconnect`, sans recharger Caddy
-ni restaurer de base. Les onglets ouverts gardent leur version jusqu'à
-actualisation hors appel.
+ni restaurer de base. Les onglets déjà ouverts reçoivent la version après
+actualisation hors appel. Preuves locales (archive, manifestes, captures de la
+démonstration) dans `.work/annonces-20261013/`, hors Git.
 
 ## Changement de réseau et bouton de reprise — 13 octobre 2026
 

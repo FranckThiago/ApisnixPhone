@@ -18,8 +18,11 @@ FR/EN/ES, styles, variable facultative `VITE_ANNOUNCEMENTS_URL`. 160 tests
 dont 12 nouveaux (flux réel, données invalides, masquage, chargement, rendu
 échappé), typage et lint ; démo vérifiée dans le navigateur intégré (sombre,
 clair, 375 px, masquage conservé après reconnexion) ; les deux annonces réelles
-du jour sont lues et parsées. **Non publié sur Hermes** : version préparée,
-publication soumise à l'accord de Franck. Manuels clients inchangés.
+du jour sont lues et parsées. Publication `20261013-annonces`,
+source `1b7c03c`, à 17:44:22 Douala sur accord de Franck : sauvegarde
+protégée, HTTPS, navigateur et flux depuis l'origine publiée vérifiés ;
+première archive refaite sans métadonnées Apple avant la bascule. Retour vers
+`20261013-network-reconnect` dans OPERATIONS. Manuels clients inchangés.
 
 ## 2026-10-13 — Reconnexion après bascule de réseau
 

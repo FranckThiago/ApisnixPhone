@@ -2,9 +2,8 @@
 
 ## Annonces APISNIX dans le téléphone web — 13 octobre 2026
 
-**Réalisé dans le dépôt, non publié sur Hermes** : la version en service reste
-`20261013-network-reconnect`. Les annonces rédigées dans l'administration du
-PBX (informations, astuces, factures, mises à jour, alertes) s'affichent en
+**En service `20261013-annonces`, source `1b7c03c`, 17:44:22 Douala.**
+Les annonces rédigées dans l'administration du PBX (informations, astuces, factures, mises à jour, alertes) s'affichent en
 cartes en tête du Journal et de ses onglets, sans toucher au panneau d'appel.
 Lecture directe de la page publique du PBX
 `https://apisnix-crm.com/agc/apisnix/annonces.json.php?cible=telephone`, une
@@ -19,9 +18,10 @@ montre deux cartes fictives sans réseau.
 160 tests dont 12 nouveaux, typage et lint réussis ; démo contrôlée dans le
 navigateur intégré en thèmes sombre et clair, à 375 px, masquage conservé
 après reconnexion ; les deux annonces réelles du jour sont lues et parsées.
-Non vérifié : rendu sur la page live avec un compte client (aucune connexion
-client effectuée). Build live isolé, preuves et retour dans OPERATIONS ;
-publication après accord de Franck. Manuels clients inchangés.
+Publication HTTPS vérifiée, page publiée chargée sans erreur console, flux du
+PBX lisible depuis l'origine publiée sous la CSP en service ; détails et
+retour dans OPERATIONS. Non vérifié : les cartes elles-mêmes sur un compte
+client (aucune connexion client effectuée). Manuels clients inchangés.
 
 ## Changement de réseau et reprise manuelle — 13 octobre 2026
 
