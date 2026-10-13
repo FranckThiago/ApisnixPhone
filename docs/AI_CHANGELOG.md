@@ -1,5 +1,18 @@
 # Journal des changements
 
+## 2026-10-13 — Reconnexion après bascule de réseau
+
+Retour utilisateur : état jaune prolongé sans action possible après passage
+mobile/Wi-Fi. Bouton de reprise à 10 s, compte et espace conservés, cadence
+automatique plafonnée à 15 s, remplacement des sockets sans réponse et écoute
+du changement réseau quand disponible. Protection des contacts d'autres
+appareils, des appels actifs et des réponses retardées ; identifiants mémoire
+seulement. Contrôleur, adaptateur SIP.js, cycle de page, App et textes FR/EN/ES
+modifiés ; tests de régression et documentation d'état/architecture/plan/
+exploitation alignés. 143 tests, typage/lint ; aucun manuel ni migration.
+Publication et limites de validation dans OPERATIONS.
+
+
 ## 2026-10-12 — Réparer les pertes de connexion du webphone
 
 Demande de Franck après comparaison avec Zoiper. Reprise progressive persistante

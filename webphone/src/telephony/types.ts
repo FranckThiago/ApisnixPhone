@@ -40,6 +40,10 @@ export interface PhoneSnapshot {
   account: Account | null;
   call: CallSnapshot | null;
   error?: string;
+  /** Start of the continuous outage, including successive registration attempts. */
+  recoverySince?: number;
+  /** Cooldown for the explicit reconnect action. */
+  retryAt?: number;
   /** The browser refused to play the remote sound until the person interacts. */
   audioBlocked?: boolean;
   /** The server stopped checking on this browser: the line was most likely opened somewhere else. */
@@ -61,6 +65,8 @@ export interface PhoneController {
   disconnect(): Promise<void>;
   /** Recheck a signed-in line after wake/network recovery. */
   checkConnection?(): Promise<void>;
+  /** Refresh a stuck connection without losing the signed-in workspace. */
+  reconnect?(): Promise<void>;
   call(rawInput: string, dialTarget: string, remoteName?: string): void;
   answer(): void;
   decline(): void;

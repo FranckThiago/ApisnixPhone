@@ -412,3 +412,5 @@ a.ghost { text-decoration: none; }
 .recovery-panel { padding: 24px; }
 .recovery-page h1, .recovery-panel h1 { font-size: 24px; }
 .recovery-page p, .recovery-panel p { margin: 16px 0; }
+
+.line-alert button:disabled { opacity: .65; cursor: wait; }

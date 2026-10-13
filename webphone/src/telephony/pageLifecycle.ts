@@ -22,6 +22,8 @@ export function bindPageLifecycle(phone: PhoneController, target: Window = windo
     if (target.document?.visibilityState === 'hidden') return;
     void phone.checkConnection?.().catch(() => undefined);
   };
+  const network = (target.navigator as Navigator & { connection?: EventTarget } | undefined)?.connection;
+  network?.addEventListener('change', resume);
   target.addEventListener('online', resume);
   target.document?.addEventListener('visibilitychange', resume);
   target.document?.addEventListener('resume', resume);
@@ -29,6 +31,7 @@ export function bindPageLifecycle(phone: PhoneController, target: Window = windo
   target.addEventListener('pagehide', leave);
   target.addEventListener('pageshow', restore);
   return () => {
+    network?.removeEventListener('change', resume);
     target.removeEventListener('online', resume);
     target.document?.removeEventListener('visibilitychange', resume);
     target.document?.removeEventListener('resume', resume);

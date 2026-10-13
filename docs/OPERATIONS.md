@@ -1,5 +1,25 @@
 # Construction et validation
 
+## Changement de réseau et bouton de reprise — 13 octobre 2026
+
+Correctif frontend validé localement ; publication en préparation.
+**Se reconnecter** apparaît après 10 s de reprise continue, conserve le compte,
+le profil et les données en mémoire. Une liaison WSS ouverte mais sans réponse
+utile au contrôle PBX est remplacée ; le contact aléatoire de cette session
+reste identique. Les anciens callbacks sont ignorés et l'ancienne connexion
+est arrêtée sans désenregistrer une autre session. Le garde de propriété reste
+obligatoire sur la nouvelle connexion. Aucun mot de passe persisté.
+
+Validation : 143 tests, typage et lint ; intégration SIP.js réel sur réseau
+fictif (socket muette, fermeture bloquée, panne prolongée, reprise manuelle,
+double clic, autre appareil, réponse inconnue) ; interface vérifiée dans le
+navigateur intégré à 390 et 1366 px, retour au même espace après un clic.
+Aucune migration, modification de compte, PBX, DNS, pare-feu ni manuel client.
+La bascule données mobiles/Wi-Fi réelle et l'audio restent à confirmer après
+actualisation hors appel. Délais de retry plafonnés à 15 s hors durée des
+requêtes ; ce plafond n'est pas une promesse de rétablissement en 15 s.
+
+
 ## Reprise de connexion — 12 octobre 2026
 
 **En service `20261012-connection-recovery`, source `0cfddbd`, 14:19:10 Douala.**

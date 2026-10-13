@@ -376,7 +376,7 @@ Options SIP.js dont le nom a été vérifié dans le paquet 0.21.2 :
 | `userAgentOptions.contactParams` | `{ transport: 'wss' }`, conforme au parcours observé |
 | `userAgentOptions.logConfiguration` / `logBuiltinEnabled` | `false` ; pas de trace SIP détaillée en production |
 | `registrationRetry` | `false` : pas de boucle de REGISTER après refus |
-| `reconnectionAttempts` | `0` : reprise gérée par le contrôleur, délais de 1 à 60 s après connexion acceptée |
+| `reconnectionAttempts` | `0` : reprise gérée par le contrôleur, délais de 1 à 15 s après connexion acceptée (hors durée des requêtes) |
 | `registererOptions` | `expires=300`, `refreshFrequency=50` : marge avant expiration négociée |
 | `userAgentOptions.transportOptions` | URL WSS explicite, keep-alive 30 s (réel 24–30 s), trace SIP désactivée |
 | `registerGuard` | Après connexion acceptée, interdit une reprise si contact différent ou inconnu |
@@ -393,6 +393,16 @@ inventer une option `preferredCodec` de SIP.js : utiliser les capacités WebRTC
 supportées si un ordre doit être imposé, puis vérifier l'offre/réponse. Éviter
 les modifications SDP par expressions régulières. Préserver telephone-event
 pour les DTMF. Ne pas activer de transcodage ou installer un codec serveur.
+
+### Reprise après changement réseau — 13 octobre 2026
+
+Après 10 s sans rétablissement, proposer « Se reconnecter » dans le bandeau
+visible sur toutes les vues, hors appel. Reprise sans ressaisie ni fermeture
+du profil, cadence manuelle limitée à 10 s. Une socket silencieuse est remplacée
+en conservant le contact de cette session et le contrôle de propriété du PBX ;
+jamais de reprise automatique d'une autre session ou d'un appel coupé.
+Le navigateur est recontrôlé sur les changements réseau qu'il signale.
+Détails et limites : ARCHITECTURE et OPERATIONS.
 
 ### États distincts
 

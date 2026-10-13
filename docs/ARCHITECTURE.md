@@ -197,11 +197,11 @@ du client iOS, sa signature et son propre cycle de validation ; rien n'est encor
 compilé pour ces deux plateformes. Les prérequis vérifiés et les accès Apple
 à préciser sont dans [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
 
-## Reprise de session web — 12 octobre 2026
+## Reprise de session web — 13 octobre 2026
 
 `SipPhoneController` conserve la session souhaitée après une première
 inscription acceptée et retente le transport avec délai croissant plafonné à
-60 s ; le contrôle périodique de 45 s peut aussi déclencher la reprise. SIP.js
+15 s (hors durée des requêtes) ; le contrôle périodique de 45 s peut aussi déclencher la reprise. SIP.js
 ne pilote plus une seconde boucle de reconnexion. `holdsLine()` renvoie true,
 false, missing ou null : seul missing prouve une liaison effacée et réparable.
 Le garde SessionManager bloque les inscriptions automatiques si un autre
@@ -210,7 +210,22 @@ réponses asynchrones revérifiées et contrôle unique en vol. Le renouvellemen
 natif REGISTER et son acquittement restent gérés par SIP.js ; le contrôleur
 réaffiche ready seulement après acceptation, y compris lors d'un rafraîchissement.
 
-`pageLifecycle` recontrôle au retour visible, online et resume. Le transport
+Une réponse inconnue après le contrôle de 8 s fait remplacer le manager/socket
+hors appel ; `contactName` est transmis à la nouvelle instance pour reconnaître
+notre ancien contact, avec `registerGuard` activé dès sa création. Aucun REGISTER
+modifiant la ligne n'est autorisé tant que le garde ne confirme pas notre contact
+ou son absence. `dropSilently` retire l'ancienne instance sans UNREGISTER sur
+la liaison ; un numéro de génération ignore ses callbacks retardés. Une fermeture
+WSS bloquée ne retarde pas la création de son remplacement.
+
+Le snapshot expose `recoverySince` continu pendant la panne et `retryAt` pour
+limiter les clics à une tentative par 10 s. Après 10 s, `App` affiche le bouton
+`reconnect()` dans toutes les vues, hors appel. Il remplace la connexion sans
+fermer le compte, ni relire/écraser le profil ; identifiants en mémoire uniquement.
+Le bouton ne contourne pas la protection d'une ligne prise ailleurs.
+
+`pageLifecycle` recontrôle au retour visible, online, resume et lors du
+`change` de NetworkInformation si disponible. Le transport
 envoie un double CRLF toutes les 24–30 s ; expiration demandée 300 s et
 renouvellement à mi-parcours selon la valeur négociée. Aucun Worker ou nouveau
 service de fond : une page gelée ne peut pas promettre de rester joignable.

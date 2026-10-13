@@ -2,18 +2,20 @@ import type { Manager, SipEnvironment } from './SipPhoneController';
 
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
 export const browserSipEnvironment: SipEnvironment = {
-  async createManager(config, credentials, delegate, microphone, remoteAudio) {
+  async createManager(config, credentials, delegate, microphone, remoteAudio, recoveryContact) {
     const { Web, UserAgent } = await import('sip.js');
-    let registeredOnce = false;
+    let registeredOnce = !!recoveryContact;
+    let retired = false;
     const manager = new Web.SessionManager(config.wssUrl, {
       aor: `sip:${credentials.username}@${config.domain}`,
       delegate: { ...delegate, onRegistered: () => { registeredOnce = true; delegate.onRegistered(); } },
       // Do not steal the line from another device after an outage.
       registerGuard: async () => {
+        if (retired) return true;
         if (!registeredOnce) return false;
         const holds = await holdsLine();
         if (holds === false) delegate.onLineTaken?.();
-        return holds === false || holds === null;
+        return retired || holds === false || holds === null;
       },
       // One call at a time for the first pilot; attended transfer is out of scope.
       maxSimultaneousSessions: 1,
@@ -30,6 +32,7 @@ export const browserSipEnvironment: SipEnvironment = {
         // In memory for this session only.
         authorizationPassword: credentials.password,
         transportOptions: { server: config.wssUrl, keepAliveInterval: 30, traceSip: false },
+        ...(recoveryContact ? { contactName: recoveryContact } : {}),
         contactParams: { transport: 'wss' },
         // Recognisable in the PBX's peer list and in supervision.
         userAgentString: 'ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2',
@@ -72,9 +75,13 @@ export const browserSipEnvironment: SipEnvironment = {
       }
     });
     const dropSilently = async () => {
+      retired = true;
       // Socket first: SIP.js un-registers while stopping, and that must not reach the PBX.
-      await transport.disconnect().catch(() => undefined);
+      const closing = transport.disconnect().catch(() => undefined);
+      // Stop SessionManager immediately too, so its native online listener cannot
+      // resurrect this retired instance while the socket close is still pending.
       await manager.disconnect().catch(() => undefined);
+      await closing;
     };
     const sentAudioPackets = async (session: unknown) => {
       const handler = (session as { sessionDescriptionHandler?: { peerConnection?: RTCPeerConnection } }).sessionDescriptionHandler;
@@ -84,7 +91,7 @@ export const browserSipEnvironment: SipEnvironment = {
       stats.forEach(report => { if (report.type === 'outbound-rtp' && report.kind === 'audio') packets = (packets ?? 0) + (report.packetsSent ?? 0); });
       return packets;
     };
-    return Object.assign(manager, { dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    return Object.assign(manager, { contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {

@@ -4,7 +4,7 @@ import type { PhoneController, PhoneSnapshot } from '../src/telephony/types';
 
 function harness() {
   const document = Object.assign(new EventTarget(), { visibilityState: 'visible' });
-  const target = Object.assign(new EventTarget(), { document, location: { reload: vi.fn() } });
+  const target = Object.assign(new EventTarget(), { document, navigator: { connection: new EventTarget() }, location: { reload: vi.fn() } });
   let call: PhoneSnapshot['call'] = { id: 'test', direction: 'outbound', rawInput: '123', dialTarget: '123', phase: 'active', muted: false, holdPending: false, startedAt: 1, dtmf: '' };
   const phone = { getSnapshot: () => ({ call }), disconnect: vi.fn(async () => undefined), checkConnection: vi.fn(async () => undefined) };
   const cleanup = bindPageLifecycle(phone as unknown as PhoneController, target as unknown as Window);
@@ -61,4 +61,13 @@ describe('page lifecycle', () => {
     h.target.dispatchEvent(new Event('pagehide'));
     expect(h.phone.disconnect).not.toHaveBeenCalled();
   });
+  it('checks a mobile-to-wifi change even without an online event and removes its listener', () => {
+    const h = harness();
+    h.target.navigator.connection.dispatchEvent(new Event('change'));
+    expect(h.phone.checkConnection).toHaveBeenCalledTimes(1);
+    h.cleanup();
+    h.target.navigator.connection.dispatchEvent(new Event('change'));
+    expect(h.phone.checkConnection).toHaveBeenCalledTimes(1);
+  });
+
 });

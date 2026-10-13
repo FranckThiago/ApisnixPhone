@@ -54,7 +54,7 @@ function useShortcuts() {
 
 function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
-  const { account, call, demo, connection, lineTaken } = usePhone();
+  const { account, call, demo, connection, lineTaken, recoverySince, retryAt } = usePhone();
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
   useShortcuts();
@@ -153,7 +153,16 @@ function Workspace() {
           </div>
         )}
         {connection !== 'ready' && !lineTaken && (
-          <p className="line-banner" role="status"><WifiOff size={16} /> {t(connection === 'reconnecting' ? 'line.reconnecting' : 'line.registering')}</p>
+          <div className="line-alert" role="status">
+            <WifiOff size={17} aria-hidden="true" />
+            <p>{t(recoverySince !== undefined && now - recoverySince >= 10_000 ? 'line.reconnectHelp'
+              : connection === 'reconnecting' ? 'line.reconnecting' : 'line.registering')}</p>
+            {phone.reconnect && recoverySince !== undefined && now - recoverySince >= 10_000 && !inCall && (
+              <button type="button" disabled={now < (retryAt ?? 0)} onClick={() => { void phone.reconnect?.(); }}>
+                {t(now < (retryAt ?? 0) ? 'line.retrying' : 'line.reconnect')}
+              </button>
+            )}
+          </div>
         )}
         {/* Visible from every view on narrow screens: hanging up is never hidden behind navigation. */}
         {inCall && view !== 'phone' && (

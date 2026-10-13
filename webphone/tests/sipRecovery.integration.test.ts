@@ -13,6 +13,8 @@ class RegistrarSocket extends EventTarget {
   static OPEN = 1;
   readyState = 0;
   binaryType = '';
+  silent = false;
+  stuckClose = false;
   constructor(url: string, protocol: string) {
     super();
     if (url !== 'wss://pbx.example/ws' || protocol !== 'sip') throw new Error('Invalid test transport');
@@ -21,6 +23,7 @@ class RegistrarSocket extends EventTarget {
     queueMicrotask(() => { this.readyState = 1; this.dispatchEvent(new Event('open')); });
   }
   send(message: string) {
+    if (this.silent) return;
     if (!message.trim()) { keepalives++; return; }
     const lines = message.split('\r\n');
     const header = (name: string) => lines.find(line => line.toLowerCase().startsWith(name.toLowerCase() + ':'))?.split(':').slice(1).join(':').trim();
@@ -32,6 +35,7 @@ class RegistrarSocket extends EventTarget {
     queueMicrotask(() => this.dispatchEvent(Object.assign(new Event('message'), { data: response })));
   }
   close(code = 1000) {
+    if (this.stuckClose) return;
     this.readyState = 3;
     queueMicrotask(() => this.dispatchEvent(Object.assign(new Event('close'), { code, reason: '', wasClean: code === 1000 })));
   }
@@ -92,4 +96,60 @@ describe('recovery through real SIP.js registration and transport', () => {
     expect(registrations).toHaveLength(1);
     expect(binding).toContain('another-device');
   });
+  it('replaces a blackholed socket after a network change, preserving the contact and workspace', async () => {
+    await login();
+    const contact = binding!.match(/sip:([^@]+)@/)![1];
+    const account = phone.getSnapshot().account;
+    sockets[0]!.silent = true;
+    sockets[0]!.stuckClose = true;
+    const checking = phone.checkConnection();
+    await tick(8100); await checking;
+    expect(phone.getSnapshot()).toMatchObject({ connection: 'ready', account });
+    expect(sockets).toHaveLength(2);
+    expect(binding).toContain(`sip:${contact}@`);
+    expect(registrations).toHaveLength(2);
+    expect(registrations.some(message => /expires=0(?:;|\r)/.test(message))).toBe(false);
+    sockets[0]!.stuckClose = false; sockets[0]!.close(); await tick();
+    expect(phone.getSnapshot().connection).toBe('ready');
+  });
+
+  it('lets the person retry a long outage immediately without a new login or overlapping clicks', async () => {
+    await login();
+    networkUp = false; sockets[0]!.close(1006); await tick(10_000);
+    const since = phone.getSnapshot().recoverySince;
+    expect(since).toBeDefined();
+    networkUp = true;
+    await Promise.all([phone.reconnect(), phone.reconnect(), phone.reconnect()]); await tick();
+    expect(sockets).toHaveLength(2);
+    expect(phone.getSnapshot()).toMatchObject({ connection: 'ready', account: { username: 'test-line' } });
+    expect(phone.getSnapshot().recoverySince).toBeUndefined();
+    expect(registrations).toHaveLength(2);
+  });
+
+  it('does not steal a different contact on explicit reconnect and ignores retired socket events', async () => {
+    await login();
+    networkUp = false; sockets[0]!.close(1006); await tick(10_000);
+    binding = '<sip:another-device@elsewhere.invalid;transport=wss>;expires=300';
+    networkUp = true;
+    await phone.reconnect(); await tick();
+    expect(phone.getSnapshot().connection).toBe('other-tab-active');
+    expect(registrations).toHaveLength(1);
+    expect(binding).toContain('another-device');
+    await phone.reconnect(); await tick(60_000);
+    expect(sockets).toHaveLength(2);
+  });
+
+  it('keeps a missing ownership response uncertain even on a fresh socket', async () => {
+    await login();
+    sockets[0]!.silent = true;
+    const checking = phone.checkConnection();
+    await tick(8000); await checking;
+    // The new socket is also blackholed before its guard can answer.
+    sockets[1]!.silent = true;
+    await tick(9000);
+    expect(phone.getSnapshot().connection).not.toBe('ready');
+    expect(phone.getSnapshot().account?.username).toBe('test-line');
+    expect(registrations).toHaveLength(1);
+  });
+
 });

@@ -1,5 +1,25 @@
 # État du projet
 
+## Changement de réseau et reprise manuelle — 13 octobre 2026
+
+Correctif validé localement, publication en préparation. Après 10 s de reprise
+infructueuse, le bandeau commun propose **Se reconnecter**, sans déconnexion,
+sans rechargement du profil et sans ressaisie des identifiants. Clics espacés
+de 10 s ; bouton absent pendant un appel. Les essais automatiques utilisent
+1, 2, 4, 8 puis 15 s maximum entre tentatives (hors durée des requêtes).
+Une consultation PBX sans réponse utile après 8 s déclenche une connexion
+neuve, même si l'ancienne socket paraît ouverte. Identité de contact conservée
+en mémoire et garde de propriété maintenu : un autre appareil n'est pas repris
+implicitement, une réponse inconnue ne permet pas d'enregistrer la ligne.
+Événements de changement réseau écoutés quand le navigateur les fournit.
+
+143 tests, typage et lint réussis ; build live et contrôle final de publication
+à consigner dans OPERATIONS. Navigateur intégré, scénario fictif : bandeau,
+format mobile, clic désactivé pendant la tentative, retour au même espace.
+Aucun test audio réel ni reproduction sur le réseau mobile du client ; onglets
+gelés/fermés toujours hors garantie. Manuels clients inchangés.
+
+
 ## Reprise de connexion du téléphone web — 12 octobre 2026
 
 **En service `20261012-connection-recovery`, source `0cfddbd`,

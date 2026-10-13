@@ -10,6 +10,7 @@ function harness() {
   let registerReject!: (status: number) => void;
   let invite!: { onProgress(): void; onReject(status: number): void };
   const manager = {
+    contactName: 'test-browser',
     connect: vi.fn(async () => delegate.onServerConnect()),
     isConnected: vi.fn(() => true),
     disconnect: vi.fn(async () => undefined),
@@ -345,18 +346,15 @@ describe('SIP controller', () => {
     expect(h.manager.call).toHaveBeenCalledTimes(1);
   });
 
-  it('repairs an explicitly missing binding on an open socket, without mistaking an unknown answer for absence', async () => {
+  it('repairs an explicitly missing binding on an open socket', async () => {
     const h = harness(); await ready(h);
-    h.manager.holdsLine.mockResolvedValue(null);
-    await vi.advanceTimersByTimeAsync(45_000);
-    expect(h.manager.register).toHaveBeenCalledTimes(1);
     h.manager.holdsLine.mockResolvedValue('missing');
     await vi.advanceTimersByTimeAsync(45_000);
     expect(h.manager.register).toHaveBeenCalledTimes(2);
     expect(h.phone.getSnapshot().connection).toBe('registering');
     h.manager.register.mock.calls[1]![0].requestDelegate.onAccept?.();
     expect(h.phone.getSnapshot().connection).toBe('ready');
-    expect(h.manager.disconnect).not.toHaveBeenCalled();
+    expect(h.manager.unregister).not.toHaveBeenCalled();
   });
 
   it('recovers a clean socket close and stops all recovery on manual sign-out', async () => {
@@ -368,7 +366,7 @@ describe('SIP controller', () => {
     expect(h.phone.getSnapshot().connection).toBe('reconnecting');
     const attempts = h.manager.connect.mock.calls.length;
     expect(attempts).toBeGreaterThan(3);
-    expect(attempts).toBeLessThan(12);
+    expect(attempts).toBeLessThan(16);
     await h.phone.disconnect();
     await vi.advanceTimersByTimeAsync(180_000);
     expect(h.manager.connect).toHaveBeenCalledTimes(attempts);
@@ -421,6 +419,46 @@ describe('SIP controller', () => {
     await h.phone.disconnect(); resolve('missing'); await check;
     expect(h.manager.register).toHaveBeenCalledTimes(1);
     expect(h.phone.getSnapshot().connection).toBe('offline');
+  });
+
+  it('ignores a retired manager’s callbacks after manual reconnect and stops on sign-out', async () => {
+    const h = harness(); await ready(h);
+    const oldDelegate = h.delegate;
+    h.manager.isConnected.mockReturnValue(false);
+    oldDelegate.onServerDisconnect();
+    await h.phone.reconnect();
+    oldDelegate.onRegistered(); oldDelegate.onLineTaken?.(); oldDelegate.onServerDisconnect();
+    expect(h.phone.getSnapshot().connection).toBe('registering');
+    expect(h.phone.getSnapshot().lineTaken).toBe(false);
+    await h.phone.disconnect();
+    h.delegate.onRegistered(); await vi.advanceTimersByTimeAsync(60_000);
+    expect(h.phone.getSnapshot().connection).toBe('offline');
+  });
+
+  it('never refreshes the transport during a call or after a definitive refusal', async () => {
+    const h = harness(); await ready(h);
+    h.phone.call('123', '123'); await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    h.delegate.onUnregistered();
+    await h.phone.reconnect();
+    expect(h.manager.dropSilently).not.toHaveBeenCalled();
+    h.reject(403);
+    await h.phone.reconnect(); await vi.advanceTimersByTimeAsync(60_000);
+    expect(h.manager.connect).toHaveBeenCalledTimes(1);
+    expect(h.phone.getSnapshot().connection).toBe('auth-error');
+  });
+
+  it('retries a failed manager replacement without discarding the session', async () => {
+    const h = harness(); await ready(h);
+    h.delegate.onServerDisconnect();
+    const create = h.environment.createManager;
+    h.environment.createManager = vi.fn().mockRejectedValueOnce(new Error('temporary')).mockImplementation(create);
+    await h.phone.reconnect();
+    expect(h.phone.getSnapshot().account?.username).toBe('alice');
+    await vi.advanceTimersByTimeAsync(2100);
+    h.delegate.onRegistered();
+    expect(h.phone.getSnapshot().connection).toBe('ready');
+    expect(h.environment.createManager).toHaveBeenCalledTimes(2);
   });
 
   it('hangs up, unregisters and frees the line on disconnect', async () => {
@@ -486,10 +524,10 @@ describe('SIP controller — microphone and shared line', () => {
   it('asks the PBX who holds the account and steps aside only on a certain answer, without un-registering', async () => {
     const h = harness();
     await ready(h);
-    // Unknown answers and our own contact never pause anything, however long it lasts.
-    h.manager.holdsLine.mockResolvedValue(null);
-    await vi.advanceTimersByTimeAsync(600_000);
+    // Our confirmed contact never pauses the line. Unknown answers are covered
+    // by the real SIP.js integration tests (fresh socket with its ownership guard).
     h.manager.holdsLine.mockResolvedValue(true);
+    h.delegate.onRegistered();
     await vi.advanceTimersByTimeAsync(600_000);
     expect(h.phone.getSnapshot()).toMatchObject({ connection: 'ready', lineTaken: false });
     // One odd answer is not enough…

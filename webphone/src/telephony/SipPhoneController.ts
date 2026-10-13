@@ -29,6 +29,8 @@ export interface ManagerDelegate {
 }
 
 export interface Manager {
+  /** Random SIP contact identity, retained only while recovering this browser session. */
+  contactName: string;
   connect(): Promise<void>;
   isConnected(): boolean;
   disconnect(): Promise<void>;
@@ -72,7 +74,7 @@ export interface SipConfig {
 export interface BlockStatus { blocked: boolean; remaining: number; weighted?: number; left?: number; nextBlock?: number }
 
 export interface SipEnvironment {
-  createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined): Promise<Manager> | Manager;
+  createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined, recoveryContact?: string): Promise<Manager> | Manager;
   createRemoteAudio(): HTMLAudioElement | undefined;
   /** Reads the block status of this site; null when the page cannot be reached. */
   blockStatus?(url: string): Promise<BlockStatus | null>;
@@ -80,7 +82,7 @@ export interface SipEnvironment {
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
 const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
-const RECOVERY_DELAYS = [1000, 2000, 4000, 8000, 15000, 30000, 60000];
+const RECOVERY_DELAYS = [1000, 2000, 4000, 8000, 15000];
 
 /** Whole lengths only: « 1 min », « 15 min », « 1 h », « 24 h ». */
 export function blockLength(seconds: number): string {
@@ -117,6 +119,9 @@ export class SipPhoneController implements PhoneController {
   private established = false;
   private recoveryAttempt = 0;
   private checkingLine = false;
+  private generation = 0;
+  private refreshing = false;
+  private recoveryContact?: string;
   private lineStrikes = 0;
   private lastCheck = 0;
   private rejection?: CallOutcome;
@@ -148,7 +153,12 @@ export class SipPhoneController implements PhoneController {
   };
 
   private update(patch: Partial<PhoneSnapshot>) {
-    this.snapshot = { ...this.snapshot, ...patch };
+    const connection = patch.connection ?? this.snapshot.connection;
+    const recovering = this.established && ['reconnecting', 'registering', 'connecting'].includes(connection);
+    this.snapshot = { ...this.snapshot, ...patch,
+      recoverySince: recovering ? this.snapshot.recoverySince ?? Date.now() : undefined,
+      ...(connection === 'ready' ? { retryAt: undefined } : {}),
+    };
     this.listeners.forEach(listener => listener());
   }
 
@@ -168,6 +178,7 @@ export class SipPhoneController implements PhoneController {
     this.lineStrikes = 0;
     this.lastCheck = 0;
     this.credentials = { username, password: credentials.password };
+    this.recoveryContact = undefined;
     // Still inside the sign-in click: the only moment the browser lets us unlock the voice output.
     // Without it the first incoming call is silent, because nothing was clicked just before the sound starts.
     this.remoteAudio ??= this.environment.createRemoteAudio();
@@ -180,7 +191,11 @@ export class SipPhoneController implements PhoneController {
       // A stale browser lock must never prevent sign-in. The PBX owns registration;
       // watchLine() asks displaced sessions to stop renewing without un-registering the new one.
       this.applyAudio(this.audio);
-      this.manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.delegate, () => this.openMicrophone(), this.remoteAudio);
+      const generation = ++this.generation;
+      const manager = await this.environment.createManager(this.config, { username, password: credentials.password }, this.scopedDelegate(generation), () => this.openMicrophone(), this.remoteAudio);
+      if (!this.wanted || generation !== this.generation) { void manager.dropSilently().catch(() => undefined); return; }
+      this.manager = manager;
+      this.recoveryContact = manager.contactName;
       this.update({ account: { username, domain: this.config.domain } });
       await this.manager.connect();
     } catch {
@@ -230,6 +245,13 @@ export class SipPhoneController implements PhoneController {
     };
     tick();
     if (this.blockTicker === undefined && (this.snapshot.blockedUntil ?? 0) > Date.now()) this.blockTicker = setInterval(tick, 1000);
+  }
+
+  /** Ignore every callback from a retired connection, including delayed REGISTER responses. */
+  private scopedDelegate(generation: number): ManagerDelegate {
+    return Object.fromEntries(Object.entries(this.delegate).map(([name, handler]) => [name,
+      (...args: unknown[]) => { if (generation === this.generation) handler(...args); },
+    ])) as unknown as ManagerDelegate;
   }
 
   private delegate: ManagerDelegate = {
@@ -359,7 +381,8 @@ export class SipPhoneController implements PhoneController {
   /** Wake/network events may arrive in bursts. Never disturb a live conversation. */
   async checkConnection() {
     const manager = this.manager;
-    if (!this.wanted || !this.established || !manager || this.checkingLine || this.snapshot.lineTaken) return;
+    if (!this.wanted || !this.established || this.checkingLine || this.refreshing || this.snapshot.lineTaken) return;
+    if (!manager) { await this.refreshConnection(); return; }
     if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
     if (Date.now() - this.lastCheck < 1000) {
       if (this.snapshot.connection !== 'ready') this.scheduleRecovery();
@@ -377,6 +400,13 @@ export class SipPhoneController implements PhoneController {
         if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
         this.lineStrikes = holds === false ? this.lineStrikes + 1 : 0;
         if (this.lineStrikes >= 2) { await this.stepAside(); return; }
+        if (holds === null) {
+          // An open socket can be blackholed after switching networks. Replace it, but
+          // retain the contact identity and ownership guard: silence is not permission.
+          this.update({ connection: 'reconnecting' });
+          await this.refreshConnection();
+          return;
+        }
         if (holds === 'missing' || (holds === true && this.snapshot.connection !== 'ready')) {
           this.update({ connection: 'registering' });
           this.registerLine();
@@ -385,8 +415,45 @@ export class SipPhoneController implements PhoneController {
     } catch {
       // An outage is retried at a bounded pace, without discarding the signed-in account.
     } finally {
-      this.checkingLine = false;
+      if (manager === this.manager) this.checkingLine = false;
       if (manager === this.manager && this.wanted && this.snapshot.connection !== 'ready') this.scheduleRecovery();
+    }
+  }
+
+  /** Explicit recovery stays in the workspace and never signs out or reloads saved data. */
+  async reconnect() {
+    if (!this.wanted || !this.established || this.refreshing || this.snapshot.lineTaken || this.snapshot.connection === 'ready' || Date.now() < (this.snapshot.retryAt ?? 0)) return;
+    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    this.update({ retryAt: Date.now() + 10_000 });
+    await this.refreshConnection();
+  }
+
+  private async refreshConnection() {
+    const previous = this.manager, credentials = this.credentials;
+    if (!this.wanted || !this.established || !this.recoveryContact || !credentials || this.refreshing || this.snapshot.lineTaken) return;
+    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    this.refreshing = true;
+    const generation = ++this.generation;
+    this.manager = undefined;
+    this.checkingLine = false;
+    clearTimeout(this.reconnectTimer); this.reconnectTimer = undefined;
+    this.update({ connection: 'reconnecting', error: undefined });
+    // Retirement immediately blocks further REGISTERs. A stuck WebSocket close must
+    // not hold the replacement hostage; its late delegates are ignored above.
+    void previous?.dropSilently().catch(() => undefined);
+    try {
+      const manager = await this.environment.createManager(this.config, credentials, this.scopedDelegate(generation),
+        () => this.openMicrophone(), this.remoteAudio, this.recoveryContact);
+      if (!this.wanted || generation !== this.generation) { void manager.dropSilently().catch(() => undefined); return; }
+      this.manager = manager;
+      await manager.connect();
+    } catch {
+      // Keep the signed-in account and retry after a temporary network failure.
+    } finally {
+      if (generation === this.generation) {
+        this.refreshing = false;
+        if (this.wanted && this.snapshot.connection !== 'ready') this.scheduleRecovery();
+      }
     }
   }
 
@@ -432,6 +499,9 @@ export class SipPhoneController implements PhoneController {
    */
   private async stepAside() {
     this.wanted = false;
+    this.generation++;
+    this.refreshing = false;
+    this.checkingLine = false;
     clearInterval(this.lineWatch);
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = undefined;
@@ -488,6 +558,9 @@ export class SipPhoneController implements PhoneController {
 
   private async teardown() {
     this.wanted = false;
+    this.generation++;
+    this.refreshing = false;
+    this.checkingLine = false;
     clearTimeout(this.reconnectTimer);
     this.reconnectTimer = undefined;
     clearInterval(this.lineWatch);
@@ -512,6 +585,7 @@ export class SipPhoneController implements PhoneController {
     if (this.session && this.manager) await this.manager.hangup(this.session).catch(() => undefined);
     await this.teardown();
     this.credentials = undefined;
+    this.recoveryContact = undefined;
     clearInterval(this.blockTicker); this.blockTicker = undefined;
     this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false, blockedUntil: undefined });
   }
