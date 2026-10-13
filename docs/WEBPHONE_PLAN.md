@@ -5,8 +5,8 @@
 Les annonces rédigées dans l'administration du PBX s'affichent en cartes en
 tête du Journal, comme dans l'administration, sous la connexion agent et dans
 la supervision : icône par type, titre, texte, lien, croix « Masquer »
-mémorisée par navigateur, alertes permanentes, actualisation toutes les
-10 minutes, démonstration fictive. ARCHITECTURE décrit la lecture directe du
+mémorisée par navigateur, alertes permanentes, lecture unique à l'ouverture de
+l'espace (choix de Franck), démonstration fictive. ARCHITECTURE décrit la lecture directe du
 flux public et ses garde-fous, PROJECT_STATE l'état réalisé ; publication
 préparée selon OPERATIONS, non effectuée sans l'accord de Franck.
 

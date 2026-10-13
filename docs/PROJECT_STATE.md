@@ -7,9 +7,9 @@
 PBX (informations, astuces, factures, mises à jour, alertes) s'affichent en
 cartes en tête du Journal et de ses onglets, sans toucher au panneau d'appel.
 Lecture directe de la page publique du PBX
-`https://apisnix-crm.com/agc/apisnix/annonces.json.php?cible=telephone` à
-l'ouverture de l'espace puis toutes les 10 minutes quand l'onglet est visible ;
-un échec réseau est silencieux et conserve la dernière liste. La croix masque
+`https://apisnix-crm.com/agc/apisnix/annonces.json.php?cible=telephone`, une
+seule fois à l'ouverture de l'espace, choix de Franck ; une annonce publiée
+ensuite apparaît à la connexion suivante. Un échec réseau est silencieux. La croix masque
 l'annonce pour ce navigateur (`localStorage`, même clé que l'écran agent et la
 supervision) ; une annonce modifiée réapparaît ; une alerte ne se masque pas.
 Dix annonces au plus, texte toujours affiché comme du texte, liens http(s)

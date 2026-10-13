@@ -131,20 +131,13 @@ export function announcementsUrlFromEnv(env: ImportMetaEnv): string {
   return `https://${String(env.VITE_SIP_DOMAIN ?? '').trim()}/agc/apisnix/annonces.json.php?cible=telephone`;
 }
 
-export const REFRESH_INTERVAL = 10 * 60_000;
-
 /**
- * Loads once, then every ten minutes while the page is visible. A failed load keeps the previous
- * list: the cards are a courtesy and must never flicker or disturb a call. Returns the stop function.
+ * Loads once, when the workspace opens (Franck's choice: not again and again). A failed load shows
+ * nothing: the cards are a courtesy and must never disturb a call. Returns the cancel function,
+ * which drops an answer arriving after the workspace closed.
  */
-export function watchAnnouncements(source: AnnouncementsSource, onList: (list: Announcement[]) => void,
-  hidden: () => boolean = () => document.hidden, every = REFRESH_INTERVAL): () => void {
-  let stopped = false;
-  const load = async () => {
-    const list = await source.load();
-    if (!stopped && list) onList(list);
-  };
-  void load();
-  const timer = setInterval(() => { if (!hidden()) void load(); }, every);
-  return () => { stopped = true; clearInterval(timer); };
+export function loadAnnouncements(source: AnnouncementsSource, onList: (list: Announcement[]) => void): () => void {
+  let cancelled = false;
+  void source.load().then(list => { if (!cancelled && list) onList(list); });
+  return () => { cancelled = true; };
 }

@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { announcementsUrlFromEnv, DemoAnnouncementsSource, hideAnnouncement, HttpAnnouncementsSource, isHidden, MAX_ANNOUNCEMENTS, parseAnnouncements, SEEN_KEY_PREFIX, watchAnnouncements, type Announcement, type SeenStore } from '../src/announcements/client';
+import { announcementsUrlFromEnv, DemoAnnouncementsSource, hideAnnouncement, HttpAnnouncementsSource, isHidden, loadAnnouncements, MAX_ANNOUNCEMENTS, parseAnnouncements, SEEN_KEY_PREFIX, type Announcement, type SeenStore } from '../src/announcements/client';
 import { AnnouncementList } from '../src/features/announcements/Announcements';
 import { setLanguage } from '../src/i18n';
 
@@ -102,27 +102,26 @@ describe('announcements loading', () => {
     expect(new Set(urls)).toEqual(new Set(['https://pbx.example/agc/apisnix/annonces.json.php?cible=telephone']));
   });
 
-  it('loads at once, then every ten minutes while the page is visible, keeping the last list on failure', async () => {
+  it('loads once when the workspace opens, never again, and ignores a failure or an answer after it closed', async () => {
     vi.useFakeTimers();
-    const lists: Array<Announcement[] | null> = [[tip], null, [tip, alert], [alert]];
-    const load = vi.fn(async () => lists.shift() ?? null);
+    const load = vi.fn(async () => [tip]);
     const shown: Announcement[][] = [];
-    let hidden = false;
-    const stop = watchAnnouncements({ load }, list => shown.push(list), () => hidden, 600_000);
+    const cancel = loadAnnouncements({ load }, list => shown.push(list));
     await vi.advanceTimersByTimeAsync(0);
     expect(shown).toEqual([[tip]]);
-    await vi.advanceTimersByTimeAsync(600_000);
-    expect(load).toHaveBeenCalledTimes(2);
+    await vi.advanceTimersByTimeAsync(3_600_000);
+    expect(load).toHaveBeenCalledTimes(1);
+    cancel();
+    // Closed before the PBX answered: nothing shown afterwards.
+    let answer!: (list: Announcement[] | null) => void;
+    const closed = loadAnnouncements({ load: () => new Promise(resolve => { answer = resolve; }) }, list => shown.push(list));
+    closed();
+    answer([alert]);
+    await vi.advanceTimersByTimeAsync(0);
+    // A failed load shows nothing either.
+    loadAnnouncements({ load: async () => null }, list => shown.push(list));
+    await vi.advanceTimersByTimeAsync(0);
     expect(shown).toEqual([[tip]]);
-    hidden = true;
-    await vi.advanceTimersByTimeAsync(600_000);
-    expect(load).toHaveBeenCalledTimes(2);
-    hidden = false;
-    await vi.advanceTimersByTimeAsync(600_000);
-    expect(shown).toEqual([[tip], [tip, alert]]);
-    stop();
-    await vi.advanceTimersByTimeAsync(1_200_000);
-    expect(load).toHaveBeenCalledTimes(3);
   });
 
   it('reads the PBX page of the SIP domain unless another address is given', () => {

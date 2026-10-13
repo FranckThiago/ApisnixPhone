@@ -5,9 +5,9 @@
 Demande de Franck : afficher dans ApisnixPhone les annonces rédigées dans
 l'administration du PBX (page « Annonces », niveau 9), déjà visibles dans
 l'administration, sous la connexion agent et dans la supervision. Lecture
-directe de la page publique `annonces.json.php?cible=telephone` à l'ouverture
-de l'espace puis toutes les 10 minutes quand l'onglet est visible ; échec
-silencieux avec conservation de la dernière liste. Cartes en tête du Journal
+directe de la page publique `annonces.json.php?cible=telephone`, une seule fois
+à l'ouverture de l'espace (choix de Franck : pas d'actualisation répétée ;
+nouvelle lecture à la connexion suivante) ; échec silencieux, rien d'affiché. Cartes en tête du Journal
 et de ses onglets, hors panneau d'appel : icône par type, titre, texte brut
 avec retours à la ligne, bouton de lien en nouvel onglet, croix « Masquer »
 mémorisée par `apisnix-annonce-vue-<id>` = date de modification, alertes non

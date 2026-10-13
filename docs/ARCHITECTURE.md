@@ -110,9 +110,9 @@ origine déjà autorisée par la CSP `connect-src`), sans relais.
 `parseAnnouncements` n'accepte que des objets avec identifiant et titre ou
 texte, borne les champs comme le relais de la supervision, ramène un type
 inconnu à `info`, ne garde que les liens http(s) et dix annonces au plus.
-`watchAnnouncements` charge à l'ouverture de l'espace puis toutes les
-10 minutes si l'onglet est visible ; un échec (réseau, HTTP, JSON) rend `null`
-et conserve la liste précédente. Le masquage écrit `apisnix-annonce-vue-<id>`
+`loadAnnouncements` charge une seule fois à l'ouverture de l'espace, choix de
+Franck ; un échec (réseau, HTTP, JSON) rend `null` et n'affiche rien ; une
+réponse arrivée après la fermeture de l'espace est ignorée. Le masquage écrit `apisnix-annonce-vue-<id>`
 = `maj` dans `localStorage`, clé partagée avec l'écran agent et la supervision,
 et reste en mémoire pour la session si le stockage refuse ; les alertes ne se
 masquent jamais. `features/announcements/` porte le hook et les cartes : texte
