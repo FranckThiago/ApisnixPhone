@@ -317,6 +317,23 @@ input[type=range] { accent-color: var(--brand); }
 .line-alert { display: flex; align-items: center; gap: 10px; margin: 0 28px 8px; padding: 9px 12px; border-radius: 10px; color: var(--text); background: var(--yellow-soft); border-left: 3px solid var(--yellow-strong); }
 .line-alert p { flex: 1; margin: 0; font-size: 12px; line-height: 1.4; } .line-alert b { font-weight: 650; } .line-alert svg { flex: none; color: var(--yellow-strong); }
 .line-alert button { flex: none; padding: 7px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--on-yellow); } .line-alert button:hover { background: var(--yellow-strong); }
+
+/* ---------- APISNIX announcements, at the top of the main screen ---------- */
+.annonces { display: grid; gap: 10px; max-width: 1080px; margin: 12px auto 6px; }
+.annonces .eyebrow { margin-bottom: -2px; }
+.annonce { position: relative; display: flex; gap: 12px; align-items: flex-start; padding: 12px 46px 12px 14px; border-radius: var(--radius); border: 1px solid var(--border); border-left: 5px solid var(--brand); background: var(--surface); box-shadow: var(--shadow-sm); }
+.annonce-ico { font-size: 22px; line-height: 1.1; flex: none; }
+.annonce-body { min-width: 0; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.annonce-body strong { display: block; font-weight: 700; margin-bottom: 2px; }
+.annonce-link { display: inline-flex; margin-top: 7px; padding: 5px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-weight: 600; font-size: 12px; text-decoration: none; }
+.annonce-link:hover { filter: brightness(1.08); }
+.icon-button.annonce-close { position: absolute; top: 7px; right: 7px; width: 30px; height: 30px; }
+.annonce-info { background: var(--brand-soft); }
+.annonce-astuce { border-left-color: var(--yellow-strong); background: var(--yellow-soft); }
+.annonce-facture { border-left-color: var(--success); background: var(--success-soft); }
+.annonce-maj { border-left-color: #7c5cd6; background: #f5f1ff; }
+:root[data-theme='dark'] .annonce-maj { border-left-color: #a99cff; background: #1d1a3f; }
+.annonce-alerte { border-left-color: var(--danger); background: var(--danger-soft); }
 .call-failure { padding: 11px 13px; border-radius: 12px; background: var(--danger-soft); border: 1px solid color-mix(in srgb, var(--danger) 50%, transparent); color: var(--text); font-weight: 600; font-size: 13px; text-align: left; }
 .toast-danger { border-left-color: var(--danger); } .toast-success { border-left-color: #16bd84; }
 

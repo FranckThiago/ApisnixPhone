@@ -10,4 +10,6 @@ interface ImportMetaEnv {
   readonly VITE_BLOCK_STATUS_URL?: string;
   /** Base URL of the recordings access (agent API of the supervision). Default `/api`, same origin. */
   readonly VITE_RECORDINGS_URL?: string;
+  /** Optional PBX page listing the APISNIX announcements for the web phone; default `https://<VITE_SIP_DOMAIN>/agc/apisnix/annonces.json.php?cible=telephone`. */
+  readonly VITE_ANNOUNCEMENTS_URL?: string;
 }

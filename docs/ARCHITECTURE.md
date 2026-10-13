@@ -104,6 +104,24 @@ ligne prête et du compte au prochain rendu, annulation au démontage/perte de l
 respect du volume et des sons désactivés, sans double annonce sous StrictMode.
 Les droits HTTP restent contrôlés par le service. La démo reste fictive.
 
+`src/announcements/client.ts` lit les annonces APISNIX publiées par le PBX
+(`agc/apisnix/annonces.json.php?cible=telephone`, lecture seule, CORS ouvert,
+origine déjà autorisée par la CSP `connect-src`), sans relais.
+`parseAnnouncements` n'accepte que des objets avec identifiant et titre ou
+texte, borne les champs comme le relais de la supervision, ramène un type
+inconnu à `info`, ne garde que les liens http(s) et dix annonces au plus.
+`watchAnnouncements` charge à l'ouverture de l'espace puis toutes les
+10 minutes si l'onglet est visible ; un échec (réseau, HTTP, JSON) rend `null`
+et conserve la liste précédente. Le masquage écrit `apisnix-annonce-vue-<id>`
+= `maj` dans `localStorage`, clé partagée avec l'écran agent et la supervision,
+et reste en mémoire pour la session si le stockage refuse ; les alertes ne se
+masquent jamais. `features/announcements/` porte le hook et les cartes : texte
+rendu par React, jamais injecté ; lien `target=_blank` `rel=noopener noreferrer`.
+Les cartes sont montées dans `App.tsx` au-dessus du Journal et de ses onglets,
+dans leur propre `ErrorBoundary`, hors du panneau d'appel. La démonstration
+utilise `DemoAnnouncementsSource`, sans réseau. `VITE_ANNOUNCEMENTS_URL`
+remplace l'adresse déduite de `VITE_SIP_DOMAIN`.
+
 Plusieurs onglets peuvent se connecter. Le PBX conserve un contact par compte ;
 `watchLine()` interroge ce contact toutes les 45 s. Deux réponses successives
 indiquant un autre contact mettent l’ancien poste en pause, hors appel seulement.

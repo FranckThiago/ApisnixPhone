@@ -1,5 +1,15 @@
 # ApisnixPhone Web — plan de réalisation et de reprise
 
+## Annonces APISNIX — 13 octobre 2026
+
+Les annonces rédigées dans l'administration du PBX s'affichent en cartes en
+tête du Journal, comme dans l'administration, sous la connexion agent et dans
+la supervision : icône par type, titre, texte, lien, croix « Masquer »
+mémorisée par navigateur, alertes permanentes, actualisation toutes les
+10 minutes, démonstration fictive. ARCHITECTURE décrit la lecture directe du
+flux public et ses garde-fous, PROJECT_STATE l'état réalisé ; publication
+préparée selon OPERATIONS, non effectuée sans l'accord de Franck.
+
 ## Connexion corrigée — 8 octobre 2026
 
 Un SIP accepté ouvre aussi l’espace lorsque les données HTTP sont indisponibles,

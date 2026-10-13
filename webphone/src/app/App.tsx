@@ -5,6 +5,8 @@ import { CommandPalette } from '../components/CommandPalette';
 import { Kbd } from '../components/Kbd';
 import { Toasts } from '../components/Toasts';
 import { Avatar } from '../components/Avatar';
+import { AnnouncementList } from '../features/announcements/Announcements';
+import { useAnnouncements } from '../features/announcements/useAnnouncements';
 import { Login } from '../features/auth/Login';
 import { ConnectionPill, PhoneDock } from '../features/calls/PhoneDock';
 import { Callbacks } from '../features/callbacks/Callbacks';
@@ -53,12 +55,13 @@ function useShortcuts() {
 }
 
 function Workspace() {
-  const { view, setView, logout, setPaletteOpen, store, phone, notify } = useApp();
+  const { view, setView, logout, setPaletteOpen, store, phone, notify, announcements: announcementsSource } = useApp();
   const { account, call, demo, connection, lineTaken, recoverySince, retryAt } = usePhone();
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
   useShortcuts();
   useEffect(() => bindWorkspaceLineSounds(phone, store), [phone, store]);
+  const announcements = useAnnouncements(announcementsSource);
   const now = useNow();
 
   useEffect(() => { document.documentElement.dataset.density = preferences.density; }, [preferences.density]);
@@ -172,6 +175,10 @@ function Workspace() {
           </div>
         )}
         <div className="content">
+          {/* APISNIX announcements head the main screen; the call commands live in the dock, untouched. */}
+          {(view === 'journal' || view === 'callbacks' || view === 'phone') && announcements.visible.length > 0 && (
+            <ErrorBoundary><AnnouncementList items={announcements.visible} onHide={announcements.hide} /></ErrorBoundary>
+          )}
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
           {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label={t('journal.sections')}>
             <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> {t('journal.tabCalls')}</button>

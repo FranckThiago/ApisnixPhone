@@ -62,6 +62,20 @@ export const en: Record<MessageKey, string> = {
   'title.inCall': 'On a call · ApisnixPhone',
   'confirm.signOutInCall': 'A call is in progress. Signing out will end it.',
 
+  // APISNIX announcements, written in the PBX administration
+  'annonces.title': 'APISNIX announcements',
+  'annonces.hide': 'Hide',
+  'annonces.more': 'Learn more',
+  'annonces.info': 'Information',
+  'annonces.astuce': 'Tip',
+  'annonces.facture': 'Invoice',
+  'annonces.maj': 'Update',
+  'annonces.alerte': 'Alert',
+  'annonces.demoTipTitle': 'Shortcuts during a call',
+  'annonces.demoTipText': 'M mutes or unmutes the microphone, H holds or resumes.\nDigits typed on the keyboard are sent to the voice server.',
+  'annonces.demoUpdateTitle': 'APISNIX announcements',
+  'annonces.demoUpdateText': 'Information published by APISNIX appears here: tips, invoices, what’s new.\nThe cross hides an announcement you have read; an edited one shows again.',
+
   // Sign-in
   'login.brandLine1': 'Your calls,',
   'login.brandLine2': 'made simple.',

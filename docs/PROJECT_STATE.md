@@ -1,5 +1,28 @@
 # État du projet
 
+## Annonces APISNIX dans le téléphone web — 13 octobre 2026
+
+**Réalisé dans le dépôt, non publié sur Hermes** : la version en service reste
+`20261013-network-reconnect`. Les annonces rédigées dans l'administration du
+PBX (informations, astuces, factures, mises à jour, alertes) s'affichent en
+cartes en tête du Journal et de ses onglets, sans toucher au panneau d'appel.
+Lecture directe de la page publique du PBX
+`https://apisnix-crm.com/agc/apisnix/annonces.json.php?cible=telephone` à
+l'ouverture de l'espace puis toutes les 10 minutes quand l'onglet est visible ;
+un échec réseau est silencieux et conserve la dernière liste. La croix masque
+l'annonce pour ce navigateur (`localStorage`, même clé que l'écran agent et la
+supervision) ; une annonce modifiée réapparaît ; une alerte ne se masque pas.
+Dix annonces au plus, texte toujours affiché comme du texte, liens http(s)
+seulement, ouverts dans un nouvel onglet. Libellés FR/EN/ES. La démonstration
+montre deux cartes fictives sans réseau.
+
+160 tests dont 12 nouveaux, typage et lint réussis ; démo contrôlée dans le
+navigateur intégré en thèmes sombre et clair, à 375 px, masquage conservé
+après reconnexion ; les deux annonces réelles du jour sont lues et parsées.
+Non vérifié : rendu sur la page live avec un compte client (aucune connexion
+client effectuée). Build live isolé, preuves et retour dans OPERATIONS ;
+publication après accord de Franck. Manuels clients inchangés.
+
 ## Changement de réseau et reprise manuelle — 13 octobre 2026
 
 **En service `20261013-network-reconnect`, source `f20ef8d`, 15:06:29 Douala.**

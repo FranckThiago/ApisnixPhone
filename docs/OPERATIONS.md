@@ -937,7 +937,11 @@ VITE_APP_MODE=live VITE_SIP_DOMAIN=apisnix-crm.com \
 
 Le dossier `webphone/dist/` est la release. Aucune de ces trois valeurs n'est un
 secret ; ne jamais ajouter de mot de passe dans une variable `VITE_*`. Sans ces
-variables, le build est une démonstration.
+variables, le build est une démonstration. `VITE_ANNOUNCEMENTS_URL`, facultative,
+remplace la page d'annonces APISNIX déduite du domaine SIP
+(`https://<domaine>/agc/apisnix/annonces.json.php?cible=telephone`) ; son
+origine doit figurer dans `connect-src`, ce qui est déjà le cas pour
+`https://apisnix-crm.com`.
 
 Hébergement réalisé le 21 septembre : Hermes, derrière le Caddy existant, à côté
 de la supervision et sans la modifier ; dossier versionné

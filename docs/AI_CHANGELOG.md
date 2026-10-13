@@ -1,5 +1,26 @@
 # Journal des changements
 
+## 2026-10-13 — Annonces APISNIX dans le téléphone web
+
+Demande de Franck : afficher dans ApisnixPhone les annonces rédigées dans
+l'administration du PBX (page « Annonces », niveau 9), déjà visibles dans
+l'administration, sous la connexion agent et dans la supervision. Lecture
+directe de la page publique `annonces.json.php?cible=telephone` à l'ouverture
+de l'espace puis toutes les 10 minutes quand l'onglet est visible ; échec
+silencieux avec conservation de la dernière liste. Cartes en tête du Journal
+et de ses onglets, hors panneau d'appel : icône par type, titre, texte brut
+avec retours à la ligne, bouton de lien en nouvel onglet, croix « Masquer »
+mémorisée par `apisnix-annonce-vue-<id>` = date de modification, alertes non
+masquables, dix annonces au plus, champs bornés comme le relais supervision.
+Démonstration : deux cartes fictives, sans réseau. Nouveaux
+`webphone/src/announcements/client.ts` et `features/announcements/`, textes
+FR/EN/ES, styles, variable facultative `VITE_ANNOUNCEMENTS_URL`. 160 tests
+dont 12 nouveaux (flux réel, données invalides, masquage, chargement, rendu
+échappé), typage et lint ; démo vérifiée dans le navigateur intégré (sombre,
+clair, 375 px, masquage conservé après reconnexion) ; les deux annonces réelles
+du jour sont lues et parsées. **Non publié sur Hermes** : version préparée,
+publication soumise à l'accord de Franck. Manuels clients inchangés.
+
 ## 2026-10-13 — Reconnexion après bascule de réseau
 
 Retour utilisateur : état jaune prolongé sans action possible après passage

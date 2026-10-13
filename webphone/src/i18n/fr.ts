@@ -61,6 +61,20 @@ export const fr = {
   'title.inCall': 'En appel · ApisnixPhone',
   'confirm.signOutInCall': 'Un appel est en cours. Se déconnecter y mettra fin.',
 
+  // APISNIX announcements, written in the PBX administration
+  'annonces.title': 'Annonces APISNIX',
+  'annonces.hide': 'Masquer',
+  'annonces.more': 'En savoir plus',
+  'annonces.info': 'Information',
+  'annonces.astuce': 'Astuce',
+  'annonces.facture': 'Facture',
+  'annonces.maj': 'Mise à jour',
+  'annonces.alerte': 'Alerte',
+  'annonces.demoTipTitle': 'Raccourcis pendant un appel',
+  'annonces.demoTipText': 'M coupe ou rétablit le micro, H met en attente ou reprend.\nLes chiffres tapés au clavier sont envoyés au serveur vocal.',
+  'annonces.demoUpdateTitle': 'Annonces APISNIX',
+  'annonces.demoUpdateText': 'Les informations publiées par APISNIX apparaissent ici : astuces, factures, nouveautés.\nLa croix masque une annonce lue ; une annonce modifiée réapparaît.',
+
   // Sign-in
   'login.brandLine1': 'Vos appels,',
   'login.brandLine2': 'tout simplement.',

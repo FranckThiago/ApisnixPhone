@@ -14,6 +14,7 @@ import { createLineLogin } from '../features/auth/lineLogin';
 import { openLiveWorkspace, type RecordingsAccess } from '../features/auth/workspace';
 import { forgetSilentAccess } from '../features/auth/credentials';
 import { DemoRecordingsSource, HttpRecordingsSource } from '../recordings/client';
+import { announcementsUrlFromEnv, DemoAnnouncementsSource, HttpAnnouncementsSource, type AnnouncementsSource } from '../announcements/client';
 import type { RecordingsSource } from '../recordings/types';
 import { applyTheme, storedTheme } from './theme';
 
@@ -30,6 +31,8 @@ interface AppValue {
   store: DataStore;
   /** The recordings of the person's own phone, served by the supervision service. */
   recordings: RecordingsSource;
+  /** APISNIX announcements written in the PBX administration; fictional in the demonstration. */
+  announcements: AnnouncementsSource;
   view: View;
   setView(view: View): void;
   dial: string;
@@ -73,6 +76,8 @@ const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\
 const store = new DataStore(demoPhone ? (typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence) : new ServerPersistence(apiBase));
 // Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
 const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(apiBase);
+// Read straight from the PBX's public page: its origin is allowed by the site's connection policy.
+const announcements: AnnouncementsSource = demoPhone ? new DemoAnnouncementsSource() : new HttpAnnouncementsSource(announcementsUrlFromEnv(import.meta.env));
 
 export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => bindPageLifecycle(phone), []);
@@ -253,7 +258,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    phone, store, recordings, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
+    phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
   }), [view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
