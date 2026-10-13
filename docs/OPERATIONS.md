@@ -1,5 +1,40 @@
 # Construction et validation
 
+## Annonces APISNIX — version préparée le 13 octobre 2026, non publiée
+
+**Non publiée : la version en service reste `20261013-network-reconnect`.**
+Publication soumise à l'accord explicite de Franck. Source `8892cd2`, branche
+`claude/webphone-annonces`. Build live isolé depuis ce commit après `npm ci`,
+typage, lint et 160 tests : 266 fichiers, JS `index-JaC6q2wz.js`, module SIP
+`lib-Bm5HuPxA.js`, CSS `index-GUAu2Rvv.css`. Archive
+`apisnixphone-20261013-annonces.tar.gz` SHA-256
+`ffcc47eac925693987f38ed7b902d23dfd4cf6d7ffcce4325fe9e0bbf0240975`, avec le
+manifeste SHA-256 des 266 fichiers, le commit source et trois captures de la
+démonstration (sombre, clair après masquage, 375 px) dans
+`.work/annonces-20261013/`, hors Git. Build servi localement par `vite
+preview` : formulaire live chargé avec le JS du manifeste, aucune erreur
+console. Aucune connexion client effectuée ; le rendu des annonces réelles
+avec un compte autorisé reste à voir sur la page publiée.
+
+Aucun changement Caddy requis : la CSP `connect-src` autorise déjà
+`https://apisnix-crm.com`, origine de la page d'annonces lue directement par
+le navigateur (`agc/apisnix/annonces.json.php?cible=telephone`, lecture seule,
+CORS ouvert, cache 60 s côté PBX). Aucune migration ni changement PBX, compte,
+DNS, pare-feu, supervision ou manuel.
+
+Publication, le moment venu : procédure « Publier une release suivante »
+ci-dessous, nom `20261013-annonces`, sauvegarde protégée 0700
+`/root/apisnix-phone-backups/20261013-annonces/` (ancienne cible, copie et
+manifeste de la release précédente, archive, manifeste, commit source, reçu),
+cible réelle de `current` relevée juste avant la bascule atomique, répertoires
+0755 et fichiers 0644 lisibles par caddy, index/JS/CSS servis en HTTPS avec les
+hashes du manifeste, puis cartes visibles après connexion d'un compte autorisé,
+hors heures de forte activité. Retour ciblé : repointer atomiquement
+`/srv/apisnixphone/current` vers
+`/srv/apisnixphone/releases/20261013-network-reconnect`, sans recharger Caddy
+ni restaurer de base. Les onglets ouverts gardent leur version jusqu'à
+actualisation hors appel.
+
 ## Changement de réseau et bouton de reprise — 13 octobre 2026
 
 **En service `20261013-network-reconnect`, source `f20ef8d`, à 15:06:29 Douala.**
