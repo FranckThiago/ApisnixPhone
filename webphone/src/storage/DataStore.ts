@@ -1,5 +1,5 @@
 import { fold } from '../domain/format';
-import { parseDialInput, sameNumber } from '../domain/numbers';
+import { customerNumber, parseDialInput, sameNumber } from '../domain/numbers';
 import { DEFAULT_PREFERENCES, type Callback, type CallRecord, type Contact, type Preferences } from '../domain/types';
 import type { Persistence } from './persistence';
 
@@ -94,7 +94,15 @@ export class DataStore {
     this.emit(false);
   }
 
+  private normalizeNumbers() {
+    this.data = { ...this.data,
+      calls: this.data.calls.map(call => ({ ...call, dialTarget: customerNumber(call.dialTarget) })),
+      callbacks: this.data.callbacks.map(callback => ({ ...callback, number: customerNumber(callback.number) })),
+    };
+  }
+
   private emit(save = true) {
+    this.normalizeNumbers();
     this.listeners.forEach(listener => listener());
     if (save && !this.temporary && this.profile && (this.server || this.data.preferences.persist) && this.persistence) {
       const profile = this.profile, data = this.data, persistence = this.persistence;

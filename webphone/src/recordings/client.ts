@@ -1,3 +1,4 @@
+import { customerNumber } from '../domain/numbers';
 import { language, t } from '../i18n';
 import { RecordingsError, type LineCall, type LineHistory, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
 
@@ -36,7 +37,7 @@ export function toRecordedCalls(entries: ServiceEntry[]): RecordedCall[] {
     if (!files.length) continue;
     calls.push({
       id: entry.entry_id ?? (entry.id === null ? 'audio:' + files[0]!.id : 'call:' + entry.id),
-      number: entry.number ?? '',
+      number: customerNumber(entry.number ?? ''),
       direction: entry.direction === 'inbound' ? 'inbound' : entry.direction === 'outbound' ? 'outbound' : 'unknown',
       startedAt: Math.round(entry.started_at * 1000),
       files,
@@ -55,7 +56,7 @@ export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
         : entry.outcome === 'BUSY' ? 'busy'
         : entry.outcome === 'CANCELLED' ? 'cancelled'
         : entry.outcome === 'FAILED' ? 'failed' : 'unknown';
-      return { id: entry.entry_id ?? `call:${entry.id}`, number: entry.number ?? '', direction: entry.direction as 'inbound' | 'outbound',
+      return { id: entry.entry_id ?? `call:${entry.id}`, number: customerNumber(entry.number ?? ''), direction: entry.direction as 'inbound' | 'outbound',
         startedAt: Math.round(entry.started_at * 1000), answeredAt: entry.answered_at ? Math.round(entry.answered_at * 1000) : undefined,
         endedAt: entry.ended_at ? Math.round(entry.ended_at * 1000) : undefined, outcome };
     });

@@ -20,6 +20,45 @@ actualisation hors appel. Délais de retry plafonnés à 15 s hors durée des
 requêtes ; ce plafond n'est pas une promesse de rétablissement en 15 s.
 
 
+## Correction globale du préfixe opérateur 633 — 13 octobre 2026
+
+**En service `20261013-carrier-633`, 14:59:08 Douala**, depuis
+`20261012-connection-recovery`. Hermes 167.233.244.152, liens
+`/srv/apisnixphone/current` → `/srv/apisnixphone/releases/20261013-carrier-633`.
+Le backend associé, dépôt Gestion_CRM-APISNIX, est en service dans
+`/opt/apisnix-supervision/releases/20261013-carrier-633` depuis 14:58:35.
+Aucune modification PBX ou Caddy ; seule la supervision a redémarré.
+
+Règle demandée par Franck pour tous : `633` + neuf chiffres nationaux (1–9
+au début) représente `6` + numéro français `33…`, pas une destination
+Philippines. Le téléphone corrige pays, numérotation/rappel, égalité des numéros,
+journaux/audio et données de profil en mémoire. Backend : ingestion et
+lecture/sauvegarde de profils normalisées ; migration sauvegardée de 628
+appels centraux et deux appels d'un profil, zéro restant. Aucun rappel
+planifié stocké concerné. Notes, dates, IDs et enregistrements conservés.
+
+138 tests, typage/lint et build live depuis le worktree isolé. Manifeste intégral
+comparé sur Hermes, lecture caddy testée avant bascule atomique. JS
+`index-CAkNRC7v.js`, SIP `lib-WzXKTqIt.js`, CSS `index-BDzVEMz8.css` : index et
+assets servis en HTTPS identiques au build. Page live chargée sans erreur
+console ; démo navigateur vérifiant saisie 633, pays France, journal et rappel
+33 sans appel réel. Backend : 194 tests, santé HTTPS 200, accès privés 401,
+quatre collecteurs connectés, SQLite intègre.
+
+Sauvegarde protégée `/root/apisnix-phone-backups/20261013-carrier-633/` :
+ancienne cible, ancienne release complète et `receipt.json` avec le manifeste.
+Archive livrée dans `/root/apisnix-supervision-backups/20261013-carrier-633/phone.tar.gz`.
+Sauvegarde des données et relevé avant/après backend : même dossier, sous
+`data/before.sqlite` et `data/changes.json`. Ne pas copier ces données dans Git.
+
+Retour frontend : vérifier l'absence de publication plus récente, repointer
+atomiquement `current` vers `20261012-connection-recovery`. Retour backend :
+vers `20261013-annonces`, puis redémarrer seulement la supervision. Conserver
+la base courante ; pour un retrait des corrections, comparer les seules
+valeurs visées au relevé et préserver toute modification ultérieure. Ne pas
+restaurer la base entière. Les onglets ouverts reçoivent la nouvelle version
+après actualisation hors appel ; aucun rechargement forcé. Manuels inchangés.
+
 ## Reprise de connexion — 12 octobre 2026
 
 **En service `20261012-connection-recovery`, source `0cfddbd`, 14:19:10 Douala.**

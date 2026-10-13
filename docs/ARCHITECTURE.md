@@ -54,7 +54,18 @@ Audio (périphérique → gain → piste envoyée) ne s'intercale que si le rég
 `ringtoneSound` des préférences, identifiant inconnu ramené à Classique). `keypadTone` joue localement la
 double fréquence DTMF d'une touche du pavé ; le DTMF envoyé pendant un appel reste celui de SIP.js.
 `src/domain/numbers.ts` sépare saisie, numéro composé et métadonnées
-d'affichage. `src/domain/callbacks.ts` porte les rappels planifiés.
+d'affichage. Depuis le 13 octobre, `customerNumber` interprète le format exact
+`633` suivi de neuf chiffres (premier 1–9) comme `6` + numéro français `33…`,
+globalement : aucune destination Philippines n'est proposée. Variantes `+`/`00`
+et séparateurs visuels acceptés ; extensions, autres préfixes et numéros
+incomplets conservés. Cette règle précède la numérotation, le pays et la
+comparaison de numéros. `DataStore` normalise le journal et les rappels avant
+notification/persistance, y compris au chargement d'un ancien profil ; les
+adaptateurs du journal central/audio normalisent aussi les réponses anciennes.
+Notes, contacts, IDs, dates et tags sont conservés. Le backend applique la même
+règle à l'ingestion des appels et aux profils GET/PUT, avec migration explicite
+de l'historique. Le préfixe de routage reste ajouté par le PBX pour l'opérateur.
+`src/domain/callbacks.ts` porte les rappels planifiés.
 `src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
 pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le
 profil via `/api/webphone-profile`, dans la base de supervision Hermes, sous
