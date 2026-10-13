@@ -4,7 +4,8 @@ import { locale, t } from '../i18n';
 /**
  * What the user typed, what will really be dialled, and display-only metadata
  * are kept apart. A leading + uses the PBX format: +33 becomes 0033, otherwise
- * only + is removed. Carrier prefixes and national zeros stay unchanged.
+ * only + is removed. National zeros stay unchanged; the APISNIX 633 selector
+ * is converted to the customer-facing French 33 format before those rules.
  */
 export interface DialInput {
   rawInput: string;
@@ -24,8 +25,15 @@ export interface NumberInfo {
 const VISUAL_SEPARATORS = /[\s\u00a0().-]/g;
 const regionNames = new Map<string, Intl.DisplayNames>();
 
+/** APISNIX has no Philippines route: 633 + nine digits is 6 + French E.164. */
+export function customerNumber(value: string): string {
+  const match = /^(?:\+|00)?633([1-9]\d{8})$/.exec(value.replace(VISUAL_SEPARATORS, ''));
+  return match ? '33' + match[1] : value;
+}
+
+
 export function parseDialInput(rawInput: string): DialInput {
-  let dialTarget = rawInput.replace(VISUAL_SEPARATORS, '');
+  let dialTarget = customerNumber(rawInput.replace(VISUAL_SEPARATORS, ''));
   if (!dialTarget) return { rawInput, dialTarget, valid: false, reason: 'empty' };
   if (!/^[+\d*#]+$/.test(dialTarget)) return { rawInput, dialTarget, valid: false, reason: 'characters' };
   if (dialTarget.lastIndexOf('+') > 0) return { rawInput, dialTarget, valid: false, reason: 'plus' };
@@ -98,6 +106,7 @@ function withCountryCode(dialTarget: string): string | null {
  * the person is, and nothing here ever changes the digits that are dialled.
  */
 export function describeNumber(dialTarget: string, direction?: 'inbound' | 'outbound' | 'unknown'): NumberInfo {
+  dialTarget = customerNumber(dialTarget);
   if (!dialTarget || /[*#]/.test(dialTarget)) return { kind: 'unknown', display: dialTarget };
   if (direction === 'inbound') {
     const compact = dialTarget.replace(VISUAL_SEPARATORS, '');

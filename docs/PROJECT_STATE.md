@@ -1,5 +1,21 @@
 # État du projet
 
+## Journal, pays et rappels 633 — 13 octobre 2026
+
+**En service `20261013-carrier-633`, 14:59:08 Douala**, pour tous les clients.
+Le format exact `633` + neuf chiffres nationaux (premier 1–9), avec variantes
+`+`/`00` et séparateurs visuels, est traité comme un numéro français `33…`.
+Pays, journal, audio et rappels partagent la même normalisation. Les anciens
+profils sont corrigés au chargement, sans perte des notes, tags, dates et IDs.
+Le backend Hermes normalise également les entrées et les sauvegardes ;
+628 appels centraux et deux appels d'un profil ont été corrigés. Aucun rappel
+planifié stocké concerné. Le PBX conserve le 633 demandé par l'opérateur.
+
+138 tests, typage, lint et build live réussis ; démo dans le navigateur intégré
+(saisie 633, France, journal et rappel 33) et page live sans erreur console.
+Actualiser hors appel ; aucun appel extérieur/audio réel testé. Déploiement,
+sauvegardes et retour dans [OPERATIONS.md](OPERATIONS.md). Manuels inchangés.
+
 ## Reprise de connexion du téléphone web — 12 octobre 2026
 
 **En service `20261012-connection-recovery`, source `0cfddbd`,

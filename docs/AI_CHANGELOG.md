@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-13 — Séparer le préfixe opérateur 633 du numéro client
+
+Demande de Franck étendue à tous les clients : conserver 633 vers l'opérateur,
+afficher la France et rappeler 33, anciens appels compris. Normalisation dans
+numbers, DataStore et les adaptateurs journal/audio ; tests des formats,
+non-régression des autres numéros et préservation des annotations/rappels.
+138 tests, typage/lint/build, démo visuelle et publication HTTPS vérifiés.
+Release `20261013-carrier-633` à 14:59:08 Douala ; backend associé et migration
+628 appels + deux entrées d'un profil dans Gestion_CRM-APISNIX. ARCHITECTURE,
+PROJECT_STATE et OPERATIONS actualisés. Aucun manuel ni routage PBX modifié.
+
 ## 2026-10-12 — Réparer les pertes de connexion du webphone
 
 Demande de Franck après comparaison avec Zoiper. Reprise progressive persistante
