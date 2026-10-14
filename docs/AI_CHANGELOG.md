@@ -1,5 +1,13 @@
 # Journal des changements
 
+## Route PBX : Progress() pour Fcadyn014 — 14 octobre 2026
+
+La vérification réelle avait montré que l'option `r` du `Dial` France retenait
+le 183 avec SDP : l'early media client ne pouvait pas agir. Franck a appliqué à
+19:34:45 un `Progress()` limité au peer Fcadyn014 avec l'outil du dépôt privé
+(sauvegarde protégée, rechargement sans perte d'appel). Aucun changement client ;
+architecture, état et exploitation précisent la nouvelle condition serveur.
+
 ## 2026-10-14 — Corriger les deux défauts early media
 
 Fetch natif enveloppé pour préserver son contexte (réglages + rapports) ;

@@ -27,8 +27,12 @@ immédiatement ; les écouteurs sont retirés dès l'arrêt, au décroché et à
 Cela prouve la disponibilité du média, pas une énergie sonore ou une parole audible. Sans choix du
 serveur, l'invitation reste identique à avant. Cela exige aussi que le PBX livre
 un SDP provisoire au navigateur : l'option `r` de `Dial` force une sonnerie
-sans audio avant réponse et peut empêcher le bénéfice attendu. Les essais du
-14 octobre après correction ne valident pas encore ICE/DTLS avant décroché.
+sans audio avant réponse et retient la progression opérateur. Depuis le
+14 octobre à 19:34:45, la route France exécute un `Progress()` pour le seul
+peer Fcadyn014 avant ce `Dial` (outil et retour dans le dépôt privé) : le 183
+avec SDP part dès l'INVITE et Asterisk fait entendre sa propre tonalité de
+sonnerie en bande, sans audio opérateur avant la réponse. ICE/DTLS avant
+décroché restent à mesurer sur un appel réel.
 
 
 ## Composants

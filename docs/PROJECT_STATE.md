@@ -12,10 +12,12 @@ HTTPS contrôlés. Rappel réel : Franck confirme le son immédiat puis précise
 écho très faible acceptable, avec micro coupé via le bouton du téléphone lors
 de ses essais. Aucun défaut de double sortie confirmé, annulation d'écho conservée.
 Un bilan média est désormais reçu sur un essai ultérieur de la même ligne.
-**Early media avant décroché non validé** : les mesures restent après réponse ;
-la route PBX force une sonnerie sans audio anticipé (`Dial` option `r`).
-Cette route n'a pas été modifiée. Validation Android et coupures longues encore
-à vérifier ; voir le rapport privé pour les mesures et les deux essais distincts.
+**Early media avant décroché encore à valider** : les mesures de 17:37
+restaient après réponse parce que la route PBX forçait une sonnerie sans SDP
+anticipé (`Dial` option `r`). Depuis 19:34:45, cette route exécute un `Progress()`
+pour le seul peer Fcadyn014 avant le `Dial` (dépôt privé : outil, sauvegarde,
+retour). Prochain appel de 014 attendu avec son bilan média ; validation Android
+et coupures longues encore à vérifier ; voir le rapport privé pour les essais.
 
 ## Early media choisi par le serveur — 14 octobre 2026
 

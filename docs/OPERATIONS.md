@@ -19,10 +19,13 @@ Retour ciblé : vérifier `current` sur `20261014-early-media-fix`, repointer ve
 Ce retour réintroduit les deux défauts. Services actifs et empreintes HTTPS
 (index, JS, CSS, bundle SIP, worker) vérifiés après bascule. Rappel réel : son
 immédiat confirmé, écho résiduel très bas accepté. Bilan média reçu sur un essai
-ultérieur ; ICE/DTLS restent après `answeredMs`. La route serveur force la
-sonnerie avec `Dial` option `r`, qui interdit l’audio avant réponse.
-**L’early media effectif reste non validé** ; aucun changement PBX effectué. Aucun test Android
-ne peut être remplacé par un appel depuis le Mac. Manuels clients inchangés.
+ultérieur ; ICE/DTLS restent après `answeredMs`. La route serveur forçait la
+sonnerie avec `Dial` option `r`, qui interdit l’audio avant réponse et retient
+le 183. Depuis 19:34:45, un `Progress()` limité au peer Fcadyn014 précède ce
+`Dial` (appliqué par Franck avec `config/dialplan/early_media_014.py` du dépôt
+privé, sauvegarde et retour `rollback` documentés là-bas). **L’early media
+effectif reste à valider par un appel de 014 et son bilan média.** Aucun test
+Android ne peut être remplacé par un appel depuis le Mac. Manuels clients inchangés.
 
 ## Early media par ligne — 14 octobre 2026
 
