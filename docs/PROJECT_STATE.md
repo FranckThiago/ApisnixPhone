@@ -2,7 +2,8 @@
 
 ## Relais média ciblé et maintien des appels visibles — 14 octobre 2026
 
-Préparé pour publication après validation. Le client charge `/api/webphone-ice`
+**En service `20261014-media-relay`, source `09fb87f`, à 14:54:32 Douala.**
+Le client charge `/api/webphone-ice`
 avec sa session HTTP ; seules les lignes choisies côté serveur reçoivent des
 identifiants TURN temporaires, conservés en mémoire. Requête bornée à 1,8 s.
 Paramètres appliqués à la création du PeerConnection.

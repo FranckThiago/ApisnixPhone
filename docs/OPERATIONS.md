@@ -1,5 +1,38 @@
 # Construction et validation
 
+## Relais WebRTC ciblé — 14 octobre 2026
+
+**Frontend `20261014-media-relay`, source `09fb87f`, 14:54:32 Douala.**
+Build live isolé depuis le commit, npm ci puis build ; 267 fichiers. Archive
+SHA-256 `d87bc5f740cacdc5802207a8d28dffdcbc65505b7211c151bd2f17209d9caf6e`.
+Typage, lint, 192 tests et build validés. Navigateur intégré : allocation TURN
+UDP/TCP et détection d'un relais indisponible avant appel, sans micro ni SIP.
+Sonde synthétique réseau vers le PBX réussie dans les deux transports, y compris
+après restriction des sorties du relais. Formulaire live chargé sans connexion
+cliente ; aucune conversation Android réelle de validation à cette étape.
+
+Sur Hermes, copie complète/manifeste de la release précédente vérifiés avant
+bascule atomique depuis `20261014-notification-offer`. Sauvegarde protégée :
+`/root/apisnix-phone-backups/20261014-media-relay/` ; build/script/manifeste locaux
+`.work/releases/20261014-media-relay/`. Index, JS, CSS, bundle SIP et worker
+notifications servis en HTTPS avec les empreintes attendues. Caddy actif.
+
+API `/api/webphone-ice` et `/api/webphone-media-report` livrées par la supervision,
+avec sélection privée de lignes ; aucune credential TURN dans le frontend.
+Le relais et son autorisation sont documentés dans Gestion_CRM-APISNIX,
+`docs/TURN_WEBRTC_20261014.md`. Son installation ajoute un service distinct et
+ses règles réseau ciblées sur Hermes ; aucune configuration PBX modifiée.
+Le service HTTP de supervision a été brièvement redémarré, sans migration DB.
+
+Retour frontend : vérifier current encore sur cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261014-notification-offer`.
+Les paramètres du pilote peuvent être désactivés indépendamment côté serveur.
+Ne pas arrêter le relais pendant une conversation qui l'utilise. Aucun retour
+PBX/DB global. Actualiser les onglets hors appel pour recevoir la version.
+La disparition des silences et coupures doit être confirmée par les utilisateurs.
+Manuels clients inchangés.
+
+
 ## Notifications et message 480 — 14 octobre 2026
 
 **En service `20261014-notification-offer`, source `15c0ffe`, à 14:07:02 Douala.**
