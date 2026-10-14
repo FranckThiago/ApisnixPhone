@@ -3,8 +3,21 @@ import { MediaAccessClient, observeMedia, relayAvailable } from '../src/telephon
 
 const access = () => ({ enabled: true, account: 'test', expiresAt: Date.now() + 8 * 3600000, iceTransportPolicy: 'relay', csrf: 'test-csrf',
   iceServers: [{ urls: ['turn:relay.example:3478?transport=udp'], username: 'temporary', credential: 'fictional-test' }] });
-afterEach(() => vi.useRealTimers());
+afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 describe('per-call media access', () => {
+  it('uses the native fetch receiver for both settings and the final report', async () => {
+    const requests: string[] = [];
+    vi.stubGlobal('fetch', function (this: unknown, input: RequestInfo | URL) {
+      if (this !== undefined && this !== globalThis) throw new TypeError('Illegal invocation');
+      requests.push(String(input));
+      return Promise.resolve(Response.json({ ...access(), earlyMedia: true }));
+    });
+    const client = new MediaAccessClient('test');
+    const settings = await client.load();
+    expect(settings?.earlyMedia).toBe(true);
+    await client.report(settings!, { sentPackets: 42 });
+    expect(requests).toEqual(['/api/webphone-ice', '/api/webphone-media-report']);
+  });
   it('shares an in-flight request and caches only settings for the current account', async () => {
     let resolve!: (value: Response) => void;
     const fetcher = vi.fn(() => new Promise<Response>(r => { resolve = r; }));

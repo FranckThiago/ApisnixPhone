@@ -744,7 +744,8 @@ export class SipPhoneController implements PhoneController {
 
   /**
    * With early media, SIP.js attaches the far end's stream on the 183 while its audio is still silent:
-   * our ringback stops only once a remote track really receives sound (`unmute`), never on the mere announcement.
+   * our ringback stops once a live remote track is unmuted, including before this watcher starts.
+   * Track availability is not a measurement of audible speech or nonzero audio energy.
    */
   private watchEarlyAudio(callId: string) {
     const element = this.remoteAudio;
@@ -762,6 +763,10 @@ export class SipPhoneController implements PhoneController {
         if (watched.has(track)) continue;
         watched.add(track);
         track.addEventListener('unmute', heard);
+        if (track.readyState === 'live' && !track.muted) {
+          heard();
+          return; // Cleanup has removed listeners; do not attach any more in this pass.
+        }
       }
     };
     element.addEventListener('loadstart', inspect);

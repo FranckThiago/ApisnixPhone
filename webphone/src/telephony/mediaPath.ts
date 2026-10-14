@@ -16,7 +16,8 @@ export class MediaAccessClient {
   private cached?: MediaAccess;
   private checkedAt = -Infinity;
   private pending?: Promise<MediaAccess | undefined>;
-  constructor(private account: string, private fetcher: typeof fetch = fetch) {}
+  // Native fetch must not receive this client as its `this` (Illegal invocation in browsers).
+  constructor(private account: string, private fetcher: typeof fetch = (...args) => fetch(...args)) {}
 
   load(): Promise<MediaAccess | undefined> {
     if (this.pending) return this.pending;

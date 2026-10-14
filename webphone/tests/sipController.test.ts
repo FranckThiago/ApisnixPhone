@@ -79,7 +79,22 @@ describe('early media chosen by the server for this line', () => {
     h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
     expect(h.manager.call.mock.calls[2]![1]).toBeUndefined();
   });
-  it('keeps our ringback until the far end is really heard, then leaves the line to it', async () => {
+  it.each(['before-progress', 'after-progress'] as const)('stops ringback for an already unmuted stream attached %s', async timing => {
+    const remote = fakeRemoteAudio();
+    const h = harness(remote.element); await ready(h);
+    Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: true }) });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    remote.unmute();
+    if (timing === 'before-progress') remote.attach();
+    h.invite.onProgress({ message: { statusCode: 183, body: 'v=0 fictional sdp' } });
+    if (timing === 'after-progress') remote.attach();
+    expect(h.callProgress.stop).toHaveBeenCalledTimes(1);
+    remote.attach(); remote.unmute();
+    expect(h.callProgress.stop).toHaveBeenCalledTimes(1);
+    h.phone.applyAudio({ volume: 50, micGain: 100, ringtone: true, ringtoneSound: 'classic', echoCancellation: true, noiseSuppression: true });
+    expect(h.callProgress.startRingback).toHaveBeenCalledTimes(1);
+  });
+  it('keeps our ringback until the remote media is available, then leaves the line to it', async () => {
     const remote = fakeRemoteAudio();
     const h = harness(remote.element); await ready(h);
     Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: true }) });

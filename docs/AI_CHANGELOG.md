@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-10-14 — Corriger les deux défauts early media
+
+Fetch natif enveloppé pour préserver son contexte (réglages + rapports) ;
+traitement immédiat des pistes déjà non muettes et nettoyage des écouteurs.
+Trois régressions reproduites puis corrigées, 201 tests/typecheck/lint OK,
+GET/POST du client réel vérifiés dans le navigateur avec données fictives.
+Architecture, état et procédure de publication alignés ; écho Mac/téléphone
+à vérifier en conditions acoustiques séparées, pas de modification AEC.
+
+
 ## Early media choisi par le serveur — 14 octobre 2026
 
 Après la comparaison chiffrée PortSIP/web (dépôt privé) : les 4 à 8 s de silence

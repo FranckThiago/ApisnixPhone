@@ -3,7 +3,8 @@
 ## Relais WebRTC par ligne — 14 octobre 2026
 
 `mediaPath.ts` obtient les accès TURN par session HTTP, jamais par variable de
-build ou stockage navigateur. `sipEnvironment.ts` configure le PeerConnection
+build ou stockage navigateur. Le fetch natif est appelé par une fonction
+intermédiaire pour conserver son contexte navigateur, pour GET comme pour POST. `sipEnvironment.ts` configure le PeerConnection
 avant création d'offre, garde la collecte directe d'origine en secours et émet
 les compteurs techniques uniquement pour les lignes autorisées par le backend.
 Les credentials expirent, sont revalidés au nouvel appel (cache mémoire 60 s),
@@ -20,8 +21,10 @@ l'invitation SIP.js (`earlyMedia: true`) : la réponse SDP du 183 est appliquée
 aussitôt, ICE puis DTLS se négocient pendant la sonnerie et le 200 OK ne change
 plus le média (Asterisk ne fork pas, condition exigée par SIP.js). SIP.js attache
 alors le flux distant dès le 183 ; le contrôleur garde la sonnerie locale et ne
-l'arrête qu'à l'événement `unmute` d'une piste distante, c'est-à-dire quand le
-son de l'opérateur arrive vraiment, jamais sur la seule annonce. Sans choix du
+l'arrête lorsqu'une piste distante vivante est non muette, soit à l'inspection
+initiale, soit à l'événement `unmute`. Une piste déjà disponible est traitée
+immédiatement ; les écouteurs sont retirés dès l'arrêt, au décroché et à la fin.
+Cela prouve la disponibilité du média, pas une énergie sonore ou une parole audible. Sans choix du
 serveur, l'invitation reste identique à avant.
 
 

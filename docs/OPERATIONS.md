@@ -1,5 +1,21 @@
 # Construction et validation
 
+## Correctifs early media — 14 octobre 2026
+
+Release prévue `20261014-early-media-fix` : chargement HTTP natif et arrêt de
+la tonalité si la piste distante est déjà disponible. 201 tests, typage et lint
+réussis ; GET des réglages et POST du bilan vérifiés dans le navigateur réel
+avec données fictives. Les tests reproduisaient les erreurs avant correction.
+Publication frontend seule sur Hermes, sans mutation PBX, backend ni TURN.
+Sauvegarde protégée prévue `/root/apisnix-phone-backups/20261014-early-media-fix/`.
+Le script exige `current` encore sur `20261014-early-media`, sauvegarde son contenu,
+contrôle tous les fichiers puis bascule atomiquement ; échec HTTPS = retour.
+Retour ciblé : vérifier `current` sur `20261014-early-media-fix`, repointer vers
+`/srv/apisnixphone/releases/20261014-early-media`, actualiser hors appel.
+Ce retour réintroduit les deux défauts. Preuve réelle attendue : rapport reçu,
+ICE/DTLS avant `answeredMs`, et retour humain sur la voix/écho. Aucun test Android
+ne peut être remplacé par un appel depuis le Mac. Manuels clients inchangés.
+
 ## Early media par ligne — 14 octobre 2026
 
 **En service `20261014-early-media`, source `d83fd71`, à 17:07:00 Douala**,
@@ -25,7 +41,8 @@ ouvert dans le navigateur intégré : formulaire de connexion affiché, index, J
 CSS et logo chargés avec les noms du manifeste, aucune erreur console (le seul
 404 relevé précède le démarrage du serveur local). Aucun REGISTER ni appel. Backend `20261014-early-media` déjà en service à
 16:56:07 et réglage `turn.json` de 014 (`none` + early media) appliqué à 16:58 :
-une page de 014 actualisée hors appel reçoit maintenant le choix du serveur.
+la revue ultérieure a toutefois identifié un fetch natif invalide : cette
+release ne chargeait pas le choix dans le navigateur testé. Voir les correctifs ci-dessus.
 
 Le script de publication (conservé dans `.work/releases/20261014-early-media/`)
 a exigé `current` encore sur `20261014-refresh-help`, copié cette release avec son
