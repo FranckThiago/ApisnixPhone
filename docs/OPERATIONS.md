@@ -2,9 +2,19 @@
 
 ## Micro direct et sonnerie — 14 octobre 2026
 
-Release préparée `20261014-audio-direct` ; cible actuelle contrôlée sur Hermes
-`20261013-annonces`. Publication statique par bascule atomique après copie
-protégée de la précédente release, manifeste vérifié et lecture Caddy testée.
+**En service `20261014-audio-direct`, source `5c6b523`, à 13:50:31 Douala.**
+Ancienne cible contrôlée sur Hermes `20261013-annonces`. Build live isolé
+depuis le commit avec npm ci ; 266 fichiers. Archive SHA-256
+`0509ab1691a925c283af2e6052290fc6f6e6c3385a4ccfc410d4c5ac2b623a60`.
+Bascule atomique après copie protégée de la précédente release, manifeste
+vérifié et lecture Caddy testée. Sauvegarde 0700 et reçu dans
+`/root/apisnix-phone-backups/20261014-audio-direct/` ; archive, manifestes et
+script de publication locaux dans `.work/releases/20261014-audio-direct/`.
+Index et assets JS/CSS/SIP vérifiés par empreinte via HTTPS ; services Caddy
+et supervision actifs. Formulaire live contrôlé dans le navigateur intégré,
+sans erreur console. Curseur micro absent et aperçu de sonnerie fonctionnel
+en démonstration ; la perception audio réelle et le délai après décroché
+restent à valider lors d'un prochain appel autorisé.
 Pas de migration serveur : les profils passent à `micGain: 100` lors de leur
 chargement/sauvegarde par le nouveau client. Les onglets déjà ouverts doivent
 être actualisés hors appel. Aucun redémarrage, changement PBX, ICE, DNS ou

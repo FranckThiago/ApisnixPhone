@@ -2,13 +2,16 @@
 
 ## Micro direct et reprise de sonnerie — 14 octobre 2026
 
-Correction validée localement, publication en préparation `20261014-audio-direct`.
+**En service `20261014-audio-direct`, source `5c6b523`, à 13:50:31 Douala.**
 Sensibilité retirée ; micro fixé à 100 % à la lecture et à l’écriture des
 préférences, piste brute envoyée même pour les anciens profils. Analyseur
 séparé pour le test, acquisition tardive annulée après fermeture. Sonnerie
 programmée seulement lorsque le contexte audio fonctionne, avec garde contre
 une reprise après raccrochage ; réveil également sur clic tactile.
-173 tests, typage, lint et build réussis. Aucun changement PBX ou de route
+173 tests, typage, lint et build live isolé réussis. Curseur retiré et aperçu
+de sonnerie contrôlés en démonstration ; HTTPS/empreintes vérifiés, formulaire
+publié sans erreur console. Aucun essai vocal réel après publication.
+Aucun changement PBX ou de route
 média ; le délai de négociation ICE et les coupures réseau observés en
 production ne sont pas considérés résolus par ce changement. Les détails
 clients restent dans le dépôt privé de gestion. Manuels clients inchangés.
