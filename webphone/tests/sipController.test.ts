@@ -51,6 +51,16 @@ async function ready(h: ReturnType<typeof harness>) {
   h.delegate.onRegistered();
 }
 
+it('does not place a delayed outgoing call after cancellation during relay preparation', async () => {
+  const h=harness(); await ready(h);
+  let resolve!: () => void;
+  Object.assign(h.manager,{prepareMedia:() => new Promise<void>(r => {resolve=r;})});
+  h.phone.call('1001','1001'); h.phone.hangup(); resolve();
+  await Promise.resolve(); await Promise.resolve();
+  expect(h.manager.call).not.toHaveBeenCalled();
+  expect(h.phone.getSnapshot().call?.outcome).toBe('cancelled');
+});
+
 describe('SIP controller', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());

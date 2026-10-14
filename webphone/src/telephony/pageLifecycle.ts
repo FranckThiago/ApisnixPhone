@@ -1,7 +1,9 @@
+import { bindCallWakeLock } from './callWakeLock';
 import type { PhoneController } from './types';
 
 /** Actual page departure, never a hidden tab or navigation inside the application. */
 export function bindPageLifecycle(phone: PhoneController, target: Window = window) {
+  const releaseWakeLock = bindCallWakeLock(phone, target);
   const warn = (event: BeforeUnloadEvent) => {
     const call = phone.getSnapshot().call;
     if (!call || call.phase === 'ended') return;
@@ -20,6 +22,7 @@ export function bindPageLifecycle(phone: PhoneController, target: Window = windo
   };
   const resume = () => {
     if (target.document?.visibilityState === 'hidden') return;
+    if (phone.getSnapshot().call?.phase === 'active') phone.resumeAudio?.();
     void phone.checkConnection?.().catch(() => undefined);
   };
   const network = (target.navigator as Navigator & { connection?: EventTarget } | undefined)?.connection;
@@ -31,6 +34,7 @@ export function bindPageLifecycle(phone: PhoneController, target: Window = windo
   target.addEventListener('pagehide', leave);
   target.addEventListener('pageshow', restore);
   return () => {
+    releaseWakeLock();
     network?.removeEventListener('change', resume);
     target.removeEventListener('online', resume);
     target.document?.removeEventListener('visibilitychange', resume);

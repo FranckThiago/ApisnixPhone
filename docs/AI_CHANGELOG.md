@@ -1,5 +1,27 @@
 # Journal des changements
 
+## Relais média ciblé et maintien des appels visibles — 14 octobre 2026
+
+Préparé pour publication après validation. Le client charge `/api/webphone-ice`
+avec sa session HTTP ; seules les lignes choisies côté serveur reçoivent des
+identifiants TURN temporaires, conservés en mémoire. Requête bornée à 1,8 s.
+Paramètres appliqués à la création du PeerConnection.
+Sans configuration accessible, trajet direct existant conservé. Un contrôle
+préalable borné à 1,8 s vérifie le relais pour le mode relay. En cas
+d'échec, le nouvel appel conserve les candidats directs ; aucun changement de
+configuration sur une connexion existante, rappel ou renégociation automatique.
+
+Mesures agrégées pour les seules lignes pilotes : étapes ICE/connexion, premiers
+paquets, compteurs audio/pertes/gigue et type de trajet ; aucun SDP, adresse,
+numéro, secret ou contenu vocal envoyé. Échantillonnage 500 ms, rapport à la fin.
+Maintien de l'écran éveillé pendant un appel visible lorsque l'API est disponible,
+libération au raccrochage/masquage ; aucune protection contre verrouillage manuel.
+Reprise de lecture au retour visible d'un appel actif, sans reprendre la ligne SIP.
+192 tests, typage, lint et build réussis ; relais UDP/TCP et secours avant appel
+contrôlés dans le navigateur. La qualité sur Android doit encore être validée par une conversation réelle.
+Manuels clients inchangés. Exploitation et secrets restent dans le dépôt privé.
+
+
 ## Notifications après premier appel et message 480 — 14 octobre 2026
 
 **En service `20261014-notification-offer`, source `15c0ffe`, 14:07:02 Douala.**

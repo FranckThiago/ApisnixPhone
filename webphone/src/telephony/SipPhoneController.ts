@@ -31,6 +31,8 @@ export interface ManagerDelegate {
 export interface Manager {
   /** Random SIP contact identity, retained only while recovering this browser session. */
   contactName: string;
+  /** Optional bounded media preparation, before creating an outgoing SIP session. */
+  prepareMedia?(): Promise<void>;
   connect(): Promise<void>;
   isConnected(): boolean;
   disconnect(): Promise<void>;
@@ -114,6 +116,7 @@ export class SipPhoneController implements PhoneController {
   private listeners = new Set<() => void>();
   private manager?: Manager;
   private session?: ManagedSession;
+  private outgoingSequence = 0;
   private wanted = false;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private established = false;
@@ -595,11 +598,12 @@ export class SipPhoneController implements PhoneController {
     this.rejection = undefined;
     this.rejectionReason = undefined;
     this.localHangup = false;
-    const id = `sip-${Date.now()}`;
+    const id = `sip-${Date.now()}-${++this.outgoingSequence}`;
     this.update({ call: { id, direction: 'outbound', rawInput, dialTarget, remoteName, phase: 'dialing', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' }, error: undefined });
     // Digits, + and * go out exactly as typed; only # must be escaped inside a SIP URI.
     const destination = `sip:${dialTarget.replace(/#/g, '%23')}@${this.config.domain}`;
-    this.manager.call(destination, undefined, {
+    const manager = this.manager;
+    const start = () => manager.call(destination, undefined, {
       requestDelegate: {
         onProgress: () => {
           if (this.snapshot.call?.id !== id || this.snapshot.call.phase !== 'dialing') return;
@@ -613,7 +617,12 @@ export class SipPhoneController implements PhoneController {
           this.rejectionReason = status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
         },
       },
-    }).catch(error => {
+    });
+    const attempt = manager.prepareMedia ? manager.prepareMedia().then(() => {
+      if (this.manager !== manager || this.snapshot.call?.id !== id || this.snapshot.call.phase !== 'dialing') return;
+      return start();
+    }) : start();
+    void attempt.catch(error => {
       if (this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
       this.finish('failed');
       this.update({ error: error instanceof DOMException ? microphoneErrorMessage(error) : t('sip.callFailed') });

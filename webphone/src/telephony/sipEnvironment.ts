@@ -1,3 +1,4 @@
+import { MediaAccessClient, observeMedia, relayAvailable, type MediaAccess } from './mediaPath';
 import type { Manager, SipEnvironment } from './SipPhoneController';
 
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
@@ -6,9 +7,27 @@ export const browserSipEnvironment: SipEnvironment = {
     const { Web, UserAgent } = await import('sip.js');
     let registeredOnce = !!recoveryContact;
     let retired = false;
+    const mediaAccess = new MediaAccessClient(credentials.username);
+    const observers = new Map<string, ReturnType<typeof observeMedia>>();
+    let prepared: MediaAccess | undefined;
+    let preparation = 0;
+    const factory = Web.defaultSessionDescriptionHandlerFactory(() => microphone());
+    const prepareMedia = async () => {
+      const generation = ++preparation;
+      let access = await mediaAccess.load();
+      if (access?.iceTransportPolicy === 'relay' && !await relayAvailable(access.iceServers)) {
+        // Keep TURN as an option, with the original direct path available.
+        access = { ...access, iceTransportPolicy: 'all' };
+      }
+      if (!retired && generation === preparation) prepared = access;
+    };
     const manager = new Web.SessionManager(config.wssUrl, {
       aor: `sip:${credentials.username}@${config.domain}`,
-      delegate: { ...delegate, onRegistered: () => { registeredOnce = true; delegate.onRegistered(); } },
+      delegate: { ...delegate,
+        onRegistered: () => { registeredOnce = true; delegate.onRegistered(); },
+        onCallAnswered: session => { observers.get(session.id)?.answered(); delegate.onCallAnswered(session); },
+        onCallHangup: session => { observers.get(session.id)?.stop(); observers.delete(session.id); prepared = undefined; delegate.onCallHangup(session); },
+      },
       // Do not steal the line from another device after an outage.
       registerGuard: async () => {
         if (retired) return true;
@@ -39,7 +58,22 @@ export const browserSipEnvironment: SipEnvironment = {
         logBuiltinEnabled: false,
         logConfiguration: false,
         // The original microphone track goes directly to the call, without Web Audio.
-        sessionDescriptionHandlerFactory: Web.defaultSessionDescriptionHandlerFactory(() => microphone()),
+        sessionDescriptionHandlerFactory: (session, options) => {
+          const access = prepared && prepared.expiresAt > Date.now() + 60_000 ? prepared : undefined;
+          const directServers = config.iceServers?.length ? [{ urls: config.iceServers }] : [{ urls: 'stun:stun.l.google.com:19302' }];
+          const handler = factory(session, access ? { ...options, peerConnectionConfiguration: {
+            iceServers: access.iceTransportPolicy === 'relay' ? access.iceServers : [...directServers, ...access.iceServers],
+            iceTransportPolicy: access.iceTransportPolicy,
+          } } : options) as InstanceType<typeof Web.SessionDescriptionHandler>;
+          const pc = handler.peerConnection;
+          if (pc && access) {
+            const observer = observeMedia(pc, access.iceTransportPolicy, metrics => { void mediaAccess.report(access, metrics); });
+            observers.set(session.id, observer);
+            const close = handler.close.bind(handler);
+            handler.close = () => { observer.stop(); observers.delete(session.id); close(); };
+          }
+          return handler;
+        },
         sessionDescriptionHandlerFactoryOptions: {
           // Audio goes through the PBX's public address: do not hold the call back waiting for every ICE candidate.
           iceGatheringTimeout: 2000,
@@ -76,6 +110,7 @@ export const browserSipEnvironment: SipEnvironment = {
     });
     const dropSilently = async () => {
       retired = true;
+      observers.forEach(observer => observer.stop()); observers.clear();
       // Socket first: SIP.js un-registers while stopping, and that must not reach the PBX.
       const closing = transport.disconnect().catch(() => undefined);
       // Stop SessionManager immediately too, so its native online listener cannot
@@ -91,13 +126,14 @@ export const browserSipEnvironment: SipEnvironment = {
       stats.forEach(report => { if (report.type === 'outbound-rtp' && report.kind === 'audio') packets = (packets ?? 0) + (report.packetsSent ?? 0); });
       return packets;
     };
-    return Object.assign(manager, { contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    return Object.assign(manager, { prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {
     // Lives outside every view, so navigation never cuts the sound.
     const audio = document.createElement('audio');
     audio.autoplay = true;
+    audio.setAttribute('playsinline', '');
     audio.hidden = true;
     document.body.append(audio);
     return audio;

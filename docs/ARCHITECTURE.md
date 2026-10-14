@@ -1,5 +1,19 @@
 # Architecture ApisnixPhone
 
+## Relais WebRTC par ligne — 14 octobre 2026
+
+`mediaPath.ts` obtient les accès TURN par session HTTP, jamais par variable de
+build ou stockage navigateur. `sipEnvironment.ts` configure le PeerConnection
+avant création d'offre, garde la collecte directe d'origine en secours et émet
+les compteurs techniques uniquement pour les lignes autorisées par le backend.
+Les credentials expirent, sont revalidés au nouvel appel (cache mémoire 60 s),
+et ne sont pas changés pendant la conversation. Le contrôle de disponibilité
+TURN précède uniquement l'appel sortant ; il ne répare
+pas automatiquement un réseau coupé en cours d'appel.
+`callWakeLock.ts`, lié au cycle de vie de la page, limite la veille automatique
+d'un appel visible. Le refus ou l'absence de cette API ne bloque jamais l'appel.
+
+
 ## Composants
 
 Deux adaptations natives des clients Linphone, sans moteur SIP réécrit et sans
