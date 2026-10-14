@@ -6,7 +6,9 @@ const fake = vi.hoisted(() => ({
   options: undefined as unknown as {
     delegate: ManagerDelegate;
     registerGuard(): Promise<boolean>;
+    userAgentOptions: { sessionDescriptionHandlerFactory(session: unknown, options: unknown): unknown };
   },
+  factoryOptions: [] as unknown[],
   contacts: [] as string[],
   responds: true,
   connected: true,
@@ -15,7 +17,7 @@ const fake = vi.hoisted(() => ({
 vi.mock('sip.js', () => ({
   UserAgent: { makeURI: (uri: string) => uri },
   Web: {
-    defaultSessionDescriptionHandlerFactory: vi.fn(),
+    defaultSessionDescriptionHandlerFactory: () => (_session: unknown, options: unknown) => { fake.factoryOptions.push(options); return { close() {} }; },
     SessionManager: class {
       constructor(_url: string, options: typeof fake.options) { fake.options = options; }
       disconnect = vi.fn(async () => undefined);
@@ -77,5 +79,24 @@ describe('SIP registration ownership during recovery', () => {
     expect(await fake.options.registerGuard()).toBe(false);
     fake.reject = true;
     expect(await fake.options.registerGuard()).toBe(true);
+  });
+});
+
+describe('media preparation from the server pilot', () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it('prepares early media on a direct-only line and builds the connection with the default STUN', async () => {
+    const settings = { enabled: true, account: 'test', expiresAt: Date.now() + 8 * 3600000, iceTransportPolicy: 'all', earlyMedia: true, csrf: 'c', iceServers: [] };
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json(settings)));
+    const { manager } = await setup();
+    expect(await manager.prepareMedia!()).toEqual({ earlyMedia: true });
+    fake.options.userAgentOptions.sessionDescriptionHandlerFactory({ id: 's1' }, {});
+    expect(fake.factoryOptions.at(-1)).toEqual({ peerConnectionConfiguration: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }], iceTransportPolicy: 'all' } });
+  });
+  it('leaves an unpiloted line on its existing path without early media', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ enabled: false })));
+    const { manager } = await setup();
+    expect(await manager.prepareMedia!()).toEqual({ earlyMedia: false });
+    fake.options.userAgentOptions.sessionDescriptionHandlerFactory({ id: 's2' }, { given: true });
+    expect(fake.factoryOptions.at(-1)).toEqual({ given: true });
   });
 });

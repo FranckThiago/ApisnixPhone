@@ -17,6 +17,13 @@ describe('per-call media access', () => {
     const other = new MediaAccessClient('another-line', async () => Response.json(access()));
     expect(await other.load()).toBeUndefined();
   });
+  it('reads the early media choice and accepts a direct-only line, but never a relay without servers', async () => {
+    const direct = { ...access(), iceTransportPolicy: 'all', iceServers: [], earlyMedia: true };
+    expect(await new MediaAccessClient('test', async () => Response.json(direct)).load()).toMatchObject({ earlyMedia: true, iceServers: [] });
+    expect((await new MediaAccessClient('test', async () => Response.json(access())).load())?.earlyMedia).toBe(false);
+    expect(await new MediaAccessClient('test', async () => Response.json({ ...access(), earlyMedia: 'yes' })).load()).toMatchObject({ earlyMedia: false });
+    expect(await new MediaAccessClient('test', async () => Response.json({ ...access(), iceServers: [] })).load()).toBeUndefined();
+  });
   it('falls back to the existing direct path if not enabled or HTTP unavailable', async () => {
     for (const fetcher of [async () => Response.json({enabled:false}), async () => new Response('',{status:401}), async () => { throw new Error('offline'); }]) {
       expect(await new MediaAccessClient('test', fetcher).load()).toBeUndefined();
@@ -26,7 +33,7 @@ describe('per-call media access', () => {
     vi.useFakeTimers(); const initial = access();
     const fetcher = vi.fn().mockResolvedValueOnce(Response.json(initial)).mockRejectedValue(new Error('offline'));
     const client = new MediaAccessClient('test', fetcher);
-    expect(await client.load()).toEqual(initial);
+    expect(await client.load()).toEqual({ ...initial, earlyMedia: false });
     vi.setSystemTime(Date.now() + 9 * 3600000);
     expect(await client.load()).toBeUndefined();
   });

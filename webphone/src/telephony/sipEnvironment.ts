@@ -1,5 +1,5 @@
 import { MediaAccessClient, observeMedia, relayAvailable, type MediaAccess } from './mediaPath';
-import type { Manager, SipEnvironment } from './SipPhoneController';
+import type { CallMediaOptions, Manager, SipEnvironment } from './SipPhoneController';
 
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
 export const browserSipEnvironment: SipEnvironment = {
@@ -12,7 +12,7 @@ export const browserSipEnvironment: SipEnvironment = {
     let prepared: MediaAccess | undefined;
     let preparation = 0;
     const factory = Web.defaultSessionDescriptionHandlerFactory(() => microphone());
-    const prepareMedia = async () => {
+    const prepareMedia = async (): Promise<CallMediaOptions> => {
       const generation = ++preparation;
       let access = await mediaAccess.load();
       if (access?.iceTransportPolicy === 'relay' && !await relayAvailable(access.iceServers)) {
@@ -20,6 +20,7 @@ export const browserSipEnvironment: SipEnvironment = {
         access = { ...access, iceTransportPolicy: 'all' };
       }
       if (!retired && generation === preparation) prepared = access;
+      return { earlyMedia: access?.earlyMedia === true };
     };
     const manager = new Web.SessionManager(config.wssUrl, {
       aor: `sip:${credentials.username}@${config.domain}`,

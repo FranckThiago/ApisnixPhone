@@ -14,6 +14,10 @@ export interface ManagedSession {
 }
 
 interface Rejection { message: { statusCode?: number } }
+/** A provisional response; `body` carries the far end's SDP when it offers early media. */
+interface ProgressResponse { message: { statusCode?: number; body?: string } }
+/** What the media preparation decided for the next outgoing call. */
+export interface CallMediaOptions { earlyMedia: boolean }
 
 export interface ManagerDelegate {
   onServerConnect(): void;
@@ -32,14 +36,14 @@ export interface Manager {
   /** Random SIP contact identity, retained only while recovering this browser session. */
   contactName: string;
   /** Optional bounded media preparation, before creating an outgoing SIP session. */
-  prepareMedia?(): Promise<void>;
+  prepareMedia?(): Promise<CallMediaOptions | void>;
   connect(): Promise<void>;
   isConnected(): boolean;
   disconnect(): Promise<void>;
   register(options: { requestDelegate: { onAccept?(): void; onReject(response: Rejection): void } }): Promise<void>;
   unregister(): Promise<void>;
-  call(destination: string, inviterOptions: undefined, inviteOptions: {
-    requestDelegate: { onProgress(response: Rejection): void; onReject(response: Rejection): void };
+  call(destination: string, inviterOptions: { earlyMedia: true } | undefined, inviteOptions: {
+    requestDelegate: { onProgress(response: ProgressResponse): void; onReject(response: Rejection): void };
   }): Promise<unknown>;
   answer(session: ManagedSession): Promise<void>;
   decline(session: ManagedSession): Promise<void>;
@@ -141,6 +145,9 @@ export class SipPhoneController implements PhoneController {
   private credentials?: Credentials;
   private remoteAudio?: HTMLAudioElement;
   private voice?: RemoteVoice;
+  /** The far end's early media is audible: our own ringback stays silent from here on. */
+  private earlyAudio = false;
+  private stopEarlyAudioWatch?: () => void;
   private ringer = new Ringer();
   private audio: AudioSettings = { volume: 100, micGain: 100, ringtone: true, ringtoneSound: DEFAULT_RINGTONE, echoCancellation: true, noiseSuppression: true };
   private mic = new MicPipeline({ deviceId: 'default', gain: 100, echoCancellation: true, noiseSuppression: true });
@@ -319,6 +326,7 @@ export class SipPhoneController implements PhoneController {
     },
     onCallAnswered: () => {
       this.ringer.stop();
+      this.stopEarlyAudioWatch?.();
       const call = this.snapshot.call;
       const outbound = call?.direction === 'outbound' && call.phase !== 'active';
       this.callProgress.stop();
@@ -522,6 +530,8 @@ export class SipPhoneController implements PhoneController {
   }
 
   private finish(outcome: CallOutcome) {
+    this.stopEarlyAudioWatch?.();
+    this.earlyAudio = false;
     this.ringer.stop();
     this.callProgress.stop();
     this.mic.close();
@@ -599,16 +609,24 @@ export class SipPhoneController implements PhoneController {
     this.rejectionReason = undefined;
     this.localHangup = false;
     const id = `sip-${Date.now()}-${++this.outgoingSequence}`;
+    this.stopEarlyAudioWatch?.();
+    this.earlyAudio = false;
     this.update({ call: { id, direction: 'outbound', rawInput, dialTarget, remoteName, phase: 'dialing', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' }, error: undefined });
     // Digits, + and * go out exactly as typed; only # must be escaped inside a SIP URI.
     const destination = `sip:${dialTarget.replace(/#/g, '%23')}@${this.config.domain}`;
     const manager = this.manager;
-    const start = () => manager.call(destination, undefined, {
+    // Early media (a pilot choice of the server): the 183's answer is applied at once, so ICE and DTLS
+    // finish while the far end rings instead of after it answers.
+    const start = (media?: CallMediaOptions | void) => manager.call(destination, media?.earlyMedia ? { earlyMedia: true } : undefined, {
       requestDelegate: {
-        onProgress: () => {
-          if (this.snapshot.call?.id !== id || this.snapshot.call.phase !== 'dialing') return;
-          this.updateCall({ phase: 'ringing-out' });
-          this.callProgress.startRingback(this.audio.volume / 100);
+        onProgress: response => {
+          const call = this.snapshot.call;
+          if (call?.id !== id || (call.phase !== 'dialing' && call.phase !== 'ringing-out')) return;
+          if (call.phase === 'dialing') {
+            this.updateCall({ phase: 'ringing-out' });
+            if (!this.earlyAudio) this.callProgress.startRingback(this.audio.volume / 100);
+          }
+          if (media?.earlyMedia && response.message.body && !this.stopEarlyAudioWatch) this.watchEarlyAudio(id);
         },
         onReject: response => {
           this.callProgress.stop();
@@ -618,9 +636,9 @@ export class SipPhoneController implements PhoneController {
         },
       },
     });
-    const attempt = manager.prepareMedia ? manager.prepareMedia().then(() => {
+    const attempt = manager.prepareMedia ? manager.prepareMedia().then(media => {
       if (this.manager !== manager || this.snapshot.call?.id !== id || this.snapshot.call.phase !== 'dialing') return;
-      return start();
+      return start(media);
     }) : start();
     void attempt.catch(error => {
       if (this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
@@ -718,9 +736,40 @@ export class SipPhoneController implements PhoneController {
     this.voice?.setLevel(settings.volume / 100);
     this.mic.update({ echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression });
     if (!settings.ringtone) this.ringer.stop();
-    if (this.snapshot.call?.phase === 'ringing-out') {
+    if (this.snapshot.call?.phase === 'ringing-out' && !this.earlyAudio) {
       this.callProgress.stop();
       this.callProgress.startRingback(settings.volume / 100);
     }
+  }
+
+  /**
+   * With early media, SIP.js attaches the far end's stream on the 183 while its audio is still silent:
+   * our ringback stops only once a remote track really receives sound (`unmute`), never on the mere announcement.
+   */
+  private watchEarlyAudio(callId: string) {
+    const element = this.remoteAudio;
+    if (!element) return;
+    const watched = new Set<MediaStreamTrack>();
+    const heard = () => {
+      if (this.snapshot.call?.id !== callId || this.snapshot.call.phase !== 'ringing-out') return;
+      this.earlyAudio = true;
+      this.callProgress.stop();
+      this.stopEarlyAudioWatch?.();
+    };
+    const inspect = () => {
+      const stream = element.srcObject as MediaStream | null;
+      for (const track of stream?.getAudioTracks?.() ?? []) {
+        if (watched.has(track)) continue;
+        watched.add(track);
+        track.addEventListener('unmute', heard);
+      }
+    };
+    element.addEventListener('loadstart', inspect);
+    this.stopEarlyAudioWatch = () => {
+      element.removeEventListener('loadstart', inspect);
+      watched.forEach(track => track.removeEventListener('unmute', heard));
+      this.stopEarlyAudioWatch = undefined;
+    };
+    inspect();
   }
 }

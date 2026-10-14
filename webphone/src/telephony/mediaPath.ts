@@ -4,7 +4,10 @@ export interface MediaAccess {
   account: string;
   expiresAt: number;
   iceTransportPolicy: RTCIceTransportPolicy;
+  /** Empty when the line keeps its direct path only. */
   iceServers: RTCIceServer[];
+  /** Apply the 183 answer so ICE and DTLS run while the far end still rings. */
+  earlyMedia: boolean;
   csrf: string;
 }
 export type MediaMetrics = Record<string, number | string>;
@@ -31,11 +34,11 @@ export class MediaAccessClient {
       if (value.enabled !== true) { this.cached = undefined; return; }
       if (value.account !== this.account || !Number.isFinite(value.expiresAt) || value.expiresAt! <= Date.now() + 60_000 ||
           !['all', 'relay'].includes(value.iceTransportPolicy ?? '') || typeof value.csrf !== 'string' ||
-          !Array.isArray(value.iceServers) || !value.iceServers.length || value.iceServers.length > 4 ||
+          !Array.isArray(value.iceServers) || value.iceServers.length > 4 || (value.iceTransportPolicy === 'relay' && !value.iceServers.length) ||
           !value.iceServers.every(server => typeof server.username === 'string' && typeof server.credential === 'string' &&
             Array.isArray(server.urls) && server.urls.length > 0 && server.urls.length <= 4 &&
             server.urls.every(url => typeof url === 'string' && /^turns?:[^\s]+$/i.test(url)))) throw new Error('Invalid ICE settings');
-      this.cached = value as MediaAccess;
+      this.cached = { ...value, earlyMedia: value.earlyMedia === true } as MediaAccess;
       return this.cached;
     } catch {
       // A temporary HTTP failure must not reuse expired credentials or another account's settings.

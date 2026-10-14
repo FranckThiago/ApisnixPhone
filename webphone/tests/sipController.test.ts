@@ -5,10 +5,10 @@ import type { CallProgressSoundPlayer } from '../src/telephony/audio';
 
 const session = (id: string, user = '', displayName = ''): ManagedSession => ({ id, remoteIdentity: { displayName, uri: { user } } });
 
-function harness() {
+function harness(remoteAudio?: HTMLAudioElement) {
   let delegate!: ManagerDelegate;
   let registerReject!: (status: number) => void;
-  let invite!: { onProgress(): void; onReject(status: number): void };
+  let invite!: { onProgress(response?: { message: { statusCode?: number; body?: string } }): void; onReject(status: number): void };
   const manager = {
     contactName: 'test-browser',
     connect: vi.fn(async () => delegate.onServerConnect()),
@@ -19,7 +19,7 @@ function harness() {
     }),
     unregister: vi.fn(async () => undefined),
     call: vi.fn(async (_destination: string, _options: undefined, options: Parameters<Manager['call']>[2]) => {
-      invite = { onProgress: () => options.requestDelegate.onProgress({ message: {} }),
+      invite = { onProgress: (response = { message: {} }) => options.requestDelegate.onProgress(response),
                  onReject: status => options.requestDelegate.onReject({ message: { statusCode: status } }) };
       delegate.onCallCreated(session('out'));
     }),
@@ -37,7 +37,7 @@ function harness() {
   };
   const environment: SipEnvironment = {
     createManager: (_config, _credentials, given) => { delegate = given; return manager; },
-    createRemoteAudio: () => undefined,
+    createRemoteAudio: () => remoteAudio,
   };
   const callProgress: CallProgressSoundPlayer = {
     startRingback: vi.fn(), answered: vi.fn(), stop: vi.fn(),
@@ -50,6 +50,78 @@ async function ready(h: ReturnType<typeof harness>) {
   await h.phone.connect({ username: 'alice', password: 'fictional' });
   h.delegate.onRegistered();
 }
+
+/** A remote <audio> as SIP.js drives it: the far end's stream is attached on the 183, its track unmutes on the first packets. */
+function fakeRemoteAudio() {
+  const track = Object.assign(new EventTarget(), { muted: true, readyState: 'live' }) as unknown as MediaStreamTrack;
+  const element = Object.assign(new EventTarget(), { srcObject: null as MediaStream | null, volume: 1, muted: false, paused: false,
+    play: vi.fn(async () => undefined), load: vi.fn(), setAttribute: vi.fn() }) as unknown as HTMLAudioElement & { srcObject: MediaStream | null };
+  const attach = () => { element.srcObject = { getAudioTracks: () => [track] } as unknown as MediaStream; element.dispatchEvent(new Event('loadstart')); };
+  const unmute = () => { (track as { muted: boolean }).muted = false; track.dispatchEvent(new Event('unmute')); };
+  return { element, attach, unmute };
+}
+
+describe('early media chosen by the server for this line', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+  it('passes the choice of the media preparation to the invitation, and nothing otherwise', async () => {
+    const h = harness(); await ready(h);
+    Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: true }) });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    expect(h.manager.call.mock.calls[0]![1]).toEqual({ earlyMedia: true });
+    // An unanswered outbound call ends on a microtask (the INVITE's final status is awaited first).
+    h.delegate.onCallHangup(session('out')); await vi.advanceTimersByTimeAsync(0); h.phone.dismiss();
+    Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: false }) });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    expect(h.manager.call.mock.calls[1]![1]).toBeUndefined();
+    h.delegate.onCallHangup(session('out')); await vi.advanceTimersByTimeAsync(0); h.phone.dismiss();
+    Object.assign(h.manager, { prepareMedia: async () => undefined });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    expect(h.manager.call.mock.calls[2]![1]).toBeUndefined();
+  });
+  it('keeps our ringback until the far end is really heard, then leaves the line to it', async () => {
+    const remote = fakeRemoteAudio();
+    const h = harness(remote.element); await ready(h);
+    Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: true }) });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    remote.attach();
+    h.invite.onProgress({ message: { statusCode: 183, body: 'v=0 fictional sdp' } });
+    expect(h.phone.getSnapshot().call?.phase).toBe('ringing-out');
+    expect(h.callProgress.startRingback).toHaveBeenCalledTimes(1);
+    expect(h.callProgress.stop).not.toHaveBeenCalled();
+    h.invite.onProgress({ message: { statusCode: 180 } });
+    expect(h.callProgress.startRingback).toHaveBeenCalledTimes(1);
+    remote.unmute();
+    expect(h.callProgress.stop).toHaveBeenCalledTimes(1);
+    h.phone.applyAudio({ volume: 50, micGain: 100, ringtone: true, ringtoneSound: 'classic', echoCancellation: true, noiseSuppression: true });
+    expect(h.callProgress.startRingback).toHaveBeenCalledTimes(1);
+    h.delegate.onCallAnswered(session('out'));
+    expect(h.callProgress.answered).toHaveBeenCalledWith(0.5);
+    h.delegate.onCallHangup(session('out')); h.phone.dismiss();
+    // The next call starts afresh with our own ringback.
+    h.phone.call('x', '+33100000002'); await vi.advanceTimersByTimeAsync(0);
+    h.invite.onProgress({ message: { statusCode: 180 } });
+    expect(h.callProgress.startRingback).toHaveBeenCalledTimes(2);
+  });
+  it('ignores a provisional response without SDP and a line without early media', async () => {
+    const remote = fakeRemoteAudio();
+    const h = harness(remote.element); await ready(h);
+    Object.assign(h.manager, { prepareMedia: async () => ({ earlyMedia: true }) });
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    remote.attach();
+    h.invite.onProgress({ message: { statusCode: 180 } });
+    remote.unmute();
+    expect(h.callProgress.stop).not.toHaveBeenCalled();
+    h.delegate.onCallHangup(session('out'));
+    const direct = fakeRemoteAudio();
+    const d = harness(direct.element); await ready(d);
+    d.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    direct.attach();
+    d.invite.onProgress({ message: { statusCode: 183, body: 'v=0 fictional sdp' } });
+    direct.unmute();
+    expect(d.callProgress.stop).not.toHaveBeenCalled();
+  });
+});
 
 it('does not place a delayed outgoing call after cancellation during relay preparation', async () => {
   const h=harness(); await ready(h);
