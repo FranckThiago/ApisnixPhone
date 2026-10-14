@@ -1,27 +1,21 @@
 import { t } from '../i18n';
 import { findRingtone, previewSeconds, scheduleRingtone } from './ringtones';
 
-/**
- * Microphone chain: device → gain → the track sent to the call.
- * Each call owns its output track: SIP.js stops that track when it closes the
- * session. Never reuse an amplified destination across calls.
- */
+/** The call always receives the original microphone track, independently of Web Audio. */
 export interface MicSettings {
   deviceId: string;
-  /** 0–200 %, 100 = unchanged. */
-  gain: number;
+  /** Legacy input, ignored: microphone level is always 100 %. */
+  gain?: number;
   echoCancellation: boolean;
   noiseSuppression: boolean;
 }
 
 export class MicPipeline {
   private context?: AudioContext;
-  private gainNode?: GainNode;
-  private destination?: MediaStreamAudioDestinationNode;
   private source?: MediaStreamAudioSourceNode;
+  private analyser?: AnalyserNode;
   private input?: MediaStream;
-  /** True when the raw microphone is sent because the gain chain could not run. */
-  bypassed = false;
+  private generation = 0;
 
   constructor(private settings: MicSettings) {}
 
@@ -30,87 +24,53 @@ export class MicPipeline {
     return { audio: { deviceId: deviceId === 'default' ? undefined : { exact: deviceId }, echoCancellation, noiseSuppression, autoGainControl: true }, video: false };
   }
 
-  /** Asks for the microphone; rejects with the browser's error when refused or missing. */
-  /** `forceChain` is for the settings' level meter, which needs the chain even at 100 %. */
-  async open(forceChain = false): Promise<MediaStream> {
+  /** The optional meter observes the raw input; it is never in the call's audio path. */
+  async open(withMeter = false): Promise<MediaStream> {
+    const generation = ++this.generation;
     const input = await navigator.mediaDevices.getUserMedia(this.constraints());
-    // At the original level there is nothing to adjust: the microphone goes straight to the call.
-    // The gain chain is one more thing that can fail, so only those who move the setting go through it.
-    if (this.settings.gain === 100 && !forceChain) return this.direct(input);
-    // The output unlocked at sign-in is reused: a context created here, without a recent click, may stay
-    // asleep, and a sleeping chain produces no audio at all — the far end would hear nothing.
-    this.context ??= soundContext() ?? new AudioContext();
-    if (this.context.state !== 'running') await this.context.resume().catch(() => undefined);
-    // Being heard matters more than the sensitivity setting: send the microphone as it is.
-    if (this.context.state !== 'running') return this.direct(input);
-    this.bypassed = false;
-    this.gainNode ??= this.context.createGain();
-    this.destination ??= this.context.createMediaStreamDestination();
-    this.gainNode.gain.value = this.settings.gain / 100;
-    this.gainNode.connect(this.destination);
-    this.attach(input);
-    return this.destination.stream;
-  }
-
-  private direct(input: MediaStream) {
-    this.input?.getTracks().forEach(track => track.stop());
-    this.source?.disconnect();
-    this.source = undefined;
+    // A hangup or a closed test can precede the browser's permission response.
+    if (generation !== this.generation) {
+      input.getTracks().forEach(track => track.stop());
+      throw new DOMException('Microphone request cancelled', 'AbortError');
+    }
+    this.close();
     this.input = input;
-    this.bypassed = true;
+    if (withMeter) {
+      try {
+        this.context = soundContext();
+        if (this.context) {
+          this.source = this.context.createMediaStreamSource(input);
+          this.analyser = this.context.createAnalyser();
+          this.analyser.fftSize = 512;
+          this.source.connect(this.analyser);
+        }
+      } catch {
+        this.source?.disconnect();
+        this.source = undefined;
+        this.analyser = undefined;
+      }
+    }
     return input;
   }
 
-  private attach(input: MediaStream) {
-    this.source?.disconnect();
-    this.input?.getTracks().forEach(track => track.stop());
-    this.input = input;
-    this.source = this.context!.createMediaStreamSource(input);
-    this.source.connect(this.gainNode!);
-  }
+  update(patch: Partial<MicSettings>) { Object.assign(this.settings, patch); }
 
-  setGain(gain: number) {
-    this.settings.gain = gain;
-    if (this.gainNode) this.gainNode.gain.value = gain / 100;
-  }
+  /** Device selection applies at the next call, without replacing its live track. */
+  async switchDevice(deviceId: string) { this.settings.deviceId = deviceId; }
 
-  update(patch: Partial<MicSettings>) {
-    Object.assign(this.settings, patch);
-  }
-
-  /** The previous microphone keeps working until the new one is really open. */
-  async switchDevice(deviceId: string) {
-    const previous = this.settings.deviceId;
-    this.settings.deviceId = deviceId;
-    if (!this.context || !this.input || this.bypassed) return;
-    try {
-      this.attach(await navigator.mediaDevices.getUserMedia(this.constraints()));
-    } catch (error) {
-      this.settings.deviceId = previous;
-      throw error;
-    }
-  }
-
-  /** Releases the microphone: nothing keeps listening after a call or a test. */
   close() {
+    this.generation++;
     this.source?.disconnect();
+    this.analyser?.disconnect();
     this.input?.getTracks().forEach(track => track.stop());
-    this.gainNode?.disconnect();
-    this.destination?.stream.getTracks().forEach(track => track.stop());
-    this.destination?.disconnect();
     this.source = undefined;
+    this.analyser = undefined;
     this.input = undefined;
-    this.gainNode = undefined;
-    this.destination = undefined;
-    // The shared AudioContext also plays sounds and the far end; keep it alive.
   }
 
-  /** Level after the gain, 0–1, for the settings meter. */
   createMeter(): (() => number) | null {
-    if (!this.context || !this.gainNode) return null;
-    const analyser = this.context.createAnalyser();
-    analyser.fftSize = 512;
-    this.gainNode.connect(analyser);
+    const analyser = this.analyser;
+    if (!analyser) return null;
     const samples = new Float32Array(analyser.fftSize);
     return () => {
       analyser.getFloatTimeDomainData(samples);
@@ -170,6 +130,7 @@ function keepSoundAwake() {
     for (const audio of locked) void audio.play().then(() => locked.delete(audio)).catch(() => undefined);
   };
   document.addEventListener('pointerdown', wake, true);
+  document.addEventListener('click', wake, true);
   document.addEventListener('keydown', wake, true);
 }
 
@@ -325,9 +286,18 @@ export class Ringer {
     output.gain.value = volume;
     output.connect(soundOutput(context));
     this.output = output;
+    let resuming = false;
+    const play = () => {
+      if (this.output === output && context.state === 'running') {
+        scheduleRingtone(context, output, context.currentTime + 0.02, ringtone);
+      }
+    };
     const cycle = () => {
-      if (context.state !== 'running') void context.resume().catch(() => undefined);
-      scheduleRingtone(context, output, context.currentTime + 0.02, ringtone);
+      if (context.state === 'running') return play();
+      // Do not accumulate notes on a frozen audio clock. Resume only this active ring.
+      if (resuming) return;
+      resuming = true;
+      void context.resume().then(play).catch(() => undefined).finally(() => { resuming = false; });
     };
     cycle();
     this.timer = setInterval(cycle, ringtone.period * 1000);

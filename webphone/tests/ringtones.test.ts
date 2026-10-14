@@ -92,3 +92,31 @@ describe('ringtone playback', () => {
     expect(context.oscillators).toHaveLength(ringtone.notes.length * 2);
   });
 });
+
+
+describe('ringtone after browser suspension', () => {
+  it.each([false, true])('does not queue notes while suspended; stopped = %s', async stopped => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    let resume!: () => void;
+    const pending = new Promise<void>(resolve => { resume = resolve; });
+    class SuspendedContext extends FakeContext {
+      state = 'suspended';
+      resume() { return pending; }
+    }
+    vi.stubGlobal('AudioContext', SuspendedContext);
+    const { Ringer } = await import('../src/telephony/audio');
+    const ringer = new Ringer();
+    ringer.start(1, 'retro');
+    const context = FakeContext.last!;
+    vi.advanceTimersByTime(20000);
+    expect(context.oscillators).toHaveLength(0);
+    if (stopped) ringer.stop();
+    context.state = 'running';
+    resume();
+    await pending;
+    await Promise.resolve();
+    expect(context.oscillators).toHaveLength(stopped ? 0 : findRingtone('retro').notes.length);
+    ringer.stop();
+  });
+});

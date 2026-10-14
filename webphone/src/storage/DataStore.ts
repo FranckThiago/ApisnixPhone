@@ -102,6 +102,7 @@ export class DataStore {
   }
 
   private emit(save = true) {
+    this.data = { ...this.data, preferences: { ...this.data.preferences, micGain: 100 } };
     this.normalizeNumbers();
     this.listeners.forEach(listener => listener());
     if (save && !this.temporary && this.profile && (this.server || this.data.preferences.persist) && this.persistence) {

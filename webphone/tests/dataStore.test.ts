@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DataStore, findContact, MAX_CALLS, searchContacts, type AppData } from '../src/storage/DataStore';
+import { DataStore, emptyData, findContact, MAX_CALLS, searchContacts, type AppData } from '../src/storage/DataStore';
 import type { Persistence } from '../src/storage/persistence';
 
 function memoryPersistence() {
@@ -79,5 +79,25 @@ describe('session continuity', () => {
     expect(store.getSnapshot().contacts).toHaveLength(1);
     await store.open('pbx:bob', false);
     expect(store.getSnapshot().contacts).toHaveLength(0);
+  });
+});
+
+
+describe('fixed microphone level', () => {
+  it.each([0, 95, 200])('normalizes a saved level of %i without changing other profile data', async micGain => {
+    const { saved, persistence } = memoryPersistence();
+    const data = emptyData();
+    data.preferences = { ...data.preferences, persist: true, micGain, volume: 40 };
+    data.calls = [{ ...call(Date.now()), id: 'kept', tags: ['kept'], note: 'kept' }];
+    saved.set('profile', data);
+    const store = new DataStore(persistence);
+    await store.open('profile', true);
+    expect(store.getSnapshot().preferences.micGain).toBe(100);
+    expect(store.getSnapshot().preferences.volume).toBe(40);
+    expect(store.getSnapshot().calls).toEqual(data.calls);
+    store.setPreferences({ micGain: 0 });
+    await store.flush();
+    expect(saved.get('profile')?.preferences.micGain).toBe(100);
+    expect(store.getSnapshot().preferences.micGain).toBe(100);
   });
 });

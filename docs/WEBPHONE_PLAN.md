@@ -319,7 +319,7 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 | Langue | Français par défaut ; anglais et espagnol au choix sur l'écran de connexion et dans Réglages → Apparence (demande de Franck, 29 septembre), retenus par le navigateur |
 | Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
 | Densité | Confortable ; compacte possible sur petits écrans |
-| Blocs Audio | Réglages → Audio en trois blocs encadrés (demande de Franck, 8 octobre) : Micro (autorisation, périphérique, sensibilité, test, annulation d'écho, réduction de bruit), Écoute (casque/sortie, volume d'écoute), Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier) |
+| Blocs Audio | Réglages → Audio en trois blocs encadrés (demande de Franck, 8 octobre) : Micro (autorisation, périphérique, niveau fixe à 100 %, test, annulation d'écho, réduction de bruit), Écoute (casque/sortie, volume d'écoute), Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier) |
 | Micro | Périphérique système ; choix explicite possible |
 | Autorisation du micro | Ligne dédiée dans Réglages → Audio (demande de Franck, 28 septembre) : état lu par l'API Permissions quand elle existe, bouton qui redemande l'accès, étapes de déblocage quand le navigateur a retenu un refus — aucune page ne peut alors le forcer à redemander |
 | Sortie / casque | Sortie système ; choix seulement si API et permission disponibles |
@@ -738,7 +738,17 @@ Les fichiers locaux permettent la reprise sur ce Mac. Sur une autre machine,
 récupérer la branche publiée du dépôt ; les changements non committés ne sont
 pas synchronisés automatiquement et ne font pas partie de la mémoire distante.
 
-### Correctif du cycle de vie micro — 28 septembre 2026
+### Capture micro directe — 14 octobre 2026
+
+Le réglage de sensibilité est retiré. La piste originale est toujours envoyée
+à 100 %, y compris avec un ancien profil à un autre niveau. Le test micro
+utilise un analyseur séparé, sans transformation de la piste envoyée.
+L’ancienne chaîne décrite ci-dessous est supprimée ; le volume d’écoute et
+les traitements natifs écho/bruit restent réglables. La sonnerie ne programme
+plus de notes tant que le contexte audio est suspendu. Les onglets mobiles
+gelés/fermés ne sont toujours pas réveillés par ce correctif.
+
+### Historique : correctif du cycle de vie micro — 28 septembre 2026
 
 La chaîne de sensibilité du micro possède une destination par appel. Au
 raccrochage, `MicPipeline.close()` libère entrée, gain et destination ; le

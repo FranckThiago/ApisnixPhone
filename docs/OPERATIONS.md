@@ -1,5 +1,26 @@
 # Construction et validation
 
+## Micro direct et sonnerie — 14 octobre 2026
+
+Release préparée `20261014-audio-direct` ; cible actuelle contrôlée sur Hermes
+`20261013-annonces`. Publication statique par bascule atomique après copie
+protégée de la précédente release, manifeste vérifié et lecture Caddy testée.
+Pas de migration serveur : les profils passent à `micGain: 100` lors de leur
+chargement/sauvegarde par le nouveau client. Les onglets déjà ouverts doivent
+être actualisés hors appel. Aucun redémarrage, changement PBX, ICE, DNS ou
+pare-feu. Retour ciblé : vérifier que `current` vise la nouvelle release avant
+de le repointer vers `20261013-annonces`, sans restauration globale des profils.
+
+Pour entendre les appels : Réglages → Audio, activer Sonnerie et utiliser le
+bouton Écouter d'une sonnerie pour autoriser/tester le son par un clic. Vérifier
+le volume multimédia de l'appareil et l'absence de sourdine du site. La ligne
+doit être prête et la page active ; la suspension ou fermeture du navigateur
+Android peut empêcher la réception/sonnerie. Les notifications visuelles ne
+remplacent pas l'autorisation audio. Références :
+[Chrome autoplay](https://developer.chrome.com/blog/autoplay/),
+[cycle de vie des pages](https://developer.chrome.com/docs/web-platform/page-lifecycle-api).
+
+
 ## Annonces APISNIX dans le téléphone web — 13 octobre 2026
 
 **En service `20261013-annonces`, source `1b7c03c`, à 17:44:22 Douala.**

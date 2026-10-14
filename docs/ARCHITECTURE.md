@@ -47,9 +47,15 @@ REGISTER, DTMF RTP, journaux SIP coupés, mot de passe en mémoire) ;
 `sipEnvironment.ts` charge SIP.js à la demande, crée l'élément audio hors des
 vues. Depuis le 8 octobre, aucun Web Lock ne bloque l’authentification. Le contrôleur est choisi au chargement :
 `VITE_APP_MODE=live` avec `VITE_SIP_DOMAIN` et `VITE_SIP_WSS_URL`, sinon démo.
-`audio.ts` transmet le micro tel quel à 100 % de sensibilité ; une chaîne Web
-Audio (périphérique → gain → piste envoyée) ne s'intercale que si le réglage a
-été déplacé, avec repli sur le micro brut si elle ne démarre pas ; la sonnerie est générée, sans fichier audio,
+`audio.ts` transmet toujours la piste originale du micro à 100 %, sans chaîne
+Web Audio dans l'émission. Le champ historique `micGain` est normalisé à 100
+par `DataStore` avant notification/persistance ; les anciennes valeurs sont
+également ignorées par la capture. Le test observe une branche analyseur
+séparée, sans sortie haut-parleur. Une acquisition tardive après fermeture est
+annulée et ses pistes arrêtées. La sonnerie attend un contexte audio actif
+avant de programmer des notes, sans accumulation pendant sa suspension ; une
+reprise tardive après raccrochage ne la relance pas. Clic, pointeur et clavier
+réveillent les sorties autorisées. La sonnerie est générée, sans fichier audio,
 à partir de la bibliothèque `ringtones.ts` (partitions de notes Web Audio, calmes ou bruyantes ; choix
 `ringtoneSound` des préférences, identifiant inconnu ramené à Classique). `keypadTone` joue localement la
 double fréquence DTMF d'une touche du pavé ; le DTMF envoyé pendant un appel reste celui de SIP.js.

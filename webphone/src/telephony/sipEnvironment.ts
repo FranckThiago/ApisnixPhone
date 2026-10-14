@@ -38,7 +38,7 @@ export const browserSipEnvironment: SipEnvironment = {
         userAgentString: 'ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2',
         logBuiltinEnabled: false,
         logConfiguration: false,
-        // The microphone goes through the application's gain chain.
+        // The original microphone track goes directly to the call, without Web Audio.
         sessionDescriptionHandlerFactory: Web.defaultSessionDescriptionHandlerFactory(() => microphone()),
         sessionDescriptionHandlerFactoryOptions: {
           // Audio goes through the PBX's public address: do not hold the call back waiting for every ICE candidate.

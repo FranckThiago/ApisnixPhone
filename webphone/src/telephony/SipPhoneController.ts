@@ -707,7 +707,6 @@ export class SipPhoneController implements PhoneController {
   applyAudio(settings: AudioSettings) {
     this.audio = settings;
     this.voice?.setLevel(settings.volume / 100);
-    this.mic.setGain(settings.micGain);
     this.mic.update({ echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression });
     if (!settings.ringtone) this.ringer.stop();
     if (this.snapshot.call?.phase === 'ringing-out') {

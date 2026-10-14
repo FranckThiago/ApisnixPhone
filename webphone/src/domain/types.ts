@@ -58,7 +58,7 @@ export interface Preferences {
   density: 'comfortable' | 'compact';
   /** Listening volume, 0–200 %: above 100 % the voice and the sounds are amplified. */
   volume: number;
-  /** Microphone sensitivity, 0–200 %. */
+  /** Legacy persisted field, normalized to 100 % on every profile load/update. */
   micGain: number;
   ringtone: boolean;
   /** Ringtone of the library; an unknown one falls back to the original. */

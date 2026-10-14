@@ -1,5 +1,19 @@
 # État du projet
 
+## Micro direct et reprise de sonnerie — 14 octobre 2026
+
+Correction validée localement, publication en préparation `20261014-audio-direct`.
+Sensibilité retirée ; micro fixé à 100 % à la lecture et à l’écriture des
+préférences, piste brute envoyée même pour les anciens profils. Analyseur
+séparé pour le test, acquisition tardive annulée après fermeture. Sonnerie
+programmée seulement lorsque le contexte audio fonctionne, avec garde contre
+une reprise après raccrochage ; réveil également sur clic tactile.
+173 tests, typage, lint et build réussis. Aucun changement PBX ou de route
+média ; le délai de négociation ICE et les coupures réseau observés en
+production ne sont pas considérés résolus par ce changement. Les détails
+clients restent dans le dépôt privé de gestion. Manuels clients inchangés.
+
+
 ## Annonces APISNIX dans le téléphone web — 13 octobre 2026
 
 **En service `20261013-annonces`, source `1b7c03c`, 17:44:22 Douala.**

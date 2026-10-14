@@ -20,7 +20,7 @@ describe('microphone across consecutive calls', () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  it.each([50, 150, 200])('sends a fresh live track at %i %% after SIP.js stops the previous call track', async (gain) => {
+  it.each([0, 50, 95, 100, 150, 200])('sends a fresh live track at %i %% after SIP.js stops the previous call track', async (gain) => {
     const { MicPipeline } = await import('../src/telephony/audio');
     const mic = new MicPipeline({ deviceId: 'usb', gain, echoCancellation: true, noiseSuppression: true });
     const first = await mic.open();
@@ -44,7 +44,47 @@ describe('microphone across consecutive calls', () => {
     const second = await mic.open();
     expect(first.getAudioTracks()[0]!.readyState).toBe('ended');
     expect(second.getAudioTracks()[0]!.readyState).toBe('live');
-    expect(mic.bypassed).toBe(true);
+    expect(second).toBe(await vi.mocked(navigator.mediaDevices.getUserMedia).mock.results[1]!.value);
     mic.close();
   });
+  it.each([0, 95, 200])('ignores legacy gain %i even when Web Audio is unavailable', async gain => {
+    vi.stubGlobal('AudioContext', class { constructor() { throw new Error('Unavailable'); } });
+    const { MicPipeline } = await import('../src/telephony/audio');
+    const mic = new MicPipeline({ deviceId: 'default', gain, echoCancellation: true, noiseSuppression: true });
+    const actual = await mic.open();
+    expect(actual).toBe(await vi.mocked(navigator.mediaDevices.getUserMedia).mock.results[0]!.value);
+    expect(actual.getAudioTracks()[0]!.readyState).toBe('live');
+    mic.close();
+  });
+
+  it('releases a microphone that arrives after the test or call was closed', async () => {
+    const input = stream();
+    let resolve!: (value: MediaStream) => void;
+    vi.mocked(navigator.mediaDevices.getUserMedia).mockReturnValue(new Promise(done => { resolve = done; }));
+    const { MicPipeline } = await import('../src/telephony/audio');
+    const mic = new MicPipeline({ deviceId: 'default', echoCancellation: true, noiseSuppression: true });
+    const opening = mic.open();
+    mic.close();
+    resolve(input as unknown as MediaStream);
+    await expect(opening).rejects.toMatchObject({ name: 'AbortError' });
+    expect(input.getAudioTracks()[0]!.readyState).toBe('ended');
+  });
+
+  it('observes the original track without sending it through the meter', async () => {
+    const connect = vi.fn();
+    const analyser = { fftSize: 512, disconnect: vi.fn(), getFloatTimeDomainData: (samples: Float32Array) => samples.fill(0.5) };
+    vi.stubGlobal('AudioContext', class extends Context {
+      createMediaStreamSource = () => ({ connect, disconnect: vi.fn() });
+      createAnalyser = () => analyser;
+    });
+    const { MicPipeline } = await import('../src/telephony/audio');
+    const mic = new MicPipeline({ deviceId: 'default', echoCancellation: true, noiseSuppression: true });
+    const actual = await mic.open(true);
+    expect(actual).toBe(await vi.mocked(navigator.mediaDevices.getUserMedia).mock.results[0]!.value);
+    expect(connect).toHaveBeenCalledExactlyOnceWith(analyser);
+    expect(mic.createMeter()?.()).toBe(0.5);
+    mic.close();
+    expect(analyser.disconnect).toHaveBeenCalledOnce();
+  });
+
 });

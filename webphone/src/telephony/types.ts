@@ -90,6 +90,7 @@ export interface AudioSettings {
   /** Listening volume of this application, 0–200 (above 100 amplified); not the computer's volume. */
   volume: number;
   /** Microphone sensitivity, 0–200 %, 100 = unchanged. */
+  /** Legacy callers may supply this field; capture always uses the original track. */
   micGain: number;
   ringtone: boolean;
   /** Ringtone of the library played for an incoming call. */

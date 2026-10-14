@@ -120,20 +120,24 @@ function MicTest({ onAllowed }: { onAllowed(): void }) {
     setLevel(0);
   };
   useEffect(() => stop, []);
-  useEffect(() => { pipeline.current?.setGain(preferences.micGain); }, [preferences.micGain]);
 
   const start = async () => {
+    if (pipeline.current) return;
     setError('');
-    const mic = new MicPipeline({ deviceId: preferences.inputDevice, gain: preferences.micGain,
+    const mic = new MicPipeline({ deviceId: preferences.inputDevice,
                                   echoCancellation: preferences.echoCancellation, noiseSuppression: preferences.noiseSuppression });
+    pipeline.current = mic;
+    setRunning(true);
     try {
       await mic.open(true);
     } catch (failure) {
       mic.close();
+      if (pipeline.current !== mic) return;
+      pipeline.current = null;
+      setRunning(false);
       return setError(microphoneErrorMessage(failure));
     }
-    pipeline.current = mic;
-    setRunning(true);
+    if (pipeline.current !== mic) return;
     onAllowed();
     const meter = mic.createMeter();
     const tick = () => { if (meter) setLevel(meter()); frame.current = requestAnimationFrame(tick); };
@@ -180,9 +184,6 @@ export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
           <option value="default">{t('audio.systemMic')}</option>
           {devices.inputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
         </select></label>
-      <label className="setting"><span><b>{t('audio.sensitivity')}</b><small>{t('audio.sensitivityHint', { value: preferences.micGain,
-          state: t(preferences.micGain === 100 ? 'audio.gainOriginal' : preferences.micGain > 100 ? 'audio.gainLouder' : 'audio.gainSofter') })}</small></span>
-        <input type="range" min={0} max={200} step={5} value={preferences.micGain} aria-label={t('audio.sensitivity')} onChange={event => set({ micGain: Number(event.target.value) })} /></label>
       {!demo && <MicTest onAllowed={refreshDevices} />}
       {micOptions}
       </AudioBlock>
