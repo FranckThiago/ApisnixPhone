@@ -13,6 +13,8 @@ import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { Recordings } from '../features/recordings/Recordings';
+import { NotificationOffer } from '../features/settings/NotificationOffer';
+import { showSystemNotification } from '../telephony/notifications';
 import { Settings } from '../features/settings/Settings';
 import { useI18n, type MessageKey } from '../i18n';
 import { bindWorkspaceLineSounds } from '../telephony/lineSounds';
@@ -77,7 +79,7 @@ function Workspace() {
       const label = callback.name ?? callback.number;
       notify(t('callbacks.dueToast', { name: label }));
       if (preferences.notifications && !demo && typeof Notification !== 'undefined' && Notification.permission === 'granted')
-        new Notification(t('callbacks.notificationTitle'), { body: t('callbacks.notificationBody', { name: label }) + (callback.note ? ` — ${callback.note}` : '') });
+        showSystemNotification(t('callbacks.notificationTitle'), { body: t('callbacks.notificationBody', { name: label }) + (callback.note ? ` — ${callback.note}` : ''), tag: `apisnixphone-callback-${callback.id}` });
     }
   }, [dueCallbacks, now, notify, preferences.notifications, demo, t]);
 
@@ -102,10 +104,8 @@ function Workspace() {
   }, [ringingIn, call, unseenMissed, t, language]);
   useEffect(() => {
     if (!ringingIn || demo || !preferences.notifications || !document.hidden || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-    const notification = new Notification(t('banner.incoming'), { body: call?.remoteName ?? call?.dialTarget ?? '', tag: 'apisnixphone-incoming' });
-    notification.onclick = () => window.focus();
-    return () => notification.close();
-  }, [ringingIn, demo, preferences.notifications, call?.remoteName, call?.dialTarget, t]);
+    return showSystemNotification(t('banner.incoming'), { body: call?.remoteName ?? call?.dialTarget ?? '', tag: `apisnixphone-incoming-${call?.id}` });
+  }, [ringingIn, demo, preferences.notifications, call?.id, call?.remoteName, call?.dialTarget, t]);
   const dark = document.documentElement.dataset.theme === 'dark';
   const inCall = call && call.phase !== 'ended';
   const signOut = () => {
@@ -195,6 +195,7 @@ function Workspace() {
       </div>
       {/* Mounted once, outside the views: the call survives every navigation. */}
       <PhoneDock />
+      <NotificationOffer />
       <CommandPalette />
     </div>
   );

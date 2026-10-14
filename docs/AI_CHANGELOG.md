@@ -1,5 +1,25 @@
 # Journal des changements
 
+## Notifications après premier appel et message 480 — 14 octobre 2026
+
+Préparé pour publication `20261014-notification-offer` : après le premier
+appel sortant terminé ou entrant décroché puis terminé, proposition unique
+par navigateur **Activer / Plus tard**. La permission système n'est demandée
+qu'au clic ; aucune demande en démo, en appel, si déjà accordée/refusée ou
+après rejet de la proposition. Choix local, jamais propagé à un autre appareil.
+Réactivation possible dans Réglages. Les notifications autorisées reviennent
+après reconnexion, sauf désactivation explicite sur cet appareil.
+
+Notifications mobiles via `ServiceWorkerRegistration.showNotification`,
+repli constructeur seulement sans support Service Worker et erreurs absorbées.
+Le worker ne cache aucune page, n'intercepte aucun fetch et ne reçoit aucun
+push : il affiche les événements reçus par la page et ramène vers celle-ci au
+clic. Aucun réveil d'une ligne SIP gelée/fermée garanti. Message 480 neutralisé
+car le code seul ne distingue pas un refus opérateur d'une ligne occupée.
+181 tests, typage et lint réussis ; essai vocal Android réel non effectué.
+Documentation technique mise à jour ; manuels clients inchangés.
+
+
 ## Micro direct et reprise de sonnerie — 14 octobre 2026
 
 **En service `20261014-audio-direct`, source `5c6b523`, à 13:50:31 Douala.**

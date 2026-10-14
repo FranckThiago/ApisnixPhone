@@ -234,7 +234,7 @@ describe('SIP controller', () => {
     const cases = [
       [403, 'failed', 'Forbidden — appel interdit par le serveur'],
       [404, 'failed', 'Not Found — numéro ou destination introuvable'],
-      [480, 'failed', '— appel temporairement refusé. Un ancien appel peut encore occuper votre ligne ; si cela persiste, contactez votre administrateur'],
+      [480, 'failed', '— appel indisponible pour le moment. Réessayez ; si cela persiste, contactez votre administrateur'],
       [486, 'busy', 'Busy Here — ligne occupée'],
       [488, 'failed', 'Not Acceptable Here — média ou codec refusé'],
       [503, 'failed', 'Service Unavailable — service téléphonique indisponible'],

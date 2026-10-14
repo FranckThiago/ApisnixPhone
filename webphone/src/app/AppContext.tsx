@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
+import { notificationsEnabled } from '../telephony/notifications';
 import { bindPageLifecycle } from '../telephony/pageLifecycle';
 import { t, language, setLanguage } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
@@ -138,7 +139,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     lastError.current = error;
   }), [notify]);
 
-  // Volume, microphone sensitivity and devices follow the settings live, even during a call.
+  // Listening volume and devices follow the settings; the microphone stays at 100 %.
   useEffect(() => {
     let previous = store.getSnapshot().preferences;
     const apply = (initial: boolean) => {
@@ -185,6 +186,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } else {
       setRecordingsAccess({ state: 'opening' });
       setRecordingsAccess(await openLiveWorkspace(store, recordings, credentials, profile));
+      store.setPreferences({ notifications: notificationsEnabled() });
     }
     applyTheme(store.getSnapshot().preferences.theme);
     const savedLanguage = store.getSnapshot().preferences.language;

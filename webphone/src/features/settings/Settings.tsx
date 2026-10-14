@@ -7,6 +7,7 @@ import { applyTheme } from '../../app/theme';
 import type { Theme } from '../../domain/types';
 import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
 import { AudioBlock, AudioSettings } from './AudioSettings';
+import { disableNotifications, enableNotifications } from '../../telephony/notifications';
 import { RingtonePicker } from './RingtonePicker';
 
 function Section({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
@@ -83,11 +84,12 @@ export function Settings() {
         <Section icon={<BellRing size={18} />} title={t('settings.calls')}>
           <Toggle label={t('settings.notifications')} hint={t('settings.notificationsHint')}
             checked={preferences.notifications} onChange={async wanted => {
-              if (!wanted) return set({ notifications: false });
+              if (!wanted) { if (!demo) disableNotifications(); return set({ notifications: false }); }
               // The demo never asks the browser for a permission.
               if (demo) { set({ notifications: true }); return notify(t('settings.demoNoPermission')); }
-              if (typeof Notification === 'undefined') return notify(t('settings.notificationsUnavailable'), 'danger');
-              set({ notifications: (await Notification.requestPermission()) === 'granted' });
+              const permission = await enableNotifications();
+              set({ notifications: permission === 'granted' });
+              if (permission !== 'granted') notify(t(permission === 'denied' ? 'notifications.denied' : 'settings.notificationsUnavailable'), 'info');
             }} />
           <div className="setting"><span><b>{t('settings.autoAnswer')}</b><small>{t('settings.autoAnswerHint')}</small></span><span className="pill">{t('settings.off')}</span></div>
           <div className="setting"><span><b>{t('settings.autoPrefix')}</b><small>{t('settings.autoPrefixHint')}</small></span><span className="pill">{t('settings.none')}</span></div>

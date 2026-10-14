@@ -431,3 +431,11 @@ a.ghost { text-decoration: none; }
 .recovery-page p, .recovery-panel p { margin: 16px 0; }
 
 .line-alert button:disabled { opacity: .65; cursor: wait; }
+
+/* Outside both panes: the offer remains visible on the mobile phone view. */
+.line-alert.notification-offer { position: fixed; z-index: 80; inset-inline: 14px; bottom: 24px; margin: 0 auto; max-width: 640px; box-shadow: var(--shadow-lg); }
+@media (max-width: 920px) {
+  .line-alert.notification-offer { bottom: calc(96px + env(safe-area-inset-bottom)); flex-wrap: wrap; }
+  .notification-offer p { flex-basis: calc(100% - 32px); }
+  .notification-offer button:first-of-type { margin-left: auto; }
+}

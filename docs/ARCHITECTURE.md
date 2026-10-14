@@ -267,3 +267,24 @@ service de fond : une page gelée ne peut pas promettre de rester joignable.
 Comparaison : [Zoiper réagit aux changements réseau du système](https://www.zoiper.com/en/support/home/article/66/Network%20change%20detected) ;
 [Chrome peut geler les tâches d'un onglet](https://developer.chrome.com/docs/web-platform/page-lifecycle-api).
 Aucun constat public sur des comptes clients dans ce dépôt.
+
+
+## Notifications du navigateur — 14 octobre 2026
+
+`NotificationOffer` propose l'autorisation une seule fois après un appel
+sortant terminé ou entrant répondu puis terminé, hors appel actif. Le clic
+Activer appelle `enableNotifications()` dans le geste utilisateur. Le module
+`telephony/notifications.ts` conserve seulement le choix de notifications et
+le fait que la proposition a été vue dans deux clés locales au navigateur ;
+aucun identifiant client ni secret. La permission reste propre à l'origine.
+La connexion restaure l'activation locale ; le profil serveur conserve toujours
+`notifications: false`, conformément à la séparation des appareils.
+
+Le script statique `/notifications-sw.js` permet `showNotification()` sur
+Android, où le constructeur `Notification` est généralement interdit. Il
+ramène une fenêtre du téléphone au premier plan au clic ou ouvre `/`. Aucun
+fetch, cache, push, secret ou contrôle SIP dans ce worker. Son enregistrement
+est déclenché à l'activation ou au premier événement autorisé ; échec ou refus
+ne casse jamais l'interface d'appel. Une notification entrante en attente de
+création est annulée lorsque l'appel finit ; les alertes créées sont fermées
+par tag unique. Il ne garantit pas l'arrivée d'appels si la page est gelée.

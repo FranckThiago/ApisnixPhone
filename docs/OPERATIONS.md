@@ -1,5 +1,20 @@
 # Construction et validation
 
+## Notifications et message 480 — 14 octobre 2026
+
+Release préparée `20261014-notification-offer`, précédente attendue
+`20261014-audio-direct`. Publication statique avec sauvegarde protégée,
+manifestes et contrôle HTTPS ; aucune mutation PBX, route, compte ou base.
+Nouveau fichier `/notifications-sw.js`, servi par la même origine sous la CSP
+existante `default-src 'self'`. Le worker n'a pas de fetch/cache ni de push.
+Après rollback vers `20261014-audio-direct`, le worker peut rester enregistré
+mais n'intercepte pas les pages ; les nouveaux clients n'envoient plus d'alertes
+par ce mécanisme. Ne pas effacer globalement les préférences du navigateur.
+La proposition dépend de l'état de permission du navigateur ; en cas de refus,
+la réautorisation se fait dans les paramètres du site. Actualiser hors appel.
+Aucun appel réel ni permission accordée sur un appareil client pendant les tests.
+
+
 ## Micro direct et sonnerie — 14 octobre 2026
 
 **En service `20261014-audio-direct`, source `5c6b523`, à 13:50:31 Douala.**

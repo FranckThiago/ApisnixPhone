@@ -756,3 +756,14 @@ contexte audio partagé reste ouvert. SIP.js arrêtant les pistes envoyées,
 réutiliser une destination entre deux appels rendait les suivants muets quand
 la sensibilité différait de 100 %. Régression couverte à 50/150/200 %, avec
 contrôle distinct du trajet direct à 100 %. Aucun changement visible du guide.
+
+
+### Notifications après premier appel — 14 octobre 2026
+
+Proposition Activer / Plus tard, une seule fois par navigateur, après le
+premier appel sortant terminé (y compris échec) ou entrant répondu puis terminé.
+Pas sur un simple appel manqué, pas en démo ni pendant un appel. Autorisation
+native demandée uniquement au clic ; refus respecté, choix local conservé,
+activation manuelle dans Réglages toujours disponible. Sur mobile, affichage
+par worker de notifications dédié, sans push ni cache ; page ouverte et
+réception SIP nécessaires. Ce réglage ne change ni le micro ni la qualité audio.
