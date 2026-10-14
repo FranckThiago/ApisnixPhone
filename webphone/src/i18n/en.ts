@@ -542,7 +542,7 @@ export const en: Record<MessageKey, string> = {
 
   // Line messages
   'sip.missingCredentials': 'Enter your username and password.',
-  'sip.serverUnreachable': 'Cannot connect to the server. Check your network, then try again.',
+  'sip.serverUnreachable': 'Cannot connect to the server. Check your network. If your Internet connection is working again, refresh the page, then try again: the previous connection may still be stuck.',
   'sip.accessRefused': 'The server refused the connection. The account or its configuration may be the cause; contact your administrator.',
   'sip.authRefused': 'Username or password refused.',
   'sip.registerRefused': 'The server refused the registration ({status}).',

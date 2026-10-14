@@ -1,5 +1,12 @@
 # Journal des changements
 
+## Aide d'actualisation après échec de connexion — 14 octobre 2026
+
+Sur demande de Franck après le signalement Fcadyn006, le message d'échec
+d'ouverture de la liaison conseille d'actualiser la page si Internet fonctionne
+à nouveau : une ancienne liaison peut rester bloquée. Trois dictionnaires
+FR/EN/ES alignés ; comportement SIP et manuels inchangés. État courant mis à jour.
+
 ## Relais média ciblé et maintien des appels visibles — 14 octobre 2026
 
 **En service `20261014-media-relay`, source `09fb87f`, à 14:54:32 Douala.**

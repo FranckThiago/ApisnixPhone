@@ -541,7 +541,7 @@ export const fr = {
 
   // Line messages
   'sip.missingCredentials': 'Saisissez votre identifiant et votre mot de passe.',
-  'sip.serverUnreachable': 'Connexion au serveur impossible. Vérifiez votre réseau, puis réessayez.',
+  'sip.serverUnreachable': 'Connexion au serveur impossible. Vérifiez votre réseau. Si Internet fonctionne à nouveau, actualisez la page, puis réessayez : l’ancienne liaison peut rester bloquée.',
   'sip.accessRefused': 'Connexion refusée par le serveur. Le compte ou sa configuration peut être en cause ; contactez votre administrateur.',
   'sip.authRefused': 'Identifiant ou mot de passe refusé.',
   'sip.registerRefused': 'Le serveur a refusé l’enregistrement ({status}).',

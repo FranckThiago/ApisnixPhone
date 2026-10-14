@@ -542,7 +542,7 @@ export const es: Record<MessageKey, string> = {
 
   // Line messages
   'sip.missingCredentials': 'Escribe tu usuario y tu contraseña.',
-  'sip.serverUnreachable': 'No se puede conectar con el servidor. Comprueba tu red y vuelve a intentarlo.',
+  'sip.serverUnreachable': 'No se puede conectar con el servidor. Comprueba tu red. Si Internet vuelve a funcionar, actualiza la página e inténtalo de nuevo: la conexión anterior puede seguir bloqueada.',
   'sip.accessRefused': 'El servidor rechazó la conexión. Puede deberse a la cuenta o a su configuración; contacta con tu administrador.',
   'sip.authRefused': 'Usuario o contraseña rechazados.',
   'sip.registerRefused': 'El servidor rechazó el registro ({status}).',

@@ -1,5 +1,13 @@
 # État du projet
 
+## Aide en cas d'échec de connexion — 14 octobre 2026
+
+Le message « Connexion au serveur impossible » conseille désormais de vérifier
+le réseau puis, si Internet fonctionne à nouveau, d'actualiser la page et
+réessayer : l'ancienne liaison peut rester bloquée. Texte aligné en français,
+anglais et espagnol. Aucun changement des tentatives SIP, identifiants,
+reconnexions, appels ou manuels clients. Publication et retour dans OPERATIONS.
+
 ## Relais média ciblé et maintien des appels visibles — 14 octobre 2026
 
 **En service `20261014-media-relay`, source `09fb87f`, à 14:54:32 Douala.**
