@@ -2,7 +2,8 @@
 
 ## Notifications après premier appel et message 480 — 14 octobre 2026
 
-Préparé pour publication `20261014-notification-offer` : après le premier
+**En service `20261014-notification-offer`, source `15c0ffe`, 14:07:02 Douala.**
+Après le premier
 appel sortant terminé ou entrant décroché puis terminé, proposition unique
 par navigateur **Activer / Plus tard**. La permission système n'est demandée
 qu'au clic ; aucune demande en démo, en appel, si déjà accordée/refusée ou
@@ -16,7 +17,10 @@ Le worker ne cache aucune page, n'intercepte aucun fetch et ne reçoit aucun
 push : il affiche les événements reçus par la page et ramène vers celle-ci au
 clic. Aucun réveil d'une ligne SIP gelée/fermée garanti. Message 480 neutralisé
 car le code seul ne distingue pas un refus opérateur d'une ligne occupée.
-181 tests, typage et lint réussis ; essai vocal Android réel non effectué.
+181 tests, typage, lint et build live isolé réussis. Proposition affichée après
+appel entièrement simulé, vérifiée à 390 px et fermée par Plus tard ; aucune
+permission native accordée pendant le test. Index/assets/worker vérifiés en
+HTTPS, formulaire publié sans erreur console. Essai Android réel non effectué.
 Documentation technique mise à jour ; manuels clients inchangés.
 
 

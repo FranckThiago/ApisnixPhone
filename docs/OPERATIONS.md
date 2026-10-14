@@ -2,9 +2,22 @@
 
 ## Notifications et message 480 — 14 octobre 2026
 
-Release préparée `20261014-notification-offer`, précédente attendue
-`20261014-audio-direct`. Publication statique avec sauvegarde protégée,
-manifestes et contrôle HTTPS ; aucune mutation PBX, route, compte ou base.
+**En service `20261014-notification-offer`, source `15c0ffe`, à 14:07:02 Douala.**
+Précédente cible vérifiée `20261014-audio-direct`. Build live isolé depuis le
+commit, npm ci ; 267 fichiers. Archive SHA-256
+`337dc4e35fb76da6e454ecdb03bab6f1f2c5d434b79ed50d3125f8f2da9cf3ac`.
+Sauvegarde 0700, manifeste, archive et reçu sur Hermes dans
+`/root/apisnix-phone-backups/20261014-notification-offer/`. Bascule atomique,
+lecture Caddy testée ; empreintes HTTPS index/assets/SIP/worker conformes,
+worker servi avec type JavaScript, services actifs sans redémarrage.
+Formulaire publié sans erreur console ; offre validée en scénario entièrement
+simulé à 390 px, fermeture Plus tard vérifiée. Aucun essai Android réel.
+Sources/archives/reçu de construction locaux sous
+`.work/releases/20261014-notification-offer/` ; capture fictive dans
+`.work/notification-preview/notification-mobile.png`. Retour ciblé : vérifier
+que current pointe encore cette release puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261014-audio-direct`.
+Aucune mutation PBX, route, compte ou base.
 Nouveau fichier `/notifications-sw.js`, servi par la même origine sous la CSP
 existante `default-src 'self'`. Le worker n'a pas de fetch/cache ni de push.
 Après rollback vers `20261014-audio-direct`, le worker peut rester enregistré
