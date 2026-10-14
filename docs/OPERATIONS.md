@@ -1,5 +1,31 @@
 # Construction et validation
 
+## Conseil d'actualisation à la connexion — 14 octobre 2026
+
+**En service `20261014-refresh-help`, source `11832f5`, à 15:56:55 Douala.**
+Message « Connexion au serveur impossible » précisé sur demande de Franck :
+vérifier le réseau, puis actualiser la page si Internet fonctionne à nouveau,
+car une ancienne liaison peut rester bloquée. Textes FR/EN/ES, aucune modification
+des tentatives SIP ni des manuels. Diagnostic Fcadyn006 dans le dépôt privé :
+connexion naturelle réussie, hypothèse de page ancienne après publication,
+aucune cause navigateur certaine revendiquée.
+
+Construction live isolée et source comparée au commit : 192 tests, typage,
+lint et build réussis ; 267 fichiers. Échec de connexion entièrement local
+avec identifiants fictifs vérifié dans le navigateur intégré, nouveau texte
+visible ; capture `.work/releases/20261014-refresh-help/preview.jpg`.
+Page publique chargée sans erreur console ; aucun REGISTER client ni appel.
+
+Bascule atomique depuis `20261014-media-relay`, copie complète/manifeste de
+l'ancienne release vérifiés. Sauvegarde protégée
+`/root/apisnix-phone-backups/20261014-refresh-help/`, archive SHA-256
+`dfdf3b2e638dcc9ab723d0b5f6920aa72ad8c43d8cf4ccd38e1bfd023f0fba19`.
+Empreintes HTTPS index/JS/CSS/SIP/worker conformes, Caddy et supervision actifs.
+Aucun redémarrage, migration DB, changement PBX, compte ou relais média.
+Retour ciblé : vérifier current encore sur cette release, puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261014-media-relay`.
+Actualiser volontairement les anciennes pages hors appel pour recevoir le texte.
+
 ## Relais WebRTC ciblé — 14 octobre 2026
 
 **Frontend `20261014-media-relay`, source `09fb87f`, 14:54:32 Douala.**

@@ -2,6 +2,8 @@
 
 ## Aide en cas d'échec de connexion — 14 octobre 2026
 
+**En service `20261014-refresh-help`, source `11832f5`, à 15:56:55 Douala.**
+
 Le message « Connexion au serveur impossible » conseille désormais de vérifier
 le réseau puis, si Internet fonctionne à nouveau, d'actualiser la page et
 réessayer : l'ancienne liaison peut rester bloquée. Texte aligné en français,

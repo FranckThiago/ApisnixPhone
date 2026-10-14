@@ -6,6 +6,9 @@ Sur demande de Franck après le signalement Fcadyn006, le message d'échec
 d'ouverture de la liaison conseille d'actualiser la page si Internet fonctionne
 à nouveau : une ancienne liaison peut rester bloquée. Trois dictionnaires
 FR/EN/ES alignés ; comportement SIP et manuels inchangés. État courant mis à jour.
+Publication `20261014-refresh-help` / `11832f5` à 15:56:55 Douala, sauvegarde
+et HTTPS vérifiés. 192 tests, typage/lint/build et affichage local validés ;
+formulaire public sans erreur console. Procédure et retour dans OPERATIONS.
 
 ## Relais média ciblé et maintien des appels visibles — 14 octobre 2026
 
