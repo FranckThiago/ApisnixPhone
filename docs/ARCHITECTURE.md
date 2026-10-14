@@ -25,7 +25,10 @@ l'arrête lorsqu'une piste distante vivante est non muette, soit à l'inspection
 initiale, soit à l'événement `unmute`. Une piste déjà disponible est traitée
 immédiatement ; les écouteurs sont retirés dès l'arrêt, au décroché et à la fin.
 Cela prouve la disponibilité du média, pas une énergie sonore ou une parole audible. Sans choix du
-serveur, l'invitation reste identique à avant.
+serveur, l'invitation reste identique à avant. Cela exige aussi que le PBX livre
+un SDP provisoire au navigateur : l'option `r` de `Dial` force une sonnerie
+sans audio avant réponse et peut empêcher le bénéfice attendu. Les essais du
+14 octobre après correction ne valident pas encore ICE/DTLS avant décroché.
 
 
 ## Composants

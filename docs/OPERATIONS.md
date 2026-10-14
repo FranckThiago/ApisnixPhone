@@ -2,18 +2,26 @@
 
 ## Correctifs early media — 14 octobre 2026
 
-Release prévue `20261014-early-media-fix` : chargement HTTP natif et arrêt de
+**En service `20261014-early-media-fix`, source `ab1effc`, à 17:33:00 Douala.**
+267 fichiers ; archive SHA-256
+`1470408ee6076da0f56577d342c91e1a9516ff1a9e703197d4be18acaffd92d8`.
+Reçu et manifeste dans `.work/releases/20261014-early-media-fix/`.
+Correction : chargement HTTP natif et arrêt de
 la tonalité si la piste distante est déjà disponible. 201 tests, typage et lint
 réussis ; GET des réglages et POST du bilan vérifiés dans le navigateur réel
 avec données fictives. Les tests reproduisaient les erreurs avant correction.
 Publication frontend seule sur Hermes, sans mutation PBX, backend ni TURN.
-Sauvegarde protégée prévue `/root/apisnix-phone-backups/20261014-early-media-fix/`.
-Le script exige `current` encore sur `20261014-early-media`, sauvegarde son contenu,
+Sauvegarde protégée vérifiée `/root/apisnix-phone-backups/20261014-early-media-fix/`.
+Le script a exigé `current` encore sur `20261014-early-media`, sauvegarde son contenu,
 contrôle tous les fichiers puis bascule atomiquement ; échec HTTPS = retour.
 Retour ciblé : vérifier `current` sur `20261014-early-media-fix`, repointer vers
 `/srv/apisnixphone/releases/20261014-early-media`, actualiser hors appel.
-Ce retour réintroduit les deux défauts. Preuve réelle attendue : rapport reçu,
-ICE/DTLS avant `answeredMs`, et retour humain sur la voix/écho. Aucun test Android
+Ce retour réintroduit les deux défauts. Services actifs et empreintes HTTPS
+(index, JS, CSS, bundle SIP, worker) vérifiés après bascule. Rappel réel : son
+immédiat confirmé, écho résiduel très bas accepté. Bilan média reçu sur un essai
+ultérieur ; ICE/DTLS restent après `answeredMs`. La route serveur force la
+sonnerie avec `Dial` option `r`, qui interdit l’audio avant réponse.
+**L’early media effectif reste non validé** ; aucun changement PBX effectué. Aucun test Android
 ne peut être remplacé par un appel depuis le Mac. Manuels clients inchangés.
 
 ## Early media par ligne — 14 octobre 2026

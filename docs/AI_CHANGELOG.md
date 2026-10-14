@@ -6,6 +6,9 @@ Fetch natif enveloppé pour préserver son contexte (réglages + rapports) ;
 traitement immédiat des pistes déjà non muettes et nettoyage des écouteurs.
 Trois régressions reproduites puis corrigées, 201 tests/typecheck/lint OK,
 GET/POST du client réel vérifiés dans le navigateur avec données fictives.
+Publication `20261014-early-media-fix` 17:33:00, empreintes HTTPS conformes.
+Son immédiat et écho résiduel acceptable au rappel ; early media avant décroché
+non validé, route PBX forçant la sonnerie identifiée, non modifiée.
 Architecture, état et procédure de publication alignés ; écho Mac/téléphone
 à vérifier en conditions acoustiques séparées, pas de modification AEC.
 

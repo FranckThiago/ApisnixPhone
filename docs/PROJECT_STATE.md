@@ -2,14 +2,20 @@
 
 ## Correction du chargement média et de la tonalité — 14 octobre 2026
 
-Correctifs validés localement, publication en préparation. Le client natif
+**En service `20261014-early-media-fix`, source `ab1effc`, à 17:33:00 Douala.** Le client natif
 charge désormais les réglages média et envoie les bilans sans erreur de contexte
 `fetch`. La tonalité locale cesse aussi lorsque la piste distante était déjà
 non muette avant le branchement de son écouteur. 201 tests, typage et lint
 réussis ; test GET/POST avec le client réel et données fictives dans le navigateur.
-Les trois nouveaux cas échouaient avant correction. L'écho signalé concerne
-un essai Mac → téléphone ; aucun défaut de double sortie confirmé, annulation
-d'écho conservée. Validation réelle et Android à distinguer des tests locaux.
+Les trois nouveaux cas échouaient avant correction. Build live isolé et empreintes
+HTTPS contrôlés. Rappel réel : Franck confirme le son immédiat puis précise un
+écho très faible acceptable, avec micro coupé via le bouton du téléphone lors
+de ses essais. Aucun défaut de double sortie confirmé, annulation d'écho conservée.
+Un bilan média est désormais reçu sur un essai ultérieur de la même ligne.
+**Early media avant décroché non validé** : les mesures restent après réponse ;
+la route PBX force une sonnerie sans audio anticipé (`Dial` option `r`).
+Cette route n'a pas été modifiée. Validation Android et coupures longues encore
+à vérifier ; voir le rapport privé pour les mesures et les deux essais distincts.
 
 ## Early media choisi par le serveur — 14 octobre 2026
 
