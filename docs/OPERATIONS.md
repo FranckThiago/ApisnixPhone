@@ -1,5 +1,46 @@
 # Construction et validation
 
+## Early media par ligne — 14 octobre 2026
+
+**Release `20261014-early-media`, source `d83fd71`, construite et vérifiée ;
+publication Hermes à lancer par Franck** (refusée au mode automatique de l'agent).
+Motif : sur le réseau lent de Fcadyn014, le client ignorait le SDP du 183 et
+négociait ICE puis DTLS au 200 OK, soit 4 à 8 s de silence après décroché
+(comparaison chiffrée dans le dépôt privé, `COMPARAISON_PORTSIP_WEB_FCADYN_20261014.md`).
+Le serveur choisit désormais par ligne `earlyMedia` et peut ne délivrer aucun
+serveur TURN ; la sonnerie locale cesse seulement quand l'audio distant du 183
+est réellement reçu. Lignes hors pilote inchangées.
+
+Construction live isolée depuis le commit, `npm ci` puis build ; 267 fichiers,
+archive SHA-256 `45741068922f3fd7fa113f6f0997c04a7718689583f4b166bcbebbb33c97f3b9`,
+sans entrée AppleDouble. 198 tests, typage, lint et build réussis. Archive,
+manifeste, script et journaux locaux dans `.work/releases/20261014-early-media/` ;
+copies déposées sur Hermes dans `/tmp/apisnix-early-media/` (archive vérifiée par
+empreinte, script compilé). Bundle construit servi en local (`vite preview`) et
+ouvert dans le navigateur intégré : formulaire de connexion affiché, index, JS,
+CSS et logo chargés avec les noms du manifeste, aucune erreur console (le seul
+404 relevé précède le démarrage du serveur local). Aucun REGISTER ni appel. Backend `20261014-early-media` déjà en service à
+16:56:07 et réglage `turn.json` de 014 (`none` + early media) appliqué à 16:58 ;
+tant que ce frontend n'est pas publié, l'ancien client de 014 refuse la réponse
+sans serveur TURN et reste sur son chemin direct d'origine, sans early media.
+
+Publication, depuis ce dépôt :
+
+```bash
+ssh hermes 'cd /tmp/apisnix-early-media && python3 publish.py'
+```
+
+Le script exige `current` encore sur `20261014-refresh-help`, copie et manifeste
+de cette release dans `/root/apisnix-phone-backups/20261014-early-media/`, extrait
+l'archive, vérifie le manifeste et la lecture par Caddy, bascule atomiquement,
+contrôle index, JS, CSS, bundle SIP et worker en HTTPS, puis écrit `receipt.json` ;
+il repointe l'ancienne release si un contrôle échoue. Retour ciblé ensuite :
+vérifier `current` sur `20261014-early-media`, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261014-refresh-help`. Actualiser les pages hors appel.
+Essai réel attendu sur 014 : lire dans les rapports média `iceConnectedMs` et
+`dtlsConnectedMs` inférieurs à `answeredMs`, puis comparer avec la variante relais.
+Manuels clients inchangés.
+
 ## Conseil d'actualisation à la connexion — 14 octobre 2026
 
 **En service `20261014-refresh-help`, source `11832f5`, à 15:56:55 Douala.**

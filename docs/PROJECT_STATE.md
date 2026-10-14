@@ -1,5 +1,19 @@
 # État du projet
 
+## Early media choisi par le serveur — 14 octobre 2026
+
+**Release `20261014-early-media`, source `d83fd71`, construite et testée ;
+publication Hermes à lancer par Franck** (voir OPERATIONS). Pour une ligne où
+le serveur le demande, le client applique la réponse SDP du 183 et négocie
+ICE/DTLS pendant la sonnerie au lieu d'après le décroché ; il accepte aussi
+une ligne pilotée sans serveur TURN (chemin direct seul). La sonnerie locale
+reste jouée jusqu'à l'arrivée réelle de l'audio distant, puis s'efface devant
+lui ; un réglage de volume pendant la sonnerie ne la relance pas. Lignes sans
+pilote : comportement inchangé. 198 tests, typage, lint et build réussis.
+Côté serveur, Fcadyn014 est réglée en chemin direct + early media ; l'effet sur
+une conversation Android reste à mesurer avec les rapports média, puis à
+comparer avec le relais TURN. Manuels clients inchangés.
+
 ## Aide en cas d'échec de connexion — 14 octobre 2026
 
 **En service `20261014-refresh-help`, source `11832f5`, à 15:56:55 Douala.**

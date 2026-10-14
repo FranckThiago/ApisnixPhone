@@ -13,6 +13,17 @@ pas automatiquement un réseau coupé en cours d'appel.
 `callWakeLock.ts`, lié au cycle de vie de la page, limite la veille automatique
 d'un appel visible. Le refus ou l'absence de cette API ne bloque jamais l'appel.
 
+Early media, depuis le 14 octobre : la réponse `/api/webphone-ice` porte
+`earlyMedia` et peut livrer une liste de serveurs vide (ligne gardée sur son
+trajet direct). `prepareMedia` rend ce choix au contrôleur, qui le passe à
+l'invitation SIP.js (`earlyMedia: true`) : la réponse SDP du 183 est appliquée
+aussitôt, ICE puis DTLS se négocient pendant la sonnerie et le 200 OK ne change
+plus le média (Asterisk ne fork pas, condition exigée par SIP.js). SIP.js attache
+alors le flux distant dès le 183 ; le contrôleur garde la sonnerie locale et ne
+l'arrête qu'à l'événement `unmute` d'une piste distante, c'est-à-dire quand le
+son de l'opérateur arrive vraiment, jamais sur la seule annonce. Sans choix du
+serveur, l'invitation reste identique à avant.
+
 
 ## Composants
 

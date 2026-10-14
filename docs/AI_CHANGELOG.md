@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Early media choisi par le serveur — 14 octobre 2026
+
+Après la comparaison chiffrée PortSIP/web (dépôt privé) : les 4 à 8 s de silence
+après décroché de Fcadyn014 venaient d'une négociation ICE/DTLS lancée au 200 OK
+sur un réseau à 1,5 s d'aller-retour. Le contrôleur passe `earlyMedia` à
+l'invitation quand la préparation média l'indique ; `mediaPath.ts` lit ce choix
+et accepte une liste de serveurs vide ; la sonnerie locale ne s'arrête qu'à
+l'`unmute` d'une piste distante. Tests du contrôleur, du chemin média et de
+l'environnement SIP ajoutés : 198 tests, typage, lint et build. Release
+`20261014-early-media` / `d83fd71` construite, déposée sur Hermes, publication
+à lancer par Franck ; état, architecture et procédure consignés.
+
 ## Aide d'actualisation après échec de connexion — 14 octobre 2026
 
 Sur demande de Franck après le signalement Fcadyn006, le message d'échec
