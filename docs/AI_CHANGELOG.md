@@ -9,8 +9,9 @@ l'invitation quand la préparation média l'indique ; `mediaPath.ts` lit ce choi
 et accepte une liste de serveurs vide ; la sonnerie locale ne s'arrête qu'à
 l'`unmute` d'une piste distante. Tests du contrôleur, du chemin média et de
 l'environnement SIP ajoutés : 198 tests, typage, lint et build. Release
-`20261014-early-media` / `d83fd71` construite, déposée sur Hermes, publication
-à lancer par Franck ; état, architecture et procédure consignés.
+`20261014-early-media` / `d83fd71` construite et déposée sur Hermes, publiée par
+Franck à 17:07:00 Douala (le mode automatique de l'agent refusait le script),
+empreintes HTTPS et services contrôlés ensuite ; état, architecture et retour consignés.
 
 ## Aide d'actualisation après échec de connexion — 14 octobre 2026
 

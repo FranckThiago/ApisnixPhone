@@ -2,8 +2,8 @@
 
 ## Early media choisi par le serveur — 14 octobre 2026
 
-**Release `20261014-early-media`, source `d83fd71`, construite et testée ;
-publication Hermes à lancer par Franck** (voir OPERATIONS). Pour une ligne où
+**En service `20261014-early-media`, source `d83fd71`, à 17:07:00 Douala**
+(publication lancée par Franck, contrôles et retour dans OPERATIONS). Pour une ligne où
 le serveur le demande, le client applique la réponse SDP du 183 et négocie
 ICE/DTLS pendant la sonnerie au lieu d'après le décroché ; il accepte aussi
 une ligne pilotée sans serveur TURN (chemin direct seul). La sonnerie locale
