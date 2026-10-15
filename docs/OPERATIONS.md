@@ -1,5 +1,33 @@
 # Construction et validation
 
+## Boutons au style de la supervision — 15 octobre 2026
+
+**Release `20261015-boutons-supervision` préparée, non publiée ; source `828c2f0`.**
+Seul `webphone/src/styles/app.css` change côté code (boutons importants au
+style des cartes d'agents du temps réel). Construction live isolée depuis le
+commit (`git archive`, `npm ci`, typage, lint, 201 tests, build) ; 267 fichiers,
+`index-BohODnyM.js`, `lib-C-zO-k_q.js`, `index-b2Iz_1no.css`. Archive bsdtar
+sans entrée AppleDouble (contrôlée par `tarfile`), SHA-256
+`535dc9ec50c282d0fab5a77e19b9f389edbcfce4077cb8f89884865ef3cbaa0a`.
+Archive, empreintes, manifeste JSON (`source`, `files`, `archive_sha256`),
+journaux, source du commit (sans `node_modules`), script de publication et
+capture du démarrage local dans `.work/releases/20261015-boutons-supervision/`.
+Bundle construit servi en local (`vite preview`) et ouvert dans le navigateur
+intégré : formulaire de connexion affiché avec le nouveau bouton (rayon 12 px),
+index, JS, CSS et logo chargés avec les noms du manifeste, aucune erreur console.
+Aucun REGISTER ni appel. Le script de publication est le même que pour
+`20261014-early-media-fix` : il exige `current` encore sur
+`20261014-early-media-fix`, sauvegarde cette release et son manifeste dans
+`/root/apisnix-phone-backups/20261015-boutons-supervision/`, extrait l'archive,
+contrôle tous les fichiers et leur lecture par Caddy, bascule atomiquement,
+vérifie les empreintes HTTPS puis écrit le reçu ; échec = retour automatique.
+**Publication sur Hermes à lancer par Franck** après dépôt de l'archive, du
+manifeste et du script dans `/tmp/apisnix-boutons-supervision/`. Retour ciblé
+après publication : vérifier `current` sur `20261015-boutons-supervision`, puis
+le repointer atomiquement vers `/srv/apisnixphone/releases/20261014-early-media-fix`.
+Actualiser les pages hors appel. Aucune mutation PBX, backend, TURN ni base.
+Manuels clients inchangés.
+
 ## Correctifs early media — 14 octobre 2026
 
 **En service `20261014-early-media-fix`, source `ab1effc`, à 17:33:00 Douala.**

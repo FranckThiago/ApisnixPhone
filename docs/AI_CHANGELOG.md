@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Release des boutons supervision préparée — 15 octobre 2026
+
+Release `20261015-boutons-supervision` préparée depuis `828c2f0` selon
+`OPERATIONS.md` : build live isolé, typage, lint, 201 tests, 267 fichiers,
+archive bsdtar vérifiée sans AppleDouble, manifeste, script de publication
+calqué sur la release précédente et capture du démarrage local, le tout déposé
+dans `.work/releases/20261015-boutons-supervision/`. Aucun code modifié, rien
+publié : la bascule sur Hermes reste à lancer par Franck. État et exploitation
+mis à jour.
+
 ## Boutons importants au style de la supervision — 15 octobre 2026
 
 Franck veut les boutons importants d'ApisnixPhone comme le bouton « Écouter »

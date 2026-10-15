@@ -9,8 +9,13 @@ devant, rayon 12 px, ombre douce) ; règle dans `WEBPHONE_PLAN.md` § 5. Seule l
 feuille `webphone/src/styles/app.css` change. Vérifié dans le navigateur
 intégré en démonstration : connexion, Journal, Contacts, Réglages, appel
 simulé entrant puis fin d'appel, thèmes clair et sombre. 201 tests, typage et
-lint réussis. Manuels et captures non touchés. La release de publication reste
-à préparer selon `OPERATIONS.md`.
+lint réussis. Manuels et captures non touchés. **Release
+`20261015-boutons-supervision` préparée, non publiée** (source `828c2f0`,
+267 fichiers, archive SHA-256
+`535dc9ec50c282d0fab5a77e19b9f389edbcfce4077cb8f89884865ef3cbaa0a`,
+preuves dans `.work/releases/20261015-boutons-supervision/`) ; la publication
+sur Hermes reste à lancer par Franck, procédure et retour dans `OPERATIONS.md`.
+`20261014-early-media-fix` reste la release en service.
 
 ## Correction du chargement média et de la tonalité — 14 octobre 2026
 
