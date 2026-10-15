@@ -229,6 +229,19 @@ chaque détail pixel pour pixel après les essais.
 - L'appel reste monté quand une vue change. Les fenêtres secondaires ne prennent
   jamais le focus au détriment du raccrochage.
 
+### Boutons importants
+
+Depuis le 15 octobre 2026, les boutons importants reprennent le style des
+cartes d'agents du temps réel de supervision (bouton « Écouter », tuile
+« sortie ») que Franck trouve beau et épuré : surface blanche posée, liseré
+fin, texte encré en gras, icône devant, rayon 12 px, ombre très douce. L'action
+principale (`.primary` : Se connecter, Nouveau contact, Enregistrer, Réessayer)
+se distingue par un liseré et un texte à la couleur de marque et une lueur
+bleue, jamais par un aplat. La déconnexion est une tuile carrée blanche à icône
+rouge qui se teinte de rouge au survol. Dans la carte d'appel, Muet, Attente,
+Clavier, Rappeler et Planifier sont des tuiles posées sur la carte ; Appeler
+reste vert et Raccrocher rouge, Terminer reste jaune.
+
 ### Identité et tokens proposés
 
 Le [logo original](../branding/apisnix-mark.png) est réutilisé intact ; sur téléphone et tablette, où le menu devient une barre basse sans marque, il signe l'en-tête du composeur au-dessus du pavé (demande de Franck, 8 octobre). Le bleu

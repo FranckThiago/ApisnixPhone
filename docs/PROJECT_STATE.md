@@ -1,5 +1,17 @@
 # État du projet
 
+## Boutons importants au style de la supervision — 15 octobre 2026
+
+**Dans le code, non publié.** Les boutons principaux, secondaires, la
+déconnexion et les commandes de la carte d'appel suivent la recette des cartes
+d'agents du temps réel (surface blanche posée, liseré, texte encré, icône
+devant, rayon 12 px, ombre douce) ; règle dans `WEBPHONE_PLAN.md` § 5. Seule la
+feuille `webphone/src/styles/app.css` change. Vérifié dans le navigateur
+intégré en démonstration : connexion, Journal, Contacts, Réglages, appel
+simulé entrant puis fin d'appel, thèmes clair et sombre. 201 tests, typage et
+lint réussis. Manuels et captures non touchés. La release de publication reste
+à préparer selon `OPERATIONS.md`.
+
 ## Correction du chargement média et de la tonalité — 14 octobre 2026
 
 **En service `20261014-early-media-fix`, source `ab1effc`, à 17:33:00 Douala.** Le client natif

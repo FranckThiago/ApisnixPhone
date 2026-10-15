@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Boutons importants au style de la supervision — 15 octobre 2026
+
+Franck veut les boutons importants d'ApisnixPhone comme le bouton « Écouter »
+et la tuile « sortie » des cartes d'agents du temps réel. Recette appliquée dans
+`app.css` seulement : `.primary` passe de l'aplat bleu dégradé à la surface
+blanche à liseré et texte de marque ; `.ghost`, la déconnexion, `.control`,
+`.ghost-call` et `.done` adoptent la même géométrie (38 px, rayon 12 px,
+liseré, ombre douce). Rendu contrôlé en clair et en sombre dans la démo ;
+201 tests, typage et lint. Plan § 5 et état mis à jour ; non publié.
+
 ## Route PBX : Progress() pour Fcadyn014 — 14 octobre 2026
 
 La vérification réelle avait montré que l'option `r` du `Dial` France retenait

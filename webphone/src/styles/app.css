@@ -24,15 +24,17 @@ small { font-size: 12px; color: var(--muted); }
 .icon-button.star.on, .row-star, .favorite-star { color: var(--yellow-strong); fill: var(--yellow); }
 .icon-button.star.on svg { fill: var(--yellow); }
 
-.primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: 12px; font-weight: 600; color: #fff;
-  background: linear-gradient(180deg, #2a2aff, var(--brand-strong)); box-shadow: 0 6px 16px -6px rgb(16 16 255 / 55%), inset 0 1px 0 rgb(255 255 255 / 22%); transition: transform .12s, filter .15s; }
-:root[data-theme='dark'] .primary { background: linear-gradient(180deg, #5b66ff, #3a44e6); }
-.primary:hover:not(:disabled) { filter: brightness(1.08); } .primary:active:not(:disabled) { transform: translateY(1px); }
-.primary.big { width: 100%; padding: 14px; font-size: 15px; margin-top: 8px; }
-.ghost { display: inline-flex; align-items: center; gap: 7px; padding: 9px 13px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); font-weight: 550; color: var(--text); transition: background .15s, border-color .15s; }
-.ghost:hover { background: var(--brand-soft); border-color: transparent; color: var(--brand); }
-.ghost.danger { color: var(--danger); } .ghost.danger:hover { background: var(--danger-soft); color: var(--danger); }
-.ghost.small { padding: 6px 10px; font-size: 12px; }
+/* Boutons « supervision » (Franck, 15 octobre 2026) : une surface blanche posée, un liseré fin, le texte encré, l'icône devant,
+   rayon 12 px, ombre très douce. L'action principale se dit par un liseré et un texte à la couleur de marque, jamais par un aplat. */
+.primary, .ghost { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 7px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface);
+  font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap; box-shadow: var(--shadow-sm); transition: background .15s, border-color .15s, color .15s, box-shadow .15s, transform .08s; }
+.primary { color: var(--brand); border-color: color-mix(in srgb, var(--brand) 35%, transparent); box-shadow: 0 6px 14px -10px color-mix(in srgb, var(--brand) 40%, transparent), var(--shadow-sm); }
+.primary:hover:not(:disabled) { background: var(--brand-soft); border-color: var(--brand); }
+.ghost:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); }
+.primary:active:not(:disabled), .ghost:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+.primary.big { width: 100%; min-height: 46px; font-size: 15px; margin-top: 8px; }
+.ghost.danger { color: var(--danger); } .ghost.danger:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+.ghost.small { min-height: 30px; padding: 4px 10px; font-size: 12px; }
 
 .pill { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap; }
 .pill i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
@@ -74,7 +76,9 @@ small { font-size: 12px; color: var(--muted); }
 .nav-phone { display: none; } .only-narrow { display: none !important; }
 .sidebar-foot { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 8px 2px; border-top: 1px solid color-mix(in srgb, var(--side-text) 18%, transparent); }
 .account { min-width: 0; flex: 1; } .account b { display: block; color: var(--side-strong); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .account small { display: block; color: var(--side-caption); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.icon-button.sign-out { color: var(--danger); background: var(--danger-soft); } .icon-button.sign-out:hover { background: var(--danger); color: #fff; }
+/* The sign-out control is the square « exit » tile of the supervision screen: white, outlined, red icon, red tint on hover. */
+.icon-button.sign-out { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); box-shadow: var(--shadow-sm); transition: background .15s, border-color .15s, box-shadow .15s, transform .08s; }
+.icon-button.sign-out:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); } .icon-button.sign-out:active { transform: translateY(1px); box-shadow: none; }
 
 .main { grid-area: main; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 .topbar { display: flex; align-items: center; gap: 12px; padding: 14px 28px; }
@@ -263,9 +267,9 @@ input[type=range] { accent-color: var(--brand); }
 .phase-held .call-status { color: var(--call-accent); font-size: 20px; font-weight: 600; letter-spacing: 0; }
 .dtmf { font-family: var(--mono); letter-spacing: 3px; color: var(--call-soft-text); }
 .call-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.control { display: grid; justify-items: center; gap: 6px; padding: 13px 4px 9px; border-radius: 16px; background: var(--call-fill); color: var(--call-text); font-size: 12.5px; font-weight: 600; transition: background .15s, transform .08s; }
-.control:hover:not(:disabled) { background: var(--call-fill-hover); } .control:active:not(:disabled) { transform: scale(.96); }
-.control.on { background: var(--yellow); color: var(--on-yellow); } .control .kbd { background: var(--call-raised); border-color: transparent; color: var(--call-caption); font-size: 10px; } .control.on .kbd { background: rgb(0 0 0 / 12%); color: var(--on-yellow); }
+.control { display: grid; justify-items: center; gap: 6px; padding: 12px 4px 8px; border-radius: 14px; border: 1px solid var(--call-line); background: var(--call-raised); box-shadow: var(--shadow-sm); color: var(--call-text); font-size: 12.5px; font-weight: 600; transition: background .15s, border-color .15s, transform .08s; }
+.control:hover:not(:disabled) { background: var(--call-fill-hover); border-color: var(--brand); } .control:active:not(:disabled) { transform: scale(.96); }
+.control.on { background: var(--yellow); border-color: var(--yellow-strong); color: var(--on-yellow); } .control .kbd { background: var(--call-raised); border-color: transparent; color: var(--call-caption); font-size: 10px; } .control.on .kbd { background: rgb(0 0 0 / 12%); color: var(--on-yellow); }
 .hangup { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 16px; font-size: 15.5px; font-weight: 700; color: #fff; background: linear-gradient(180deg, #f2545e, #d02a36); box-shadow: 0 12px 24px -10px #d02a36; transition: filter .15s, transform .12s; }
 .hangup:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .incoming-actions { display: flex; justify-content: space-around; padding: 6px 0 4px; }
@@ -273,12 +277,13 @@ input[type=range] { accent-color: var(--brand); }
 .round.accept svg { background: linear-gradient(180deg, #16bd84, #0b8f63); box-shadow: 0 10px 24px -8px #0b8f63; animation: pulse 1.4s ease-in-out infinite; } .round.decline svg { background: linear-gradient(180deg, #f2545e, #d02a36); }
 @keyframes pulse { 50% { transform: scale(1.06); } }
 .dtmf-pad { display: grid; gap: 10px; } .keypad-compact .key { height: 48px; background: var(--call-fill); color: var(--call-text); } .keypad-compact .key:hover { background: var(--call-fill-hover); }
-.ghost-call { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 12px; border-radius: 12px; font-weight: 600; color: var(--call-text); background: var(--call-fill); } .ghost-call:hover { background: var(--call-fill-hover); }
+.ghost-call { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 7px 12px; border-radius: 12px; border: 1px solid var(--call-line); background: var(--call-raised); box-shadow: var(--shadow-sm); font-weight: 700; color: var(--call-text); transition: background .15s, border-color .15s; }
+.ghost-call:hover { background: var(--call-fill-hover); border-color: var(--brand); }
 .wrapup { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; } .wrapup .note { min-width: 0; } .outcome { justify-self: center; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 13px; background: var(--call-fill); }
 .outcome-answered { background: var(--success-soft); color: var(--success); } .outcome-missed, .outcome-failed { background: var(--danger-soft); color: var(--danger); } .outcome-busy, .outcome-no-answer { background: var(--yellow-soft); color: var(--warning); }
 .wrapup .tag { background: var(--call-fill); border-color: var(--call-line); color: var(--call-soft-text); } .wrapup .tag.active { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); }
 .wrapup .note { background: var(--call-fill); border-color: var(--call-line); color: var(--call-text); } .wrapup .note::placeholder { color: var(--call-placeholder); }
-.wrapup-actions { display: flex; flex-wrap: wrap; gap: 8px; } .wrapup-actions > * { flex: 1 1 auto; white-space: nowrap; } .done { padding: 10px 12px; border-radius: 12px; font-weight: 700; background: var(--yellow); color: var(--on-yellow); } .done:hover { filter: brightness(1.05); }
+.wrapup-actions { display: flex; flex-wrap: wrap; gap: 8px; } .wrapup-actions > * { flex: 1 1 auto; white-space: nowrap; } .done { min-height: 38px; padding: 7px 12px; border-radius: 12px; border: 1px solid var(--yellow-strong); font-weight: 700; background: var(--yellow); color: var(--on-yellow); box-shadow: var(--shadow-sm); } .done:hover { filter: brightness(1.05); }
 .call-banner { display: none; }
 @media (min-width: 921px) { .dock-head .pill { display: none; } .call-card { min-height: min(560px, calc(100vh - 80px)); align-content: space-between; } }
 
