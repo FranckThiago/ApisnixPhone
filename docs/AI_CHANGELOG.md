@@ -1,5 +1,19 @@
 # Journal des changements
 
+## Sortie audio accessible pendant l’appel — 16 octobre 2026
+
+**Dans le code, publication en préparation.** Le sélecteur des sorties réelles
+est partagé entre Audio et la carte d’appel (conversation ou attente). Liste
+actualisée aux changements de phase, de périphérique et au retour visible,
+avec actualisation manuelle. Le libellé de la sortie système fourni par le
+navigateur est conservé ; les autres sorties sans libellé ont un nom neutre.
+Aucune route écouteur/haut-parleur inventée, aucun contournement iOS ni
+modification du traitement sonore. Le navigateur et le système déterminent
+les sorties disponibles : la bascule effective sur iPhone reste à tester.
+Textes FR/EN/ES, manuels clients inchangés. Contrôles : 201 tests, typage,
+lint et build ; affichage en appel simulé dans le navigateur intégré.
+
+
 ## Drapeaux mobiles publiés — 16 octobre 2026
 
 Release `20261016-drapeaux-mobile` (source `273fe65`, 267 fichiers), publiée

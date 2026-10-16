@@ -1,32 +1,12 @@
 import { Headphones, Mic, RotateCcw, Square } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
+import { AudioOutput } from './AudioOutput';
+import { useDevices } from './useDevices';
 import { VolumeMark } from '../../components/VolumeMark';
 import { MAX_VOLUME, volumeTone } from '../../domain/types';
 import { rich, useI18n, type MessageKey } from '../../i18n';
 import { MicPipeline, microphoneErrorMessage } from '../../telephony/audio';
-
-interface Devices { inputs: MediaDeviceInfo[]; outputs: MediaDeviceInfo[] }
-
-function useDevices(enabled: boolean): [Devices, () => void] {
-  const [devices, setDevices] = useState<Devices>({ inputs: [], outputs: [] });
-  const refresh = useRef(() => undefined as void);
-  useEffect(() => {
-    if (!enabled || !navigator.mediaDevices?.enumerateDevices) return;
-    let alive = true;
-    const read = () => void navigator.mediaDevices.enumerateDevices().then(all => {
-      // Labels stay empty until the microphone was allowed once; unnamed entries are not offered.
-      if (alive) setDevices({ inputs: all.filter(d => d.kind === 'audioinput' && d.label && d.deviceId !== 'default'),
-                              outputs: all.filter(d => d.kind === 'audiooutput' && d.label && d.deviceId !== 'default') });
-    }).catch(() => undefined);
-    refresh.current = read;
-    read();
-    // A headset plugged in or removed shows up without reloading.
-    navigator.mediaDevices.addEventListener('devicechange', read);
-    return () => { alive = false; navigator.mediaDevices.removeEventListener('devicechange', read); };
-  }, [enabled]);
-  return [devices, useCallback(() => refresh.current(), [])];
-}
 
 type MicAccess = PermissionState | 'unknown';
 
@@ -172,7 +152,6 @@ export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
   const { t } = useI18n();
   const [devices, refreshDevices] = useDevices(!demo);
   const set = store.setPreferences.bind(store);
-  const sinkSupported = typeof HTMLMediaElement !== 'undefined' && 'setSinkId' in HTMLMediaElement.prototype;
 
   return (
     <>
@@ -188,11 +167,7 @@ export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
       {micOptions}
       </AudioBlock>
       <AudioBlock icon={<Headphones size={15} />} title={t('audio.listenBlock')} hint={t('audio.listenBlockHint')}>
-      <label className="setting"><span><b>{t('audio.output')}</b><small>{t(sinkSupported ? 'audio.outputDefault' : 'audio.outputUnsupported')}</small></span>
-        <select value={preferences.outputDevice} disabled={!sinkSupported} onChange={event => set({ outputDevice: event.target.value })}>
-          <option value="default">{t('audio.systemOutput')}</option>
-          {devices.outputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
-        </select></label>
+      <AudioOutput />
       {/* Same colours as under the keypad: red, orange, green, then brown from 120 % and black above 150 %; the hint says it in words. */}
       <label className={'setting tone-' + volumeTone(preferences.volume)}><span><b>{t('volume.label')}</b><small>{t('audio.volumeHint', { value: preferences.volume, max: MAX_VOLUME,
           state: t(preferences.volume > 150 ? 'audio.volumeMax' : preferences.volume >= 120 ? 'audio.volumeHigh' : preferences.volume > 100 ? 'audio.volumeAmplified'

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
+import { AudioOutput } from '../settings/AudioOutput';
 import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { formatDue, groupCallbacks } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
@@ -271,6 +272,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
                 <button type="button" className="control" disabled={call.phase !== 'active'} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
               </div>
             )}
+            {live && <AudioOutput compact />}
             <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{t(live ? 'call.hangUp' : 'action.cancel')}</button>
           </>
         )}

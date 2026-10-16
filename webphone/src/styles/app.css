@@ -490,3 +490,12 @@ a.ghost { text-decoration: none; }
   .notification-offer p { flex-basis: calc(100% - 32px); }
   .notification-offer button:first-of-type { margin-left: auto; }
 }
+
+/* The same real device routes in Audio and during a conversation. */
+.audio-output { min-width: 0; }
+.audio-output select { max-width: 100%; min-width: 0; }
+.audio-output-compact .setting { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.audio-output-compact .setting > span:first-child { flex: none; }
+.audio-output-compact .setting small { color: inherit; opacity: .75; }
+.audio-output-compact select { width: 100%; }
+.audio-output-compact .ghost-call { margin-top: 6px; }

@@ -823,3 +823,14 @@ native demandée uniquement au clic ; refus respecté, choix local conservé,
 activation manuelle dans Réglages toujours disponible. Sur mobile, affichage
 par worker de notifications dédié, sans push ni cache ; page ouverte et
 réception SIP nécessaires. Ce réglage ne change ni le micro ni la qualité audio.
+
+## Choix de sortie en appel — 16 octobre 2026
+
+Le choix Audio → Casque / sortie est aussi disponible sur la carte d’une
+conversation active ou en attente. Même liste de périphériques réels, mise
+à jour après capture, branchement/débranchement et retour dans la page ;
+bouton Actualiser les sorties. Le nom système reste celui fourni par le
+navigateur, sans supposer qu’il s’agit de l’écouteur. Si aucune autre sortie
+n’est exposée ou si la sélection n’est pas supportée, afficher la limite et
+orienter vers les écouteurs/contrôles système. Aucun faux bouton forçant un
+écouteur inexistant. Les manuels clients restent inchangés.
