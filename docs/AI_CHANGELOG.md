@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Release de l'écran de connexion vert préparée — 16 octobre 2026
+
+Release `20261016-connexion-verte` préparée depuis `0235a64` selon `OPERATIONS.md` :
+build live isolé, typage, lint, 201 tests, 267 fichiers, archive `tarfile`
+sans AppleDouble, manifeste, script de publication calqué sur la release
+précédente, captures du bundle construit. Aucun code modifié, rien publié : la
+bascule sur Hermes attend l'accord explicite de Franck. Elle remplace
+`20261015-boutons-supervision`, jamais publiée. État et exploitation mis à jour.
+
 ## Écran de connexion vert — 16 octobre 2026
 
 Franck veut reconnaître chaque produit APISNIX à la couleur de son écran

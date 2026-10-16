@@ -1,5 +1,35 @@
 # Construction et validation
 
+## Écran de connexion vert — 16 octobre 2026
+
+**Release `20261016-connexion-verte` préparée, non publiée ; source `0235a64`.**
+Seul `webphone/src/styles/app.css` change côté code (écran de connexion vert :
+halos animés, carte en verre, bouton épuré et bombé, thème sombre) ; elle
+contient aussi les boutons de `20261015-boutons-supervision`, jamais publiée,
+qu'elle remplace. Construction live isolée depuis le commit (`git archive`,
+`npm ci`, typage, lint, 201 tests, build avec les trois variables publiques
+usuelles) ; 267 fichiers, `index-hC3WxFJp.js`, `lib-DPC09FVc.js`, `index-BMJLWQmP.css`. Archive ustar écrite
+par `tarfile` (propriétaire root, 0644/0755, sans entrée AppleDouble), SHA-256
+`6c9669542228fe61914347849272ea660b5ab756e72328307999fed539d1cf29`.
+Archive, empreintes, manifeste JSON (`source`, `files`, `archive_sha256`),
+journaux, source du commit (sans `node_modules`), script de publication et
+captures (bundle construit servi par `vite preview` ; démo à 375 px et en thème
+sombre) dans `.work/releases/20261016-connexion-verte/`. Aucune erreur console, aucun
+REGISTER ni appel. Le script de publication est celui de
+`20261014-early-media-fix` adapté : il exige `current` encore sur
+`20261014-early-media-fix` (vérifié sur Hermes le 16 octobre au matin), sauvegarde
+cette release et son manifeste dans `/root/apisnix-phone-backups/20261016-connexion-verte/`,
+extrait l'archive, contrôle tous les fichiers et leur lecture par Caddy, bascule
+atomiquement, vérifie les empreintes HTTPS puis écrit le reçu ; échec = retour
+automatique. **Publication sur Hermes à lancer après accord explicite de
+Franck** : déposer `phone.tar.gz`, `manifest.json` et `publish.py` dans
+`/tmp/apisnix-connexion-verte/` sur Hermes (alias SSH `hermes`, root) puis
+`python3 /tmp/apisnix-connexion-verte/publish.py`. Retour ciblé après
+publication : vérifier `current` sur `20261016-connexion-verte`, puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261014-early-media-fix`. Actualiser
+les pages hors appel. Aucune mutation PBX, backend, TURN ni base. Manuels
+clients inchangés : leurs captures de connexion montrent encore l'ancien écran.
+
 ## Boutons au style de la supervision — 15 octobre 2026
 
 **Release `20261015-boutons-supervision` préparée, non publiée ; source `828c2f0`.**
