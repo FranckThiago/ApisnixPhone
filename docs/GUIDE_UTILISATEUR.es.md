@@ -67,7 +67,7 @@ recordó el rechazo.
 - **A la derecha**, el teléfono. Permanece ahí sea cual sea la página: puedes
   consultar tus devoluciones o tus grabaciones sin dejar la llamada.
 - **Arriba**, la barra de búsqueda y el estado de la línea.
-- **Justo debajo**, los **Anuncios APISNIX**: consejos, facturas, novedades. La
+- **Cuando hay mensajes**, los **Anuncios APISNIX**: consejos, facturas, novedades. La
   cruz oculta un anuncio leído; un anuncio modificado vuelve a aparecer.
 
 ## 3. Hacer una llamada

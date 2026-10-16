@@ -1,5 +1,14 @@
 # État du projet
 
+## Guides actualisés sur demande — 16 octobre 2026
+
+Les trois guides clients sont reconstruits (huit pages chacun), avec couverture
+verte, journal au halo vert sans annonces, détail d'appel, rappels, audio et
+apparence recadrés. Sources des captures et vérifications dans
+[guide/README.md](guide/README.md). Cela complète les mises à jour visuelles
+ci-dessous, qui avaient laissé les manuels inchangés. Aucun changement du
+téléphone ni déploiement de l'application pour cette intervention.
+
 ## Qualifications lisibles dans un Journal étroit — 16 octobre 2026
 
 **En service `20261016-journal-lisible`, source `3f62d61`, depuis le 16 octobre

@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Guides actualisés sur demande — 16 octobre 2026
+
+Les trois guides clients sont reconstruits (huit pages chacun), avec couverture
+verte, journal au halo vert sans annonces, détail d'appel, rappels, audio et
+apparence recadrés. Sources des captures et vérifications dans
+[guide/README.md](guide/README.md). Cela complète les mises à jour visuelles
+ci-dessous, qui avaient laissé les manuels inchangés. Aucun changement du
+téléphone ni déploiement de l'application pour cette intervention.
+
 ## Journal lisible et carte verte publiés — 16 octobre 2026
 
 Release `20261016-journal-lisible` (source `3f62d61`, 267 fichiers) publiée

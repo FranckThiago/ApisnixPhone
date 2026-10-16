@@ -74,7 +74,7 @@ le refus.
 - **À droite**, le téléphone. Il reste là quelle que soit la page : vous pouvez
   consulter vos rappels ou vos enregistrements sans quitter votre appel.
 - **En haut**, la barre de recherche et l'état de la ligne.
-- **Juste dessous**, les **Annonces APISNIX** : astuces, factures, nouveautés.
+- **Selon les messages en cours**, les **Annonces APISNIX** : astuces, factures, nouveautés.
   La croix masque une annonce lue ; une annonce modifiée réapparaît.
 
 ## 3. Passer un appel

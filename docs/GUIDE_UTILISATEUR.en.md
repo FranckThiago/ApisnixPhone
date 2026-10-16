@@ -61,7 +61,7 @@ again, or explains how to unblock it if the browser remembered the refusal.
 - **On the right**, the phone. It stays there whatever the page: you can check
   your callbacks or recordings without leaving your call.
 - **At the top**, the search bar and the line status.
-- **Just below**, the **APISNIX announcements**: tips, invoices, news. The cross
+- **When messages are available**, the **APISNIX announcements**: tips, invoices, news. The cross
   hides an announcement you have read; an updated announcement comes back.
 
 ## 3. Make a call
