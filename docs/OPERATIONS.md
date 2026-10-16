@@ -2,17 +2,40 @@
 
 ## Double appel entrant : pilote — 16 octobre 2026
 
-Publication ciblée en préparation. Construire depuis un commit avec
-`VITE_CALL_WAITING_LINES` limité à la ligne autorisée (identité et modification
-PBX dans le dépôt privé). Ne pas recopier un `.env` local dans l’archive.
-Les comptes absents de la liste restent limités à une session. Les procédures
-de publication atomique et sauvegarde ci-dessous restent applicables.
+**Release `20261016-double-appel-pilote`, source `a689351`, active depuis
+14:18:34 Douala.** Build isolé du commit, `VITE_CALL_WAITING_LINES` limité au
+compte autorisé (identité et mutation PBX dans le dépôt privé). Aucun `.env`
+local copié dans l’archive ; autres comptes à une session. 267 fichiers,
+archive SHA-256 `18dc388cfe306efcac10634f88debd0eee8b2abed6d71cae6d8a3a578b608a77`.
 
-Validation locale : 227 tests réussis après l’ajout du pilote, typage et lint ;
-banc SIP.js/WebRTC natif et interface à 390 px dans le navigateur intégré.
-La recette sur appareil réel n’est pas remplacée par ces tests.
-[Fonctionnement et recette](DOUBLE_APPEL_PILOTE.md). Manuels inchangés.
+Hermes identifié, cible précédente `20261016-protection-appel` vérifiée et
+sauvegardée avec manifeste intégral comparé sous
+`/root/apisnix-phone-backups/20261016-double-appel-pilote/`. Empreintes et accès
+Caddy validés avant la bascule atomique, retour automatique sur échec des
+contrôles HTTPS. Index, JS/CSS, module SIP et worker vérifiés en HTTPS depuis
+Hermes et le Mac avec validation TLS. Services actifs, formulaire public chargé
+dans le navigateur intégré. Aucun redémarrage, migration ni modification TURN.
 
+227 tests, typage et lint réussis. Banc local avec SIP.js et WebRTC natifs :
+10 assertions, voix synthétique présente sur la conversation sélectionnée et
+silence de l’autre, bascule, muet, refus du troisième, survie de la piste restante.
+Interface du composant vérifiée à 390 px. Recette additionnelle avec le vrai
+PBX entre 14:21 et 14:23 : deux appels entrants internes vers le compte pilote,
+attente/reprise dans les deux sens, RTP échangé, troisième tentative refusée
+par la limite serveur, reprise automatique du second après fin du premier.
+Aucun prospect appelé, aucun micro physique utilisé. Deux fins de conversations
+exposées au journal ; la persistance du Journal dans l’application complète
+reste à inclure dans la recette terrain. Session de recette déconnectée,
+aucun canal du compte laissé actif. Pas de validation acoustique iPhone présumée.
+
+Preuves locales dans `.work/double-call/` et
+`.work/releases/20261016-double-appel-pilote/`. Le dépôt privé décrit la sauvegarde,
+les valeurs effectives et l’absence de changement des autres sections PBX.
+Retour frontend : vérifier current toujours sur cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261016-protection-appel` ; remettre
+aussi la limite du seul compte pilote via le retour ciblé privé. Actualisation
+hors appel nécessaire. [Fonctionnement et recette](DOUBLE_APPEL_PILOTE.md).
+Manuels clients inchangés.
 
 ## Protection contre le deuxième appel — 16 octobre 2026
 

@@ -2,12 +2,15 @@
 
 ## Double appel : pilote par compte — 16 octobre 2026
 
-Implémenté et testé localement, publication ciblée en préparation. Attente confirmée
+**En service `20261016-double-appel-pilote`, source `a689351`, depuis
+14:18:34 Douala.** Pilote limité au compte autorisé, sans généralisation. Attente confirmée
 avant réponse au second entrant, bascule, sorties et pistes indépendantes, retour
 automatique à l’appel restant, deux journaux distincts. Le build autorise seulement
 la liste explicite `VITE_CALL_WAITING_LINES`, vide par défaut. Autres lignes :
-protection à une session conservée. Pas de généralisation ni validation physique
-iPhone présumée. [Architecture, tests et limites](DOUBLE_APPEL_PILOTE.md).
+protection à une session conservée. 227 tests, typage, lint, build isolé ;
+SIP.js/WebRTC natif local et deux appels internes synthétiques avec le vrai PBX
+réussis (bascule dans les deux sens, limite de deux, reprise après raccrochage).
+Validation physique iPhone encore à faire. [Architecture, tests et limites](DOUBLE_APPEL_PILOTE.md).
 
 ## Protection contre un deuxième appel entrant — 16 octobre 2026
 

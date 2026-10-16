@@ -99,6 +99,18 @@ pas incluses dans la publication Vite de l’application.
 390 px, avec identités fictives et commandes simulées, pour vérifier les textes
 et la présentation. Ce n’est pas une conversation réelle.
 
+## Recette avec le serveur de production
+
+Le 16 octobre, deux appels internes vers le compte pilote ont été établis avec
+le vrai PBX, depuis un banc local utilisant le contrôleur publié et un micro
+synthétique. Attente confirmée de A avant réponse à B, reprise de A, fin de A
+puis reprise automatique de B : flux RTP présents, pistes du dialogue en attente
+désactivées et troisième appel refusé côté serveur. Deux fins d’appels conservées
+par le contrôleur, puis déconnexion et contrôle d’absence de canal restant.
+Ces essais ne passent pas par une destination externe et ne capturent aucune
+voix physique. Ils testent l’interopérabilité SIP/média, pas la qualité acoustique
+iPhone ni la persistance du Journal dans l’interface complète.
+
 ## Limites et recette terrain avant généralisation
 
 Un test WebRTC local réussi ne démontre pas la qualité acoustique d’un iPhone,
