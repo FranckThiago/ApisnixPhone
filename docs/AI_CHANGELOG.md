@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Release vert étendu et boutons supervision préparée — 16 octobre 2026
+
+Release `20261016-vert-boutons` préparée depuis `29c6400` selon `OPERATIONS.md` :
+build live isolé, typage, lint, 201 tests, 267 fichiers, archive bsdtar
+vérifiée sans AppleDouble, manifeste, script de publication calqué sur
+`20261016-connexion-verte`, capture du démarrage local, le tout déposé dans
+`.work/releases/20261016-vert-boutons/`. Elle remplace
+`20261015-boutons-supervision` (source `828c2f0`, jamais publiée, dépassée) en
+portant à la fois les boutons supervision et le vert étendu. Aucun code
+modifié, rien publié : la bascule sur Hermes reste à lancer par Franck. État et
+exploitation mis à jour.
+
 ## Le vert de la connexion dans toute l'application — 16 octobre 2026
 
 Franck veut le vert de l'écran de connexion « plus présent » dans ApisnixPhone.

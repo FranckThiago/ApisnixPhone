@@ -1,5 +1,38 @@
 # Construction et validation
 
+## Vert étendu et boutons supervision — 16 octobre 2026
+
+**Release `20261016-vert-boutons` préparée, non publiée ; source `29c6400`.**
+Elle remplace `20261015-boutons-supervision` (préparée depuis `828c2f0`, jamais
+publiée, désormais dépassée) : elle porte à la fois les boutons au style des
+cartes de supervision (`828c2f0`) et le vert de la connexion étendu à toute
+l'application (`29c6400`). Depuis la release en service `20261016-connexion-verte`,
+seuls `webphone/src/styles/app.css` et `tokens.css` changent côté code.
+Construction live isolée depuis le commit (`git archive`, `npm ci`, typage,
+lint, 201 tests, build avec les trois variables publiques usuelles) ;
+267 fichiers, `index-MDhmU4Av.js`, `lib-Bp8skobL.js`, `index-B9Zdk5w1.css`.
+Archive bsdtar sans entrée AppleDouble (propriétaire root, contrôlée par
+`tarfile`), SHA-256
+`fdd0e6b4137c1d4208aad53056524102ebc0bd11af6125160defd9d5499be5f4`.
+Archive, empreintes, manifeste JSON (`source`, `files`, `archive_sha256`),
+journaux, source du commit (sans `node_modules`), script de publication et
+capture du démarrage local dans `.work/releases/20261016-vert-boutons/`.
+Bundle construit servi en local (`vite preview`) et ouvert dans le navigateur
+intégré : écran de connexion vert affiché, JS et CSS chargés avec les noms du
+manifeste, aucune erreur console, aucun REGISTER ni appel (formulaire non
+soumis). Le script de publication est celui de `20261016-connexion-verte`
+avec les cinq chemins adaptés : il exige `current` encore sur
+`20261016-connexion-verte`, sauvegarde cette release et son manifeste dans
+`/root/apisnix-phone-backups/20261016-vert-boutons/`, extrait l'archive,
+contrôle tous les fichiers et leur lecture par Caddy, bascule atomiquement,
+vérifie les empreintes HTTPS puis écrit le reçu ; échec = retour automatique.
+**Publication sur Hermes à lancer par Franck** après dépôt de l'archive, du
+manifeste et du script dans `/tmp/apisnix-vert-boutons/`. Retour ciblé après
+publication : vérifier `current` sur `20261016-vert-boutons`, puis le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261016-connexion-verte`.
+Actualiser les pages hors appel. Aucune mutation PBX, backend, TURN ni base.
+Manuels clients inchangés.
+
 ## Écran de connexion vert — 16 octobre 2026
 
 **En service `20261016-connexion-verte` depuis le 16 octobre 2026, 09:14:59 Douala ; source `0235a64`.**
@@ -41,7 +74,7 @@ connexion des trois guides refaites sur l'écran vert par la session Manuels
 
 ## Boutons au style de la supervision — 15 octobre 2026
 
-**Release `20261015-boutons-supervision` préparée, non publiée ; source `828c2f0`.**
+**Release `20261015-boutons-supervision` préparée, jamais publiée ; source `828c2f0`. Remplacée par `20261016-vert-boutons`, ne plus la publier.**
 Seul `webphone/src/styles/app.css` change côté code (boutons importants au
 style des cartes d'agents du temps réel). Construction live isolée depuis le
 commit (`git archive`, `npm ci`, typage, lint, 201 tests, build) ; 267 fichiers,

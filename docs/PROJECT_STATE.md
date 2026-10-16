@@ -14,8 +14,14 @@ typage et lint réussis. **Captures refaites à la demande de Franck** : guide
 FR/EN/ES (`docs/guide/`) et les trois PDF reconstruits ; série haute résolution
 pour le site dans `docs/site-captures/` (script : `GUIDE_SCALE`, `GUIDE_OUT`).
 Les manuels de la gestion qui copient `02-journal`, `09-appel-entrant` et
-`06-muet-attente` sont à rafraîchir depuis ces fichiers. Release à préparer
-avec les boutons « supervision » déjà prêts (`20261015-boutons-supervision`).
+`06-muet-attente` sont à rafraîchir depuis ces fichiers. **Release
+`20261016-vert-boutons` préparée, non publiée** (source `29c6400`, 267 fichiers,
+archive SHA-256
+`fdd0e6b4137c1d4208aad53056524102ebc0bd11af6125160defd9d5499be5f4`,
+preuves dans `.work/releases/20261016-vert-boutons/`) ; elle porte aussi les
+boutons « supervision » et remplace `20261015-boutons-supervision`, jamais
+publiée. La publication sur Hermes reste à lancer par Franck, procédure et
+retour dans `OPERATIONS.md` ; `20261016-connexion-verte` reste en service.
 
 ## Écran de connexion vert — 16 octobre 2026
 
@@ -34,6 +40,7 @@ preuves dans `.work/releases/20261016-connexion-verte/`), publiée sur Hermes à
 09:14:59 Douala avec l'accord de Franck ; vérifications et retour dans
 `OPERATIONS.md`. `20261014-early-media-fix` est la cible de retour ;
 `20261015-boutons-supervision`, jamais publiée, est contenue dans celle-ci.
+Prochaine release préparée : `20261016-vert-boutons`.
 
 ## Boutons importants au style de la supervision — 15 octobre 2026
 
@@ -45,7 +52,8 @@ feuille `webphone/src/styles/app.css` change. Vérifié dans le navigateur
 intégré en démonstration : connexion, Journal, Contacts, Réglages, appel
 simulé entrant puis fin d'appel, thèmes clair et sombre. 201 tests, typage et
 lint réussis. Manuels et captures non touchés. **Release
-`20261015-boutons-supervision` préparée, non publiée** (source `828c2f0`,
+`20261015-boutons-supervision` préparée, jamais publiée, remplacée par
+`20261016-vert-boutons`** (source `828c2f0`,
 267 fichiers, archive SHA-256
 `535dc9ec50c282d0fab5a77e19b9f389edbcfce4077cb8f89884865ef3cbaa0a`,
 preuves dans `.work/releases/20261015-boutons-supervision/`) ; la publication
