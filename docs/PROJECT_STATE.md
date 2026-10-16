@@ -1,5 +1,15 @@
 # État du projet
 
+## Qualifications lisibles dans un Journal étroit — 16 octobre 2026
+
+**Dans le code, publication demandée.** Les qualifications passent sous
+l'identité selon la largeur disponible dans le Journal ; elles ne sont plus
+coupées ni masquées sur mobile. CSS uniquement, sans changement des données
+ou des appels. Vérifié dans le navigateur intégré à 375, 1024, 1240, 1366,
+1440 et 1920 px, en clair et sombre, avec une ou deux qualifications ; aucun
+débordement des lignes contrôlées. 201 tests, typage et lint réussis. Plan
+aligné, manuels clients inchangés.
+
 ## Carte du temps en conversation verte — 16 octobre 2026
 
 **Dans le code, non publié.** Le dégradé, le contour et l'horloge de la carte

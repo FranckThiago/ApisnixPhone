@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Qualifications lisibles en largeur réduite — 16 octobre 2026
+
+`app.css` adapte les lignes du Journal à leur propre largeur : qualifications
+sous l'identité en espace réduit, retour à la ligne des pastilles et maintien
+sur mobile. L'ancien masquage et la découpe des libellés sont retirés ; deux
+qualifications maximum dans le résumé restent la règle. Vérification locale
+de 375 à 1920 px, clair/sombre, une et deux qualifications, sans débordement
+des lignes contrôlées ni erreur console ; 201 tests, typage et lint réussis.
+Plan et état mis à jour ; publication avec la carte verte demandée par Franck.
+
 ## Temps en conversation vert — 16 octobre 2026
 
 Le halo de la carte « Temps en conversation », son liseré et son horloge

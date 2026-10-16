@@ -274,6 +274,12 @@ et lueur de la carte d'appel, anneau du logo de connexion, anneau du bouton
 Téléphone compact en appel. La carte « Temps en conversation » du Journal
 utilise aussi un dégradé, un liseré et une horloge verts, en clair comme en sombre.
 
+Dans le Journal, les qualifications restent lisibles à toutes les largeurs :
+elles passent sous l'identité lorsque la ligne dispose de 800 px ou moins,
+selon sa largeur réelle à côté du composeur. Les pastilles reviennent à la
+ligne au besoin ; elles ne sont ni coupées ni masquées sur mobile. Le résumé
+garde au plus deux qualifications, les autres restant dans le détail.
+
 ### Identité et tokens proposés
 
 Le [logo original](../branding/apisnix-mark.png) est réutilisé intact ; sur téléphone et tablette, où le menu devient une barre basse sans marque, il signe l'en-tête du composeur au-dessus du pavé (demande de Franck, 8 octobre). Le bleu
