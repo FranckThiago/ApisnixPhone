@@ -2,17 +2,19 @@
 
 ## Qualifications lisibles dans un Journal étroit — 16 octobre 2026
 
-**Dans le code, publication demandée.** Les qualifications passent sous
+**En service `20261016-journal-lisible`, source `3f62d61`, depuis le 16 octobre
+2026 à 10:23:30 Douala.** Les qualifications passent sous
 l'identité selon la largeur disponible dans le Journal ; elles ne sont plus
 coupées ni masquées sur mobile. CSS uniquement, sans changement des données
 ou des appels. Vérifié dans le navigateur intégré à 375, 1024, 1240, 1366,
 1440 et 1920 px, en clair et sombre, avec une ou deux qualifications ; aucun
 débordement des lignes contrôlées. 201 tests, typage et lint réussis. Plan
-aligné, manuels clients inchangés.
+aligné, manuels clients inchangés. La release inclut aussi la carte verte
+ci-dessous ; publication et retour vers `20261016-halos-verts` dans OPERATIONS.
 
 ## Carte du temps en conversation verte — 16 octobre 2026
 
-**Dans le code, non publié.** Le dégradé, le contour et l'horloge de la carte
+**En service dans `20261016-journal-lisible`.** Le dégradé, le contour et l'horloge de la carte
 « Temps en conversation » passent du jaune au vert. Rendu contrôlé en démo
 locale dans le navigateur intégré, en clair et en sombre ; build et typage
 réussis. Règle visuelle alignée dans `WEBPHONE_PLAN.md`. Manuels inchangés.
@@ -27,8 +29,8 @@ halo de la carte d'appel, dégradés d'Appeler et Accepter ; le bleu reste la
 marque et le jaune la signature (règle dans `WEBPHONE_PLAN.md` § 5). Depuis
 le même jour, plus aucun halo jaune : anneau de l'avatar, lueur de la carte
 d'appel, anneau du logo de connexion et du bouton Téléphone compact sont verts.
-**Release `20261016-halos-verts` en service depuis le 16 octobre 2026,
-10:10:48 Douala** (source `b16f738`, 267 fichiers, archive SHA-256
+**Release `20261016-halos-verts` en service le 16 octobre 2026,
+de 10:10:48 à 10:23:30 Douala, remplacée par `20261016-journal-lisible`** (source `b16f738`, 267 fichiers, archive SHA-256
 `e19f0215cc4b6fa27ab784317524346ea960e53b9d580486fa023ebd5c911dd8`, preuves
 dans `.work/releases/20261016-halos-verts/`) ; vérifications et retour dans
 `OPERATIONS.md`, `20261016-vert-boutons` est la cible de retour. Vérifié

@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Journal lisible et carte verte publiés — 16 octobre 2026
+
+Release `20261016-journal-lisible` (source `3f62d61`, 267 fichiers) publiée
+sur Hermes à 10:23:30 Douala à la demande de Franck. Sauvegarde intégrale
+protégée et vérifiée de `20261016-halos-verts`, bascule atomique, empreintes
+HTTPS conformes depuis Hermes et le Mac, formulaire public chargé sans erreur.
+Aucun appel ou changement PBX/backend/base ; manuels inchangés. État et
+exploitation actualisés, retour ciblé documenté dans OPERATIONS.
+
 ## Qualifications lisibles en largeur réduite — 16 octobre 2026
 
 `app.css` adapte les lignes du Journal à leur propre largeur : qualifications

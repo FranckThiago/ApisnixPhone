@@ -1,8 +1,39 @@
 # Construction et validation
 
+## Journal lisible et carte verte en service — 16 octobre 2026
+
+**Release `20261016-journal-lisible`, source `3f62d61`, en service depuis
+10:23:30 Douala.** Publication explicitement demandée par Franck, après
+validation du halo vert et signalement des qualifications coupées. Seul
+`webphone/src/styles/app.css` change depuis `20261016-halos-verts` : carte
+du temps en conversation verte et qualifications visibles en largeur réduite.
+Contrôles locaux : 201 tests, typage, lint, rendu de 375 à 1920 px, clair et
+sombre, une/deux qualifications, aucun débordement des lignes contrôlées.
+Build live isolé depuis le commit (`git archive`, `npm ci`, trois variables
+publiques usuelles), 267 fichiers ; archive ustar sans AppleDouble, SHA-256
+`47ec53c1e12ee9128fff6c645462c6befba885a5fea4da59a3d49a68e28da7e3`.
+
+Hermes identifié et cible `current` vérifiée avant mutation. Sauvegarde 0700
+`/root/apisnix-phone-backups/20261016-journal-lisible/` : copie complète de
+l'ancienne release vérifiée par manifeste, ancienne cible, archive et
+manifeste source, reçu. Extraction et 267 empreintes contrôlées, droits
+0755/0644 et lecture Caddy vérifiés avant bascule atomique ; retour automatique
+si les contrôles HTTPS échouent. Index, JS, module SIP, CSS, worker et logo
+conformes depuis le Mac ; index `no-cache`, CSP/HSTS/Permissions-Policy
+conservés. Caddy et supervision actifs, sans redémarrage. Navigateur intégré :
+formulaire live avec `index-DbJmXBJt.js` et `index-D1Ap0eoK.css`, aucune erreur
+console. Aucun REGISTER ni appel provoqué ; rendu du Journal vérifié en démo.
+
+Preuves, source, journaux, archive, manifeste, script et reçu :
+`.work/releases/20261016-journal-lisible/`. Retour ciblé : vérifier `current`
+encore sur cette release, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261016-halos-verts`. Actualiser les onglets hors
+appel. Aucun changement PBX, backend, base ou manuel client.
+
 ## Halos verts en service — 16 octobre 2026
 
-**En service `20261016-halos-verts` depuis le 16 octobre 2026, 10:10:48 Douala ; source `b16f738`.**
+**En service du 16 octobre 2026, 10:10:48 à 10:23:30 Douala ; source `b16f738`.
+Remplacée par `20261016-journal-lisible`, dont elle est la cible de retour.**
 Publiée sur Hermes à la demande de Franck (« publies »). Depuis
 `20261016-vert-boutons`, seuls `webphone/src/styles/app.css` et `tokens.css`
 changent côté code (halos verts : anneau et onde de l'avatar, lueur de la carte
