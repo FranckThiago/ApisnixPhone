@@ -126,6 +126,7 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .direction.outbound { color: var(--brand); background: var(--brand-soft); } .direction.inbound { color: var(--success); background: var(--success-soft); } .direction.missed { color: var(--danger); background: var(--danger-soft); }
 .who { min-width: 0; } .who b, .who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .who b { font-weight: 650; }
 .is-missed .who b { color: var(--danger); }
+.journal-inline-flag { display: none; }
 .where { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-tags { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
 .tag-mini { max-width: 100%; overflow-wrap: anywhere; font-style: normal; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--yellow-soft); color: var(--text); border: 1px solid color-mix(in srgb, var(--yellow) 60%, transparent); }
@@ -440,6 +441,9 @@ input[type=range] { accent-color: var(--brand); }
 @container journal-row (max-width: 580px) {
   .call-summary { grid-template-columns: 30px 38px minmax(0, 1fr) auto; }
   .call-summary .result { max-width: 90px; }
+  .call-summary .who small { display: flex; align-items: center; gap: 6px; }
+  .journal-inline-flag { display: inline-flex; flex: none; }
+  .journal-secondary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .call-summary .where, .call-summary .when, .call-summary .chevron { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

@@ -279,6 +279,10 @@ elles passent sous l'identité lorsque la ligne dispose de 800 px ou moins,
 selon sa largeur réelle à côté du composeur. Les pastilles reviennent à la
 ligne au besoin ; elles ne sont ni coupées ni masquées sur mobile. Le résumé
 garde au plus deux qualifications, les autres restant dans le détail.
+Quand la colonne pays est masquée (ligne de 580 px ou moins), le drapeau
+du pays connu apparaît dans la ligne secondaire sous l'identité, à côté du
+numéro pour un contact nommé ou du pays pour un numéro sans nom. Aucun pays
+n'est déduit par défaut et aucun drapeau n'est ajouté si le pays est inconnu.
 
 ### Identité et tokens proposés
 

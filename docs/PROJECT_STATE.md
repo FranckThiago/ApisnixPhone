@@ -1,5 +1,14 @@
 # État du projet
 
+## Drapeaux du Journal sur mobile — 16 octobre 2026
+
+**Dans le code, publication demandée.** En largeur réduite, les drapeaux des
+pays connus sont affichés dans la ligne secondaire sous l'identité, au lieu
+de disparaître avec la colonne pays. Libellés, détection du pays, numéros
+composés et qualifications conservés. Vérifié à 375/390 px, clair et sombre,
+et à 1366 px (un seul drapeau visible par ligne), sans débordement ; 201 tests,
+typage et lint réussis. Plan aligné, manuels clients inchangés.
+
 ## Guides actualisés sur demande — 16 octobre 2026
 
 Les trois guides clients sont reconstruits (huit pages chacun), avec couverture

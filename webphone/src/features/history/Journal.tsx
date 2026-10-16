@@ -153,7 +153,10 @@ export function Journal() {
                       <button type="button" className="call-summary" aria-expanded={open} onClick={() => setOpenId(open ? null : call.id)}>
                         <DirectionIcon call={call} />
                         <Avatar name={name} size={38} />
-                        <span className="who"><b>{name ?? info.display}</b><small>{name ? info.display : countryLabel(info)}</small></span>
+                        <span className="who"><b>{name ?? info.display}</b><small>
+                          {info.country && <span className="journal-inline-flag"><Flag info={info} /></span>}
+                          <span className="journal-secondary">{name ? info.display : countryLabel(info)}</span>
+                        </small></span>
                         <span className="where"><Flag info={info} />{countryLabel(info)}</span>
                         <span className="row-tags">{call.tags.slice(0, 2).map(tag => <i key={tag} className="tag-mini">{tagLabel(tag)}</i>)}</span>
                         <span className={`result result-${call.outcome}`}>{call.outcome === 'answered' ? formatDuration(seconds) : outcomeLabel(call.outcome)}</span>

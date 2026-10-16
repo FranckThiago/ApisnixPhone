@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Drapeaux du Journal conservés sur mobile — 16 octobre 2026
+
+`Journal.tsx` et `app.css` affichent le drapeau d'un pays connu dans la ligne
+secondaire lorsque la colonne pays est masquée. Le drapeau reste fixe et le
+texte peut être abrégé ; les qualifications restent lisibles. Aucun changement
+de détection du pays, de numéro ou de données. Contrôle en démo à 375/390 px,
+clair/sombre et à 1366 px ; 201 tests, typage et lint réussis. Plan et état
+alignés ; publication explicitement demandée, manuels inchangés.
+
 ## Guides actualisés sur demande — 16 octobre 2026
 
 Les trois guides clients sont reconstruits (huit pages chacun), avec couverture
