@@ -1,5 +1,25 @@
 # Journal des changements
 
+## Protection contre un deuxième appel entrant — 16 octobre 2026
+
+**Code validé, publication en préparation.** Un nouvel INVITE reçu pendant
+un appel est refusé en **486 Busy Here avant son admission dans SessionManager**.
+Le contrôleur confirme aussi la disponibilité pendant la préparation média
+sortante (avant création d’une session), la terminaison et les changements
+de connexion. La session déjà présente, ses commandes et sa chaîne audio ne
+sont pas remplacées ; une erreur du refus ne déclenche pas la fin du premier
+appel. La réception redevient possible une fois la ligne libérée, même si la
+fiche de fin d’appel reste affichée. Pas de sonnerie ni notification du refus
+ajoutée, pas de deuxième conversation, aucun changement des limites PBX.
+
+Cinq tests ciblés utilisant le vrai SIP.js et un transport local : INVITE/486,
+conservation du premier appel et réception après fin, états actif/en attente
+simulés, préparation sortante, refus échoué, ancienne connexion. Les quatre
+premiers cas ont échoué sur la version précédente ; le cinquième complète la
+protection des connexions retirées. Ces tests ne sont pas une conversation
+audio réelle. Manuels clients inchangés.
+
+
 ## Sortie audio en appel publiée — 16 octobre 2026
 
 Release `20261016-sortie-audio`, source `fcc737a`, en service à 13:37:43 Douala.

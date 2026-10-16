@@ -363,7 +363,9 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Campagnes, robot d'appel, SMS, IA, CRM complet | Hors V1 | Pas de faux module pour imiter les concurrents |
 | Vidéo, caméra, géolocalisation, partage écran | Hors périmètre | Aucune demande de permission correspondante |
 
-Un appel simultané au départ : `maxSimultaneousSessions: 1`. Le transfert
+Un appel simultané au départ : `maxSimultaneousSessions: 1`. Depuis le
+16 octobre, une admission explicite avant SessionManager refuse en 486 tout
+nouvel entrant quand une session ou une préparation sortante occupe la ligne. Le transfert
 accompagné ne peut pas être promis avec cette limite ou avec les limites PBX
 actuelles. Afficher seulement les fonctions dont la capacité est activée et
 vérifiée. L'interface doit rester complète pour les usages validés.
@@ -834,3 +836,17 @@ navigateur, sans supposer qu’il s’agit de l’écouteur. Si aucune autre sor
 n’est exposée ou si la sélection n’est pas supportée, afficher la limite et
 orienter vers les écouteurs/contrôles système. Aucun faux bouton forçant un
 écouteur inexistant. Les manuels clients restent inchangés.
+
+## Double appel envisagé — 16 octobre 2026
+
+Franck demande la faisabilité de mettre A en attente pour répondre à B.
+Possible comme évolution distincte, non activée : proposer Répondre en mettant
+en attente / Refuser, attendre la confirmation de mise en attente de A avant
+acceptation de B, reprendre A si B échoue, afficher clairement la conversation
+qui reçoit le micro. Séparer sessions, sorties, mute, DTMF, raccrochage,
+chronomètres, notes et historique. Adapter les limites PBX uniquement sur un
+pilote autorisé. Risques à tester : voix envoyée au mauvais correspondant,
+double lecture, reprise muette après renégociation, raccrochage du mauvais
+appel et confusion des journaux. Couvrir appels quasi simultanés, annulation,
+perte réseau, retour au premier appel et navigateur mobile. La protection
+à une conversation demeure le comportement livré.

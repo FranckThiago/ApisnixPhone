@@ -82,6 +82,21 @@ export const browserSipEnvironment: SipEnvironment = {
         },
       },
     });
+    // SIP.js 0.21.2 checks `length > max` before adding an incoming session.
+    // Reject BEFORE its handler: initSession would replace the controller's call,
+    // and rejecting afterwards could run shared media cleanup on the first call.
+    const userAgentDelegate = manager.userAgent.delegate;
+    const receiveInvite = userAgentDelegate?.onInvite;
+    if (!receiveInvite) throw new Error('Missing SIP incoming-call handler');
+    manager.userAgent.delegate = { ...userAgentDelegate, onInvite: invitation => {
+      if (retired || manager.managedSessions.length >= 1 || !delegate.canReceiveCall()) {
+        // A cancellation or transport loss can race with this response. Never let
+        // that failure reach the current call's error/hangup/media callbacks.
+        void invitation.reject({ statusCode: 486 }).catch(() => undefined);
+        return;
+      }
+      receiveInvite.call(userAgentDelegate, invitation);
+    } };
     const transport = manager.userAgent.transport;
     /**
      * Asks the PBX which device holds the account: a REGISTER without Contact is a query (RFC 3261 §10.2.3),

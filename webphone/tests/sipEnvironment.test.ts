@@ -19,9 +19,11 @@ vi.mock('sip.js', () => ({
   Web: {
     defaultSessionDescriptionHandlerFactory: () => (_session: unknown, options: unknown) => { fake.factoryOptions.push(options); return { close() {} }; },
     SessionManager: class {
+      managedSessions = [];
       constructor(_url: string, options: typeof fake.options) { fake.options = options; }
       disconnect = vi.fn(async () => undefined);
       userAgent = {
+        delegate: { onInvite: vi.fn() },
         contact: { uri: { user: 'this-browser' } },
         transport: { isConnected: () => fake.connected, disconnect: vi.fn(async () => undefined) },
         userAgentCore: {
@@ -38,7 +40,7 @@ vi.mock('sip.js', () => ({
 }));
 
 async function setup() {
-  const delegate = { onRegistered: vi.fn(), onLineTaken: vi.fn() } as unknown as ManagerDelegate;
+  const delegate = { onRegistered: vi.fn(), onLineTaken: vi.fn(), canReceiveCall: () => true } as unknown as ManagerDelegate;
   const manager = await browserSipEnvironment.createManager(
     { domain: 'pbx.example', wssUrl: 'wss://pbx.example/ws' },
     { username: 'test', password: 'fictional-only' }, delegate,

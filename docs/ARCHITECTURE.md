@@ -323,3 +323,29 @@ est déclenché à l'activation ou au premier événement autorisé ; échec ou 
 ne casse jamais l'interface d'appel. Une notification entrante en attente de
 création est annulée lorsque l'appel finit ; les alertes créées sont fermées
 par tag unique. Il ne garantit pas l'arrivée d'appels si la page est gelée.
+
+## Admission d’un appel entrant — 16 octobre 2026
+
+Le téléphone gère une seule conversation. `sipEnvironment.ts` intercepte le
+nouvel INVITE du UserAgent avant le handler de SessionManager : la version
+SIP.js 0.21.2 compare `length > max` avant l’ajout et sa limite seule est donc
+insuffisante. Si une session gérée existe, si le manager est retiré ou si
+`ManagerDelegate.canReceiveCall()` refuse, l’invitation reçoit 486 Busy Here.
+Le handler natif n’est pas appelé : pas de onCallCreated/onCallReceived, de
+remplacement de la référence du contrôleur ni de nettoyage audio partagé
+pour cette invitation. Le rejet échoué reste isolé de la conversation.
+
+La disponibilité du contrôleur exige une connexion prête et voulue, une
+génération courante et aucun appel non terminé. Elle protège notamment
+l’intervalle de préparation TURN/early media où managedSessions est encore
+vide. Les re-INVITE du dialogue existant restent gérés par SIP.js (attente et
+reprise), cette interception concerne les nouvelles invitations. La fiche
+de fin d’appel ne bloque pas la réception après libération des sessions.
+Le PBX peut refuser le deuxième appel avant qu’il n’arrive au navigateur :
+ni notification universelle ni journal local exhaustif des refus promis.
+
+Le double appel demanderait deux sessions identifiées et des états/médias
+séparés, une seule émission active, confirmation de mise en attente avant
+acceptation du second, restauration du premier en cas d’échec, commandes et
+journaux ciblés, puis limites PBX adaptées sur un pilote. Ce travail n’est
+pas activé par la correction de protection.

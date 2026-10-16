@@ -20,6 +20,8 @@ interface ProgressResponse { message: { statusCode?: number; body?: string } }
 export interface CallMediaOptions { earlyMedia: boolean }
 
 export interface ManagerDelegate {
+  /** Includes outgoing media preparation, before SIP.js has created a session. */
+  canReceiveCall(): boolean;
   onServerConnect(): void;
   onServerDisconnect(error?: Error): void;
   onRegistered(): void;
@@ -259,12 +261,14 @@ export class SipPhoneController implements PhoneController {
 
   /** Ignore every callback from a retired connection, including delayed REGISTER responses. */
   private scopedDelegate(generation: number): ManagerDelegate {
-    return Object.fromEntries(Object.entries(this.delegate).map(([name, handler]) => [name,
+    return { ...Object.fromEntries(Object.entries(this.delegate).map(([name, handler]) => [name,
       (...args: unknown[]) => { if (generation === this.generation) handler(...args); },
-    ])) as unknown as ManagerDelegate;
+    ])), canReceiveCall: () => generation === this.generation && this.delegate.canReceiveCall() } as ManagerDelegate;
   }
 
   private delegate: ManagerDelegate = {
+    canReceiveCall: () => this.wanted && this.snapshot.connection === 'ready'
+      && (!this.snapshot.call || this.snapshot.call.phase === 'ended'),
     onServerConnect: () => {
       if (!this.wanted || !this.manager) return;
       clearTimeout(this.reconnectTimer);
