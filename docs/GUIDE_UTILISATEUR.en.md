@@ -23,7 +23,7 @@ the build script: "gauche" (left), "droite" (right), an optional height. -->
 ## 1. Sign in
 
 Open [https://apisnix-crm.com](https://apisnix-crm.com) and choose the
-**SIP login** card, or go straight to
+**ApisnixPhone** card, or go straight to
 [https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
 
 ![Home page](guide/en/00-accueil.png)
@@ -52,7 +52,7 @@ again, or explains how to unblock it if the browser remembered the refusal.
 
 ## 2. The main screen
 
-![Call log](guide/en/02-journal.png "100mm")
+![Call log](guide/en/02-journal.png "88mm")
 
 - **On the left**, the menu: Call log, Contacts, Audio, Settings. Callbacks
   are in the Call log, under the **Callbacks** tab. Your account and the red
@@ -61,6 +61,8 @@ again, or explains how to unblock it if the browser remembered the refusal.
 - **On the right**, the phone. It stays there whatever the page: you can check
   your callbacks or recordings without leaving your call.
 - **At the top**, the search bar and the line status.
+- **Just below**, the **APISNIX announcements**: tips, invoices, news. The cross
+  hides an announcement you have read; an updated announcement comes back.
 
 ## 3. Make a call
 

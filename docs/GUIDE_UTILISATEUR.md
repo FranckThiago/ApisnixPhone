@@ -32,7 +32,7 @@ la refaire avec webphone/scripts/home-screenshot.mjs. -->
 ## 1. Se connecter
 
 Ouvrez [https://apisnix-crm.com](https://apisnix-crm.com) et choisissez la carte
-**Connexion SIP**, ou allez directement sur
+**ApisnixPhone**, ou allez directement sur
 [https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
 
 ![Page d'accueil](guide/00-accueil.png)
@@ -64,7 +64,7 @@ le refus.
 
 ## 2. L'écran principal
 
-![Journal d'appels](guide/02-journal.png "100mm")
+![Journal d'appels](guide/02-journal.png "88mm")
 
 - **À gauche**, le menu : Journal, Contacts, Audio, Réglages. Les Rappels se
   trouvent dans le Journal, sous l’onglet **Rappels**. Votre
@@ -74,6 +74,8 @@ le refus.
 - **À droite**, le téléphone. Il reste là quelle que soit la page : vous pouvez
   consulter vos rappels ou vos enregistrements sans quitter votre appel.
 - **En haut**, la barre de recherche et l'état de la ligne.
+- **Juste dessous**, les **Annonces APISNIX** : astuces, factures, nouveautés.
+  La croix masque une annonce lue ; une annonce modifiée réapparaît.
 
 ## 3. Passer un appel
 

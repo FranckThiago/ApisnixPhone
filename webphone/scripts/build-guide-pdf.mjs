@@ -132,18 +132,20 @@ const pageHtml = ({ lang, settings, version, today, contents, intro, body }) => 
   @page { size: A4; margin: 17mm 16mm 18mm; }
   * { box-sizing: border-box; }
   body { margin: 0; font: 10.6pt/1.55 -apple-system, "Helvetica Neue", "Segoe UI", Arial, sans-serif; color: #141d38; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .cover { height: 258mm; display: flex; flex-direction: column; justify-content: space-between; padding: 20mm 14mm 12mm; border-radius: 6mm; color: #fff; page-break-after: always;
-    background: radial-gradient(70% 50% at 15% 8%, #2a3cffaa, transparent 70%), radial-gradient(60% 45% at 95% 95%, #ffd21f40, transparent 70%), #0b1230; }
-  .cover img { width: 30mm; height: 30mm; padding: 3mm; border-radius: 7mm; background: #fff; box-shadow: 0 0 0 1mm #ffd21f; }
-  .cover h1 { font-size: 34pt; line-height: 1.08; letter-spacing: -1pt; margin: 12mm 0 4mm; border: 0; }
+  /* Couverture verte : chaque manuel APISNIX a sa couleur (agent bleu électrique, administration bleu ciel, supervision violet, ApisnixPhone vert). */
+  .cover { --c1: #2fd69a; --c2: #10b981; --c3: #04785a; height: 258mm; display: flex; flex-direction: column; justify-content: space-between; padding: 20mm 14mm 12mm; border-radius: 6mm; color: #fff; page-break-after: always;
+    background: radial-gradient(60% 40% at 8% 4%, #ffffff40, transparent 70%), radial-gradient(55% 40% at 100% 100%, #ffd21f38, transparent 70%), radial-gradient(45% 35% at 92% 38%, #ffffff1c, transparent 70%),
+      linear-gradient(155deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%); }
+  .cover img { width: 30mm; height: 30mm; padding: 3mm; border-radius: 7mm; background: #fff; box-shadow: 0 0 0 1mm #ffd21f, 0 4mm 9mm #00000038; }
+  .cover h1 { font-size: 34pt; line-height: 1.08; letter-spacing: -1pt; margin: 12mm 0 4mm; border: 0; text-shadow: 0 .4mm 2.5mm #00000030; }
   .cover h1 span { background: linear-gradient(transparent 78%, #ffd21f 78%, #ffd21f 92%, transparent 92%); }
-  .cover p { font-size: 13pt; color: #c5ccea; max-width: 120mm; margin: 0 0 8mm; }
-  .cover small { font-size: 10pt; color: #ffd21f; letter-spacing: .6pt; }
-  .toc { padding: 5mm 6mm 4mm; border-radius: 4mm; background: #ffffff12; border: .3mm solid #ffffff22; }
-  .toc h2 { margin: 0 0 3mm; padding: 0; border: 0; color: #ffd21f; font-size: 10pt; letter-spacing: 1.2pt; text-transform: uppercase; }
+  .cover p { font-size: 13pt; color: #ffffffe0; max-width: 120mm; margin: 0 0 8mm; }
+  .cover small { display: inline-block; padding: 1mm 3mm; border-radius: 10mm; background: #ffffff26; border: .3mm solid #ffffff45; font-size: 9.5pt; color: #fff; letter-spacing: .6pt; }
+  .toc { padding: 5mm 6mm 4mm; border-radius: 4mm; background: #ffffff24; border: .3mm solid #ffffff55; box-shadow: inset 0 .3mm 0 #ffffff50, 0 4mm 10mm #00000024; }
+  .toc h2 { margin: 0 0 3mm; padding: 0; border: 0; color: #fff; font-size: 10pt; letter-spacing: 1.2pt; text-transform: uppercase; }
   .toc nav { columns: 2; column-gap: 10mm; }
-  .toc a { display: flex; align-items: baseline; gap: 2.5mm; padding: 1.3mm 0; border-bottom: .2mm dotted #ffffff30; color: #fff; text-decoration: none; font-size: 10.2pt; break-inside: avoid; }
-  .toc .n { width: 5mm; color: #ffd21f; font-weight: 700; text-align: right; } .toc .t { flex: 1; } .toc .p { color: #c5ccea; font-variant-numeric: tabular-nums; }
+  .toc a { display: flex; align-items: baseline; gap: 2.5mm; padding: 1.3mm 0; border-bottom: .2mm dotted #ffffff55; color: #fff; text-decoration: none; font-size: 10.2pt; break-inside: avoid; }
+  .toc .n { width: 5mm; color: #ffd21f; font-weight: 700; text-align: right; text-shadow: 0 .2mm 1mm #00000040; } .toc .t { flex: 1; } .toc .p { color: #ffffffd0; font-variant-numeric: tabular-nums; }
   .intro { padding: 4mm 5mm; border-radius: 3mm; background: #fff7d6; border-left: 1.2mm solid #f2b900; margin-bottom: 6mm; }
   .intro p { margin: 0 0 2mm; } .intro p:last-child { margin: 0; }
   h2 { font-size: 16pt; letter-spacing: -.3pt; margin: 8mm 0 3mm; padding-bottom: 1.5mm; border-bottom: .8mm solid #ffd21f; color: #0b1230; page-break-after: avoid; }

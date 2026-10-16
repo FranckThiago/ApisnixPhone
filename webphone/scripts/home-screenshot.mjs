@@ -2,6 +2,7 @@
 // to ApisnixPhone (« Connexion SIP ») framed in red, as in the agent manual. One per language (?lang=).
 //   node scripts/home-screenshot.mjs      → docs/guide/00-accueil.png, en/ and es/
 // Reads the live public page only: no sign-in, nothing sent. Same DevTools approach as guide-screenshots.mjs.
+// HOME_URL renders another copy of the page instead, e.g. the private repository's source before it is published.
 import { spawn } from 'node:child_process';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -10,6 +11,7 @@ import { join, resolve } from 'node:path';
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const DOCS = resolve(import.meta.dirname, '../../docs/guide');
 const PORT = 9338;
+const HOME_URL = process.env.HOME_URL ?? 'https://apisnix-crm.com/';
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
 const profile = await mkdtemp(join(tmpdir(), 'apisnix-home-'));
@@ -47,7 +49,7 @@ try {
   await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }, { name: 'prefers-reduced-motion', value: 'reduce' }] });
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 2, mobile: false });
   for (const lang of ['fr', 'en', 'es']) {
-    await send('Page.navigate', { url: `https://apisnix-crm.com/?lang=${lang}` });
+    await send('Page.navigate', { url: `${HOME_URL}?lang=${lang}` });
     await sleep(2500);
     const box = await run(`
       const card = document.querySelector('.card.phone');

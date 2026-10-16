@@ -26,7 +26,7 @@ cuyas palabras siguen en francés para el script: "gauche" (izquierda),
 ## 1. Iniciar sesión
 
 Abre [https://apisnix-crm.com](https://apisnix-crm.com) y elige la tarjeta
-**Conexión SIP**, o ve directamente a
+**ApisnixPhone**, o ve directamente a
 [https://phone.apisnix-crm.com](https://phone.apisnix-crm.com).
 
 ![Página de inicio](guide/es/00-accueil.png)
@@ -57,7 +57,7 @@ recordó el rechazo.
 
 ## 2. La pantalla principal
 
-![Registro de llamadas](guide/es/02-journal.png "100mm")
+![Registro de llamadas](guide/es/02-journal.png "88mm")
 
 - **A la izquierda**, el menú: Registro, Contactos, Audio, Ajustes. Las
   devoluciones de llamada están en el Registro, en la pestaña
@@ -67,6 +67,8 @@ recordó el rechazo.
 - **A la derecha**, el teléfono. Permanece ahí sea cual sea la página: puedes
   consultar tus devoluciones o tus grabaciones sin dejar la llamada.
 - **Arriba**, la barra de búsqueda y el estado de la línea.
+- **Justo debajo**, los **Anuncios APISNIX**: consejos, facturas, novedades. La
+  cruz oculta un anuncio leído; un anuncio modificado vuelve a aparecer.
 
 ## 3. Hacer una llamada
 

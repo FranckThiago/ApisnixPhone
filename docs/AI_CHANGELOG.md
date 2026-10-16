@@ -1,5 +1,21 @@
 # Journal des changements
 
+## Guide ApisnixPhone refait, couverture verte — 16 octobre 2026
+
+Demande de Franck : refaire les manuels avec les nouvelles captures, chacun
+reconnaissable à la couleur de sa couverture ; ApisnixPhone est vert (agent bleu
+électrique, administration bleu ciel, supervision violet dans le dépôt de
+gestion). Captures des trois langues refaites depuis la démo : le bandeau jaune
+« DÉMONSTRATION », l'aide de démonstration de la connexion et les mentions
+« Démo » / « données fictives » sont retirés de l'image par
+`guide-screenshots.mjs` (le guide montre l'écran d'un client). Accueil capturé
+sur la source locale de l'accueil (`HOME_URL`), où la carte « Connexion SIP »
+s'appelle désormais **ApisnixPhone** (pas encore publiée) ; textes du guide
+alignés. Puce « Annonces APISNIX » ajoutée à l'écran principal, journal réduit à
+88 mm pour garder huit pages. PDF régénérés (FR, EN, ES, 8 pages chacun). La
+capture de connexion sera refaite quand l'écran de connexion vert sera publié
+dans ce dépôt.
+
 ## Release des boutons supervision préparée — 15 octobre 2026
 
 Release `20261015-boutons-supervision` préparée depuis `828c2f0` selon

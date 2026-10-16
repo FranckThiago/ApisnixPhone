@@ -55,6 +55,18 @@ const run = async expression => {
 };
 const viewport = (width, height, mobile = false) => send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1.5, mobile });
 async function shot(name, selector) {
+  // The guide shows the application as a client sees it: the demonstration banner, the sign-in hint and the
+  // « demo » / « fictional data » mentions stay out of the pictures (text nodes only, the layout is unchanged).
+  await run(`
+    document.querySelector('.demo-banner')?.style.setProperty('display', 'none');
+    document.querySelector('.login .callout')?.style.setProperty('display', 'none');
+    const words = ${JSON.stringify({ demoReady: WORDS['connection.demoReady'], ready: WORDS['connection.ready'], fictional: ' · ' + WORDS['demo.fictional'] })};
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node; (node = walker.nextNode());) {
+      if (node.nodeValue === words.demoReady) node.nodeValue = words.ready;
+      else if (node.nodeValue.includes(words.fictional)) node.nodeValue = node.nodeValue.replace(words.fictional, '');
+    }
+    return true;`);
   await sleep(450);
   let clip;
   if (selector) {
