@@ -50,8 +50,8 @@ s'appelle désormais **ApisnixPhone** (pas encore publiée) ; textes du guide
 alignés. Puce « Annonces APISNIX » ajoutée à l'écran principal, journal réduit à
 88 mm pour garder huit pages. PDF régénérés (FR, EN, ES, 8 pages chacun).
 Capture de connexion refaite ensuite sur l'écran vert (`0235a64`), le même jour ;
-le guide le montre avant sa publication sur Hermes (release
-`20261016-connexion-verte` préparée, en attente de l'accord de Franck).
+il est en production sur Hermes depuis 09:14:59 (release
+`20261016-connexion-verte`) : le guide montre ce que voient les clients.
 
 ## Release des boutons supervision préparée — 15 octobre 2026
 
