@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Sortie audio en appel publiée — 16 octobre 2026
+
+Release `20261016-sortie-audio`, source `fcc737a`, en service à 13:37:43 Douala.
+267 fichiers construits depuis le commit isolé, sauvegarde précédente vérifiée,
+bascule atomique, empreintes HTTPS contrôlées depuis Hermes et le Mac avec
+validation TLS. Page publique chargée dans le navigateur intégré sans connexion
+SIP. 201 tests, typage, lint sans avertissement, build réussi (avertissement
+de taille du bundle préexistant). Aucun appel réel provoqué, aucune mutation
+PBX/base/TURN ; bascule physique vers l’écouteur iPhone non vérifiée. Manuels
+inchangés. Exploitation et état alignés.
+
+
 ## Sortie audio accessible pendant l’appel — 16 octobre 2026
 
 **Dans le code, publication en préparation.** Le sélecteur des sorties réelles

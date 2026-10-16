@@ -1,5 +1,31 @@
 # Construction et validation
 
+## Sortie audio en appel — 16 octobre 2026
+
+**Release `20261016-sortie-audio`, source `fcc737a`, active depuis 13:37:43
+Douala.** Remplace `20261016-drapeaux-mobile`. Sélecteur commun Audio/appel,
+actualisation des routes selon capacités du navigateur, libellés FR/EN/ES.
+Ni changement de signalisation SIP ni traitement audio ajouté. Essai rendu
+en conversation simulée dans le navigateur intégré ; 201 tests, typage,
+lint, build isolé depuis le commit. La sélection physique sur iPhone reste
+à confirmer ; le support API ne prouve pas la route effectivement entendue.
+
+Hermes identifié, ancienne cible contrôlée. Sauvegarde protégée 0700 de
+la release précédente et manifeste intégral comparé dans
+`/root/apisnix-phone-backups/20261016-sortie-audio/`. 267 fichiers, archive
+SHA-256 `1f8e5c43398b4fa7c962144b7dc37dacfc118fe3693b82584e614fea828c31b5`.
+Bascule atomique avec retour automatique si contrôle HTTPS échoue. Index,
+JS/CSS et worker conformes depuis Hermes et le Mac (curl, validation TLS
+système ; le Python local n’avait pas sa chaîne CA). Caddy et supervision
+actifs, sans redémarrage. Page live vérifiée dans le navigateur intégré,
+aucun REGISTER ni appel réel lancé. Preuves ignorées dans
+`.work/releases/20261016-sortie-audio/`.
+
+Retour : vérifier current encore sur cette release puis repointer atomiquement
+vers `/srv/apisnixphone/releases/20261016-drapeaux-mobile`. Actualiser hors
+appel. Aucun changement backend, PBX, TURN, données ou manuels clients.
+
+
 ## Drapeaux du Journal sur mobile — 16 octobre 2026
 
 **Release `20261016-drapeaux-mobile`, source `273fe65`, en service depuis

@@ -2,7 +2,7 @@
 
 ## Sortie audio accessible pendant l’appel — 16 octobre 2026
 
-**Dans le code, publication en préparation.** Le sélecteur des sorties réelles
+**En service `20261016-sortie-audio`, source `fcc737a`, depuis 13:37:43 Douala.** Le sélecteur des sorties réelles
 est partagé entre Audio et la carte d’appel (conversation ou attente). Liste
 actualisée aux changements de phase, de périphérique et au retour visible,
 avec actualisation manuelle. Le libellé de la sortie système fourni par le
