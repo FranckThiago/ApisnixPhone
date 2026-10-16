@@ -1,5 +1,12 @@
 # Journal des changements
 
+## Temps en conversation vert — 16 octobre 2026
+
+Le halo de la carte « Temps en conversation », son liseré et son horloge
+utilisent les jetons verts existants dans `app.css`. Vérification visuelle
+locale en clair et sombre, build et typage réussis. Plan et état du projet
+mis à jour ; aucun déploiement ni changement des manuels.
+
 ## Halos verts publiés — 16 octobre 2026
 
 Release `20261016-halos-verts` préparée depuis `b16f738` (build live isolé,

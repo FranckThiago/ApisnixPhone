@@ -1,5 +1,12 @@
 # État du projet
 
+## Carte du temps en conversation verte — 16 octobre 2026
+
+**Dans le code, non publié.** Le dégradé, le contour et l'horloge de la carte
+« Temps en conversation » passent du jaune au vert. Rendu contrôlé en démo
+locale dans le navigateur intégré, en clair et en sombre ; build et typage
+réussis. Règle visuelle alignée dans `WEBPHONE_PLAN.md`. Manuels inchangés.
+
 ## Le vert d'ApisnixPhone dans toute l'application — 16 octobre 2026
 
 **Dans le code, non publié.** Sur demande de Franck, le vert de l'écran de

@@ -271,7 +271,8 @@ marque APISNIX (logo, annonces, sélections, sens sortant, lettres de l'annuaire
 le jaune la signature (onglets, focus clavier, Terminer, trait d'accroche).
 Les halos sont verts, jamais jaunes (Franck, 16 octobre) : anneau de l'avatar
 et lueur de la carte d'appel, anneau du logo de connexion, anneau du bouton
-Téléphone compact en appel.
+Téléphone compact en appel. La carte « Temps en conversation » du Journal
+utilise aussi un dégradé, un liseré et une horloge verts, en clair comme en sombre.
 
 ### Identité et tokens proposés
 
