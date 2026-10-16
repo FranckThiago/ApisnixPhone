@@ -37,6 +37,7 @@ export interface ManagerDelegate {
 export interface Manager {
   /** Random SIP contact identity, retained only while recovering this browser session. */
   contactName: string;
+  focusSession?(session: ManagedSession | undefined): void;
   /** Optional bounded media preparation, before creating an outgoing SIP session. */
   prepareMedia?(): Promise<CallMediaOptions | void>;
   connect(): Promise<void>;
@@ -66,7 +67,12 @@ export interface Manager {
   sentAudioPackets(session: ManagedSession): Promise<number | null>;
 }
 
+export interface SessionMedia { microphone(): Promise<MediaStream>; audio?: HTMLAudioElement }
+
 export interface SipConfig {
+  /** Explicit build pilot; empty by default. No server permissions are granted here. */
+  callWaitingLines?: string[];
+  maxCalls?: 1 | 2;
   /** Public connection information only: never a key or a password. */
   domain: string;
   wssUrl: string;
@@ -82,7 +88,8 @@ export interface SipConfig {
 export interface BlockStatus { blocked: boolean; remaining: number; weighted?: number; left?: number; nextBlock?: number }
 
 export interface SipEnvironment {
-  createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined, recoveryContact?: string): Promise<Manager> | Manager;
+  createManager(config: SipConfig, credentials: Credentials, delegate: ManagerDelegate, microphone: () => Promise<MediaStream>, remoteAudio: HTMLAudioElement | undefined, recoveryContact?: string, mediaForSession?: (session: ManagedSession) => SessionMedia): Promise<Manager> | Manager;
+  hasOtherCalls?(): boolean;
   createRemoteAudio(): HTMLAudioElement | undefined;
   /** Reads the block status of this site; null when the page cannot be reached. */
   blockStatus?(url: string): Promise<BlockStatus | null>;
@@ -311,7 +318,7 @@ export class SipPhoneController implements PhoneController {
       this.scheduleRecovery();
     },
     onLineTaken: () => {
-      if (this.wanted && (!this.snapshot.call || this.snapshot.call.phase === 'ended')) void this.stepAside();
+      if (this.wanted && (!this.snapshot.call || this.snapshot.call.phase === 'ended') && !this.environment.hasOtherCalls?.()) void this.stepAside();
     },
     onCallCreated: session => { this.session = session; },
     onCallReceived: session => {
@@ -398,7 +405,7 @@ export class SipPhoneController implements PhoneController {
     const manager = this.manager;
     if (!this.wanted || !this.established || this.checkingLine || this.refreshing || this.snapshot.lineTaken) return;
     if (!manager) { await this.refreshConnection(); return; }
-    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    if ((this.snapshot.call && this.snapshot.call.phase !== 'ended') || this.environment.hasOtherCalls?.()) return;
     if (Date.now() - this.lastCheck < 1000) {
       if (this.snapshot.connection !== 'ready') this.scheduleRecovery();
       return;
@@ -412,7 +419,7 @@ export class SipPhoneController implements PhoneController {
       } else {
         const holds = await manager.holdsLine();
         if (manager !== this.manager || !this.wanted) return;
-        if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+        if ((this.snapshot.call && this.snapshot.call.phase !== 'ended') || this.environment.hasOtherCalls?.()) return;
         this.lineStrikes = holds === false ? this.lineStrikes + 1 : 0;
         if (this.lineStrikes >= 2) { await this.stepAside(); return; }
         if (holds === null) {
@@ -438,7 +445,7 @@ export class SipPhoneController implements PhoneController {
   /** Explicit recovery stays in the workspace and never signs out or reloads saved data. */
   async reconnect() {
     if (!this.wanted || !this.established || this.refreshing || this.snapshot.lineTaken || this.snapshot.connection === 'ready' || Date.now() < (this.snapshot.retryAt ?? 0)) return;
-    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    if ((this.snapshot.call && this.snapshot.call.phase !== 'ended') || this.environment.hasOtherCalls?.()) return;
     this.update({ retryAt: Date.now() + 10_000 });
     await this.refreshConnection();
   }
@@ -446,7 +453,7 @@ export class SipPhoneController implements PhoneController {
   private async refreshConnection() {
     const previous = this.manager, credentials = this.credentials;
     if (!this.wanted || !this.established || !this.recoveryContact || !credentials || this.refreshing || this.snapshot.lineTaken) return;
-    if (this.snapshot.call && this.snapshot.call.phase !== 'ended') return;
+    if ((this.snapshot.call && this.snapshot.call.phase !== 'ended') || this.environment.hasOtherCalls?.()) return;
     this.refreshing = true;
     const generation = ++this.generation;
     this.manager = undefined;

@@ -1,3 +1,4 @@
+import { WaitingCallCard } from './WaitingCallCard';
 import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
@@ -212,7 +213,7 @@ function WrapUp({ call }: { call: CallSnapshot }) {
 
 function CallCard({ call }: { call: CallSnapshot }) {
   const { phone } = useApp();
-  const { audioBlocked } = usePhone();
+  const { audioBlocked, switchingCall } = usePhone();
   const { contacts } = useData();
   const { t } = useI18n();
   const [keypad, setKeypad] = useState(false);
@@ -254,22 +255,22 @@ function CallCard({ call }: { call: CallSnapshot }) {
       {call.phase === 'ended' ? <WrapUp call={call} />
         : call.phase === 'ringing-in' ? (
           <div className="incoming-actions">
-            <button type="button" className="round decline" onClick={() => phone.decline()}><PhoneOff size={24} /><span>{t('call.decline')}</span></button>
-            <button type="button" className="round accept" onClick={() => phone.answer()}><Phone size={24} /><span>{t('call.accept')}</span></button>
+            <button type="button" className="round decline" onClick={() => switchingCall ? phone.hangup() : phone.decline()}><PhoneOff size={24} /><span>{t(switchingCall ? 'action.cancel' : 'call.decline')}</span></button>
+            <button type="button" className="round accept" disabled={switchingCall} onClick={() => phone.answer()}><Phone size={24} /><span>{t('call.accept')}</span></button>
           </div>
         ) : (
           <>
-            {keypad && live ? (
+            {keypad && live && !switchingCall ? (
               <div className="dtmf-pad"><Keypad compact onKey={key => phone.sendDtmf(key)} />
                 <button type="button" className="ghost-call" onClick={() => setKeypad(false)}><X size={15} /> {t('call.hideKeypad')}</button></div>
             ) : (
               <div className="call-controls">
-                <button type="button" className={'control' + (call.muted ? ' on' : '')} disabled={!live} aria-pressed={call.muted} onClick={() => phone.setMuted(!call.muted)}>
+                <button type="button" className={'control' + (call.muted ? ' on' : '')} disabled={!live || switchingCall} aria-pressed={call.muted} onClick={() => phone.setMuted(!call.muted)}>
                   {call.muted ? <MicOff size={21} /> : <Mic size={21} />}<span>{t(call.muted ? 'call.unmute' : 'call.mute')}</span><Kbd>M</Kbd></button>
-                <button type="button" className={'control' + (call.phase === 'held' ? ' on' : '')} disabled={!live || call.holdPending} aria-pressed={call.phase === 'held'}
+                <button type="button" className={'control' + (call.phase === 'held' ? ' on' : '')} disabled={!live || call.holdPending || switchingCall} aria-pressed={call.phase === 'held'}
                   onClick={() => phone.setHeld(call.phase !== 'held')}>
                   {call.phase === 'held' ? <Play size={21} /> : <Pause size={21} />}<span>{t(call.holdPending ? 'call.wait' : call.phase === 'held' ? 'call.resume' : 'call.hold')}</span><Kbd>H</Kbd></button>
-                <button type="button" className="control" disabled={call.phase !== 'active'} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
+                <button type="button" className="control" disabled={call.phase !== 'active' || switchingCall} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
               </div>
             )}
             {live && <AudioOutput compact />}
@@ -280,9 +281,16 @@ function CallCard({ call }: { call: CallSnapshot }) {
   );
 }
 
+function OtherCall() {
+  const { phone } = useApp();
+  const { otherCall, switchingCall } = usePhone();
+  return <WaitingCallCard call={otherCall} switchingCall={switchingCall}
+    onAnswer={() => phone.answerWaiting?.()} onDecline={() => phone.declineWaiting?.()} onSwitch={() => phone.switchCall?.()} />;
+}
+
 export function PhoneDock() {
   const { call } = usePhone();
   const { t } = useI18n();
-  return <aside className="dock" aria-label={t('dock.label')}>{call ? <CallCard call={call} /> : <Dialer />}
+  return <aside className="dock" aria-label={t('dock.label')}><OtherCall />{call ? <CallCard key={call.id} call={call} /> : <Dialer />}
     {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> {t('dock.note')}</p>}</aside>;
 }

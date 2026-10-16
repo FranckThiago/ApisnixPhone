@@ -499,3 +499,10 @@ a.ghost { text-decoration: none; }
 .audio-output-compact .setting small { color: inherit; opacity: .75; }
 .audio-output-compact select { width: 100%; }
 .audio-output-compact .ghost-call { margin-top: 6px; }
+
+/* Account-scoped two-call pilot: a quiet, visible waiting card above the current call. */
+.waiting-call { display: grid; gap: 8px; padding: 18px; border-color: var(--green-edge); overflow-wrap: anywhere; }
+.waiting-title { margin: 0; font-weight: 700; }
+.waiting-call small { color: var(--muted); }
+.waiting-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 6px; }
+.waiting-actions button { min-height: 44px; white-space: normal; }

@@ -1,5 +1,13 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  "waiting.holdFailed": "La mise en attente n’a pas été confirmée. Le second appel n’a pas été décroché.",
+  "waiting.resumeFailed": "La bascule n’a pas abouti. Vérifiez l’état de vos appels avant de réessayer.",
+  "waiting.incoming": "Deuxième appel",
+  "waiting.held": "Autre conversation",
+  "waiting.answer": "Mettre en attente et répondre",
+  "waiting.switch": "Reprendre cet appel",
+  "waiting.switching": "Bascule en cours…",
+  "waiting.hint": "Une seule conversation est audible à la fois.",
   "recovery.title": "L’affichage a rencontré un problème",
   "recovery.page": "Revenez à la connexion manuelle pour reprendre la main.",
   "recovery.section": "Cette rubrique ne peut pas s’afficher. Les commandes du téléphone restent disponibles.",

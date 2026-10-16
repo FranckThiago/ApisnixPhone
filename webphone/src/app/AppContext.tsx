@@ -8,7 +8,7 @@ import { indexedDbPersistence } from '../storage/persistence';
 import { ServerPersistence } from '../storage/serverPersistence';
 import { DemoPhoneController } from '../telephony/DemoPhoneController';
 import { DEMO_CALLERS, demoSeed } from '../telephony/demoSeed';
-import { SipPhoneController } from '../telephony/SipPhoneController';
+import { CallWaitingPhoneController } from '../telephony/CallWaitingPhoneController';
 import { browserSipEnvironment, sipConfigFromEnv } from '../telephony/sipEnvironment';
 import type { Credentials, PhoneController } from '../telephony/types';
 import { createLineLogin } from '../features/auth/lineLogin';
@@ -72,7 +72,7 @@ const AppContext = createContext<AppValue | null>(null);
 // `live` needs the public connection settings; anything else is the demonstration, which never touches the network.
 const sipConfig = sipConfigFromEnv(import.meta.env);
 const demoPhone = sipConfig ? null : new DemoPhoneController();
-const phone: PhoneController = demoPhone ?? new SipPhoneController(sipConfig!, browserSipEnvironment);
+const phone: PhoneController = demoPhone ?? new CallWaitingPhoneController(sipConfig!, browserSipEnvironment);
 const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '');
 const store = new DataStore(demoPhone ? (typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence) : new ServerPersistence(apiBase));
 // Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
@@ -103,7 +103,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [recordingsAccess, setRecordingsAccess] = useState<RecordingsAccess>({ state: 'idle' });
   // The line's credentials, in memory for this session only: the recordings access reuses them, nothing else.
   const lineCredentials = useRef<Credentials | null>(null);
-  const recorded = useRef(new Set<string>());
+  const recorded = useRef(new Map<string, string>());
   const toastId = useRef(0);
   const incomingIndex = useRef(0);
 
@@ -117,18 +117,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // The journal only holds calls this browser really observed, written once when they end.
   useEffect(() => phone.subscribe(() => {
-    const call = phone.getSnapshot().call;
-    if (!call) return setWrapUpRecordId(null);
-    if (call.phase !== 'ended' || recorded.current.has(call.id) || !call.outcome || !call.endedAt) return;
-    recorded.current.add(call.id);
-    const record = store.addCall({
-      direction: call.direction, dialTarget: call.dialTarget, remoteName: call.remoteName,
-      ...(call.direction === 'inbound' ? { receivedNumber: call.rawInput } : {}),
-      startedAt: call.startedAt, answeredAt: call.answeredAt, endedAt: call.endedAt, outcome: call.outcome, failure: call.failure,
-    });
-    setWrapUpRecordId(record.id);
-    // Reaching the person fulfils the callbacks promised for that number.
-    if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify(t('callbacks.doneToast'), 'success');
+    const snapshot = phone.getSnapshot();
+    for (const call of snapshot.completedCalls ?? [snapshot.call]) {
+      if (!call || call.phase !== 'ended' || recorded.current.has(call.id) || !call.outcome || !call.endedAt) continue;
+      // Store notifications can synchronously rebuild the phone snapshot. Reserve first.
+      recorded.current.set(call.id, '');
+      const record = store.addCall({
+        direction: call.direction, dialTarget: call.dialTarget, remoteName: call.remoteName,
+        ...(call.direction === 'inbound' ? { receivedNumber: call.rawInput } : {}),
+        startedAt: call.startedAt, answeredAt: call.answeredAt, endedAt: call.endedAt, outcome: call.outcome, failure: call.failure,
+      });
+      recorded.current.set(call.id, record.id);
+      if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify(t('callbacks.doneToast'), 'success');
+    }
+    setWrapUpRecordId(snapshot.call?.phase === 'ended' ? recorded.current.get(snapshot.call.id) ?? null : null);
   }), [notify]);
 
   // Problems reported by the line (microphone refused, hold rejected…) are said once, in plain words.
@@ -223,7 +225,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // An incoming call brings the phone forward, whatever was on screen.
   const ringing = useRef<string | null>(null);
   useEffect(() => phone.subscribe(() => {
-    const call = phone.getSnapshot().call;
+    const snapshot = phone.getSnapshot();
+    const call = snapshot.otherCall?.phase === 'ringing-in' ? snapshot.otherCall : snapshot.call;
     if (call?.phase === 'ringing-in' && ringing.current !== call.id) { ringing.current = call.id; setView('phone'); }
   }), []);
 

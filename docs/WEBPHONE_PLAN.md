@@ -358,12 +358,14 @@ reste une évolution séparée ; ne pas faire apparaître des boutons factices.
 | Notifications système | Option V1 | Sur demande explicite, facultatives ; interface utilisable si refus |
 | Statistiques personnelles | V1 limité | Calculées sur la vue du Journal choisie, portée affichée |
 | Transfert simple | Pilote complémentaire | SIP REFER supporté par la bibliothèque ; droits et routage vérifiés avant activation |
-| Double appel / transfert accompagné | Suite | Ne pas contourner les limites de ligne actuelles ; deuxième session autorisée et testée |
+| Double appel entrant | Pilote par compte | Attente confirmée avant réponse, bascule, isolation média ; [recette](DOUBLE_APPEL_PILOTE.md) avant extension |
+| Transfert accompagné | Suite | Non activé |
 | Journal central / enregistrements | Livrés (24–25 septembre) | Onglets Journal et Audio du webphone sur l'accès agent de la supervision : session de service par compte, poste isolé côté serveur, `/api` sur la même origine via le reverse proxy ; pas de lien public vers les audios. Journal du poste limité à 30 jours et 500 entrées par requête |
 | Campagnes, robot d'appel, SMS, IA, CRM complet | Hors V1 | Pas de faux module pour imiter les concurrents |
 | Vidéo, caméra, géolocalisation, partage écran | Hors périmètre | Aucune demande de permission correspondante |
 
-Un appel simultané au départ : `maxSimultaneousSessions: 1`. Depuis le
+Un appel simultané par défaut : `maxSimultaneousSessions: 1`. Le pilote explicite
+`VITE_CALL_WAITING_LINES` permet deux appels ; détails dans [DOUBLE_APPEL_PILOTE](DOUBLE_APPEL_PILOTE.md). Depuis le
 16 octobre, une admission explicite avant SessionManager refuse en 486 tout
 nouvel entrant quand une session ou une préparation sortante occupe la ligne. Le transfert
 accompagné ne peut pas être promis avec cette limite ou avec les limites PBX
@@ -746,7 +748,7 @@ audio ; une connexion WSS n'est pas une autorisation d'appeler toutes les routes
 | Destination et créneau d'essai | Avant le premier appel ; pas de numéro client pris au hasard |
 | URL et hébergement | https://phone.apisnix-crm.com, hébergement statique Hermes publié le 21 septembre |
 | Historique central, audios et données du téléphone | Journal/audio via session agent ; profil conservé sur Hermes depuis le 7 octobre |
-| Transfert et double appel | Masqués au départ ; activation après contrôle des droits et essais |
+| Transfert / double appel | Transfert masqué ; double appel limité au pilote explicite, recette terrain avant généralisation |
 | TURN | Aucun achat/déploiement préventif ; décision selon échec réseau identifié |
 
 Le choix d'un contexte pilote et de l'hébergement n'a pas été demandé à nouveau

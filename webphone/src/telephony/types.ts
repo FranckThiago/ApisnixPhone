@@ -39,6 +39,10 @@ export interface PhoneSnapshot {
   connection: ConnectionState;
   account: Account | null;
   call: CallSnapshot | null;
+  /** Pilot: second conversation, and completed calls awaiting journal persistence. */
+  otherCall?: CallSnapshot;
+  completedCalls?: CallSnapshot[];
+  switchingCall?: boolean;
   error?: string;
   /** Start of the continuous outage, including successive registration attempts. */
   recoverySince?: number;
@@ -69,6 +73,9 @@ export interface PhoneController {
   reconnect?(): Promise<void>;
   call(rawInput: string, dialTarget: string, remoteName?: string): void;
   answer(): void;
+  answerWaiting?(): void;
+  declineWaiting?(): void;
+  switchCall?(): void;
   decline(): void;
   hangup(): void;
   /** Clears an ended call once its wrap-up is done. */

@@ -3,7 +3,7 @@ import type { CallMediaOptions, Manager, SipEnvironment } from './SipPhoneContro
 
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
 export const browserSipEnvironment: SipEnvironment = {
-  async createManager(config, credentials, delegate, microphone, remoteAudio, recoveryContact) {
+  async createManager(config, credentials, delegate, microphone, remoteAudio, recoveryContact, mediaForSession) {
     const { Web, UserAgent } = await import('sip.js');
     let registeredOnce = !!recoveryContact;
     let retired = false;
@@ -37,9 +37,9 @@ export const browserSipEnvironment: SipEnvironment = {
         if (holds === false) delegate.onLineTaken?.();
         return retired || holds === false || holds === null;
       },
-      // One call at a time for the first pilot; attended transfer is out of scope.
-      maxSimultaneousSessions: 1,
-      media: { constraints: { audio: true, video: false }, remote: { audio: remoteAudio } },
+      // One by default; only the account-scoped controller can request two sessions.
+      maxSimultaneousSessions: config.maxCalls ?? 1,
+      media: { constraints: { audio: true, video: false }, remote: mediaForSession ? session => ({ audio: mediaForSession(session).audio }) : { audio: remoteAudio } },
       // A refused REGISTER is final: no loop of attempts against the PBX.
       registrationRetry: false,
       // One recovery loop, owned by the controller, including clean socket closes.
@@ -62,7 +62,8 @@ export const browserSipEnvironment: SipEnvironment = {
         sessionDescriptionHandlerFactory: (session, options) => {
           const access = prepared && prepared.expiresAt > Date.now() + 60_000 ? prepared : undefined;
           const directServers = config.iceServers?.length ? [{ urls: config.iceServers }] : [{ urls: 'stun:stun.l.google.com:19302' }];
-          const handler = factory(session, access ? { ...options, peerConnectionConfiguration: {
+          const sessionFactory = mediaForSession ? Web.defaultSessionDescriptionHandlerFactory(() => mediaForSession(session).microphone()) : factory;
+          const handler = sessionFactory(session, access ? { ...options, peerConnectionConfiguration: {
             iceServers: access.iceTransportPolicy === 'relay' ? access.iceServers : [...directServers, ...access.iceServers],
             iceTransportPolicy: access.iceTransportPolicy,
           } } : options) as InstanceType<typeof Web.SessionDescriptionHandler>;
@@ -89,7 +90,7 @@ export const browserSipEnvironment: SipEnvironment = {
     const receiveInvite = userAgentDelegate?.onInvite;
     if (!receiveInvite) throw new Error('Missing SIP incoming-call handler');
     manager.userAgent.delegate = { ...userAgentDelegate, onInvite: invitation => {
-      if (retired || manager.managedSessions.length >= 1 || !delegate.canReceiveCall()) {
+      if (retired || manager.managedSessions.length >= (config.maxCalls ?? 1) || !delegate.canReceiveCall()) {
         // A cancellation or transport loss can race with this response. Never let
         // that failure reach the current call's error/hangup/media callbacks.
         void invitation.reject({ statusCode: 486 }).catch(() => undefined);
@@ -142,7 +143,16 @@ export const browserSipEnvironment: SipEnvironment = {
       stats.forEach(report => { if (report.type === 'outbound-rtp' && report.kind === 'audio') packets = (packets ?? 0) + (report.packetsSent ?? 0); });
       return packets;
     };
-    return Object.assign(manager, { prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    const focusSession = (selected: { id: string } | undefined) => {
+      for (const { session } of manager.managedSessions) {
+        const handler = session.sessionDescriptionHandler as InstanceType<typeof Web.SessionDescriptionHandler> | undefined;
+        const pc = handler?.peerConnection;
+        const audible = session.id === selected?.id && !manager.isHeld(session);
+        pc?.getReceivers().forEach(receiver => { if (receiver.track?.kind === 'audio') receiver.track.enabled = audible; });
+        pc?.getSenders().forEach(sender => { if (sender.track?.kind === 'audio') sender.track.enabled = audible && !manager.isMuted(session); });
+      }
+    };
+    return Object.assign(manager, { focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {
@@ -181,5 +191,6 @@ export function sipConfigFromEnv(env: ImportMetaEnv) {
   if (!/^[a-z0-9.-]+$/i.test(domain) || !/^wss:\/\/[^\s]+$/i.test(wssUrl)) throw new Error('VITE_SIP_DOMAIN et VITE_SIP_WSS_URL (wss://) sont requis en mode live.');
   // The PBX web server says whether this site is blocked (same host as the SIP domain unless overridden).
   const statusUrl = String(env.VITE_BLOCK_STATUS_URL ?? '').trim() || `https://${domain}/agc/apisnix/etat-telephonie.php`;
-  return { domain, wssUrl, iceServers, statusUrl };
+  const callWaitingLines = String(env.VITE_CALL_WAITING_LINES ?? '').split(',').map(line => line.trim()).filter(line => /^[a-zA-Z0-9_-]{1,64}$/.test(line));
+  return { domain, wssUrl, iceServers, statusUrl, callWaitingLines };
 }

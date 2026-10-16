@@ -2,6 +2,14 @@ import type { MessageKey } from './fr';
 
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
+  "waiting.holdFailed": "Hold was not confirmed. The second call was not answered.",
+  "waiting.resumeFailed": "The switch did not complete. Check your calls before trying again.",
+  "waiting.incoming": "Second call",
+  "waiting.held": "Other conversation",
+  "waiting.answer": "Hold and answer",
+  "waiting.switch": "Resume this call",
+  "waiting.switching": "Switching calls…",
+  "waiting.hint": "Only one conversation is audible at a time.",
   "recovery.title": "Something went wrong with the display",
   "recovery.page": "Return to manual sign-in to regain access.",
   "recovery.section": "This section cannot be displayed. Phone controls remain available.",

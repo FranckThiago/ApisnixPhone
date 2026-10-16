@@ -1,5 +1,19 @@
 # Construction et validation
 
+## Double appel entrant : pilote — 16 octobre 2026
+
+Publication ciblée en préparation. Construire depuis un commit avec
+`VITE_CALL_WAITING_LINES` limité à la ligne autorisée (identité et modification
+PBX dans le dépôt privé). Ne pas recopier un `.env` local dans l’archive.
+Les comptes absents de la liste restent limités à une session. Les procédures
+de publication atomique et sauvegarde ci-dessous restent applicables.
+
+Validation locale : 227 tests réussis après l’ajout du pilote, typage et lint ;
+banc SIP.js/WebRTC natif et interface à 390 px dans le navigateur intégré.
+La recette sur appareil réel n’est pas remplacée par ces tests.
+[Fonctionnement et recette](DOUBLE_APPEL_PILOTE.md). Manuels inchangés.
+
+
 ## Protection contre le deuxième appel — 16 octobre 2026
 
 **Release `20261016-protection-appel`, source `99bd261`, active depuis

@@ -2,6 +2,14 @@ import type { MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  "waiting.holdFailed": "No se confirmó la espera. No se contestó la segunda llamada.",
+  "waiting.resumeFailed": "No se completó el cambio. Compruebe sus llamadas antes de reintentarlo.",
+  "waiting.incoming": "Segunda llamada",
+  "waiting.held": "Otra conversación",
+  "waiting.answer": "Poner en espera y contestar",
+  "waiting.switch": "Reanudar esta llamada",
+  "waiting.switching": "Cambiando de llamada…",
+  "waiting.hint": "Solo se escucha una conversación a la vez.",
   "recovery.title": "Se ha producido un problema de visualización",
   "recovery.page": "Vuelve al inicio de sesión manual para recuperar el acceso.",
   "recovery.section": "No se puede mostrar esta sección. Los controles del teléfono siguen disponibles.",

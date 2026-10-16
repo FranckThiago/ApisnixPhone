@@ -1,8 +1,17 @@
 # État du projet
 
+## Double appel : pilote par compte — 16 octobre 2026
+
+Implémenté et testé localement, publication ciblée en préparation. Attente confirmée
+avant réponse au second entrant, bascule, sorties et pistes indépendantes, retour
+automatique à l’appel restant, deux journaux distincts. Le build autorise seulement
+la liste explicite `VITE_CALL_WAITING_LINES`, vide par défaut. Autres lignes :
+protection à une session conservée. Pas de généralisation ni validation physique
+iPhone présumée. [Architecture, tests et limites](DOUBLE_APPEL_PILOTE.md).
+
 ## Protection contre un deuxième appel entrant — 16 octobre 2026
 
-**En service `20261016-protection-appel`, source `99bd261`, depuis 13:48:58 Douala.** Un nouvel INVITE reçu pendant
+**Socle à une session `20261016-protection-appel`, source `99bd261`, depuis 13:48:58 Douala.** Un nouvel INVITE reçu pendant
 un appel est refusé en **486 Busy Here avant son admission dans SessionManager**.
 Le contrôleur confirme aussi la disponibilité pendant la préparation média
 sortante (avant création d’une session), la terminaison et les changements
@@ -10,7 +19,7 @@ de connexion. La session déjà présente, ses commandes et sa chaîne audio ne
 sont pas remplacées ; une erreur du refus ne déclenche pas la fin du premier
 appel. La réception redevient possible une fois la ligne libérée, même si la
 fiche de fin d’appel reste affichée. Pas de sonnerie ni notification du refus
-ajoutée, pas de deuxième conversation, aucun changement des limites PBX.
+ajoutée dans ce socle. Exception contrôlée : le pilote double appel décrit ci-dessus.
 
 Cinq tests ciblés utilisant le vrai SIP.js et un transport local : INVITE/486,
 conservation du premier appel et réception après fin, états actif/en attente

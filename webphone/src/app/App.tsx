@@ -58,7 +58,7 @@ function useShortcuts() {
 
 function Workspace() {
   const { view, setView, logout, setPaletteOpen, store, phone, notify, announcements: announcementsSource } = useApp();
-  const { account, call, demo, connection, lineTaken, recoverySince, retryAt } = usePhone();
+  const { account, call, otherCall, demo, connection, lineTaken, recoverySince, retryAt } = usePhone();
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
   useShortcuts();
@@ -97,15 +97,16 @@ function Workspace() {
   }, [view, unseenDue, store]);
 
   // The tab title tells what is happening when the page is in the background.
-  const ringingIn = call?.phase === 'ringing-in';
+  const incomingCall = otherCall?.phase === 'ringing-in' ? otherCall : call;
+  const ringingIn = incomingCall?.phase === 'ringing-in';
   useEffect(() => {
     document.title = ringingIn ? t('title.incoming') : call && call.phase !== 'ended' ? t('title.inCall')
       : unseenMissed ? `(${unseenMissed}) ApisnixPhone` : 'ApisnixPhone';
   }, [ringingIn, call, unseenMissed, t, language]);
   useEffect(() => {
     if (!ringingIn || demo || !preferences.notifications || !document.hidden || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
-    return showSystemNotification(t('banner.incoming'), { body: call?.remoteName ?? call?.dialTarget ?? '', tag: `apisnixphone-incoming-${call?.id}` });
-  }, [ringingIn, demo, preferences.notifications, call?.id, call?.remoteName, call?.dialTarget, t]);
+    return showSystemNotification(t('banner.incoming'), { body: incomingCall?.remoteName ?? incomingCall?.dialTarget ?? '', tag: `apisnixphone-incoming-${incomingCall?.id}` });
+  }, [ringingIn, demo, preferences.notifications, incomingCall?.id, incomingCall?.remoteName, incomingCall?.dialTarget, t]);
   const dark = document.documentElement.dataset.theme === 'dark';
   const inCall = call && call.phase !== 'ended';
   const signOut = () => {

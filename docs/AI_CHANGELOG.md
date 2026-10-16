@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-10-16 — Pilote double appel entrant
+
+Deux conversations isolées sur inscription SIP unique, attente confirmée avant
+réponse, bascule et retour automatique ; activation par compte via variable de
+build vide par défaut. Journal de chaque appel, commandes FR/EN/ES, tests des
+échecs et annulations et banc natif SIP.js/WebRTC local. Généralisation exclue.
+Sources de vérité : DOUBLE_APPEL_PILOTE, ARCHITECTURE, PROJECT_STATE et WEBPHONE_PLAN.
+Manuels clients inchangés. Publication et preuve serveur dans OPERATIONS et dépôt privé.
+
+
 ## Protection des appels publiée — 16 octobre 2026
 
 Release `20261016-protection-appel`, source `99bd261`, en service à 13:48:58

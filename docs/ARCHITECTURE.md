@@ -77,7 +77,7 @@ sont dans `webphone/`, car `apps/` reste ignoré pour les checkouts natifs.
 implémentés ; **aucun appel réel n'a encore été passé**. `src/telephony/types.ts`
 porte le contrat `PhoneController`. `DemoPhoneController` n'ouvre aucun WebSocket
 et ne demande jamais le micro. `SipPhoneController` adapte `Web.SessionManager`
-de SIP.js 0.21.2 avec les options du plan (une session, pas de boucle de
+de SIP.js 0.21.2 avec les options du plan (une session par défaut, deux pour le pilote explicite ; pas de boucle de
 REGISTER, DTMF RTP, journaux SIP coupés, mot de passe en mémoire) ;
 `sipEnvironment.ts` charge SIP.js à la demande, crée l'élément audio hors des
 vues. Depuis le 8 octobre, aucun Web Lock ne bloque l’authentification. Le contrôleur est choisi au chargement :
@@ -326,17 +326,19 @@ par tag unique. Il ne garantit pas l'arrivée d'appels si la page est gelée.
 
 ## Admission d’un appel entrant — 16 octobre 2026
 
-Le téléphone gère une seule conversation. `sipEnvironment.ts` intercepte le
+Le téléphone gère une seule conversation par défaut, deux dans le pilote explicite. `sipEnvironment.ts` intercepte le
 nouvel INVITE du UserAgent avant le handler de SessionManager : la version
 SIP.js 0.21.2 compare `length > max` avant l’ajout et sa limite seule est donc
-insuffisante. Si une session gérée existe, si le manager est retiré ou si
+insuffisante. Si la capacité autorisée est atteinte (une session par défaut, deux en pilote), si le manager est retiré ou si
 `ManagerDelegate.canReceiveCall()` refuse, l’invitation reçoit 486 Busy Here.
 Le handler natif n’est pas appelé : pas de onCallCreated/onCallReceived, de
 remplacement de la référence du contrôleur ni de nettoyage audio partagé
 pour cette invitation. Le rejet échoué reste isolé de la conversation.
 
 La disponibilité du contrôleur exige une connexion prête et voulue, une
-génération courante et aucun appel non terminé. Elle protège notamment
+génération courante et aucun appel non terminé dans le contrôleur ciblé. Le
+pilote vérifie en plus que l’autre appel est stable et qu’aucune bascule n’est
+en cours. Cette garde protège notamment
 l’intervalle de préparation TURN/early media où managedSessions est encore
 vide. Les re-INVITE du dialogue existant restent gérés par SIP.js (attente et
 reprise), cette interception concerne les nouvelles invitations. La fiche
@@ -344,8 +346,8 @@ de fin d’appel ne bloque pas la réception après libération des sessions.
 Le PBX peut refuser le deuxième appel avant qu’il n’arrive au navigateur :
 ni notification universelle ni journal local exhaustif des refus promis.
 
-Le double appel demanderait deux sessions identifiées et des états/médias
-séparés, une seule émission active, confirmation de mise en attente avant
-acceptation du second, restauration du premier en cas d’échec, commandes et
-journaux ciblés, puis limites PBX adaptées sur un pilote. Ce travail n’est
-pas activé par la correction de protection.
+Le double appel est maintenant implémenté dans un pilote par compte, sans
+transfert accompagné : `CallWaitingPhoneController` partage un manager et deux
+contrôleurs isolés, avec une capture clonée et un verrou de sélection des pistes.
+La liste de build `VITE_CALL_WAITING_LINES` est vide par défaut. Voir
+[le fonctionnement détaillé et les limites](DOUBLE_APPEL_PILOTE.md).
