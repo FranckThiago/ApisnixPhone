@@ -16,8 +16,14 @@
   --muted: #5f6b86;
   --faint: #8f99b0;
   --border: #e4e8f2;
-  --success: #0b8f63;
-  --success-soft: #e3f6ee;
+  /* The green of the ApisnixPhone sign-in screen is the product's own colour: actions, active menu entry, focus rings. */
+  --green: #059669;
+  --green-strong: #047857;
+  --green-bright: #10b981;
+  --green-soft: #ecfdf5;
+  --green-edge: #6ee7b7;
+  --success: #059669;
+  --success-soft: #ecfdf5;
   --danger: #d93a45;
   --danger-soft: #fdecee;
   --warning: #8a5d00;
@@ -34,12 +40,12 @@
   --side-strong: var(--text);
   --side-caption: #8f99b0;
   --side-hover: #f0f2fb;
-  --side-active: linear-gradient(90deg, var(--brand-soft), #f6f7ff);
-  --side-active-text: var(--brand);
-  --side-icon-active: var(--brand);
-  --side-sub: var(--brand);
+  --side-active: linear-gradient(90deg, var(--green-soft), #f6fdf9);
+  --side-active-text: var(--green-strong);
+  --side-icon-active: var(--green);
+  --side-sub: var(--green);
   /* The call card follows the theme too: white with a brand glow by day, navy at night. */
-  --call-bg: radial-gradient(90% 55% at 50% 0%, #1010ff14, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f2e, transparent 70%), var(--surface);
+  --call-bg: radial-gradient(90% 55% at 50% 0%, #10b98124, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f2e, transparent 70%), var(--surface);
   --call-bg-held: radial-gradient(90% 55% at 50% 0%, #ffd21f59, transparent 70%), var(--surface);
   --call-border: var(--border);
   --call-text: var(--text);
@@ -51,7 +57,7 @@
   --call-accent: var(--warning);
   --call-ring-gap: var(--surface);
   --call-fill: #eef1f8;
-  --call-fill-hover: var(--brand-soft);
+  --call-fill-hover: var(--green-soft);
   --call-raised: var(--surface);
   --call-line: var(--border);
   --radius: 14px;
@@ -74,7 +80,12 @@
   --muted: #a3adc8;
   --faint: #7581a0;
   --border: #222b54;
-  --success: #38c793;
+  --green: #34d399;
+  --green-strong: #6ee7b7;
+  --green-bright: #10b981;
+  --green-soft: #0f2e27;
+  --green-edge: #047857;
+  --success: #34d399;
   --success-soft: #0f2e27;
   --danger: #ff6b74;
   --danger-soft: #3a1620;
@@ -92,9 +103,9 @@
   --side-hover: rgb(255 255 255 / 7%);
   --side-active: linear-gradient(90deg, rgb(255 255 255 / 13%), rgb(255 255 255 / 5%));
   --side-active-text: #ffffff;
-  --side-icon-active: var(--yellow);
-  --side-sub: var(--yellow);
-  --call-bg: radial-gradient(90% 55% at 50% 0%, #2a3cff66, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f26, transparent 70%), linear-gradient(180deg, var(--navy-2), var(--navy));
+  --side-icon-active: var(--green);
+  --side-sub: var(--green);
+  --call-bg: radial-gradient(90% 55% at 50% 0%, #10b98152, transparent 70%), radial-gradient(70% 40% at 100% 100%, #ffd21f26, transparent 70%), linear-gradient(180deg, var(--navy-2), var(--navy));
   --call-bg-held: radial-gradient(90% 55% at 50% 0%, #ffd21f40, transparent 70%), linear-gradient(180deg, var(--navy-2), var(--navy));
   --call-border: transparent;
   --call-text: #ffffff;

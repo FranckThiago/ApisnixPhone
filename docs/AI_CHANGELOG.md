@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Le vert de la connexion dans toute l'application — 16 octobre 2026
+
+Franck veut le vert de l'écran de connexion « plus présent » dans ApisnixPhone.
+Jetons `--green` ajoutés (clair et sombre), `--success` aligné ; le vert
+remplace le bleu sur les actions : boutons principaux et survols, menu actif,
+sous-titre de la marque, libellés, focus, interrupteurs, halo de la carte
+d'appel, dégradés verts unifiés (`#10b981` → `#047857`). Rendu contrôlé en
+clair et sombre, 201 tests, typage, lint. À sa demande, captures du guide
+FR/EN/ES et PDF refaits, plus une série densité 2 pour le site
+(`docs/site-captures/`, options `GUIDE_SCALE` et `GUIDE_OUT` du script).
+Plan § 5, état et AGENTS mis à jour ; non publié.
+
 ## Écran de connexion vert publié — 16 octobre 2026
 
 Release `20261016-connexion-verte` publiée sur Hermes à 09:14:59 Douala avec l'accord

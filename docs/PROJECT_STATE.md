@@ -1,5 +1,22 @@
 # État du projet
 
+## Le vert d'ApisnixPhone dans toute l'application — 16 octobre 2026
+
+**Dans le code, non publié.** Sur demande de Franck, le vert de l'écran de
+connexion devient la couleur d'action de l'application : jetons `--green` dans
+`tokens.css`, boutons principaux à texte et liseré verts, survols, menu actif,
+sous-titre de la marque, libellés en capitales, anneaux de focus, interrupteurs,
+halo de la carte d'appel, dégradés d'Appeler et Accepter ; le bleu reste la
+marque et le jaune la signature (règle dans `WEBPHONE_PLAN.md` § 5). Vérifié
+dans le navigateur intégré en démonstration (connexion, Journal, Contacts,
+Réglages, appel entrant, en cours, fin d'appel ; clair et sombre). 201 tests,
+typage et lint réussis. **Captures refaites à la demande de Franck** : guide
+FR/EN/ES (`docs/guide/`) et les trois PDF reconstruits ; série haute résolution
+pour le site dans `docs/site-captures/` (script : `GUIDE_SCALE`, `GUIDE_OUT`).
+Les manuels de la gestion qui copient `02-journal`, `09-appel-entrant` et
+`06-muet-attente` sont à rafraîchir depuis ces fichiers. Release à préparer
+avec les boutons « supervision » déjà prêts (`20261015-boutons-supervision`).
+
 ## Écran de connexion vert — 16 octobre 2026
 
 **En service depuis le 16 octobre 2026, 09:14:59 Douala.** L'écran de connexion (et la page

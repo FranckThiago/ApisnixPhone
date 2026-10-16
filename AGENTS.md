@@ -24,7 +24,8 @@
   Si Franck demande une mise à jour des manuels : le guide est
   `docs/GUIDE_UTILISATEUR.md`, avec ses éditions `.en.md` et `.es.md` à aligner ;
   captures par `node scripts/guide-screenshots.mjs`, puis `GUIDE_LANG=en` et
-  `GUIDE_LANG=es` (démo port 5185), PDF par `node scripts/build-guide-pdf.mjs`.
+  `GUIDE_LANG=es` (démo port 5185 ; `GUIDE_SCALE=2 GUIDE_OUT=../docs/site-captures`
+  pour la série haute résolution du site), PDF par `node scripts/build-guide-pdf.mjs`.
   Garder les trois guides courts (8 pages), sans codes d’erreur ni fonctions secondaires.
 - Avant toute tâche concernant le serveur, VICIdial, Asterisk, des comptes,
   des groupes, une suspension ou des enregistrements : lire d'abord

@@ -18,7 +18,9 @@ const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/M
 const LANG = process.env.GUIDE_LANG ?? 'fr';
 const WORDS = { fr, en, es }[LANG];
 if (!WORDS) throw new Error(`GUIDE_LANG inconnu : ${LANG} (fr, en ou es)`);
-const OUT = resolve(import.meta.dirname, '../../docs/guide', LANG === 'fr' ? '' : LANG);
+// GUIDE_OUT writes elsewhere (the site's gallery) and GUIDE_SCALE sharpens the pictures (2 for the site, 1.5 for the guide).
+const OUT = process.env.GUIDE_OUT ? resolve(process.env.GUIDE_OUT) : resolve(import.meta.dirname, '../../docs/guide', LANG === 'fr' ? '' : LANG);
+const SCALE = Number(process.env.GUIDE_SCALE ?? 1.5);
 const PORT = 9337;
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
@@ -53,7 +55,7 @@ const run = async expression => {
   if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description ?? 'page script failed');
   return result.result.value;
 };
-const viewport = (width, height, mobile = false) => send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1.5, mobile });
+const viewport = (width, height, mobile = false) => send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: SCALE, mobile });
 async function shot(name, selector) {
   // The guide shows the application as a client sees it: the demonstration banner, the sign-in hint and the
   // « demo » / « fictional data » mentions stay out of the pictures (text nodes only, the layout is unchanged).

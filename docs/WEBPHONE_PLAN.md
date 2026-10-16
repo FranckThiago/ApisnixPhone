@@ -236,8 +236,8 @@ cartes d'agents du temps réel de supervision (bouton « Écouter », tuile
 « sortie ») que Franck trouve beau et épuré : surface blanche posée, liseré
 fin, texte encré en gras, icône devant, rayon 12 px, ombre très douce. L'action
 principale (`.primary` : Se connecter, Nouveau contact, Enregistrer, Réessayer)
-se distingue par un liseré et un texte à la couleur de marque et une lueur
-bleue, jamais par un aplat. La déconnexion est une tuile carrée blanche à icône
+se distingue par un liseré et un texte vert foncé et une lueur verte (le vert
+de l'écran de connexion, depuis le 16 octobre), jamais par un aplat. La déconnexion est une tuile carrée blanche à icône
 rouge qui se teinte de rouge au survol. Dans la carte d'appel, Muet, Attente,
 Clavier, Rappeler et Planifier sont des tuiles posées sur la carte ; Appeler
 reste vert et Raccrocher rouge, Terminer reste jaune.
@@ -256,7 +256,19 @@ connexion en verre (blanc à 88 % avec `backdrop-filter`) et le bouton
 vert foncé, rayon 10 px, ombre douce, survol vert pâle. Le logo garde son
 liseré jaune et le trait jaune signe toujours l'accroche : le jaune reste
 l'accent APISNIX, le vert dit « téléphone ». Le thème sombre garde les mêmes
-halos sur un fond vert profond ; le reste de l'application ne change pas.
+halos sur un fond vert profond.
+
+**Le vert entre dans l'application** (demande de Franck, 16 octobre : le vert de
+la connexion « plus présent dans ApisnixPhone »). Jetons `--green` (`#059669`,
+foncé `#047857`, vif `#10b981`, pâle `#ecfdf5` ; sombre `#34d399`) et
+`--success` aligné sur la même famille. Le vert porte désormais toute action :
+boutons principaux, survol des boutons secondaires et des tuiles d'appel,
+entrée active du menu et sous-titre « ApisnixPhone » de la marque, libellés en
+petites capitales (`.eyebrow`), anneaux de focus des champs, de la recherche et
+du composeur, interrupteurs, survol du pavé, halo de la carte d'appel et
+dégradés d'Appeler, Accepter et du bouton Téléphone compact. Le bleu reste la
+marque APISNIX (logo, annonces, sélections, sens sortant, lettres de l'annuaire),
+le jaune la signature (onglets, focus clavier, Terminer, trait d'accroche).
 
 ### Identité et tokens proposés
 
@@ -265,7 +277,8 @@ historique APISNIX reste présent ; le jaune devient un accent mesuré.
 
 | Token | Valeur proposée | Usage |
 | --- | --- | --- |
-| brand | `#1010FF` | Action principale et sélection |
+| brand | `#1010FF` | Marque APISNIX : logo, annonces, sélections (actions en vert depuis le 16 octobre) |
+| green | `#059669` / `#047857` / `#10b981` | Couleur propre d'ApisnixPhone : actions, menu actif, focus, Appeler |
 | brand-soft | `#EEEEFF` | Fond discret de sélection |
 | navy | `#111A35` | Navigation et panneau d'appel en thème sombre ; en thème clair, tous deux suivent la page (demandes de Franck, lot 4 puis 28 septembre) |
 | yellow | `#F4C543` | Identité et accent ; texte sombre par-dessus |
