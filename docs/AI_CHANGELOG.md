@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Release vert étendu et boutons supervision publiée — 16 octobre 2026
+
+Release `20261016-vert-boutons` publiée sur Hermes à 09:56:55 Douala avec l'accord
+explicite de Franck, par le script préparé : sauvegarde protégée de
+`20261016-connexion-verte`, 267 fichiers contrôlés, bascule atomique, empreintes
+HTTPS vérifiées depuis Hermes puis depuis le Mac, Caddy et supervision actifs.
+La copie vers Hermes avait été refusée dans la session de préparation ; passée
+sous la forme autorisée depuis la session principale. Aucun code modifié ;
+exploitation et état mis à jour, retour ciblé documenté.
+
 ## Release vert étendu et boutons supervision préparée — 16 octobre 2026
 
 Release `20261016-vert-boutons` préparée depuis `29c6400` selon `OPERATIONS.md` :

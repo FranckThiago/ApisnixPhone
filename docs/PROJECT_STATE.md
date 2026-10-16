@@ -15,13 +15,14 @@ FR/EN/ES (`docs/guide/`) et les trois PDF reconstruits ; série haute résolutio
 pour le site dans `docs/site-captures/` (script : `GUIDE_SCALE`, `GUIDE_OUT`).
 Les manuels de la gestion qui copient `02-journal`, `09-appel-entrant` et
 `06-muet-attente` sont à rafraîchir depuis ces fichiers. **Release
-`20261016-vert-boutons` préparée, non publiée** (source `29c6400`, 267 fichiers,
+`20261016-vert-boutons` en service depuis le 16 octobre 2026, 09:56:55 Douala** (source `29c6400`, 267 fichiers,
 archive SHA-256
 `fdd0e6b4137c1d4208aad53056524102ebc0bd11af6125160defd9d5499be5f4`,
 preuves dans `.work/releases/20261016-vert-boutons/`) ; elle porte aussi les
 boutons « supervision » et remplace `20261015-boutons-supervision`, jamais
-publiée. La publication sur Hermes reste à lancer par Franck, procédure et
-retour dans `OPERATIONS.md` ; `20261016-connexion-verte` reste en service.
+publiée. Publiée sur Hermes avec l'accord explicite de Franck, empreintes HTTPS
+conformes depuis Hermes et depuis le Mac ; procédure et retour ciblé vers
+`20261016-connexion-verte` dans `OPERATIONS.md`.
 
 ## Écran de connexion vert — 16 octobre 2026
 
@@ -40,7 +41,7 @@ preuves dans `.work/releases/20261016-connexion-verte/`), publiée sur Hermes à
 09:14:59 Douala avec l'accord de Franck ; vérifications et retour dans
 `OPERATIONS.md`. `20261014-early-media-fix` est la cible de retour ;
 `20261015-boutons-supervision`, jamais publiée, est contenue dans celle-ci.
-Prochaine release préparée : `20261016-vert-boutons`.
+Remplacée en service par `20261016-vert-boutons` à 09:56:55.
 
 ## Boutons importants au style de la supervision — 15 octobre 2026
 

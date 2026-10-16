@@ -2,7 +2,7 @@
 
 ## Vert étendu et boutons supervision — 16 octobre 2026
 
-**Release `20261016-vert-boutons` préparée, non publiée ; source `29c6400`.**
+**En service `20261016-vert-boutons` depuis le 16 octobre 2026, 09:56:55 Douala ; source `29c6400`.**
 Elle remplace `20261015-boutons-supervision` (préparée depuis `828c2f0`, jamais
 publiée, désormais dépassée) : elle porte à la fois les boutons au style des
 cartes de supervision (`828c2f0`) et le vert de la connexion étendu à toute
@@ -26,10 +26,19 @@ avec les cinq chemins adaptés : il exige `current` encore sur
 `/root/apisnix-phone-backups/20261016-vert-boutons/`, extrait l'archive,
 contrôle tous les fichiers et leur lecture par Caddy, bascule atomiquement,
 vérifie les empreintes HTTPS puis écrit le reçu ; échec = retour automatique.
-**Publication sur Hermes à lancer par Franck** après dépôt de l'archive, du
-manifeste et du script dans `/tmp/apisnix-vert-boutons/`. Retour ciblé après
-publication : vérifier `current` sur `20261016-vert-boutons`, puis le repointer
-atomiquement vers `/srv/apisnixphone/releases/20261016-connexion-verte`.
+**Publiée sur Hermes à 09:56:55 Douala** avec l'accord explicite de Franck
+(« fais la release et publies ») : copie `scp` de l'archive, du manifeste et du
+script dans `/tmp/apisnix-vert-boutons/` (le mode automatique de la session de
+préparation refusait la copie ; la session principale l'a passée sous la forme
+autorisée), empreinte et 267 fichiers recontrôlés sur Hermes (0 AppleDouble),
+`current` encore sur `20261016-connexion-verte`, puis `publish.py` : sauvegarde,
+extraction, droits, bascule atomique, empreintes HTTPS conformes, Caddy et
+supervision actifs, reçu écrit. Index et assets revérifiés depuis le Mac par
+`curl` (les certificats de Python 3.14 du Mac ne valident pas le site, `curl`
+oui). Aucun appel en cours au moment de la bascule n'a été contrôlé : procédure
+lancée dans la foulée de la demande. Retour ciblé : vérifier `current` sur
+`20261016-vert-boutons`, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261016-connexion-verte`.
 Actualiser les pages hors appel. Aucune mutation PBX, backend, TURN ni base.
 Manuels clients inchangés.
 
