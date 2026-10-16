@@ -39,9 +39,10 @@ gestion). Captures des trois langues refaites depuis la démo : le bandeau jaune
 sur la source locale de l'accueil (`HOME_URL`), où la carte « Connexion SIP »
 s'appelle désormais **ApisnixPhone** (pas encore publiée) ; textes du guide
 alignés. Puce « Annonces APISNIX » ajoutée à l'écran principal, journal réduit à
-88 mm pour garder huit pages. PDF régénérés (FR, EN, ES, 8 pages chacun). La
-capture de connexion sera refaite quand l'écran de connexion vert sera publié
-dans ce dépôt.
+88 mm pour garder huit pages. PDF régénérés (FR, EN, ES, 8 pages chacun).
+Capture de connexion refaite ensuite sur l'écran vert (`0235a64`), le même jour ;
+le guide le montre avant sa publication sur Hermes (release
+`20261016-connexion-verte` préparée, en attente de l'accord de Franck).
 
 ## Release des boutons supervision préparée — 15 octobre 2026
 
