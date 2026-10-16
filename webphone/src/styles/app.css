@@ -343,15 +343,45 @@ input[type=range] { accent-color: var(--brand); }
 .toast-danger { border-left-color: var(--danger); } .toast-success { border-left-color: #16bd84; }
 
 /* ---------- Login ---------- */
-.login { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 100%; }
-.login-brand { position: relative; overflow: hidden; display: grid; align-content: center; gap: 26px; padding: 8vw; color: #fff;
-  background: radial-gradient(70% 50% at 20% 10%, #2a3cff88, transparent 70%), radial-gradient(60% 45% at 95% 95%, #ffd21f33, transparent 70%), var(--navy); }
-.login-brand img { border-radius: 30px; background: #fff; padding: 10px; box-shadow: 0 20px 50px -18px #000, 0 0 0 3px var(--yellow); }
+/* Connexion : la couleur propre d'ApisnixPhone est le vert de la famille APISNIX (administration bleu ciel, écran agent bleu et
+   jaune, supervision violet et indigo). Trois halos dérivent lentement en arrière-plan, le formulaire est une carte en verre et le
+   bouton reste épuré et bombé (Franck, 16 octobre 2026 : chaque écran d'authentification reconnaissable à sa couleur, animé). */
+.login { --login-brand: #059669; --login-brand-strong: #047857; --login-soft: #ecfdf5; --login-edge: #6ee7b7; --login-ink: #082a1f; --login-muted: #3d6657;
+  --login-glass: rgb(255 255 255 / 88%); --login-glass-border: rgb(255 255 255 / 80%); --login-shadow: 0 30px 80px -20px rgb(5 150 105 / 35%);
+  --login-halo: .5; --login-canvas: linear-gradient(160deg, #eefcf4 0%, #d9f7e8 55%, #ecfdf5 100%); }
+:root[data-theme='dark'] .login { --login-brand: #34d399; --login-soft: #d1fae5; --login-ink: #eef1fb; --login-muted: #a3adc8;
+  --login-glass: rgb(8 22 18 / 80%); --login-glass-border: rgb(255 255 255 / 10%); --login-shadow: 0 30px 80px -20px rgb(0 0 0 / 65%);
+  --login-halo: .32; --login-canvas: linear-gradient(160deg, #06130f 0%, #0a1f18 55%, #061a15 100%); }
+/* `overflow: clip` et non `hidden` : le focus automatique du champ ne doit pas faire défiler la page vers les halos qui débordent. */
+.login { position: relative; isolation: isolate; overflow: hidden; overflow: clip; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: 100%; background: var(--login-canvas); }
+.login::before, .login::after, .login-glow { content: ''; position: absolute; z-index: -1; border-radius: 50%; filter: blur(70px); pointer-events: none; opacity: var(--login-halo); }
+.login::before { width: 56vmax; height: 56vmax; left: -18vmax; top: -22vmax; background: radial-gradient(circle at 35% 35%, #a7f3d0, #10b981 48%, transparent 72%); animation: login-derive-a 32s ease-in-out infinite alternate; }
+.login::after { width: 46vmax; height: 46vmax; right: -14vmax; bottom: -18vmax; background: radial-gradient(circle at 60% 60%, #d1fae5, #059669 45%, transparent 72%); animation: login-derive-b 38s ease-in-out infinite alternate; }
+.login-glow { width: 30vmax; height: 30vmax; left: 24%; top: 46%; opacity: calc(var(--login-halo) * .7); background: radial-gradient(circle, #ecfdf5, #34d399 40%, transparent 70%); animation: login-derive-c 40s ease-in-out infinite alternate; }
+@keyframes login-derive-a { to { transform: translate(14vmax, 12vmax) scale(1.1); } }
+@keyframes login-derive-b { to { transform: translate(-14vmax, -10vmax) scale(1.08); } }
+@keyframes login-derive-c { to { transform: translate(-12vmax, 16vmax) scale(.9); } }
+@media (prefers-reduced-motion: reduce) { .login::before, .login::after, .login-glow { animation: none; } }
+.login-brand { position: relative; isolation: isolate; display: grid; align-content: center; gap: 26px; padding: 8vw; color: var(--login-ink); }
+.login-brand img { border-radius: 30px; background: #fff; padding: 10px; box-shadow: 0 20px 50px -18px rgb(4 120 87 / 55%), 0 0 0 3px var(--yellow); }
 .login-brand h2 { font-size: clamp(30px, 3.6vw, 48px); line-height: 1.08; letter-spacing: -1.4px; font-weight: 750; }
 .login-brand .swoosh { background: linear-gradient(transparent 80%, var(--yellow) 80%, var(--yellow) 93%, transparent 93%); }
-.login-brand ul { display: grid; gap: 13px; color: #c5ccea; font-size: 15px; } .login-brand li { display: flex; gap: 11px; align-items: center; } .login-brand li svg { color: var(--yellow); flex: none; }
-.login-form { display: grid; place-items: center; padding: 32px 24px; background: var(--surface); }
-.login-form form { width: min(390px, 100%); display: grid; gap: 14px; } .login-mark { display: none; border-radius: 16px; }
+.login-brand ul { display: grid; gap: 13px; color: var(--login-muted); font-size: 15px; } .login-brand li { display: flex; gap: 11px; align-items: center; } .login-brand li svg { color: var(--login-brand); flex: none; }
+.login-form { position: relative; display: grid; place-items: center; padding: 32px 24px; }
+/* La carte en verre : un fond blanc presque opaque qui laisse deviner les halos passant derrière. */
+.login-form form { width: min(430px, 100%); display: grid; gap: 14px; padding: 34px 32px 26px; border-radius: 22px; background: var(--login-glass); border: 1px solid var(--login-glass-border);
+  box-shadow: var(--login-shadow); -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); }
+.login-mark { display: none; border-radius: 16px; background: #fff; padding: 4px; box-shadow: 0 0 0 3px var(--yellow); }
+.login .eyebrow { color: var(--login-brand); }
+.login input { background: var(--surface-2); }
+.login input:focus { background: var(--surface); border-color: var(--login-brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--login-brand) 18%, transparent); }
+.login .discreet-link:hover, .login .discreet-link:focus-visible { color: var(--login-brand); }
+/* Bouton épuré et bombé : fond blanc, liseré presque invisible, texte vert foncé, ombre douce ; le survol se teinte de vert pâle. */
+.login .primary { color: var(--login-brand-strong); background: #fff; border: 1px solid rgb(90 100 160 / 12%); border-radius: 10px; font-weight: 700; box-shadow: 0 1px 2px rgb(20 24 70 / 8%), 0 4px 10px -4px rgb(40 30 120 / 25%); }
+.login .primary:hover:not(:disabled) { background: var(--login-soft); border-color: var(--login-edge); }
+:root[data-theme='dark'] .login input, :root[data-theme='dark'] .login .language-picker { background: rgb(255 255 255 / 6%); border-color: rgb(255 255 255 / 14%); }
+:root[data-theme='dark'] .login input:focus { background: rgb(255 255 255 / 9%); }
+:root[data-theme='dark'] .login .language-picker button.active { background: rgb(255 255 255 / 12%); }
 /* Chosen before signing in: the first thing on the form, each language under its own name. */
 .language-picker { justify-self: start; display: inline-flex; align-items: center; gap: 2px; padding: 3px 3px 3px 10px; margin-bottom: 18px; border-radius: 11px; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); }
 .language-picker svg { margin-right: 6px; flex: none; }
@@ -391,7 +421,7 @@ input[type=range] { accent-color: var(--brand); }
   .nav-item { flex-direction: column; gap: 3px; padding: 7px 0; font-size: 10.5px; } .nav-item span { display: block; } .nav-item.active::before { left: 30%; right: 30%; top: -6px; bottom: auto; width: auto; height: 3px; border-radius: 0 0 4px 4px; }
   .call-banner { display: flex; margin: 0 14px 8px; border-radius: 12px; overflow: hidden; background: var(--success); color: #fff; font-weight: 650; }
   .call-banner button:first-child { flex: 1; display: flex; gap: 8px; align-items: center; padding: 11px 14px; text-align: left; color: #fff; } .banner-hangup { padding: 0 16px; background: var(--danger); color: #fff; }
-  .contacts-layout, .settings-grid, .login { grid-template-columns: minmax(0, 1fr); } .login-brand { display: none; } .login-mark { display: block; }
+  .contacts-layout, .settings-grid, .login { grid-template-columns: minmax(0, 1fr); } .login-brand { display: none; } .login-mark { display: block; } .login-form { padding: 24px 16px; } .login-form form { padding: 28px 22px 22px; }
   .call-summary { grid-template-columns: 30px 38px minmax(0, 1fr) auto; } .where, .when, .chevron { display: none; }
   .callback-row { grid-template-columns: 40px minmax(0, 1fr); } .callback-row .due, .callback-row .callback-note { grid-column: 2 / -1; } .callback-row .callback-note { white-space: normal; } .callback-row .callback-actions { grid-column: 1 / -1; justify-content: flex-start; }
   .toasts { bottom: 96px; width: calc(100% - 28px); }

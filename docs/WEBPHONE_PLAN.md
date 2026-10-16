@@ -242,6 +242,22 @@ rouge qui se teinte de rouge au survol. Dans la carte d'appel, Muet, Attente,
 Clavier, Rappeler et Planifier sont des tuiles posées sur la carte ; Appeler
 reste vert et Raccrocher rouge, Terminer reste jaune.
 
+### Écran de connexion
+
+Depuis le 16 octobre 2026, chaque produit APISNIX se reconnaît à la couleur de
+son écran d'authentification (et de la couverture de son manuel) :
+administration bleu ciel, écran agent bleu électrique et jaune, supervision
+violet et indigo. ApisnixPhone est le vert de cette famille (`#10b981`,
+`#059669`, `#34d399`). L'écran de connexion et la page `/lien` posent trois
+halos flous en dégradé radial qui dérivent lentement en arrière-plan (32 à
+40 s, aller-retour, immobiles sous `prefers-reduced-motion`), une carte de
+connexion en verre (blanc à 88 % avec `backdrop-filter`) et le bouton
+« Se connecter » épuré et bombé : fond blanc, liseré presque invisible, texte
+vert foncé, rayon 10 px, ombre douce, survol vert pâle. Le logo garde son
+liseré jaune et le trait jaune signe toujours l'accroche : le jaune reste
+l'accent APISNIX, le vert dit « téléphone ». Le thème sombre garde les mêmes
+halos sur un fond vert profond ; le reste de l'application ne change pas.
+
 ### Identité et tokens proposés
 
 Le [logo original](../branding/apisnix-mark.png) est réutilisé intact ; sur téléphone et tablette, où le menu devient une barre basse sans marque, il signe l'en-tête du composeur au-dessus du pavé (demande de Franck, 8 octobre). Le bleu

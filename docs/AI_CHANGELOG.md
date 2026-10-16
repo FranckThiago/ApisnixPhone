@@ -1,5 +1,23 @@
 # Journal des changements
 
+## Écran de connexion vert — 16 octobre 2026
+
+Franck veut reconnaître chaque produit APISNIX à la couleur de son écran
+d'authentification : administration bleu ciel, écran agent bleu et jaune,
+supervision violet et indigo, ApisnixPhone vert. Seule
+`webphone/src/styles/app.css` change, bloc « Login » : fond vert pâle avec
+trois halos flous (`#10b981`, `#059669`, `#34d399`) qui dérivent en 32, 38 et
+40 s en aller-retour et s'immobilisent sous `prefers-reduced-motion`,
+formulaire en carte de verre (blanc à 88 %, `backdrop-filter`), bouton
+« Se connecter » épuré et bombé (fond blanc, liseré presque invisible, texte
+vert foncé, rayon 10 px, survol vert pâle), panneau de marque sur fond
+transparent à texte encré, variantes du thème sombre. `overflow: clip` sur
+l'écran : en `hidden`, le focus automatique du champ Identifiant faisait
+défiler la page de 25 px vers les halos qui débordent. La page `/lien` partage
+ces styles. Vérifié dans le navigateur intégré en démonstration (1366 px,
+375 px, thème sombre), sans erreur console ; 201 tests, typage et lint.
+Manuels et captures non touchés ; règle consignée dans `WEBPHONE_PLAN.md` § 5.
+
 ## Guide ApisnixPhone refait, couverture verte — 16 octobre 2026
 
 Demande de Franck : refaire les manuels avec les nouvelles captures, chacun

@@ -1,5 +1,19 @@
 # État du projet
 
+## Écran de connexion vert — 16 octobre 2026
+
+**Dans le code, release en préparation.** L'écran de connexion (et la page
+`/lien`) porte la couleur propre d'ApisnixPhone dans la famille APISNIX : vert
+(`#10b981`, `#059669`, `#34d399`), trois halos qui dérivent lentement en
+arrière-plan, carte de connexion en verre, bouton épuré et bombé à texte vert
+foncé, thème sombre assorti ; règle dans `WEBPHONE_PLAN.md` § 5. Seule
+`webphone/src/styles/app.css` change. Vérifié dans le navigateur intégré en
+démonstration à 1366 et 375 px, thèmes clair et sombre, sans erreur console ;
+201 tests, typage et lint réussis. Manuels et captures non touchés : les
+captures de connexion des guides montrent encore l'ancien panneau bleu marine.
+`20261014-early-media-fix` reste la release en service ;
+`20261015-boutons-supervision`, jamais publiée, sera contenue dans la prochaine.
+
 ## Boutons importants au style de la supervision — 15 octobre 2026
 
 **Dans le code, non publié.** Les boutons principaux, secondaires, la
