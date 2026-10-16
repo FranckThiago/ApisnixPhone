@@ -2,21 +2,21 @@
 
 ## Écran de connexion vert — 16 octobre 2026
 
-**Dans le code, release préparée, non publiée.** L'écran de connexion (et la page
+**En service depuis le 16 octobre 2026, 09:14:59 Douala.** L'écran de connexion (et la page
 `/lien`) porte la couleur propre d'ApisnixPhone dans la famille APISNIX : vert
 (`#10b981`, `#059669`, `#34d399`), trois halos qui dérivent lentement en
 arrière-plan, carte de connexion en verre, bouton épuré et bombé à texte vert
 foncé, thème sombre assorti ; règle dans `WEBPHONE_PLAN.md` § 5. Seule
 `webphone/src/styles/app.css` change. Vérifié dans le navigateur intégré en
 démonstration à 1366 et 375 px, thèmes clair et sombre, sans erreur console ;
-201 tests, typage et lint réussis. Manuels et captures non touchés : les
-captures de connexion des guides montrent encore l'ancien panneau bleu marine.
-**Release `20261016-connexion-verte` préparée, non publiée** (source `0235a64`,
+201 tests, typage et lint réussis. Captures de connexion des trois guides
+refaites sur l'écran vert par la session Manuels (`17afd31`).
+**Release `20261016-connexion-verte` en service** (source `0235a64`,
 267 fichiers, archive SHA-256 `6c9669542228fe61914347849272ea660b5ab756e72328307999fed539d1cf29`,
-preuves dans `.work/releases/20261016-connexion-verte/`) ; la publication sur Hermes
-attend l'accord explicite de Franck, procédure et retour dans `OPERATIONS.md`.
-`20261014-early-media-fix` reste la release en service ; `20261015-boutons-supervision`,
-jamais publiée, est contenue dans celle-ci.
+preuves dans `.work/releases/20261016-connexion-verte/`), publiée sur Hermes à
+09:14:59 Douala avec l'accord de Franck ; vérifications et retour dans
+`OPERATIONS.md`. `20261014-early-media-fix` est la cible de retour ;
+`20261015-boutons-supervision`, jamais publiée, est contenue dans celle-ci.
 
 ## Boutons importants au style de la supervision — 15 octobre 2026
 

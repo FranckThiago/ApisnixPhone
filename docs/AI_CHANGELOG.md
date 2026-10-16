@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Écran de connexion vert publié — 16 octobre 2026
+
+Release `20261016-connexion-verte` publiée sur Hermes à 09:14:59 Douala avec l'accord
+explicite de Franck, par le script préparé : sauvegarde protégée de
+`20261014-early-media-fix`, 267 fichiers contrôlés, bascule atomique, empreintes HTTPS
+vérifiées depuis Hermes puis depuis le Mac, page publique chargée sans erreur,
+aucun appel. Aucun code modifié ; exploitation et état mis à jour, retour ciblé
+documenté.
+
 ## Release de l'écran de connexion vert préparée — 16 octobre 2026
 
 Release `20261016-connexion-verte` préparée depuis `0235a64` selon `OPERATIONS.md` :

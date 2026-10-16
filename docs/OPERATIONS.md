@@ -2,7 +2,8 @@
 
 ## Écran de connexion vert — 16 octobre 2026
 
-**Release `20261016-connexion-verte` préparée, non publiée ; source `0235a64`.**
+**En service `20261016-connexion-verte` depuis le 16 octobre 2026, 09:14:59 Douala ; source `0235a64`.**
+Publiée sur Hermes avec l'accord explicite de Franck donné dans la conversation.
 Seul `webphone/src/styles/app.css` change côté code (écran de connexion vert :
 halos animés, carte en verre, bouton épuré et bombé, thème sombre) ; elle
 contient aussi les boutons de `20261015-boutons-supervision`, jamais publiée,
@@ -15,20 +16,28 @@ Archive, empreintes, manifeste JSON (`source`, `files`, `archive_sha256`),
 journaux, source du commit (sans `node_modules`), script de publication et
 captures (bundle construit servi par `vite preview` ; démo à 375 px et en thème
 sombre) dans `.work/releases/20261016-connexion-verte/`. Aucune erreur console, aucun
-REGISTER ni appel. Le script de publication est celui de
-`20261014-early-media-fix` adapté : il exige `current` encore sur
-`20261014-early-media-fix` (vérifié sur Hermes le 16 octobre au matin), sauvegarde
-cette release et son manifeste dans `/root/apisnix-phone-backups/20261016-connexion-verte/`,
-extrait l'archive, contrôle tous les fichiers et leur lecture par Caddy, bascule
-atomiquement, vérifie les empreintes HTTPS puis écrit le reçu ; échec = retour
-automatique. **Publication sur Hermes à lancer après accord explicite de
-Franck** : déposer `phone.tar.gz`, `manifest.json` et `publish.py` dans
-`/tmp/apisnix-connexion-verte/` sur Hermes (alias SSH `hermes`, root) puis
-`python3 /tmp/apisnix-connexion-verte/publish.py`. Retour ciblé après
-publication : vérifier `current` sur `20261016-connexion-verte`, puis le repointer
+REGISTER ni appel. Publication : `current` revérifié sur `20261014-early-media-fix` juste avant,
+`/tmp/apisnix-connexion-verte/` créé en 0700 et archive, manifeste et script
+déposés par `scp` puis contrôlés sur place (même SHA-256, 267 fichiers, aucune
+entrée AppleDouble) ; `publish.py` (celui de `20261014-early-media-fix` adapté) lancé
+en root à 09:14:54 : sauvegarde 0700
+`/root/apisnix-phone-backups/20261016-connexion-verte/` (ancienne cible, copie
+intégrale et manifeste de la release précédente, archive, manifeste source,
+reçu), extraction, 267 empreintes identiques au manifeste, droits root
+0755/0644, lecture par caddy testée et écriture refusée, bascule atomique du
+lien, empreintes HTTPS vérifiées depuis Hermes, reçu écrit (`receipt.json`,
+copie locale dans `.work/releases/20261016-connexion-verte/`). Contrôles après
+bascule : depuis le Mac, index, JS, module SIP, CSS, worker et logo servis en
+HTTPS identiques au manifeste, index `no-cache`, assets immuables, repli SPA
+200 sur `/lien` et sur une route inconnue, CSP, HSTS et Permissions-Policy
+inchangées ; Caddy et supervision actifs, Caddy non redémarré ; page publique
+chargée dans le navigateur intégré avec les nouveaux JS et CSS, écran vert,
+aucune erreur console, aucun REGISTER ni appel (formulaire non soumis). Retour
+ciblé : vérifier `current` sur `20261016-connexion-verte`, puis le repointer
 atomiquement vers `/srv/apisnixphone/releases/20261014-early-media-fix`. Actualiser
-les pages hors appel. Aucune mutation PBX, backend, TURN ni base. Manuels
-clients inchangés : leurs captures de connexion montrent encore l'ancien écran.
+les pages hors appel. Aucune mutation PBX, backend, TURN ni base. Captures de
+connexion des trois guides refaites sur l'écran vert par la session Manuels
+(`17afd31`).
 
 ## Boutons au style de la supervision — 15 octobre 2026
 
