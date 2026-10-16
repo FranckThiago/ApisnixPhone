@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Drapeaux mobiles publiés — 16 octobre 2026
+
+Release `20261016-drapeaux-mobile` (source `273fe65`, 267 fichiers), publiée
+sur Hermes à 12:46:06 Douala sur demande de Franck. Sauvegarde protégée et
+vérifiée de `20261016-journal-lisible`, bascule atomique, fichiers HTTPS
+conformes depuis Hermes et le Mac, formulaire public sans erreur. Aucun
+appel lancé ni changement PBX/backend/base ; manuels inchangés. État et
+exploitation actualisés, retour ciblé documenté dans OPERATIONS.
+
 ## Drapeaux du Journal conservés sur mobile — 16 octobre 2026
 
 `Journal.tsx` et `app.css` affichent le drapeau d'un pays connu dans la ligne

@@ -1,9 +1,40 @@
 # Construction et validation
 
+## Drapeaux du Journal sur mobile — 16 octobre 2026
+
+**Release `20261016-drapeaux-mobile`, source `273fe65`, en service depuis
+12:46:06 Douala.** Publication demandée par Franck : quand la colonne pays
+est masquée, le drapeau connu apparaît dans la ligne secondaire sous
+l'identité. `Journal.tsx` et `app.css` seulement ; détection, numéros,
+qualifications et données conservés. Manuels clients non modifiés.
+
+201 tests, typage et lint réussis ; rendu démo à 375/390 px en clair/sombre,
+pays connus avec et sans contact, numéro interne sans drapeau inventé,
+absence de débordement ; à 1366 px, seul le drapeau de la colonne pays reste
+visible. Build live isolé depuis le commit (`git archive`, `npm ci`, variables
+publiques usuelles), 267 fichiers, archive ustar contrôlée sans AppleDouble.
+SHA-256 `f04c7af10e28c8a1b46eeaf7a7e315f550d87d85a84fe8d73b6b1e387ce69605`.
+
+Hermes identifié, cible précédente `20261016-journal-lisible` revérifiée.
+Sauvegarde protégée 0700 et copie intégrale vérifiée par manifeste dans
+`/root/apisnix-phone-backups/20261016-drapeaux-mobile/` : ancienne cible,
+copie/manifeste, archive source, manifeste et reçu. Empreintes des 267 fichiers
+et lecture Caddy vérifiées avant bascule atomique ; retour automatique en cas
+d'échec HTTPS. Caddy et supervision actifs sans redémarrage. Index, JS, CSS,
+module SIP, worker, logo et SVG France conformes depuis le Mac. Navigateur
+intégré : `index-BDNBWsOl.js`, `index-CKJdEmZa.css`, formulaire live sans erreur.
+Aucun REGISTER ni appel lancé ; rendu du Journal vérifié en démonstration.
+
+Preuves dans `.work/releases/20261016-drapeaux-mobile/`. Retour ciblé : vérifier
+`current` encore sur cette release, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261016-journal-lisible`. Actualisation hors appel.
+Aucune migration, mutation PBX/backend/base ou interruption de service.
+
 ## Journal lisible et carte verte en service — 16 octobre 2026
 
-**Release `20261016-journal-lisible`, source `3f62d61`, en service depuis
-10:23:30 Douala.** Publication explicitement demandée par Franck, après
+**Release `20261016-journal-lisible`, source `3f62d61`, en service de
+10:23:30 à 12:46:06 Douala, remplacée par `20261016-drapeaux-mobile`, dont
+elle est la cible de retour.** Publication explicitement demandée par Franck, après
 validation du halo vert et signalement des qualifications coupées. Seul
 `webphone/src/styles/app.css` change depuis `20261016-halos-verts` : carte
 du temps en conversation verte et qualifications visibles en largeur réduite.

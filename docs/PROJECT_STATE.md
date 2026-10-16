@@ -2,12 +2,14 @@
 
 ## Drapeaux du Journal sur mobile — 16 octobre 2026
 
-**Dans le code, publication demandée.** En largeur réduite, les drapeaux des
+**En service `20261016-drapeaux-mobile`, source `273fe65`, depuis le
+16 octobre 2026 à 12:46:06 Douala.** En largeur réduite, les drapeaux des
 pays connus sont affichés dans la ligne secondaire sous l'identité, au lieu
 de disparaître avec la colonne pays. Libellés, détection du pays, numéros
 composés et qualifications conservés. Vérifié à 375/390 px, clair et sombre,
 et à 1366 px (un seul drapeau visible par ligne), sans débordement ; 201 tests,
-typage et lint réussis. Plan aligné, manuels clients inchangés.
+typage et lint réussis. Plan aligné, manuels clients inchangés. Publication
+et retour vers `20261016-journal-lisible` dans OPERATIONS.
 
 ## Guides actualisés sur demande — 16 octobre 2026
 
