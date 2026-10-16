@@ -9,7 +9,12 @@ sous-titre de la marque, libellés en capitales, anneaux de focus, interrupteurs
 halo de la carte d'appel, dégradés d'Appeler et Accepter ; le bleu reste la
 marque et le jaune la signature (règle dans `WEBPHONE_PLAN.md` § 5). Depuis
 le même jour, plus aucun halo jaune : anneau de l'avatar, lueur de la carte
-d'appel, anneau du logo de connexion et du bouton Téléphone compact sont verts. Vérifié
+d'appel, anneau du logo de connexion et du bouton Téléphone compact sont verts.
+**Release `20261016-halos-verts` en service depuis le 16 octobre 2026,
+10:10:48 Douala** (source `b16f738`, 267 fichiers, archive SHA-256
+`e19f0215cc4b6fa27ab784317524346ea960e53b9d580486fa023ebd5c911dd8`, preuves
+dans `.work/releases/20261016-halos-verts/`) ; vérifications et retour dans
+`OPERATIONS.md`, `20261016-vert-boutons` est la cible de retour. Vérifié
 dans le navigateur intégré en démonstration (connexion, Journal, Contacts,
 Réglages, appel entrant, en cours, fin d'appel ; clair et sombre). 201 tests,
 typage et lint réussis. **Captures refaites à la demande de Franck** : guide
@@ -17,7 +22,7 @@ FR/EN/ES (`docs/guide/`) et les trois PDF reconstruits ; série haute résolutio
 pour le site dans `docs/site-captures/` (script : `GUIDE_SCALE`, `GUIDE_OUT`).
 Les manuels de la gestion qui copient `02-journal`, `09-appel-entrant` et
 `06-muet-attente` sont à rafraîchir depuis ces fichiers. **Release
-`20261016-vert-boutons` en service depuis le 16 octobre 2026, 09:56:55 Douala** (source `29c6400`, 267 fichiers,
+`20261016-vert-boutons` en service du 16 octobre 2026, 09:56:55, au 16 octobre 10:10:48 Douala, remplacée par `20261016-halos-verts`** (source `29c6400`, 267 fichiers,
 archive SHA-256
 `fdd0e6b4137c1d4208aad53056524102ebc0bd11af6125160defd9d5499be5f4`,
 preuves dans `.work/releases/20261016-vert-boutons/`) ; elle porte aussi les

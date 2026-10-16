@@ -1,8 +1,44 @@
 # Construction et validation
 
+## Halos verts en service — 16 octobre 2026
+
+**En service `20261016-halos-verts` depuis le 16 octobre 2026, 10:10:48 Douala ; source `b16f738`.**
+Publiée sur Hermes à la demande de Franck (« publies »). Depuis
+`20261016-vert-boutons`, seuls `webphone/src/styles/app.css` et `tokens.css`
+changent côté code (halos verts : anneau et onde de l'avatar, lueur de la carte
+d'appel, anneau du logo de connexion et du bouton Téléphone compact).
+Construction live isolée depuis le commit (`git archive`, `npm ci`, typage,
+lint, 201 tests, build avec les trois variables publiques usuelles) ;
+267 fichiers, `index-C-2WUrXN.js`, `lib-D6GnlXuO.js`, `index-BsMbbKYL.css`.
+Archive bsdtar sans entrée AppleDouble (propriétaire root, contrôlée par
+`tarfile`), SHA-256
+`e19f0215cc4b6fa27ab784317524346ea960e53b9d580486fa023ebd5c911dd8`.
+Archive, empreintes, manifeste JSON, journaux, source du commit (sans
+`node_modules`), script de publication, reçu et capture de la page publique
+dans `.work/releases/20261016-halos-verts/`. Publication : `current`
+revérifié sur `20261016-vert-boutons` et absence des cibles contrôlée,
+`/tmp/apisnix-halos-verts/` créé en 0700, archive, manifeste et script
+déposés par `scp` puis contrôlés sur place (même SHA-256, 267 fichiers, aucune
+entrée AppleDouble) ; `publish.py` (celui de `20261016-vert-boutons` adapté)
+lancé en root : sauvegarde 0700 `/root/apisnix-phone-backups/20261016-halos-verts/`
+(ancienne cible, copie intégrale et manifeste de la release précédente,
+archive, manifeste source, reçu), extraction, 267 empreintes identiques au
+manifeste, droits root 0755/0644, lecture par caddy testée, bascule atomique
+du lien, empreintes HTTPS vérifiées depuis Hermes, reçu écrit à 10:10:48.
+Contrôles après bascule depuis le Mac : index, JS, module SIP, CSS, worker et
+logo servis en HTTPS identiques au manifeste, index `no-cache`, assets
+immuables, repli SPA 200 sur `/lien` et sur une route inconnue, CSP, HSTS et
+Permissions-Policy présents ; Caddy et supervision actifs, Caddy non
+redémarré ; page publique chargée dans le navigateur intégré avec les
+nouveaux JS et CSS, anneau du logo vert, aucune erreur console, aucun
+REGISTER ni appel (formulaire non soumis). Retour ciblé : vérifier `current`
+sur `20261016-halos-verts`, puis le repointer atomiquement vers
+`/srv/apisnixphone/releases/20261016-vert-boutons`. Actualiser les pages hors
+appel. Aucune mutation PBX, backend, TURN ni base. Manuels clients inchangés.
+
 ## Vert étendu et boutons supervision — 16 octobre 2026
 
-**En service `20261016-vert-boutons` depuis le 16 octobre 2026, 09:56:55 Douala ; source `29c6400`.**
+**Release `20261016-vert-boutons` en service du 16 octobre 2026, 09:56:55, au 16 octobre 10:10:48 Douala ; source `29c6400`. Remplacée par `20261016-halos-verts`, dont elle est la cible de retour.**
 Elle remplace `20261015-boutons-supervision` (préparée depuis `828c2f0`, jamais
 publiée, désormais dépassée) : elle porte à la fois les boutons au style des
 cartes de supervision (`828c2f0`) et le vert de la connexion étendu à toute

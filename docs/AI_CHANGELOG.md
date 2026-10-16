@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Halos verts publiés — 16 octobre 2026
+
+Release `20261016-halos-verts` préparée depuis `b16f738` (build live isolé,
+typage, lint, 201 tests, 267 fichiers, archive bsdtar vérifiée) et publiée sur
+Hermes à 10:10:48 Douala à la demande de Franck : sauvegarde protégée de
+`20261016-vert-boutons`, 267 fichiers contrôlés, bascule atomique, empreintes
+HTTPS vérifiées depuis Hermes puis depuis le Mac, page publique chargée sans
+erreur, aucun appel. Exploitation et état mis à jour, retour ciblé documenté.
+
 ## Halos verts sur la carte d'appel et le logo de connexion — 16 octobre 2026
 
 Franck ne veut plus de halo jaune : l'anneau de l'avatar et son onde à la
