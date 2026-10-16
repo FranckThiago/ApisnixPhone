@@ -252,16 +252,16 @@ input[type=range] { accent-color: var(--brand); }
 .audio-card div { flex: 1; min-width: 0; } .audio-card b, .audio-card small { display: block; } .volume { display: flex; align-items: center; gap: 6px; color: var(--tone, var(--muted)); } .volume input { width: 84px; accent-color: var(--tone, var(--brand)); }
 .dock-note { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); padding: 0 6px; }
 
-/* The call card follows the theme (--call-* tokens): the brand glow and its yellow ring, navy at night. */
+/* The call card follows the theme (--call-* tokens): the brand glow and its green ring, navy at night (Franck, 16 October 2026: no yellow halo on the call card nor around the sign-in logo). */
 .call-card { position: relative; overflow: hidden; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; color: var(--call-text); border-color: var(--call-border); background: var(--call-bg); }
 .call-card.phase-held { background: var(--call-bg-held); }
 .call-top { display: flex; justify-content: space-between; align-items: center; min-height: 24px; }
 .call-direction { display: inline-flex; gap: 6px; align-items: center; font-size: 11.5px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--call-caption); }
 .chip-warning { display: inline-flex; gap: 5px; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--yellow); color: var(--on-yellow); }
 .call-identity { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 6px 0 2px; }
-.call-identity .avatar { border-radius: 50%; box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--yellow); }
+.call-identity .avatar { border-radius: 50%; box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--green); }
 .call-identity.ringing .avatar { animation: ring 1.6s ease-out infinite; }
-@keyframes ring { 0% { box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--yellow), 0 0 0 6px #ffd21f88; } 100% { box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--yellow), 0 0 0 26px #ffd21f00; } }
+@keyframes ring { 0% { box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--green), 0 0 0 6px #10b98188; } 100% { box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--green), 0 0 0 26px #10b98100; } }
 .call-identity h2 { font-size: 21px; letter-spacing: -.3px; margin-top: 12px; overflow-wrap: anywhere; }
 .call-number { display: flex; align-items: center; gap: 8px; color: var(--call-muted); font-variant-numeric: tabular-nums; }
 .call-status { font-size: 30px; font-weight: 300; letter-spacing: 1px; font-variant-numeric: tabular-nums; margin-top: 4px; } .phase-dialing .call-status, .phase-ringing-out .call-status, .phase-ringing-in .call-status, .phase-ended .call-status { font-size: 17px; font-weight: 500; letter-spacing: 0; color: var(--call-accent); }
@@ -364,7 +364,7 @@ input[type=range] { accent-color: var(--brand); }
 @keyframes login-derive-c { to { transform: translate(-12vmax, 16vmax) scale(.9); } }
 @media (prefers-reduced-motion: reduce) { .login::before, .login::after, .login-glow { animation: none; } }
 .login-brand { position: relative; isolation: isolate; display: grid; align-content: center; gap: 26px; padding: 8vw; color: var(--login-ink); }
-.login-brand img { border-radius: 30px; background: #fff; padding: 10px; box-shadow: 0 20px 50px -18px rgb(4 120 87 / 55%), 0 0 0 3px var(--yellow); }
+.login-brand img { border-radius: 30px; background: #fff; padding: 10px; box-shadow: 0 20px 50px -18px rgb(4 120 87 / 55%), 0 0 0 3px var(--login-brand); }
 .login-brand h2 { font-size: clamp(30px, 3.6vw, 48px); line-height: 1.08; letter-spacing: -1.4px; font-weight: 750; }
 .login-brand .swoosh { background: linear-gradient(transparent 80%, var(--yellow) 80%, var(--yellow) 93%, transparent 93%); }
 .login-brand ul { display: grid; gap: 13px; color: var(--login-muted); font-size: 15px; } .login-brand li { display: flex; gap: 11px; align-items: center; } .login-brand li svg { color: var(--login-brand); flex: none; }
@@ -372,7 +372,7 @@ input[type=range] { accent-color: var(--brand); }
 /* La carte en verre : un fond blanc presque opaque qui laisse deviner les halos passant derrière. */
 .login-form form { width: min(430px, 100%); display: grid; gap: 14px; padding: 34px 32px 26px; border-radius: 22px; background: var(--login-glass); border: 1px solid var(--login-glass-border);
   box-shadow: var(--login-shadow); -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); }
-.login-mark { display: none; border-radius: 16px; background: #fff; padding: 4px; box-shadow: 0 0 0 3px var(--yellow); }
+.login-mark { display: none; border-radius: 16px; background: #fff; padding: 4px; box-shadow: 0 0 0 3px var(--login-brand); }
 .login .eyebrow { color: var(--login-brand); }
 .login input { background: var(--surface-2); }
 .login input:focus { background: var(--surface); border-color: var(--login-brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--login-brand) 18%, transparent); }
@@ -417,7 +417,7 @@ input[type=range] { accent-color: var(--brand); }
   .nav-phone .nav-item { width: min(62px, 100%); height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #34d399, #047857);
     box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), inset 0 1px 0 rgb(255 255 255 / 35%); transition: transform .15s; }
   .nav-phone .nav-item span { display: none !important; } .nav-phone .nav-item svg, .nav-phone .nav-item.active svg { color: #fff; } .nav-phone .nav-item:active { transform: scale(.94); }
-  .nav-phone .nav-item.active { background: linear-gradient(160deg, #34d399, #047857); box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), 0 0 0 7px var(--yellow); } .nav-phone .nav-item.active::before { display: none; }
+  .nav-phone .nav-item.active { background: linear-gradient(160deg, #34d399, #047857); box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), 0 0 0 7px var(--green-strong); } .nav-phone .nav-item.active::before { display: none; }
   .nav-phone .nav-item.in-call { animation: pulse 1.4s ease-in-out infinite; }
   .nav-item { flex-direction: column; gap: 3px; padding: 7px 0; font-size: 10.5px; } .nav-item span { display: block; } .nav-item.active::before { left: 30%; right: 30%; top: -6px; bottom: auto; width: auto; height: 3px; border-radius: 0 0 4px 4px; }
   .call-banner { display: flex; margin: 0 14px 8px; border-radius: 12px; overflow: hidden; background: var(--success); color: #fff; font-weight: 650; }

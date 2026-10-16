@@ -7,7 +7,9 @@ connexion devient la couleur d'action de l'application : jetons `--green` dans
 `tokens.css`, boutons principaux à texte et liseré verts, survols, menu actif,
 sous-titre de la marque, libellés en capitales, anneaux de focus, interrupteurs,
 halo de la carte d'appel, dégradés d'Appeler et Accepter ; le bleu reste la
-marque et le jaune la signature (règle dans `WEBPHONE_PLAN.md` § 5). Vérifié
+marque et le jaune la signature (règle dans `WEBPHONE_PLAN.md` § 5). Depuis
+le même jour, plus aucun halo jaune : anneau de l'avatar, lueur de la carte
+d'appel, anneau du logo de connexion et du bouton Téléphone compact sont verts. Vérifié
 dans le navigateur intégré en démonstration (connexion, Journal, Contacts,
 Réglages, appel entrant, en cours, fin d'appel ; clair et sombre). 201 tests,
 typage et lint réussis. **Captures refaites à la demande de Franck** : guide

@@ -269,6 +269,9 @@ du composeur, interrupteurs, survol du pavé, halo de la carte d'appel et
 dégradés d'Appeler, Accepter et du bouton Téléphone compact. Le bleu reste la
 marque APISNIX (logo, annonces, sélections, sens sortant, lettres de l'annuaire),
 le jaune la signature (onglets, focus clavier, Terminer, trait d'accroche).
+Les halos sont verts, jamais jaunes (Franck, 16 octobre) : anneau de l'avatar
+et lueur de la carte d'appel, anneau du logo de connexion, anneau du bouton
+Téléphone compact en appel.
 
 ### Identité et tokens proposés
 

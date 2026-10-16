@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Halos verts sur la carte d'appel et le logo de connexion — 16 octobre 2026
+
+Franck ne veut plus de halo jaune : l'anneau de l'avatar et son onde à la
+sonnerie, la lueur en bas à droite de la carte d'appel (clair et sombre),
+l'anneau du logo de l'écran de connexion et celui du bouton Téléphone compact
+en appel passent au vert. Seuls `app.css` et `tokens.css` changent ; le trait
+d'accroche et le reste de la signature jaune restent. Vérifié en démonstration
+(connexion, appel entrant, en cours ; clair et sombre), 201 tests, typage,
+lint. Règle ajoutée au plan § 5.
+
 ## Release vert étendu et boutons supervision publiée — 16 octobre 2026
 
 Release `20261016-vert-boutons` publiée sur Hermes à 09:56:55 Douala avec l'accord
