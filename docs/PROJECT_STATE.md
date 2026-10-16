@@ -2,7 +2,7 @@
 
 ## Protection contre un deuxième appel entrant — 16 octobre 2026
 
-**Code validé, publication en préparation.** Un nouvel INVITE reçu pendant
+**En service `20261016-protection-appel`, source `99bd261`, depuis 13:48:58 Douala.** Un nouvel INVITE reçu pendant
 un appel est refusé en **486 Busy Here avant son admission dans SessionManager**.
 Le contrôleur confirme aussi la disponibilité pendant la préparation média
 sortante (avant création d’une session), la terminaison et les changements

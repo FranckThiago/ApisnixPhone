@@ -1,5 +1,16 @@
 # Journal des changements
 
+## Protection des appels publiée — 16 octobre 2026
+
+Release `20261016-protection-appel`, source `99bd261`, en service à 13:48:58
+Douala. 206 tests réussis, dont cinq ciblés avec SIP.js réel et transport local ;
+quatre cas échouaient avant correction. Typage, lint et build réussis.
+Publication avec copie précédente vérifiée, bascule atomique et comparaison
+HTTPS depuis Hermes et le Mac. Retour vers `20261016-sortie-audio` ; manuels,
+PBX, TURN et base inchangés. Aucune conversation client provoquée. État,
+architecture, plan et exploitation documentés ; double appel non activé.
+
+
 ## Protection contre un deuxième appel entrant — 16 octobre 2026
 
 **Code validé, publication en préparation.** Un nouvel INVITE reçu pendant

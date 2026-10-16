@@ -1,5 +1,36 @@
 # Construction et validation
 
+## Protection contre le deuxième appel — 16 octobre 2026
+
+**Release `20261016-protection-appel`, source `99bd261`, active depuis
+13:48:58 Douala.** Un entrant supplémentaire est refusé en 486 avant admission
+SIP.js quand la ligne est occupée, y compris pendant une préparation média
+sortante ou une mise en attente. Reprise des entrants après libération de la
+ligne. Aucun changement visuel, de codec, de volume ou de traitement sonore.
+
+206 tests, typage, lint et build isolé réussis. Cinq cas ciblés avec moteur
+SIP.js réel et transport local ; quatre cas de régression échouaient avant
+correction. États actif/en attente du contrôleur simulés sans audio : ce
+contrôle ne constitue pas une conversation réelle ni un test acoustique.
+Test du formulaire public dans le navigateur intégré, sans REGISTER/appel.
+
+Hermes identifié ; current contrôlé sur `20261016-sortie-audio`. Copie
+protégée 0700 et manifeste comparé dans
+`/root/apisnix-phone-backups/20261016-protection-appel/`. Build live du commit,
+267 fichiers ; archive SHA-256
+`c9e9ed9d9cf97ccebd9b37fe0230faf796209dec315fa2e5ffad1beb540f9544`.
+Empreintes et accès Caddy contrôlés avant bascule atomique, retour automatique
+si les contrôles HTTPS échouent. Index, JS/CSS, module SIP et worker comparés
+en HTTPS depuis Hermes et le Mac avec validation TLS. Services actifs, sans
+redémarrage. Preuves dans `.work/releases/20261016-protection-appel/`.
+
+Retour ciblé : vérifier current toujours sur cette release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261016-sortie-audio`. Ce retour
+rétablirait aussi l’ancienne faiblesse : conserver les limites serveur.
+Actualiser les onglets hors appel pour prendre la correction. Aucune migration
+ni modification PBX, base, TURN ou manuels clients ; pas de double appel activé.
+
+
 ## Sortie audio en appel — 16 octobre 2026
 
 **Release `20261016-sortie-audio`, source `fcc737a`, active depuis 13:37:43
