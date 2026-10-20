@@ -1,5 +1,26 @@
 # Construction et validation
 
+## Sortie audio en icône — 20 octobre 2026
+
+**Release `20261020-sortie-icone`, source `2609686`, active depuis 12:23:34
+Douala.** Remplace `20261016-double-appel-pilote`. Build isolé du commit avec
+les trois variables publiques et la même liste `VITE_CALL_WAITING_LINES` que le
+pilote (valeur dans le dépôt privé), présente dans le bundle. 267 fichiers,
+archive SHA-256 `91bae1388bd813990b68c18b87b14dec95339f9dea59851e082ba7df1622edf8`,
+sans entrée AppleDouble. 227 tests, typage et lint réussis.
+
+Hermes identifié, current contrôlé sur la release précédente ; copie protégée
+0700 et manifeste comparé dans `/root/apisnix-phone-backups/20261020-sortie-icone/`.
+Empreintes et lecture Caddy contrôlées avant bascule atomique, retour automatique
+si HTTPS échoue. Index, JS/CSS, module SIP et worker conformes depuis Hermes et le
+Mac ; Caddy et supervision actifs, sans redémarrage. Formulaire live chargé dans
+le navigateur intégré avec le nouveau bundle ; aucun REGISTER ni appel réel.
+Preuves dans `.work/releases/20261020-sortie-icone/`.
+
+Retour : vérifier current encore sur cette release puis repointer atomiquement
+vers `/srv/apisnixphone/releases/20261016-double-appel-pilote`. Actualiser hors
+appel. Aucun changement backend, PBX, TURN, données ou manuels clients.
+
 ## Double appel entrant : pilote — 16 octobre 2026
 
 **Release `20261016-double-appel-pilote`, source `a689351`, active depuis

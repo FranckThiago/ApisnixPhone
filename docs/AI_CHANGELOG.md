@@ -7,7 +7,8 @@ liste déroulante, bouton) devient une icône casque discrète dans l’en-tête
 comme sur iPhone. Un appui ouvre un menu : sorties réelles avec coche, puis
 Actualiser les sorties. Même logique et mêmes textes FR/EN/ES ; page Audio
 inchangée ; manuels clients inchangés. Contrôles : 227 tests, typage, lint,
-build ; menu vérifié en appel simulé, thèmes clair et sombre. Non publié.
+build ; menu vérifié en appel simulé, thèmes clair et sombre. Publié le
+20 octobre à 12:23 Douala (`20261020-sortie-icone`, voir OPERATIONS).
 
 ## 2026-10-16 — Pilote double appel entrant
 

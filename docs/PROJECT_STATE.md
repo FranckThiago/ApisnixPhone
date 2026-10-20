@@ -1,9 +1,18 @@
 # État du projet
 
+## Sortie audio en appel réduite à une icône — 20 octobre 2026
+
+**En service `20261020-sortie-icone`, source `2609686`, depuis 12:23:34
+Douala.** Sur la carte d’appel, le choix Casque / sortie devient une icône
+casque dans l’en-tête : menu des sorties réelles avec coche et Actualiser les
+sorties. Page Audio inchangée. Contient tout le pilote double appel ci-dessous
+(même liste `VITE_CALL_WAITING_LINES` au build). 227 tests, typage, lint,
+build isolé. Liste à plusieurs sorties à observer sur une vraie ligne.
+
 ## Double appel : pilote par compte — 16 octobre 2026
 
-**En service `20261016-double-appel-pilote`, source `a689351`, depuis
-14:18:34 Douala.** Pilote limité au compte autorisé, sans généralisation. Attente confirmée
+**Publié dans `20261016-double-appel-pilote`, source `a689351`, le 16 octobre à
+14:18:34 Douala ; repris par `20261020-sortie-icone`.** Pilote limité au compte autorisé, sans généralisation. Attente confirmée
 avant réponse au second entrant, bascule, sorties et pistes indépendantes, retour
 automatique à l’appel restant, deux journaux distincts. Le build autorise seulement
 la liste explicite `VITE_CALL_WAITING_LINES`, vide par défaut. Autres lignes :
