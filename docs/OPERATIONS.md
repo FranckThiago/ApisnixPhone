@@ -1,5 +1,27 @@
 # Construction et validation
 
+## Son de ligne coupée — 20 octobre 2026
+
+**Release `20261020-son-coupure`, source `d70ceaa`, active depuis 13:37:57
+Douala.** Remplace `20261020-sortie-icone`. Seul changement : son joué quand la
+ligne se coupe (trois bips descendants façon batterie faible) et aide des
+réglages FR/EN/ES. Build isolé du commit, mêmes variables que la release
+précédente, liste `VITE_CALL_WAITING_LINES` du pilote conservée. 267 fichiers,
+archive SHA-256 `92c5a5e6268611e5a446c441bc763ee76d14b4f43c7ffbd397f877625377699d`,
+sans entrée AppleDouble. 227 tests, typage et lint réussis.
+
+Current contrôlé sur la release précédente, copie protégée 0700 et manifeste
+comparé dans `/root/apisnix-phone-backups/20261020-son-coupure/`. Bascule
+atomique avec retour automatique si HTTPS échoue ; index, JS/CSS, module SIP et
+worker conformes depuis Hermes et le Mac ; Caddy et supervision actifs, sans
+redémarrage. Formulaire live chargé dans le navigateur intégré avec le nouveau
+bundle ; son non écouté en ligne réelle (aucun REGISTER ni appel lancé).
+Preuves dans `.work/releases/20261020-son-coupure/`.
+
+Retour : vérifier current encore sur cette release puis repointer atomiquement
+vers `/srv/apisnixphone/releases/20261020-sortie-icone`. Actualiser hors appel.
+Aucun changement backend, PBX, TURN, données ou manuels clients.
+
 ## Sortie audio en icône — 20 octobre 2026
 
 **Release `20261020-sortie-icone`, source `2609686`, active depuis 12:23:34

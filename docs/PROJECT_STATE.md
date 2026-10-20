@@ -1,9 +1,17 @@
 # État du projet
 
+## Son de ligne coupée distinct — 20 octobre 2026
+
+**En service `20261020-son-coupure`, source `d70ceaa`, depuis 13:37:57
+Douala.** Quand la ligne se coupe, trois bips courts descendants (onde
+triangle, ~0,55 s) façon batterie faible remplacent les deux notes de cloche,
+trop proches du carillon de ligne prête, qui reste inchangé. Contient aussi
+l’icône de sortie audio et le pilote double appel ci-dessous.
+
 ## Sortie audio en appel réduite à une icône — 20 octobre 2026
 
-**En service `20261020-sortie-icone`, source `2609686`, depuis 12:23:34
-Douala.** Sur la carte d’appel, le choix Casque / sortie devient une icône
+**Publié dans `20261020-sortie-icone`, source `2609686`, à 12:23:34
+Douala ; repris par `20261020-son-coupure`.** Sur la carte d’appel, le choix Casque / sortie devient une icône
 casque dans l’en-tête : menu des sorties réelles avec coche et Actualiser les
 sorties. Page Audio inchangée. Contient tout le pilote double appel ci-dessous
 (même liste `VITE_CALL_WAITING_LINES` au build). 227 tests, typage, lint,
