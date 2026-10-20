@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-20 — Sortie audio en appel réduite à une icône
+
+À la demande de Franck, le bloc Casque / sortie de la carte d’appel (titre,
+liste déroulante, bouton) devient une icône casque discrète dans l’en-tête,
+comme sur iPhone. Un appui ouvre un menu : sorties réelles avec coche, puis
+Actualiser les sorties. Même logique et mêmes textes FR/EN/ES ; page Audio
+inchangée ; manuels clients inchangés. Contrôles : 227 tests, typage, lint,
+build ; menu vérifié en appel simulé, thèmes clair et sombre. Non publié.
+
 ## 2026-10-16 — Pilote double appel entrant
 
 Deux conversations isolées sur inscription SIP unique, attente confirmée avant

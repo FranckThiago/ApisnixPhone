@@ -259,6 +259,17 @@ input[type=range] { accent-color: var(--brand); }
 .call-top { display: flex; justify-content: space-between; align-items: center; min-height: 24px; }
 .call-direction { display: inline-flex; gap: 6px; align-items: center; font-size: 11.5px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--call-caption); }
 .chip-warning { display: inline-flex; gap: 5px; align-items: center; padding: 4px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--yellow); color: var(--on-yellow); }
+.call-top-actions { display: inline-flex; align-items: center; gap: 8px; }
+/* Audio route during a call: one discreet icon, the outputs open in a small menu (Franck, 20 October 2026). */
+.output-menu { position: relative; display: inline-flex; }
+.output-toggle { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--call-line); background: var(--call-raised); color: var(--call-text); transition: background .15s, border-color .15s; }
+.output-toggle:hover, .output-toggle.on { background: var(--call-fill-hover); border-color: var(--green); }
+.output-list { position: absolute; z-index: 5; top: calc(100% + 6px); right: 0; display: grid; width: max-content; min-width: 220px; max-width: min(300px, calc(100vw - 48px)); padding: 6px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface); color: var(--text); box-shadow: var(--shadow-md); text-transform: none; letter-spacing: 0; }
+.output-list button { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; border-radius: 9px; text-align: left; font-size: 13.5px; font-weight: 500; color: inherit; }
+.output-list button:hover:not(:disabled) { background: var(--green-soft); } .output-list button:disabled { opacity: .55; }
+.output-list button span { min-width: 0; overflow-wrap: anywhere; } .output-list button svg { flex: none; color: var(--green); }
+.output-list button[aria-checked='true'] { font-weight: 700; } .output-list button[role='menuitem'] svg { color: var(--muted); }
+.output-list small { padding: 6px 10px; font-size: 12px; color: var(--muted); } .output-list hr { margin: 4px 6px; border: 0; border-top: 1px solid var(--border); }
 .call-identity { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 6px 0 2px; }
 .call-identity .avatar { border-radius: 50%; box-shadow: 0 0 0 4px var(--call-ring-gap), 0 0 0 6px var(--green); }
 .call-identity.ringing .avatar { animation: ring 1.6s ease-out infinite; }
@@ -494,11 +505,6 @@ a.ghost { text-decoration: none; }
 /* The same real device routes in Audio and during a conversation. */
 .audio-output { min-width: 0; }
 .audio-output select { max-width: 100%; min-width: 0; }
-.audio-output-compact .setting { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
-.audio-output-compact .setting > span:first-child { flex: none; }
-.audio-output-compact .setting small { color: inherit; opacity: .75; }
-.audio-output-compact select { width: 100%; }
-.audio-output-compact .ghost-call { margin-top: 6px; }
 
 /* Account-scoped two-call pilot: a quiet, visible waiting card above the current call. */
 .waiting-call { display: grid; gap: 8px; padding: 18px; border-color: var(--green-edge); overflow-wrap: anywhere; }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
-import { AudioOutput } from '../settings/AudioOutput';
+import { AudioOutputMenu } from '../settings/AudioOutput';
 import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { formatDue, groupCallbacks } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
@@ -241,7 +241,10 @@ function CallCard({ call }: { call: CallSnapshot }) {
     <section className={`dock-card call-card phase-${call.phase}`} aria-label={t('call.label')}>
       <header className="call-top">
         <span className="call-direction">{call.direction === 'inbound' ? <PhoneIncoming size={14} /> : <Phone size={14} />}{t(call.direction === 'inbound' ? 'call.inbound' : 'call.outbound')}</span>
-        {call.muted && call.phase !== 'ended' && <span className="chip-warning"><MicOff size={13} /> {t('call.muted')}</span>}
+        <span className="call-top-actions">
+          {call.muted && call.phase !== 'ended' && <span className="chip-warning"><MicOff size={13} /> {t('call.muted')}</span>}
+          {live && call.phase !== 'ended' && <AudioOutputMenu />}
+        </span>
       </header>
       <div className={'call-identity' + (ringing ? ' ringing' : '')}>
         <Avatar name={name} size={84} ring />
@@ -273,7 +276,6 @@ function CallCard({ call }: { call: CallSnapshot }) {
                 <button type="button" className="control" disabled={call.phase !== 'active' || switchingCall} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
               </div>
             )}
-            {live && <AudioOutput compact />}
             <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{t(live ? 'call.hangUp' : 'action.cancel')}</button>
           </>
         )}

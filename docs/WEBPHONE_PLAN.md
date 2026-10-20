@@ -833,7 +833,11 @@ réception SIP nécessaires. Ce réglage ne change ni le micro ni la qualité au
 Le choix Audio → Casque / sortie est aussi disponible sur la carte d’une
 conversation active ou en attente. Même liste de périphériques réels, mise
 à jour après capture, branchement/débranchement et retour dans la page ;
-bouton Actualiser les sorties. Le nom système reste celui fourni par le
+bouton Actualiser les sorties. Depuis le 20 octobre 2026, sur la carte
+d’appel, ce choix tient dans une seule icône casque en haut à droite, à la
+manière de l’iPhone : un appui ouvre un petit menu avec les sorties (coche
+sur la sortie active) et Actualiser les sorties ; clic extérieur ou Échap le
+ferme. La page Audio garde la liste déroulante complète. Le nom système reste celui fourni par le
 navigateur, sans supposer qu’il s’agit de l’écouteur. Si aucune autre sortie
 n’est exposée ou si la sélection n’est pas supportée, afficher la limite et
 orienter vers les écouteurs/contrôles système. Aucun faux bouton forçant un
