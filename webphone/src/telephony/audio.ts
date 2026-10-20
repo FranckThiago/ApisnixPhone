@@ -444,9 +444,10 @@ export function keypadTone(key: string, volume: number) {
 }
 
 /**
- * Public-address chime, like the one before an airport announcement: three bell
- * notes for a line that is ready, two falling ones for a line that dropped.
- * Generated on the fly, about 2.5 s, no audio file.
+ * Public-address chime, like the one before an airport announcement, for a line
+ * that is ready. A dropped line gets a different sound on purpose (Franck,
+ * 20 October 2026: the two bells were too alike): three short falling beeps,
+ * like a low-battery warning. Generated on the fly, no audio file.
  */
 export function chime(kind: 'ready' | 'lost', volume: number) {
   const context = soundContext();
@@ -456,8 +457,26 @@ export function chime(kind: 'ready' | 'lost', volume: number) {
     void context.resume().then(() => { if (context.state === 'running') chime(kind, volume); }).catch(() => undefined);
     return;
   }
-  const notes = kind === 'ready' ? [523.25, 659.25, 783.99] : [659.25, 440];
-  notes.forEach((frequency, index) => {
+  if (kind === 'lost') {
+    // Triangle beeps, each sagging a little, every one lower than the last.
+    [784, 587.33, 392].forEach((frequency, index) => {
+      const start = context.currentTime + index * 0.2;
+      const oscillator = context.createOscillator();
+      const envelope = context.createGain();
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(frequency, start);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.85, start + 0.14);
+      envelope.gain.setValueAtTime(0, start);
+      envelope.gain.linearRampToValueAtTime(0.3 * volume, start + 0.008);
+      envelope.gain.setValueAtTime(0.3 * volume, start + 0.11);
+      envelope.gain.linearRampToValueAtTime(0, start + 0.14);
+      oscillator.connect(envelope).connect(soundOutput(context));
+      oscillator.start(start);
+      oscillator.stop(start + 0.16);
+    });
+    return;
+  }
+  [523.25, 659.25, 783.99].forEach((frequency, index) => {
     const start = context.currentTime + index * 0.42;
     // A bell is a fundamental plus quieter, faster-fading overtones.
     for (const [ratio, level, decay] of [[1, 0.2, 1.7], [2, 0.07, 1.0], [3.01, 0.03, 0.6]] as const) {

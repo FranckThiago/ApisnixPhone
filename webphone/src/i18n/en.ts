@@ -388,7 +388,7 @@ export const en: Record<MessageKey, string> = {
   'settings.ringtone': 'Ringtone',
   'settings.ringtoneHint': 'Played for an incoming call, at the listening volume.',
   'settings.lineSounds': 'Line sounds',
-  'settings.lineSoundsHint': 'A chime when the line is ready, two falling notes if it drops.',
+  'settings.lineSoundsHint': 'A chime when the line is ready, three falling beeps, like a low battery, if it drops.',
   'settings.keypadTones': 'Keypad sounds',
   'settings.keypadTonesHint': 'A short tone on each key of the keypad, like a classic phone.',
   'settings.echo': 'Echo cancellation',

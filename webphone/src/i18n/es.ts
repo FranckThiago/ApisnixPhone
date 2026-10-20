@@ -388,7 +388,7 @@ export const es: Record<MessageKey, string> = {
   'settings.ringtone': 'Tono de llamada',
   'settings.ringtoneHint': 'Suena con una llamada entrante, al volumen de escucha.',
   'settings.lineSounds': 'Sonidos de la línea',
-  'settings.lineSoundsHint': 'Un carillón cuando la línea está lista, dos notas descendentes si se corta.',
+  'settings.lineSoundsHint': 'Un carillón cuando la línea está lista, tres pitidos descendentes, como una batería baja, si se corta.',
   'settings.keypadTones': 'Sonidos del teclado',
   'settings.keypadTonesHint': 'Un tono corto en cada tecla, como en un teléfono clásico.',
   'settings.echo': 'Cancelación de eco',

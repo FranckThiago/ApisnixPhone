@@ -387,7 +387,7 @@ export const fr = {
   'settings.ringtone': 'Sonnerie',
   'settings.ringtoneHint': 'Jouée pour un appel entrant, au volume d’écoute.',
   'settings.lineSounds': 'Sons de la ligne',
-  'settings.lineSoundsHint': 'Carillon d’annonce quand la ligne est prête, deux notes descendantes si elle se coupe.',
+  'settings.lineSoundsHint': 'Carillon d’annonce quand la ligne est prête, trois bips descendants, comme une batterie faible, si elle se coupe.',
   'settings.keypadTones': 'Sons du clavier',
   'settings.keypadTonesHint': 'Une courte tonalité à chaque touche du pavé, comme sur un téléphone classique.',
   'settings.echo': 'Annulation d’écho',

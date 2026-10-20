@@ -1,5 +1,13 @@
 # Journal des changements
 
+## 2026-10-20 — Son de ligne coupée distinct
+
+Franck trouvait le son de coupure trop proche du carillon de ligne prête (même
+timbre de cloche). La coupure joue désormais trois bips courts descendants, en
+onde triangle légèrement glissée, comme une alerte de batterie faible (~0,55 s).
+Carillon « prête » inchangé ; aide des réglages FR/EN/ES ajustée. Manuels
+clients inchangés. Contrôles : 227 tests, typage, lint. Non publié.
+
 ## 2026-10-20 — Sortie audio en appel réduite à une icône
 
 À la demande de Franck, le bloc Casque / sortie de la carte d’appel (titre,
