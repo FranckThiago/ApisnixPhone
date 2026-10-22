@@ -2,15 +2,17 @@
 
 ## Planification des rappels plus lisible — 22 octobre 2026
 
-**Code validé en démonstration locale, non publié en production.** Le formulaire
+**En service `20261022-planification`, source `dadcb14`, depuis le 22 octobre
+à 13:22:32 Douala.** Le formulaire
 partagé affiche un calendrier mensuel, un choix séparé des heures/minutes et
 un récapitulatif avant « Planifier le rappel ». Les raccourcis sélectionnent un
 créneau sans enregistrer immédiatement ; le motif peut être saisi avant validation.
 Heure locale de l’appareil indiquée, jours passés désactivés et heure future
 revérifiée à la confirmation. Textes FR/EN/ES. Contrôles : 229 tests, typage,
-lint, build démo ; parcours dans le navigateur intégré à 375 et 1366 px,
+lint, build live isolé ; parcours dans le navigateur intégré à 375 et 1366 px,
 thèmes sombre et clair, rappel fictif enregistré avec date/heure et motif exacts.
-Pas de migration ni de changement SIP ; manuels clients inchangés.
+Publication et retour dans OPERATIONS. Pas de migration ni de changement SIP ;
+manuels clients inchangés.
 
 ## Son de ligne coupée distinct — 20 octobre 2026
 

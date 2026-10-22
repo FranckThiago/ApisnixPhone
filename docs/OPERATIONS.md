@@ -1,5 +1,28 @@
 # Construction et validation
 
+## Planification des rappels — 22 octobre 2026
+
+**Release `20261022-planification`, source `dadcb14`, active depuis 13:22:32
+Douala.** Calendrier mensuel, heures/minutes séparées, récapitulatif et confirmation
+explicite des rappels (FR/EN/ES). Build isolé, mêmes quatre variables de build que
+`20261020-son-coupure`, pilote double appel conservé. 229 tests, typage, lint et
+build live réussis ; 267 fichiers, archive SHA-256
+`7b3252f6483230f8adb936bb928ff3c8df68f1a024f5bc628ab94847e1414f04`.
+
+Hermes identifié ; ancienne release comparée à son manifeste, copie intégrale
+protégée 0700 et vérifiée dans
+`/root/apisnix-phone-backups/20261022-planification/`. Permissions et lecture
+Caddy vérifiées avant bascule atomique ; retour automatique prévu si HTTPS échoue.
+Index, JS/CSS, module SIP et worker conformes depuis Hermes et le Mac. Caddy et
+supervision actifs, sans redémarrage. Formulaire live et nouveau bundle chargés
+dans le navigateur intégré ; aucun compte client connecté ni appel provoqué.
+Preuves : `.work/releases/20261022-planification/`.
+
+Retour ciblé : vérifier `current` encore sur cette release puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261020-son-coupure`.
+Actualisation volontaire hors appel. Aucun changement backend, PBX, base,
+configuration réseau ou manuels clients.
+
 ## Son de ligne coupée — 20 octobre 2026
 
 **Release `20261020-son-coupure`, source `d70ceaa`, active depuis 13:37:57

@@ -12,7 +12,9 @@ couverts par les tests (années bissextiles, six semaines, limites de date/heure
 229 tests, typage, lint et build démo réussis ; navigateur intégré à 375/1366 px,
 thèmes sombre/clair, choix rapide, navigation mensuelle, horaire passé bloqué,
 confirmation et motif enregistrés en démo. PROJECT_STATE et WEBPHONE_PLAN alignés.
-Aucune dépendance, migration ou publication en production ; manuels inchangés.
+Publié sur demande explicite le 22 octobre à 13:22:32 Douala dans
+`20261022-planification` ; sauvegarde vérifiée, contrôles HTTPS et retour dans
+OPERATIONS. Aucune dépendance ni migration ; manuels inchangés.
 
 ## 2026-10-20 — Son de ligne coupée distinct
 
