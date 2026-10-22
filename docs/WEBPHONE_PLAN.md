@@ -1,5 +1,16 @@
 # ApisnixPhone Web — plan de réalisation et de reprise
 
+
+## Journal après reconnexion — 22 octobre 2026
+
+Dans « Tous les appels du poste », les entrants terminés sans réponse confirmée
+s’affichent « Manqué », qu’ils aient sonné dans le navigateur ou échoué parce que
+le poste était déconnecté. Chargement à la connexion puis actualisation chaque
+minute ; filtre Manqués et compteurs du Journal utilisent ces mêmes entrées.
+Un appel répondu ou une observation incomplète ne devient pas un manqué.
+Le journal local du téléphone reste propre à cet appareil. Pas de récupération
+des tentatives anciennes que le serveur n’avait jamais collectées.
+
 ## Annonces APISNIX — 13 octobre 2026
 
 Les annonces rédigées dans l'administration du PBX s'affichent en cartes en

@@ -1,5 +1,26 @@
 # Architecture ApisnixPhone
 
+
+## Journal des appels reçus hors connexion
+
+Le journal « Tous les appels du poste » est chargé depuis le serveur après
+l’ouverture de la session de ligne, puis actualisé chaque minute. Il ne dépend
+pas des appels que le navigateur a pu observer. Un entrant terminé, sans
+`answered_at`, dont l’issue serveur est `NO_ANSWER`, `BUSY`, `CANCELLED` ou
+`FAILED` devient `missed` (libellé et filtre « Manqué »). `ANSWERED` reste répondu ;
+une observation incomplète ou inconnue reste inconnue. Les sortants sont inchangés.
+
+La collecte serveur observe aussi la tentative `Dial` vers un poste local connu
+lorsqu’aucun canal destinataire ne peut être créé (poste hors ligne). Elle écrit
+une seule entrée entrante sans réponse au raccrochage de la source ; un véritable
+`DialBegin` annule ce secours pour le poste concerné. La passerelle ne transmet
+que les cibles locales SIP/PJSIP, sans autres données du plan de numérotation.
+Implémentation et exploitation dans le dépôt privé de gestion.
+
+Ce parcours nécessite que la collecte serveur soit en service au moment de
+l’appel. Il ne reconstitue pas les anciennes tentatives jamais enregistrées.
+Le mode local « Journal du téléphone » reste limité aux appels vus par l’appareil.
+
 ## Relais WebRTC par ligne — 14 octobre 2026
 
 `mediaPath.ts` obtient les accès TURN par session HTTP, jamais par variable de

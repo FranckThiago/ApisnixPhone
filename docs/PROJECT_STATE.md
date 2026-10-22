@@ -1,5 +1,15 @@
 # État du projet
 
+
+## Appels reçus hors connexion — 22 octobre 2026
+
+Correction prête à publier : journal serveur à la reconnexion, entrants sans
+réponse classés « Manqué », y compris indisponibilité, annulation et occupation.
+La collecte du dépôt privé complète les tentatives vers les postes connus pour
+lesquelles Asterisk n’a créé aucun canal destinataire, sans doubler les appels
+réellement observés. Pas de reprise des anciennes tentatives absentes de la base.
+Architecture et plan alignés ; 230 tests frontend, typage et lint réussis.
+
 ## Couleurs du détail d’appel — 22 octobre 2026
 
 **En service `20261022-couleurs-detail`, source `3978b5a`, depuis le 22 octobre

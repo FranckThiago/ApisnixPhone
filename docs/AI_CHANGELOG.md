@@ -1,5 +1,14 @@
 # Journal des changements
 
+
+## 2026-10-22 — Journal des entrants hors connexion
+
+Les issues entrantes terminées et sans réponse sont classées « Manqué » au
+chargement de l’historique serveur. Les sortants, répondus et observations
+incomplètes gardent leur sens. Collecte complémentaire des tentatives sans canal
+destinataire dans le dépôt privé ; API de reconnexion et absence de doublons
+testées. Architecture et plan décrivent le périmètre et les limites.
+
 ## 2026-10-22 — Couleurs du détail d’appel publiées
 
 Pastilles d’issue vertes, rouges et jaunes selon le résultat, accents discrets

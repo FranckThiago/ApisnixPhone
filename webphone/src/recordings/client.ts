@@ -51,7 +51,7 @@ export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
     .map(entry => {
       const outcome = entry.complete === 0 ? 'unknown'
         : entry.outcome === 'ANSWERED' ? 'answered'
-        : entry.direction === 'inbound' && entry.outcome === 'NO_ANSWER' ? 'missed'
+        : entry.direction === 'inbound' && !entry.answered_at && ['NO_ANSWER', 'BUSY', 'CANCELLED', 'FAILED'].includes(entry.outcome ?? '') ? 'missed'
         : entry.outcome === 'NO_ANSWER' ? 'no-answer'
         : entry.outcome === 'BUSY' ? 'busy'
         : entry.outcome === 'CANCELLED' ? 'cancelled'

@@ -20,6 +20,15 @@ const me = (role: string, endpoint: object | null = { extension: 'D1001', alias:
   ({ status: 200, body: { user: { name: 'Nadia', role }, endpoint, csrf: 'token-1' } });
 
 describe('recordings client', () => {
+  it('shows confirmed unanswered incoming attempts as missed after reconnect, without changing outgoing results', () => {
+    const outcomes = ['NO_ANSWER', 'BUSY', 'CANCELLED', 'FAILED'];
+    const entries = outcomes.map((outcome, id) => ({ id, direction: 'inbound', number: '0100', started_at: 100, ended_at: 101, complete: 1, outcome }));
+    expect(toLineCalls(entries).map(call => call.outcome)).toEqual(outcomes.map(() => 'missed'));
+    expect(toLineCalls(entries.map(entry => ({ ...entry, direction: 'outbound' }))).map(call => call.outcome)).toEqual(['no-answer', 'busy', 'cancelled', 'failed']);
+    expect(toLineCalls(entries.map(entry => ({ ...entry, complete: 0 }))).map(call => call.outcome)).toEqual(outcomes.map(() => 'unknown'));
+    expect(toLineCalls([{ ...entries[0]!, outcome: 'ANSWERED', answered_at: 100.5 }])[0]!.outcome).toBe('answered');
+    expect(toLineCalls([{ ...entries[0]!, outcome: 'UNKNOWN' }])[0]!.outcome).toBe('unknown');
+  });
   it('keeps server calls without audio, including inbound caller IDs, but excludes orphan audio', () => {
     expect(toLineCalls([
       { entry_id: 'call:4', id: 4, number: '0100000001', direction: 'inbound', started_at: 1700000000, answered_at: 1700000005, ended_at: 1700000030, outcome: 'ANSWERED', complete: 1, recordings: [] },
