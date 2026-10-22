@@ -11,6 +11,8 @@ l’heure de fin pour ne pas acquitter un appel encore en sonnerie. Rappels jaun
 conservés, priorité aux manqués rouges. Libellé FR/EN/ES, données de consultation
 dans le profil existant, aucune migration. 236 tests dont chargement différé,
 retour réseau/page, erreur API, réponse après déconnexion et isolation de ligne.
+Publié à 16:45:45 Douala : `20261022-badge-manques`, source `2ea29c4`. Build live,
+sauvegarde, HTTPS et rendu mobile contrôlés ; état et retour dans OPERATIONS.
 
 
 ## 2026-10-22 — Journal des entrants hors connexion

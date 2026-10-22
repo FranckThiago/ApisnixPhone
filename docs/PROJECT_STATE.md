@@ -3,13 +3,15 @@
 
 ## Badge du Journal alimenté par le serveur — 22 octobre 2026
 
-**Prêt à publier.** Les appels manqués récupérés à la connexion alimentent le
+**En service `20261022-badge-manques`, source `2ea29c4`, depuis 16:45:45 Douala.**
+Les appels manqués récupérés à la connexion alimentent le
 badge rouge de Journal sur ordinateur/mobile et le titre de l’onglet. Chargement
 partagé avec le Journal, actif sur toutes les vues et relancé à la reconnexion.
 Lecture acquittée seulement par une action explicite, jamais par le chargement
 initial ni un échec réseau. Repère conservé dans le profil de la ligne, sans
 addition des historiques serveur et local. Rappels toujours signalés séparément.
-236 tests, typage/lint ; rendu mobile et acquittement contrôlés en démonstration.
+236 tests, typage/lint/build live ; rendu mobile et acquittement contrôlés en
+démonstration. Sauvegarde et empreintes HTTPS vérifiées, retour dans OPERATIONS.
 Architecture et plan alignés, manuels inchangés.
 
 

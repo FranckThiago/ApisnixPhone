@@ -1,6 +1,31 @@
 # Construction et validation
 
 
+## Badge des manqués serveur — 22 octobre 2026
+
+**20261022-badge-manques**, source `2ea29c45d87b10d4f897f348eb11cf023e371414`,
+active à **16:45:45 Douala** sur Hermes. Le badge Journal et le titre de l’onglet
+comptent les manqués du serveur en mode réel, sans addition des appels locaux.
+Flux partagé avec le Journal, actif depuis toutes les vues ; lecture acquittée
+par une action explicite après chargement, pas par la reconnexion automatique.
+Le repère existant de consultation reste dans le profil ; aucune migration.
+
+236 tests, typage/lint/build live isolé. Contrôle du badge et de son acquittement
+à 390 px dans le navigateur intégré, en démo : deux manqués rouges, puis seul
+le rappel jaune après consultation. API simulée : chargement différé, erreur,
+retour réseau/page, absence de doublon et réponse tardive après déconnexion.
+Manuels clients inchangés ; aucun changement du backend, du PBX ou des données.
+
+Configuration live et pilote conservés. Ancienne release comparée au manifeste,
+copie protégée vérifiée sous `/root/apisnix-phone-backups/20261022-badge-manques/`,
+bascule atomique et 267 fichiers contrôlés ; index, JS/CSS, bibliothèque SIP et
+service worker identiques en HTTPS depuis Hermes et le Mac. Page live chargée.
+Archive SHA-256 `6ef7cf017a10ee700a709dce5007449469f5732ec6e7e6bfa1ec07fecb44b7bf`.
+Preuves : `.work/releases/20261022-badge-manques/`, captures `.work/badge-missed/`.
+Retour ciblé après contrôle de current : repointer atomiquement vers
+`/srv/apisnixphone/releases/20261022-offline-missed`. Aucun redémarrage nécessaire.
+
+
 ## Appels manqués hors connexion — publication du 22 octobre 2026
 
 Frontend **20261022-offline-missed**, source `402f04f572c85b6f141889e51c768dc5571aceb3`,
