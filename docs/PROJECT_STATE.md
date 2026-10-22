@@ -3,12 +3,16 @@
 
 ## Appels reçus hors connexion — 22 octobre 2026
 
-Correction prête à publier : journal serveur à la reconnexion, entrants sans
+**En service `20261022-offline-missed`, source `402f04f`, depuis le 22 octobre
+à 16:32:00 Douala.** Journal serveur à la reconnexion, entrants sans
 réponse classés « Manqué », y compris indisponibilité, annulation et occupation.
 La collecte du dépôt privé complète les tentatives vers les postes connus pour
 lesquelles Asterisk n’a créé aucun canal destinataire, sans doubler les appels
 réellement observés. Pas de reprise des anciennes tentatives absentes de la base.
-Architecture et plan alignés ; 230 tests frontend, typage et lint réussis.
+Architecture et plan alignés ; 230 tests frontend, typage, lint et build live
+réussis. 211 tests sur le backend publié et essai réel sur poste expérimental
+hors ligne : une entrée entrante sans réponse, sans doublon. Sauvegardes et
+retour dans OPERATIONS. Pas de migration ; manuels clients inchangés.
 
 ## Couleurs du détail d’appel — 22 octobre 2026
 

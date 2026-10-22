@@ -8,6 +8,9 @@ chargement de l’historique serveur. Les sortants, répondus et observations
 incomplètes gardent leur sens. Collecte complémentaire des tentatives sans canal
 destinataire dans le dépôt privé ; API de reconnexion et absence de doublons
 testées. Architecture et plan décrivent le périmètre et les limites.
+Publié à 16:32:00 Douala dans `20261022-offline-missed`, source `402f04f`.
+230 tests frontend, 211 tests backend, essai interne hors ligne, contrôles HTTPS
+et sauvegardes vérifiés. Aucun historique ancien inventé ; manuels inchangés.
 
 ## 2026-10-22 — Couleurs du détail d’appel publiées
 

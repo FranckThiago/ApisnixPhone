@@ -1,5 +1,39 @@
 # Construction et validation
 
+
+## Appels manqués hors connexion — publication du 22 octobre 2026
+
+Frontend **20261022-offline-missed**, source `402f04f572c85b6f141889e51c768dc5571aceb3`,
+activé à **16:32:00 Douala** sur Hermes :
+`/srv/apisnixphone/current` → `/srv/apisnixphone/releases/20261022-offline-missed`.
+Les entrants terminés sans réponse sont affichés « Manqué » dans le journal
+serveur récupéré après connexion ; sortants et observations incomplètes conservés.
+Configuration live et périmètre du pilote double appel repris de la release
+précédente, sans secrets dans les sources. 230 tests, typage, lint et build live
+isolé réussis. 267 fichiers ; archive SHA-256
+`8ea639d4d855ef573c79dd1639f5525ec8a2dcfcef3b03db2a857e00e83cea38`.
+
+Collecte complémentaire publiée avant le frontend depuis le dépôt privé :
+observation des tentatives vers un poste connu même sans canal destinataire.
+211 tests réussis sur la release serveur ; appel interne synthétique vers un
+poste expérimental déconnecté : une seule entrée entrante sans réponse confirmée.
+La reconnexion et l’isolation par ligne sont couvertes par les tests API.
+Aucun appel client initié, aucune migration ; Asterisk n’a pas été redémarré.
+Détails, sauvegardes serveur et retour dans la fiche privée
+`APPELS_MANQUES_HORS_CONNEXION_20261022.md`.
+
+Publication statique : ancienne release copiée et empreintes vérifiées dans
+`/root/apisnix-phone-backups/20261022-offline-missed/` (0700), comparaison du
+manifeste extrait, droits 0755/0644 lisibles par Caddy, bascule atomique.
+Index, JS/CSS, bibliothèque SIP et service worker servis en HTTPS avec les
+empreintes attendues, services actifs, écran live chargé dans le navigateur.
+Preuves locales exclues de Git : `.work/releases/20261022-offline-missed/`.
+
+Retour frontend : vérifier la cible actuelle, puis repointer atomiquement
+`current` vers `/srv/apisnixphone/releases/20261022-couleurs-detail`, conservée.
+Recharger hors appel. Conserver la base et les appels nouvellement collectés.
+Les anciennes tentatives jamais enregistrées ne sont pas reconstituées.
+
 ## Couleurs du détail d’appel — 22 octobre 2026
 
 **Release `20261022-couleurs-detail`, source `3978b5a`, active depuis 13:52:06
