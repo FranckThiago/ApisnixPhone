@@ -755,6 +755,17 @@ Le choix d'un contexte pilote et de l'hébergement n'a pas été demandé à nou
 pendant la recherche : ils ne sont pas requis pour construire et montrer
 l'interface. Pas de renouvellement de certificat exigé comme préalable.
 
+### Planifier un rappel (formulaire revu le 22 octobre 2026)
+
+Depuis le journal, une fiche contact, la fin d’appel ou la page Rappels avec
+un numéro saisi : calendrier mensuel visible, choix séparé des heures et minutes
+au format 24 h, indication de l’heure locale de l’appareil, motif facultatif et
+récapitulatif complet. Les raccourcis (15 minutes, une heure, demain…) sélectionnent
+le créneau ; seul « Planifier le rappel » l’enregistre. Les jours passés sont
+désactivés et la date/heure doit encore être future au moment de confirmer.
+Le calendrier commence le lundi ; textes et dates suivent la langue FR/EN/ES.
+État de publication : voir PROJECT_STATE.
+
 ## 16. Livraison et reprise après chaque lot
 
 **Lot 4 livré le 21 septembre**, avec les retours de Franck : adaptateur SIP.js,

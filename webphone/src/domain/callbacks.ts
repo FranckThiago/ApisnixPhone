@@ -9,7 +9,7 @@ function at(base: Date, days: number, hour: number): number {
   return date.getTime();
 }
 
-/** One-tap delays, the way people actually say them on the phone. */
+/** Suggested delays, selected before explicit confirmation. */
 export function quickOptions(now: number): QuickOption[] {
   const today = new Date(now);
   const options: QuickOption[] = [
@@ -48,4 +48,23 @@ export function toLocalInput(stamp: number): string {
   const date = new Date(stamp);
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+/** Reject invalid dates and nonexistent local times instead of silently shifting them. */
+export function parseCallbackMoment(date: string, time: string): number {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return NaN;
+  const stamp = new Date(`${date}T${time}`).getTime();
+  return Number.isFinite(stamp) && toLocalInput(stamp) === `${date}T${time}` ? stamp : NaN;
+}
+
+/** A Monday-first month, padded to full weeks for the visible calendar. */
+export function calendarDays(month: string): Array<string | null> {
+  const first = new Date(`${month}-01T12:00`);
+  if (!/^\d{4}-\d{2}$/.test(month) || !Number.isFinite(first.getTime())) return [];
+  const offset = (first.getDay() + 6) % 7;
+  const count = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+  return Array.from({ length: Math.ceil((offset + count) / 7) * 7 }, (_, index) => {
+    const day = index - offset + 1;
+    return day > 0 && day <= count ? `${month}-${String(day).padStart(2, '0')}` : null;
+  });
 }

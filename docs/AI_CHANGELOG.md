@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-10-22 — Calendrier et heure de rappel explicites
+
+Le champ date/heure compact de CallbackScheduler est remplacé par un calendrier
+mensuel et deux sélecteurs heures/minutes. Les raccourcis préremplissent le choix,
+puis un récapitulatif et une confirmation explicite évitent l’enregistrement
+involontaire. Motif placé avant la validation, heure locale indiquée, moments
+passés ou invalides refusés. Styles communs au journal, aux contacts et à la carte
+d’appel ; traductions FR/EN/ES. Helpers de calendrier et de validation locale
+couverts par les tests (années bissextiles, six semaines, limites de date/heure).
+229 tests, typage, lint et build démo réussis ; navigateur intégré à 375/1366 px,
+thèmes sombre/clair, choix rapide, navigation mensuelle, horaire passé bloqué,
+confirmation et motif enregistrés en démo. PROJECT_STATE et WEBPHONE_PLAN alignés.
+Aucune dépendance, migration ou publication en production ; manuels inchangés.
+
 ## 2026-10-20 — Son de ligne coupée distinct
 
 Franck trouvait le son de coupure trop proche du carillon de ligne prête (même

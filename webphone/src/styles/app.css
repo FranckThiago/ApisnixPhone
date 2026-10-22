@@ -310,12 +310,34 @@ input[type=range] { accent-color: var(--brand); }
 .callback-note { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .callback-actions { display: flex; align-items: center; gap: 2px; justify-content: flex-end; }
 .day-label.as-button { width: 100%; cursor: pointer; padding-bottom: 14px; }
-.scheduler { display: grid; gap: 9px; padding: 12px; border-radius: 14px; border: 1px solid color-mix(in srgb, var(--yellow-strong) 55%, var(--border)); background: var(--yellow-soft); max-width: 460px; }
-.scheduler-title { display: flex; align-items: center; gap: 7px; font-weight: 650; font-size: 13px; }
-.scheduler-custom { display: flex; gap: 6px; } .scheduler input { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); outline: none; color-scheme: inherit; }
-.scheduler input:focus { border-color: var(--green); } .scheduler-cancel { justify-self: start; font-size: 12.5px; color: var(--muted); text-decoration: underline; }
-.scheduler-call { background: var(--call-fill); border-color: rgb(255 210 31 / 45%); color: var(--call-text); } .scheduler-call input { background: var(--call-raised); border-color: var(--call-line); color: var(--call-text); }
-.scheduler-call input::placeholder { color: var(--call-placeholder); } .scheduler-call .tag { background: var(--call-raised); border-color: var(--call-line); color: var(--call-soft-text); } .scheduler-call .tag.active { background: var(--yellow); color: var(--on-yellow); } .scheduler-call .scheduler-cancel { color: var(--call-muted); }
+/* The same planner is used in history, contacts and the call card. */
+.detail-actions:has(> .scheduler) { display: grid; justify-items: start; }
+.scheduler { --planner-surface: var(--surface); --planner-field: var(--surface); --planner-border: var(--border); --planner-text: var(--text); --planner-muted: var(--muted); display: grid; gap: 12px; padding: 14px; width: 100%; max-width: 460px; min-width: 0; border-radius: 14px; border: 1px solid var(--green-edge); background: var(--planner-surface); color: var(--planner-text); }
+.scheduler-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; overflow-wrap: anywhere; } .scheduler-title svg { flex: none; color: var(--green); }
+.scheduler-help { font-size: 12.5px; color: var(--planner-muted); }
+.scheduler-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.scheduler-presets button { min-height: 38px; padding: 7px 10px; border: 1px solid var(--planner-border); border-radius: 10px; background: var(--planner-field); font-size: 12px; font-weight: 600; }
+.scheduler-presets button[aria-pressed=true] { background: var(--green-soft); color: var(--green-strong); border-color: var(--green); }
+.scheduler-calendar { border: 1px solid var(--planner-border); border-radius: 12px; padding: 8px; background: var(--planner-field); }
+.scheduler-month { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; } .scheduler-month b { text-transform: capitalize; font-size: 14px; } .scheduler-month .icon-button { width: 40px; height: 40px; color: var(--planner-text); }
+.scheduler-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
+.scheduler-weekday { font-size: 10px; color: var(--planner-muted); padding-block: 4px; }
+.scheduler-days button { min-width: 0; min-height: 40px; padding: 0; border-radius: 9px; font-size: 13px; font-variant-numeric: tabular-nums; border: 1px solid transparent; }
+.scheduler-days button[aria-current=date] { border-color: var(--green-edge); font-weight: 700; }
+.scheduler-days button:hover:not(:disabled) { background: var(--green-soft); color: var(--green-strong); }
+.scheduler-days button[aria-pressed=true] { background: var(--green); color: var(--surface); font-weight: 750; }
+.scheduler-time { display: grid; gap: 6px; } .scheduler-time > span { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; }
+.scheduler-time-fields { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: end; } .scheduler-time-fields > span { padding-bottom: 12px; }
+.scheduler-time-fields > div { display: grid; gap: 5px; min-width: 0; }
+.scheduler-time-fields label, .scheduler-note-label { display: grid; gap: 5px; font-size: 12px; color: var(--planner-muted); }
+.scheduler input, .scheduler select { width: 100%; min-width: 0; min-height: 44px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--planner-border); background: var(--planner-field); color: var(--planner-text); outline: none; color-scheme: inherit; font-size: 16px; }
+.scheduler input:focus, .scheduler select:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.scheduler-time small { font-size: 11.5px; color: var(--planner-muted); }
+.scheduler-summary { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: var(--green-soft); color: var(--green-strong); font-size: 12px; } .scheduler-summary svg { flex: none; } .scheduler-summary strong { display: block; font-weight: 700; font-size: 13px; } .scheduler-error { color: var(--danger); }
+.scheduler-confirm { width: 100%; min-height: 44px; white-space: normal; }
+.scheduler-cancel { justify-self: center; min-height: 36px; font-size: 12.5px; color: var(--planner-muted); text-decoration: underline; }
+.scheduler-call { --planner-surface: var(--call-fill); --planner-field: var(--call-raised); --planner-border: var(--call-line); --planner-text: var(--call-text); --planner-muted: var(--call-muted); }
+
 .due-card { padding: 12px 14px; border-radius: 16px; box-shadow: var(--shadow-sm); border-color: color-mix(in srgb, var(--yellow-strong) 45%, var(--border)); }
 .due-card header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; } .due-card header svg { color: var(--yellow-strong); } .due-card header button { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--brand); }
 .due-card li { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--border); } .due-card li span { flex: 1; min-width: 0; } .due-card b, .due-card small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

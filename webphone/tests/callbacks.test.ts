@@ -1,8 +1,29 @@
 import { describe, expect, it } from 'vitest';
-import { groupCallbacks, quickOptions, toLocalInput } from '../src/domain/callbacks';
+import { calendarDays, groupCallbacks, parseCallbackMoment, quickOptions, toLocalInput } from '../src/domain/callbacks';
 import { DataStore } from '../src/storage/DataStore';
 
 describe('callbacks', () => {
+  it('lays out Monday-first calendars across leap years and year boundaries', () => {
+    const february = calendarDays('2028-02');
+    expect(february[0]).toBeNull();
+    expect(february[1]).toBe('2028-02-01');
+    expect(february.filter(Boolean)).toHaveLength(29);
+    expect(calendarDays('2027-02').filter(Boolean)).toHaveLength(28);
+    expect(calendarDays('2026-03')).toHaveLength(42);
+    expect(calendarDays('2027-01')[4]).toBe('2027-01-01');
+    expect(calendarDays('2026-13')).toEqual([]);
+  });
+
+  it('keeps the selected local minute and rejects normalized or incomplete dates', () => {
+    const stamp = parseCallbackMoment('2026-12-31', '23:59');
+    expect(stamp).toBe(new Date(2026, 11, 31, 23, 59).getTime());
+    expect(toLocalInput(stamp)).toBe('2026-12-31T23:59');
+    expect(Number.isNaN(parseCallbackMoment('2026-02-30', '09:00'))).toBe(true);
+    expect(Number.isNaN(parseCallbackMoment('2026-12-31', '24:00'))).toBe(true);
+    expect(Number.isNaN(parseCallbackMoment('', '09:00'))).toBe(true);
+    expect(Number.isNaN(parseCallbackMoment('2026-12-31', '09:'))).toBe(true);
+  });
+
   it('offers sensible delays in the future', () => {
     const tuesdayMorning = new Date(2026, 8, 22, 10, 30).getTime();
     const options = quickOptions(tuesdayMorning);
