@@ -1,6 +1,18 @@
 # État du projet
 
 
+## Badge du Journal alimenté par le serveur — 22 octobre 2026
+
+**Prêt à publier.** Les appels manqués récupérés à la connexion alimentent le
+badge rouge de Journal sur ordinateur/mobile et le titre de l’onglet. Chargement
+partagé avec le Journal, actif sur toutes les vues et relancé à la reconnexion.
+Lecture acquittée seulement par une action explicite, jamais par le chargement
+initial ni un échec réseau. Repère conservé dans le profil de la ligne, sans
+addition des historiques serveur et local. Rappels toujours signalés séparément.
+236 tests, typage/lint ; rendu mobile et acquittement contrôlés en démonstration.
+Architecture et plan alignés, manuels inchangés.
+
+
 ## Appels reçus hors connexion — 22 octobre 2026
 
 **En service `20261022-offline-missed`, source `402f04f`, depuis le 22 octobre

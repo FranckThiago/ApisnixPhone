@@ -1,6 +1,15 @@
 # ApisnixPhone Web — plan de réalisation et de reprise
 
 
+## Badge des appels manqués récupérés — 22 octobre 2026
+
+Le badge rouge de Journal indique les appels manqués serveur non consultés,
+même à la reconnexion et depuis les autres vues. Il reste visible après le
+chargement automatique ; un clic sur Journal/Appels ou Manqués acquitte les
+appels chargés. Les rappels conservent leur badge jaune, secondaire lorsqu’il
+y a des manqués. [Flux partagé et règles de consultation](ARCHITECTURE.md#badge-des-appels-manqués-récupérés--22-octobre-2026).
+
+
 ## Journal après reconnexion — 22 octobre 2026
 
 Dans « Tous les appels du poste », les entrants terminés sans réponse confirmée

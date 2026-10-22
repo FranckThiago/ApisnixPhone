@@ -39,6 +39,7 @@ export const fr = {
   'nav.phone': 'Téléphone',
   'nav.audio': 'Audio',
   'nav.settings': 'Réglages',
+  'nav.missedBadge': '{count} appels manqués non consultés',
   'nav.badge': '{missed} appels manqués non consultés, {due} nouveaux rappels à faire',
   'account.demo': 'Démonstration',
   'account.connected': 'Ligne connectée',

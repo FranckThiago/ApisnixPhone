@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
@@ -10,7 +10,7 @@ import { countryLabel, countryName, describeNumber } from '../../domain/numbers'
 import { CALL_TAGS, CALLBACK_TAG, outcomeLabel, tagLabel, talkSeconds, type CallRecord } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact } from '../../storage/DataStore';
-import type { LineHistory } from '../../recordings/types';
+import type { useLineHistory } from './useLineHistory';
 
 type Filter = 'all' | 'outbound' | 'inbound' | 'missed';
 const FILTERS: Array<[Filter, MessageKey]> = [['all', 'filter.all'], ['outbound', 'filter.outbound'], ['inbound', 'filter.inbound'], ['missed', 'filter.missed']];
@@ -23,36 +23,16 @@ function DirectionIcon({ call }: { call: CallRecord }) {
     : <span className="direction outbound" title={t('direction.outbound')}><ArrowUpRight size={16} /></span>;
 }
 
-export function Journal() {
-  const { placeCall, store, openContact, notify, recordings, recordingsAccess, reopenRecordings } = useApp();
+export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeof useLineHistory>; onSeen(): void }) {
+  const { placeCall, store, openContact, notify, recordingsAccess, reopenRecordings } = useApp();
   const { calls: localCalls, contacts } = useData();
   const { demo } = usePhone();
   const { t, language } = useI18n();
   const [scope, setScope] = useState<'line' | 'device'>(demo ? 'device' : 'line');
-  const [history, setHistory] = useState<LineHistory | null>(null);
-  const [historyError, setHistoryError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useState(0);
+  const { history, error: historyError, loading, refresh } = lineHistory;
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (scope !== 'line' || recordingsAccess.state !== 'open') return;
-    let cancelled = false;
-    const load = async () => {
-      setLoading(true);
-      try {
-        const result = await recordings.history(30);
-        if (!cancelled) { setHistory(result); setHistoryError(''); }
-      } catch (error) {
-        if (!cancelled) setHistoryError(error instanceof Error ? error.message : t('journal.historyUnavailable'));
-      } finally { if (!cancelled) setLoading(false); }
-    };
-    void load();
-    const timer = setInterval(() => { if (!document.hidden) void load(); }, 60_000);
-    return () => { cancelled = true; clearInterval(timer); };
-  }, [scope, recordings, recordingsAccess.state, refresh, t]);
 
   const calls: CallRecord[] = useMemo(() => scope === 'device' ? localCalls : (history?.calls ?? []).map((call): CallRecord => ({
     id: call.id, direction: call.direction, dialTarget: call.number, startedAt: call.startedAt,
@@ -104,14 +84,14 @@ export function Journal() {
       </header>
 
       {!demo && <div className="tabs" role="tablist" aria-label={t('journal.source')}>
-        <button role="tab" aria-selected={scope === 'line'} className={scope === 'line' ? 'active' : ''} onClick={() => setScope('line')}>{t('journal.tabLine')}</button>
+        <button role="tab" aria-selected={scope === 'line'} className={scope === 'line' ? 'active' : ''} onClick={() => { setScope('line'); onSeen(); }}>{t('journal.tabLine')}</button>
         <button role="tab" aria-selected={scope === 'device'} className={scope === 'device' ? 'active' : ''} onClick={() => setScope('device')}>{t('journal.tabDevice')}</button>
       </div>}
       {scope === 'line' && <div className="scope" role="status">
         {recordingsAccess.state === 'opening' ? t('journal.opening') :
           recordingsAccess.state === 'failed' ? <>{recordingsAccess.message} <button type="button" className="ghost small" onClick={() => void reopenRecordings()}>{t('action.retry')}</button></> :
           recordingsAccess.state !== 'open' ? t('journal.connectFirst') :
-          historyError ? <>{historyError} <button type="button" className="ghost small" onClick={() => setRefresh(value => value + 1)}>{t('action.retry')}</button></> :
+          historyError ? <>{historyError} <button type="button" className="ghost small" onClick={refresh}>{t('action.retry')}</button></> :
           loading && !history ? t('journal.loading') :
           history?.truncated ? t('journal.truncated') :
           history?.stale ? t('journal.stale') :
@@ -128,7 +108,7 @@ export function Journal() {
       <section className="panel">
         <div className="toolbar">
           <div className="tabs" role="tablist" aria-label={t('journal.filter')}>
-            {FILTERS.map(([key, label]) => <button key={key} role="tab" aria-selected={filter === key} className={filter === key ? 'active' : ''} onClick={() => setFilter(key)}>{t(label)}</button>)}
+            {FILTERS.map(([key, label]) => <button key={key} role="tab" aria-selected={filter === key} className={filter === key ? 'active' : ''} onClick={() => { setFilter(key); if (key === 'missed' && (demo || scope === 'line')) onSeen(); }}>{t(label)}</button>)}
           </div>
           <label className="search"><Search size={16} aria-hidden="true" />
             <input value={query} onChange={event => setQuery(event.target.value)} placeholder={t('journal.searchPlaceholder')} aria-label={t('journal.search')} /></label>

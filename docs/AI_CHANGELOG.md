@@ -1,6 +1,18 @@
 # Journal des changements
 
 
+## 2026-10-22 — Badge des manqués après reconnexion
+
+Le compteur de navigation utilisait seulement les appels locaux et les marquait
+lus dès l’ouverture automatique du Journal. `App`, `Journal` et `useLineHistory`
+partagent maintenant le flux serveur `watchLineHistory`. La connexion seule ne
+remet plus le badge à zéro ; acquittement explicite des données chargées, avec
+l’heure de fin pour ne pas acquitter un appel encore en sonnerie. Rappels jaunes
+conservés, priorité aux manqués rouges. Libellé FR/EN/ES, données de consultation
+dans le profil existant, aucune migration. 236 tests dont chargement différé,
+retour réseau/page, erreur API, réponse après déconnexion et isolation de ligne.
+
+
 ## 2026-10-22 — Journal des entrants hors connexion
 
 Les issues entrantes terminées et sans réponse sont classées « Manqué » au

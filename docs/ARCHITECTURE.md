@@ -1,6 +1,21 @@
 # Architecture ApisnixPhone
 
 
+## Badge des appels manqués récupérés — 22 octobre 2026
+
+Le badge rouge de Journal et le titre de l’onglet comptent les appels manqués
+non consultés de l’historique serveur en mode réel. Un seul chargement partagé
+alimente Journal et navigation, quelle que soit la vue ouverte ; actualisation
+à la connexion/reconnexion, au retour visible/en ligne puis chaque minute.
+Le chargement initial ne marque plus les appels comme lus. Un clic explicite
+sur Journal, Appels, Tous les appels du poste ou le filtre Manqués acquitte
+les entrées chargées ; une requête en cours ou en échec ne les acquitte pas.
+Le repère de consultation utilise l’heure de fin et reste dans le profil de la
+ligne. La démo garde ses appels locaux ; les historiques réel/local ne sont
+pas additionnés, ce qui évite les doublons. Un badge rouge de manqués a priorité
+sur le badge jaune des rappels ; leur compteur propre reste dans Rappels.
+
+
 ## Journal des appels reçus hors connexion
 
 Le journal « Tous les appels du poste » est chargé depuis le serveur après

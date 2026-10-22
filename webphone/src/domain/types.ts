@@ -74,7 +74,7 @@ export interface Preferences {
   notifications: boolean;
   /** Always on for live server profiles; legacy opt-in for device profiles. */
   persist: boolean;
-  /** Missed calls older than this were already looked at: they no longer raise the badge. */
+  /** Missed calls completed at or before this were explicitly consulted; shared with the line profile. */
   missedSeenAt: number;
   /** Same idea for callbacks that came due: opening « Rappels » acknowledges them. */
   callbacksSeenAt: number;

@@ -12,6 +12,8 @@ import { ConnectionPill, PhoneDock } from '../features/calls/PhoneDock';
 import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
+import { useLineHistory } from '../features/history/useLineHistory';
+import { missedStamp, unseenMissedCalls } from '../recordings/lineHistory';
 import { Recordings } from '../features/recordings/Recordings';
 import { NotificationOffer } from '../features/settings/NotificationOffer';
 import { showSystemNotification } from '../telephony/notifications';
@@ -57,7 +59,7 @@ function useShortcuts() {
 }
 
 function Workspace() {
-  const { view, setView, logout, setPaletteOpen, store, phone, notify, announcements: announcementsSource } = useApp();
+  const { view, setView, logout, setPaletteOpen, store, phone, notify, recordings, recordingsAccess, announcements: announcementsSource } = useApp();
   const { account, call, otherCall, demo, connection, lineTaken, recoverySince, retryAt } = usePhone();
   const { preferences, calls, callbacks } = useData();
   const { t, language } = useI18n();
@@ -83,11 +85,20 @@ function Workspace() {
     }
   }, [dueCallbacks, now, notify, preferences.notifications, demo, t]);
 
-  // The badge counts missed calls not looked at yet; opening the journal is looking at them.
-  const unseenMissed = calls.filter(item => item.outcome === 'missed' && item.startedAt > preferences.missedSeenAt).length;
-  useEffect(() => {
-    if (view === 'journal' && unseenMissed > 0) store.setPreferences({ missedSeenAt: Date.now() });
-  }, [view, unseenMissed, store]);
+  // A single server history feeds the journal and its badge, even on another screen.
+  const lineHistory = useLineHistory(recordings, !demo && recordingsAccess.state === 'open', connection);
+  const missedCalls = demo ? calls : (lineHistory.history?.calls ?? []);
+  const unseen = unseenMissedCalls(missedCalls, preferences.missedSeenAt);
+  const unseenMissed = unseen.length;
+  const markMissedSeen = () => {
+    // Loading or failed histories have not been consulted. Never advance past unseen data.
+    if (!demo && (!lineHistory.history || lineHistory.error || lineHistory.loading)) return;
+    if (unseen.length) store.setPreferences({ missedSeenAt: Math.max(...unseen.map(missedStamp)) });
+  };
+  const navigate = (next: View) => {
+    if (next === 'journal') markMissedSeen();
+    setView(next);
+  };
 
   // Same for callbacks: the badge announces those that came due since « Rappels » was last opened.
   // The card under the keypad keeps showing them until they are really done.
@@ -118,17 +129,17 @@ function Workspace() {
     <div className={'shell' + (view === 'phone' ? ' show-phone' : '')}>
       {demo && <p className="demo-banner"><b>{t('demo.bannerTitle')}</b> {t('demo.bannerText')}</p>}
       <nav className="sidebar" aria-label={t('nav.label')}>
-        <a className="brand" href="/" onClick={event => { event.preventDefault(); setView('journal'); }}>
+        <a className="brand" href="/" onClick={event => { event.preventDefault(); navigate('journal'); }}>
           <span className="brand-mark"><img src="/apisnix-mark.png" alt="" width={34} height={34} /></span>
           <span className="brand-name">APISNIX<small>ApisnixPhone</small></span></a>
         <p className="nav-caption">{t('nav.caption')}</p>
         <ul>
           {NAV.map(([key, label, Icon]) => (
             <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key || key === 'journal' && view === 'callbacks' ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
-              aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => setView(key)}>
+              aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => navigate(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{t(label)}</span>
-              {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (unseenDue ? ' badge-yellow' : '')}
-                aria-label={t('nav.badge', { missed: unseenMissed, due: unseenDue })}>{unseenMissed + unseenDue}</i>}</button></li>
+              {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (!unseenMissed ? ' badge-yellow' : '')}
+                aria-label={unseenMissed ? t('nav.missedBadge', { count: unseenMissed }) : t('callbacks.newDue', { count: unseenDue })}>{unseenMissed || unseenDue}</i>}</button></li>
           ))}
         </ul>
         <div className="sidebar-foot">
@@ -182,11 +193,11 @@ function Workspace() {
           )}
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
           {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label={t('journal.sections')}>
-            <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => setView('journal')}><History size={16} /> {t('journal.tabCalls')}</button>
+            <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => navigate('journal')}><History size={16} /> {t('journal.tabCalls')}</button>
             <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> {t('journal.tabCallbacks')}{unseenDue > 0 && <i className="badge badge-yellow" aria-label={t('callbacks.newDue', { count: unseenDue })}>{unseenDue}</i>}</button>
           </nav>}
           <ErrorBoundary key={view}>
-            {(view === 'journal' || view === 'phone') && <Journal />}
+            {(view === 'journal' || view === 'phone') && <Journal lineHistory={lineHistory} onSeen={markMissedSeen} />}
             {view === 'contacts' && <Contacts />}
             {view === 'audio' && <Recordings />}
             {view === 'callbacks' && <Callbacks />}

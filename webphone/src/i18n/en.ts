@@ -40,6 +40,7 @@ export const en: Record<MessageKey, string> = {
   'nav.phone': 'Phone',
   'nav.audio': 'Audio',
   'nav.settings': 'Settings',
+  'nav.missedBadge': '{count} unseen missed calls',
   'nav.badge': '{missed} unseen missed calls, {due} new callbacks due',
   'account.demo': 'Demonstration',
   'account.connected': 'Line connected',
