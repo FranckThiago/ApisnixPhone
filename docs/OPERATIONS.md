@@ -1,5 +1,26 @@
 # Construction et validation
 
+## Couleurs du détail d’appel — 22 octobre 2026
+
+**Release `20261022-couleurs-detail`, source `3978b5a`, active depuis 13:52:06
+Douala.** Issue en pastille : répondu vert, annulé/manqué/échec/refusé rouge,
+sans réponse/occupé jaune ambré ; icônes et accents sobres pour numéro/date/durée.
+Build isolé, quatre variables de la release précédente conservées, pilote double
+appel inchangé. 229 tests, typage, lint et build live réussis ; 267 fichiers,
+archive SHA-256 `5897a78c9080346f62e047c134a1ecabe46ad1f4331f41df3b1b75d094e85287`.
+
+Ancienne release comparée au manifeste, copie protégée 0700 et vérifiée dans
+`/root/apisnix-phone-backups/20261022-couleurs-detail/`. Bascule atomique avec
+retour automatique sur échec HTTPS. Index, JS/CSS, module SIP et worker conformes
+depuis Hermes et le Mac ; formulaire live chargé avec le nouveau bundle dans
+le navigateur intégré. Caddy et supervision actifs, sans redémarrage ni appel
+client. Aucun changement PBX/backend/base, configuration réseau ou manuel.
+Preuves : `.work/releases/20261022-couleurs-detail/`.
+
+Retour ciblé : vérifier current encore sur notre release, puis repointer
+atomiquement vers `/srv/apisnixphone/releases/20261022-planification`.
+Actualisation volontaire hors appel.
+
 ## Planification des rappels — 22 octobre 2026
 
 **Release `20261022-planification`, source `dadcb14`, active depuis 13:22:32

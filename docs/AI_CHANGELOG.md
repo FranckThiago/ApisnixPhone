@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-22 — Couleurs du détail d’appel publiées
+
+Pastilles d’issue vertes, rouges et jaunes selon le résultat, accents discrets
+sur numéro/date/durée. Publication demandée après validation du rendu :
+`20261022-couleurs-detail`, source `3978b5a`, à 13:52:06 Douala. 229 tests,
+typage/lint/build live, configuration conservée, sauvegarde et contrôles HTTPS
+réussis ; formulaire live chargé. État et retour dans PROJECT_STATE/OPERATIONS,
+rendu décrit dans WEBPHONE_PLAN. Aucune migration ; manuels inchangés.
+
 ## 2026-10-22 — Calendrier et heure de rappel explicites
 
 Le champ date/heure compact de CallbackScheduler est remplacé par un calendrier
