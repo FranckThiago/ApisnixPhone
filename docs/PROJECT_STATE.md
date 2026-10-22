@@ -1,5 +1,12 @@
 # État du projet
 
+## Couleurs du détail d’appel — 22 octobre 2026
+
+**Validé localement, non publié.** Issue en pastille : répondu vert, annulé et
+autres échecs rouges, sans réponse/occupé jaune ambré, inconnu neutre. Accents
+discrets sur numéro/date/durée. Typage, lint, build démo et rendu clair/sombre
+à 375 px et sur ordinateur contrôlés ; données et manuels inchangés.
+
 ## Planification des rappels plus lisible — 22 octobre 2026
 
 **En service `20261022-planification`, source `dadcb14`, depuis le 22 octobre

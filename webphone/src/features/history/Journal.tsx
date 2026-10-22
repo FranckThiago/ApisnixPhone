@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -168,11 +168,11 @@ export function Journal() {
                     {open && (
                       <div className="call-detail">
                         <dl>
-                          <div><dt>{t(call.direction === 'inbound' ? 'detail.callerNumber' : 'detail.dialledNumber')}</dt><dd className="mono">{call.dialTarget || t('detail.unknown')}</dd></div>
-                          <div><dt>{t('detail.start')}</dt><dd>{t('detail.startValue', { day: formatDay(call.startedAt), time: formatTime(call.startedAt) })}</dd></div>
-                          <div><dt>{t('detail.outcome')}</dt><dd>{outcomeLabel(call.outcome)}</dd></div>
+                          <div className="detail-number"><dt><Phone size={13} aria-hidden="true" />{t(call.direction === 'inbound' ? 'detail.callerNumber' : 'detail.dialledNumber')}</dt><dd className="mono">{call.dialTarget || t('detail.unknown')}</dd></div>
+                          <div className="detail-start"><dt><CalendarDays size={13} aria-hidden="true" />{t('detail.start')}</dt><dd>{t('detail.startValue', { day: formatDay(call.startedAt), time: formatTime(call.startedAt) })}</dd></div>
+                          <div><dt>{t('detail.outcome')}</dt><dd><span className={`detail-outcome detail-outcome-${call.outcome}`}>{outcomeLabel(call.outcome)}</span></dd></div>
                           {call.failure && <div><dt>{t('detail.diagnostic')}</dt><dd>{call.failure}</dd></div>}
-                          <div><dt>{t('detail.talk')}</dt><dd>{seconds ? formatDuration(seconds) : '—'}</dd></div>
+                          <div className="detail-duration"><dt><Clock3 size={13} aria-hidden="true" />{t('detail.talk')}</dt><dd>{seconds ? formatDuration(seconds) : '—'}</dd></div>
                         </dl>
                         {scope === 'device' && <div className="tags" role="group" aria-label={t('detail.tags')}>
                           {CALL_TAGS.map(tag => {
