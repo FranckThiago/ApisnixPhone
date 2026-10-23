@@ -1830,3 +1830,13 @@ incident résolu selon son retour, sans nouvelle mesure serveur.
   audio et appels SIP non testés. Identifiants de test attendus de Franck.
 - Aucune migration ou modification du PBX. Suivi automatique à mettre en pause
   lors de la remise de l'installateur.
+
+## 23 octobre 2026 — Fiche CRM et recette conférence VICIdial
+
+Huit champs CRM bornés et corrélés via `setContact`, mode conférence persistant
+et commande manuelle dans le banc local. Adaptateur natif limité au pilote dans
+le dépôt privé ; appel manuel, automatique, qualification et pause sur perte audio
+contrôlés avec média synthétique. 266 tests frontend, 5 tests du banc privé,
+typage/lint/build réussis. Frontend publié sans migration ; réglages temporaires
+retirés après recette. Guide client 1.1, captures et sources de vérité alignés.
+Limites d’audio physique et de déploiement multiéquipes : VICIDIAL_PILOT.md.

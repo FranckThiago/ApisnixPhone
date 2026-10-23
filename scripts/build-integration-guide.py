@@ -29,7 +29,7 @@ LEFT = 49
 CONTENT_WIDTH = WIDTH - 2 * LEFT
 GROUPS = {1: 'ACTIVATION', 2: 'INSTALLATION', 3: 'RÉFÉRENCE SDK', 4: 'RÉFÉRENCE SDK',
           5: 'RÉFÉRENCE SDK', 6: 'DONNÉES CRM', 7: 'SÉCURITÉ', 8: 'SESSIONS & ENVIRONNEMENT',
-          9: 'APPLICATIONS DYNAMIQUES', 10: 'ASSISTANCE', 11: 'VALIDATION', 12: 'LIVRAISON'}
+          9: 'APPLICATIONS DYNAMIQUES', 10: 'ASSISTANCE', 11: 'VALIDATION', 12: 'LIVRAISON', 13: 'FICHE CLIENT', 14: 'PILOTE VICIDIAL'}
 styles = {
     'body': ParagraphStyle('Body', fontName='Guide', fontSize=9.4, leading=12.9, textColor=INK, spaceAfter=7),
     'intro': ParagraphStyle('Intro', fontName='GuideBold', fontSize=24, leading=29, textColor=INK, spaceAfter=18, keepWithNext=True),
@@ -195,7 +195,7 @@ def cover(c, doc):
     c.line(LEFT + 10, 105, WIDTH - LEFT - 10, 105)
     c.setFillColor(MUTED)
     c.setFont('Guide', 8)
-    c.drawString(LEFT + 10, 82, 'Édition 1.0  •  23 octobre 2026')
+    c.drawString(LEFT + 10, 82, 'Édition 1.1  •  23 octobre 2026')
     c.drawRightString(WIDTH - LEFT - 10, 82, 'Guide client / Français')
     c.restoreState()
 
@@ -328,7 +328,7 @@ def make_story():
 def render(target, total):
     doc = GuideDoc(target, pagesize=A4, rightMargin=LEFT - 6, leftMargin=LEFT - 6,
         topMargin=68, bottomMargin=50, title='ApisnixPhone API - Guide technique d’intégration client',
-        author='APISNIX', subject='SDK navigateur v1 - Édition 1.0', invariant=1)
+        author='APISNIX', subject='SDK navigateur v1 - Édition 1.1', invariant=1)
     doc.build(make_story(), onFirstPage=cover, onLaterPages=lambda c, doc: page(c, doc, total))
     return doc.page
 

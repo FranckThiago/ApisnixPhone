@@ -1,5 +1,25 @@
 # Construction et validation
 
+## Extension fiche client et pilote conférence — 23 octobre 2026
+
+Frontend actif `20261023-conference-pilot`, source `58d81a9`, backend inchangé
+`20261023-embed-api`. Typage/lint/build live et 266 tests frontend passent.
+Aucune migration ni modification de Caddy pour cette extension. Les anciens
+assets à empreinte ont été conservés pour les onglets déjà ouverts.
+
+Sauvegarde protégée Hermes : `/root/apisnix-supervision-backups/20261023-conference-pilot/`.
+Avant bascule, sauvegarde SQLite cohérente et intégrité vérifiée. Manifest du build
+comparé après publication et après retrait du diagnostic audio temporaire.
+Origine CRM temporaire retirée, équipe du phone restaurée, sessions de test
+révoquées avec version utilisateur monotone (aucun retour à une ancienne version
+de jeton). Le script audio synthétique n’est plus servi dans la release.
+
+Retour frontend : vérifier le lien courant, repointer atomiquement vers
+`/srv/apisnixphone/releases/20261023-embed-api`, puis contrôler SDK et page publique.
+Ne pas restaurer SQLite globalement : les réglages temporaires du pilote sont
+déjà retirés. Recette et limites : [VICIDIAL_PILOT](VICIDIAL_PILOT.md).
+Détails PBX, sauvegardes et retour ciblé dans le dépôt privé de gestion.
+
 ## Intégration CRM administrable — 23 octobre 2026
 
 Frontend et backend **`20261023-embed-api`**, actifs depuis **13:53:43 Douala**.

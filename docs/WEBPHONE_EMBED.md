@@ -6,7 +6,7 @@ Cette version livre un panneau et un SDK navigateur, pas une API publique de
 création de comptes ni un accès serveur aux historiques.
 
 **Remise aux développeurs clients :** [guide technique et kit d'intégration](integration/README.md)
-(édition 1.0, PDF de 15 pages avec identité APISNIX et exemple HTML/JavaScript/CSS). Le guide client
+(édition 1.1, PDF avec fiche client et pilote de conférence avec identité APISNIX et exemple HTML/JavaScript/CSS). Le guide client
 décrit le contrat disponible, les champs transmis, la sécurité et la recette ;
 il exclut l'historique d'exploitation interne présent dans ce document.
 
@@ -272,3 +272,19 @@ Vérifications : 251 tests, typage, lint et build réussis. Aucune nouvelle rele
 frontend/backend ni migration. Réactivation, sauvegardes et retrait du circuit
 interne consignés dans le dépôt privé de gestion. Preuves locales exclues de Git :
 `.work/embed-live-review/`. Manuels clients inchangés.
+
+## Extension 1.1 — fiche client et conférence
+
+`setContact(contact, callId?)` affiche huit rubriques textuelles (prénom, nom,
+téléphone, email, entreprise, adresse, ville, pays) et, facultativement, un id CRM
+et des notes. Clés, types et longueurs sont validés ; aucune fiche ne remonte
+au parent. Sans appel, omettre callId ; pendant un appel utiliser l’id courant.
+Le contexte est volatil et effacé au changement d’appel ou à la déconnexion.
+Un résultat tardif est refusé avec `stale-call`. Voir chapitre 13 du guide client.
+
+`mode: 'conference'` conserve la session audio agent ; le CRM pilote les clients.
+`prepareCall` est désactivé et cette conférence ne crée pas d’appel dans le Journal
+local. Les CDR/enregistrements serveur restent indépendants. Heartbeat interorigine
+avec contrôle source/origine/canal ; la pause native appartient à l’adaptateur CRM.
+Un navigateur suspendu nécessite encore une surveillance serveur.
+Recette et limites : [pilote VICIdial](VICIDIAL_PILOT.md).

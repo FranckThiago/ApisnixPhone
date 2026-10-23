@@ -2,26 +2,19 @@
 
 ## Pilote VICIdial avec écran agent conservé — 23 octobre 2026
 
-[Banc local de conférence](VICIDIAL_PILOT.md) disponible : habillage agent existant
-dans le dépôt de gestion, panneau ApisnixPhone API simulé, qualification de clients
-successifs sans couper leur session audio commune, reprise explicite après une
-coupure. Développement local seulement ; aucun appel réel ni déploiement.
-Accès CRM multiéquipes, sélection exclusive du téléphone et raccordement aux
-événements/actions natifs restent à implémenter avant la recette de campagne.
-Le SDK publié et la release `20261023-embed-api` restent inchangés.
+[Pilote VICIdial](VICIDIAL_PILOT.md) : appel manuel de 65 s et automatique de
+53 s qualifiés sur la même conférence réelle ; huit champs CRM affichés et
+pause côté serveur après coupure audio. Source audio synthétique : micro physique,
+transfert, écoute et prise en charge commerciale multiéquipes restent à valider.
+Campagne isolée inactive et accès temporaires restaurés après les essais.
+Frontend actif `20261023-conference-pilot`, backend `20261023-embed-api`.
+SDK étendu avec `setContact` et mode conférence ; 266 tests frontend réussis.
 
-## Documentation technique d'intégration client — 23 octobre 2026
+## Documentation technique d’intégration client — 23 octobre 2026
 
-[Guide et kit client](integration/README.md) prêts à transmettre : édition 1.0,
-PDF français de 15 pages, source maintenable et exemple HTML/JavaScript/CSS.
-Contrat SDK, accès par phone, autorisation des domaines, données transmises,
-erreurs, sécurité, cycle de vie du panneau, exemple React et recette client.
-20 tests ciblés du SDK/session et banc de l'exemple vérifiés lors de la création.
-Présentation revue avec le logo original APISNIX, couverture, encadrés de code,
-tableaux, 12 signets et liens de navigation ; rendu des 15 pages et préservation
-du contenu technique contrôlés. Kit actualisé avec le nouveau PDF.
-Aucun envoi, changement de droits, migration ou déploiement ; release active
-inchangée. Les manuels d'utilisation existants restent inchangés.
+[Guide et kit client](integration/README.md) : édition 1.1, fiche de huit champs,
+contrat de corrélation, limites du mode conférence et captures séparées. Logo
+APISNIX conservé. Les manuels existants ne sont pas remplacés par le guide technique.
 
 ## Intégration CRM par poste — 23 octobre 2026
 
@@ -1421,5 +1414,5 @@ facultatifs), limité à l’affichage en mémoire et à l’appel courant. Voir
 [contrat client](integration/INTEGRATION_API_FR.md). Le mode conférence est
 expérimental : VICIdial garde la numérotation client et les qualifications ;
 le téléphone conserve la session audio, sans l’ajouter à son Journal. La
-[recette isolée](VICIDIAL_PILOT.md) reste en cours ; aucune compatibilité
+[recette isolée](VICIDIAL_PILOT.md) a validé manuel/auto avec audio synthétique ; aucune compatibilité
 commerciale des appels automatiques n’est encore affirmée.

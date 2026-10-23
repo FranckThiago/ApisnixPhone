@@ -540,11 +540,11 @@ Guide fondé sur les exports publics du SDK et les projections d'événements de
 
 **Nom de la solution intégrée : ApisnixPhone API.** Le téléphone ouvert seul reste identifié comme ApisnixPhone Web dans la supervision. L'utilisation du panneau ne change pas les droits de la ligne.
 
-**Fin du guide - édition 1.0.**
+
 
 <!-- pagebreak -->
 
-## 9. Fiche client fournie par le CRM — extension 1.1
+## 13. Fiche client fournie par le CRM
 
 Le SDK expose aussi `setContact(contact, callId?)`. Cette commande remplace la
 fiche affichée dans le téléphone ; elle ne crée pas un contact enregistré.
@@ -572,7 +572,8 @@ const result = await phone.setContact({
   id: 'crm-123', firstName: 'Camille', lastName: 'Martin',
   phone: '+33100000001', email: 'camille@example.invalid',
   company: 'Atelier Lumen', address: '12 rue des Exemples',
-  city: 'Paris', country: 'France', notes: 'Fiche fictive de démonstration',
+  city: 'Paris', country: 'France',
+  notes: 'Fiche fictive de démonstration',
 }, currentCallId);
 ```
 
@@ -588,7 +589,9 @@ Les mêmes rejets de promesse que `prepareCall` s’appliquent (chargement, expi
 rechargement ou destruction). Le traitement demeure uniquement en mémoire de
 l’iframe : ni journal, stockage navigateur, enregistrement audio, ni HTTP.
 
-### Pilote de conférence VICIdial — périmètre séparé
+<!-- pagebreak -->
+
+## 14. Pilote de conférence VICIdial
 
 L’option expérimentale `mode: 'conference'` affiche le panneau de conférence.
 VICIdial reste responsable des appels clients automatiques et manuels, de leur
@@ -607,5 +610,10 @@ Un navigateur suspendu peut retarder ce contrôle : il ne remplace pas une
 surveillance serveur. Une reconnexion ne rend pas l’agent disponible automatiquement.
 
 Ce mode reste un pilote isolé, sans engagement de compatibilité générale, SSO,
-transfert ou écoute. La recette réelle et ses limites sont consignées dans
-`docs/VICIDIAL_PILOT.md` avant toute remise commerciale.
+transfert ou écoute. Une recette isolée a validé un appel manuel puis un appel automatique sur
+une conférence persistante, la qualification et la pause après coupure audio.
+Les flux SIP/WebRTC étaient réels avec une source audio synthétique. Le micro
+physique, le navigateur et le domaine du client doivent encore être validés.
+Ce résultat ne vaut pas homologation pour toutes les campagnes.
+
+**Fin du guide - édition 1.1.**

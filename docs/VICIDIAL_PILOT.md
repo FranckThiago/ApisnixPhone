@@ -2,21 +2,30 @@
 
 ## État au 23 octobre 2026
 
-**Banc local simulé, pas une intégration de campagne publiée.** Franck a choisi
-de conserver le nouvel écran agent VICIdial et d’explorer le remplacement de
-son téléphone par ApisnixPhone API. Le banc réutilise les véritables `agent.js`
-et `agent.css` du dépôt privé de gestion, sur un DOM de démonstration. Il ne
-charge ni le moteur PHP VICIdial, ni une campagne ou un compte client réel.
-La release de production `20261023-embed-api` reste inchangée.
+**Recette isolée réelle effectuée**, avec le nouvel écran agent conservé,
+agent 5102, phone test003 et copie native APX_API de CampTES2. Aucun prospect
+existant n’a été copié ou appelé. Le banc local reste une simulation distincte.
 
-Le panneau utilise `DemoPhoneController`. Une seule session simulée reste
-active entre plusieurs clients, avec micro simulé, coupure et reconnexion
-explicites. L’agent reste en pause tant que l’audio n’est pas connecté. Terminer
-un client ouvre sa qualification et ne termine pas la session audio. La reprise
-après coupure reste manuelle. Notes et qualifications sont volatiles.
-Aucun microphone, média réel, appel SIP, secret ou journal client n’est utilisé.
-Ce panneau n’emploie pas `AppProvider` et ne persiste donc pas la conférence
-comme un appel client dans le Journal.
+Le 23 octobre, appel manuel de 65 s puis appel automatique de 53 s, tous deux
+qualifiés `OKAY`, sur la même conférence SIP permanente. Huit champs de la fiche
+fictive affichés dans le panneau. Coupure volontaire de la conférence depuis
+l’état READY : pause observée dans le navigateur **et dans VICIdial côté serveur**,
+puis tentative de reprise bloquée tant que l’audio est absent.
+
+Les flux SIP/WebRTC étaient réels, avec microphone synthétique et correspondant
+SIP interne en écho. Le navigateur intégré n’a pas affiché de demande de micro :
+**le microphone physique et une conversation humaine ne sont pas validés**.
+Les premiers essais avec une destination Local sans canal SIP reconnu ont échoué ;
+le répondeur SIP interne avec trois secondes de sonnerie a permis la recette.
+
+Après recette : agent déconnecté, affectation téléphonique originale restaurée,
+campagne et liste de test inactives, adaptateur live désactivé, origine temporaire
+retirée et équipe originale du phone restaurée. Micro synthétique retiré du site ;
+manifest original de la release vérifié. Aucun service Asterisk redémarré.
+Frontend actif : `20261023-conference-pilot` ; backend inchangé.
+
+Captures [réelles et de présentation](integration/captures/README.md). Les captures
+locales portent un bandeau de simulation et ne constituent pas une preuve média.
 
 ## Démarrer sur le Mac
 
@@ -58,42 +67,23 @@ SIP distincte des clients VICIdial, désactive la préparation de numéros et la
 journalisation locale de cette session. Un heartbeat signale la perte de panneau.
 Il ne commande jamais automatiquement les appels prospects.
 
-L’adaptateur live du dépôt de gestion est limité par une configuration serveur
-au triplet agent 5102 / phone test003 / campagne APX_API. La copie native APX_API
-a été créée le 23 octobre depuis CampTES2, inactive et sans ses listes de prospects.
-La recette réelle reste en cours ; ne pas la présenter comme validée.
-Le banc local comprend maintenant l’appel manuel avec qualification et huit
-champs de fiche client.
+L’adaptateur live du dépôt de gestion se charge par un hook personnalisé, limité
+au triplet de test et désactivé après recette. VICIdial conserve ses commandes
+de numérotation, raccrochage et qualification. `address2` représente l’entreprise
+dans cette liste de test uniquement ; ce mapping n’est pas une règle universelle.
 
-## Passage à une vraie campagne : travail restant
+## Avant une ouverture commerciale VICIdial
 
-1. **Accès CRM** : résoudre le lien utilisateur VICIdial / phone / client.
-   L’inventaire supervision actuel porte sur les phones `is_webphone=N` ; les
-   phones web CRM `Y` ne sont pas couverts. Plusieurs clients partagent le même
-   domaine CRM, alors que la politique générique lie une origine à une seule
-   équipe. Prévoir une authentification serveur dédiée à la session agent et au
-   poste, sans élargir toutes les équipes ni transmettre de secret SIP par URL
-   ou par le canal du parent.
-2. **Un seul téléphone** : sélectionner le pilote avant le chargement du
-   webphone natif. Monter les deux puis masquer l’ancien peut provoquer une
-   double connexion. Aucun remplacement live n’est implémenté par ce banc.
-3. **Conférence agent** : établir et identifier la session permanente, conserver
-   les actions VICIdial pour les clients. Un `call_dead` client ne doit pas
-   devenir un BYE de la session SIP. Ne pas accepter automatiquement toute
-   invitation entrante ni journaliser la conférence comme un client.
-4. **Événements et reprise** : brancher les événements natifs avec identifiants,
-   dédoublonnage et réconciliation serveur. Une coupure doit demander une pause
-   native et vérifier son acquittement ; le blocage local ne suffit pas.
-5. **Recette isolée** : agent, phone et campagne identifiés, anciens réglages
-   sauvegardés, activation limitée et retour ciblé. Vérifier deux clients
-   successifs, audio physique bidirectionnel, raccroché client, qualification,
-   pause/reprise, perte réseau, expiration/suspension, rechargement, transferts,
-   écoute et enregistrements, et absence de double connexion.
-
-Les points d’extension natifs ont été examinés en lecture seule dans le dépôt
-de gestion et sur le serveur courant. L’adaptateur live et la recette de campagne
-restent à réaliser. Ne pas présenter la compatibilité automatique VICIdial comme
-commercialement validée à partir de ce banc.
+- Authentification agent/phone multiéquipes : une origine générique ne peut pas
+  représenter toutes les équipes CRM. Le domaine temporaire limité au poste test
+  a été retiré. Aucun SSO multiéquipes n’est livré par cette recette.
+- Le pilote utilise un phone `is_webphone=N` : valider la sélection exclusive du
+  téléphone pour les postes ayant un webphone natif, sans double connexion.
+- Renforcer la réconciliation et la surveillance serveur pour un onglet gelé,
+  une perte réseau complète, une expiration ou une suspension de compte.
+- Valider audio physique, transfert, écoute superviseur et enregistrement utile
+  sur le navigateur, le matériel et la campagne du client. La création de traces
+  d’enregistrement pendant la recette ne prouve pas leur restitution complète.
 
 ## Vérifications
 
@@ -103,9 +93,10 @@ l’isolation du canal et le timeout/rechargement. Dans le dépôt privé,
 qualification, coupure/reprise et événements dupliqués. La vérification locale
 ne remplace pas une recette avec VICIdial et audio réels.
 
-Recette du 23 octobre : 262 tests frontend et 4 tests du banc privé passent ;
+Recette du 23 octobre : 266 tests frontend et 5 tests du banc privé passent ;
 typage, lint et build passent (avertissement habituel de taille du bundle).
-Protocole et chemin du pilote absents du JavaScript compilé. Dans le navigateur
+Le protocole de simulation local reste absent du JavaScript de production ;
+le mode conférence du SDK y est désormais présent. Dans le navigateur
 intégré : deux clients qualifiés sur `demo-1`, micro simulé, coupure bloquant la
 disponibilité, reprise explicite sur `demo-2` avec historique conservé. Rendu
 observé en largeur de bureau et dans le panneau étroit. Les interactions dans

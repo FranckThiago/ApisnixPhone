@@ -1,9 +1,9 @@
 # Documentation technique à remettre aux clients
 
-Édition française 1.0 du 23 octobre 2026, contrat SDK navigateur v1.
+Édition française 1.1 du 23 octobre 2026, contrat SDK navigateur v1.
 
 - [Guide maintenable](INTEGRATION_API_FR.md).
-- [PDF prêt à transmettre](../../output/pdf/ApisnixPhone-API-Guide-integration-FR.pdf), 15 pages.
+- [PDF prêt à transmettre](../../output/pdf/ApisnixPhone-API-Guide-integration-FR.pdf), 17 pages.
 - [Kit client](../../output/ApisnixPhone-API-Kit-integration-FR.zip) : PDF, source Markdown et dossier [exemple](exemple/README.md).
 - [Contrat interne et historique de validation](../WEBPHONE_EMBED.md), non inclus dans le kit.
 
@@ -28,7 +28,7 @@ déterministes pour des sources et une version de ReportLab identiques.
 La présentation reprend le logo original `branding/apisnix-mark.png`, sans
 modification, sur la couverture et en tête de chaque page. Couleurs APISNIX bleu
 et jaune, tableaux contrastés, encadrés de code en texte sélectionnable,
-pagination complète, 12 signets de sections et trois liens de navigation en
+pagination complète, 14 signets de sections et trois liens de navigation en
 couverture. Les chapitres restent groupés ; le générateur refuse une réduction
 excessive du texte et exige alors de revoir la pagination.
 
@@ -50,5 +50,14 @@ le PDF avec Poppler et relire toutes ses pages avant de livrer les deux sorties.
 
 Ces vérifications portent sur le kit documentaire. Elles ne sont pas de nouveaux
 appels réels et ne remplacent pas la recette sur le domaine et le matériel client.
-La release en production reste `20261023-embed-api`, sans migration ni déploiement
-pour cette livraison documentaire.
+La release frontend courante est `20261023-conference-pilot`, backend
+`20261023-embed-api` inchangé. Voir OPERATIONS et VICIDIAL_PILOT pour la recette
+réelle et ses limites.
+
+## Édition 1.1 et captures
+
+Chapitres 13 et 14 : `setContact`, huit rubriques bornées, corrélation et mode
+conférence expérimental. PDF de 17 pages rendu et contrôlé, 14 signets et ZIP
+contenant le PDF courant. [Captures avec légendes](captures/README.md) disponibles
+séparément pour la documentation, les manuels et le site ; aucune publication
+automatique de ces visuels dans les manuels existants ou le site commercial.
