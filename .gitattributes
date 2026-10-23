@@ -2,3 +2,5 @@
 # Unified diff context contains significant leading/trailing spaces.
 patches/*.patch text eol=lf -whitespace
 *.sh text eol=lf
+# Generated PDFs contain byte offsets; never normalize line endings.
+/output/pdf/*.pdf binary

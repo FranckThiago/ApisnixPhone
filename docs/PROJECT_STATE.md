@@ -3,10 +3,13 @@
 ## Documentation technique d'intégration client — 23 octobre 2026
 
 [Guide et kit client](integration/README.md) prêts à transmettre : édition 1.0,
-PDF français de 13 pages, source maintenable et exemple HTML/JavaScript/CSS.
+PDF français de 15 pages, source maintenable et exemple HTML/JavaScript/CSS.
 Contrat SDK, accès par phone, autorisation des domaines, données transmises,
 erreurs, sécurité, cycle de vie du panneau, exemple React et recette client.
-20 tests ciblés du SDK/session, banc de l'exemple et rendu des 13 pages vérifiés.
+20 tests ciblés du SDK/session et banc de l'exemple vérifiés lors de la création.
+Présentation revue avec le logo original APISNIX, couverture, encadrés de code,
+tableaux, 12 signets et liens de navigation ; rendu des 15 pages et préservation
+du contenu technique contrôlés. Kit actualisé avec le nouveau PDF.
 Aucun envoi, changement de droits, migration ou déploiement ; release active
 inchangée. Les manuels d'utilisation existants restent inchangés.
 

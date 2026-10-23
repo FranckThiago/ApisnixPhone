@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 2026-10-23 — Présentation et logo du guide d'intégration client
+
+Refonte du PDF à la demande de Franck : couverture APISNIX bleu/jaune, logo
+original inchangé en couverture et en-têtes, hiérarchie des sections, tableaux
+contrastés et encadrés de code sélectionnable. 15 pages avec 12 signets et trois
+liens de navigation en couverture ; pagination adaptée pour éviter les fins de
+chapitre isolées. Générateur et kit ZIP actualisés, README de maintenance, état
+et référence du kit alignés. Contrôle visuel de toutes les pages, présence du
+logo, conservation intégrale du contenu technique, coordonnées du texte, liens,
+archive et reproductibilité vérifiés. Aucun changement fonctionnel, migration
+ou déploiement ; manuels d'utilisation existants inchangés.
+
 ## 2026-10-23 — Kit technique d'intégration destiné aux clients
 
 Ajout du guide français complet dans `docs/integration/`, PDF de 13 pages et
