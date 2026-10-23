@@ -1,7 +1,28 @@
-import type { MessageKey } from './fr';
+import type {
+ MessageKey } from './fr';
 
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
+  "conference.title": "Campaign audio",
+  "conference.connected": "Audio connected to campaign",
+  "conference.incoming": "The conference is calling",
+  "conference.waiting": "Waiting for conference",
+  "conference.help": "Use the CRM to call a customer, hang up or qualify. The audio session stays open between customers.",
+  "conference.answer": "Join conference",
+  "conference.unmute": "Unmute",
+  "conference.mute": "Mute",
+  "conference.audio": "Enable audio",
+
+  "contactContext.title": "Contact supplied by CRM",
+  "contactContext.firstName": "First name",
+  "contactContext.lastName": "Last name",
+  "contactContext.phone": "Phone",
+  "contactContext.email": "Email",
+  "contactContext.company": "Company",
+  "contactContext.address": "Address",
+  "contactContext.city": "City",
+  "contactContext.country": "Country",
+
   'pilot.demo': 'DEMO',
   'pilot.connected': 'Audio session connected',
   'pilot.disconnected': 'Connect the audio session',

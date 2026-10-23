@@ -1,8 +1,8 @@
 /** Public, versioned protocol. Credentials are never part of this channel. */
 export const PROTOCOL = 'apisnixphone.embed.v1';
 export type Envelope = { protocol: typeof PROTOCOL; channel: string; type: string };
-export type Command = Envelope & { type: 'prepare-call'; requestId: string; number: string };
-export type ResultCode = 'prepared' | 'not-connected' | 'call-in-progress' | 'invalid-number';
+export type Command = Envelope & ({ type: 'prepare-call'; requestId: string; number: string } | { type: 'set-contact'; requestId: string; contact: unknown; callId?: string });
+export type ResultCode = 'prepared' | 'not-connected' | 'call-in-progress' | 'invalid-number' | 'contact-updated' | 'invalid-contact' | 'stale-call';
 export type PublicState = { connection: string; phone: string | null; sessionOpen: boolean; demo: boolean; inCall: boolean };
 export type PublicCall = { id: string; direction: string; number: string; phase: string; startedAt: number; answeredAt?: number; endedAt?: number; outcome?: string };
 export type PhoneEvent =
@@ -19,15 +19,16 @@ export function envelope(value: unknown): value is Envelope & Record<string, unk
     && typeof value.channel === 'string' && /^[a-zA-Z0-9-]{16,80}$/.test(value.channel);
 }
 export function command(value: unknown): value is Command {
-  return envelope(value) && object(value) && value.type === 'prepare-call'
+  return envelope(value) && object(value)
     && typeof value.requestId === 'string' && /^[a-zA-Z0-9-]{1,80}$/.test(value.requestId)
-    && typeof value.number === 'string' && value.number.length <= 40;
+    && (value.type === 'prepare-call' && typeof value.number === 'string' && value.number.length <= 40
+      || value.type === 'set-contact' && Object.hasOwn(value, 'contact') && (value.callId === undefined || typeof value.callId === 'string' && value.callId.length <= 200));
 }
 export function phoneEvent(value: unknown): value is PhoneEvent & Envelope {
   if (!envelope(value) || !object(value)) return false;
   if (value.type === 'ready') return true;
   if (value.type === 'result') return typeof value.requestId === 'string'
-    && ['prepared', 'not-connected', 'call-in-progress', 'invalid-number'].includes(String(value.code));
+    && ['prepared', 'not-connected', 'call-in-progress', 'invalid-number', 'contact-updated', 'invalid-contact', 'stale-call'].includes(String(value.code));
   if (value.type === 'state') return object(value.state) && typeof value.state.connection === 'string'
     && (value.state.phone === null || typeof value.state.phone === 'string')
     && typeof value.state.sessionOpen === 'boolean' && typeof value.state.demo === 'boolean' && typeof value.state.inCall === 'boolean';

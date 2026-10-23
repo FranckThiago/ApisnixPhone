@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createApisnixPhone } from '../src/embed/client';
 import { PROTOCOL } from '../src/embed/protocol';
 
-function harness() {
+function harness(mode?: 'conference') {
   const listeners = new Map<string, (event: MessageEvent) => void>();
   const frameListeners = new Map<string, () => void>();
   const frame = { contentWindow: { postMessage: vi.fn() }, style: { cssText: '' }, src: '', allow: '', title: '', referrerPolicy: '', remove: vi.fn(),
@@ -12,7 +12,7 @@ function harness() {
   vi.stubGlobal('document', { createElement: vi.fn(() => frame) });
   const onEvent = vi.fn(); const onError = vi.fn();
   const host = { append: vi.fn() };
-  const client = createApisnixPhone({ container: host as unknown as HTMLElement, url: 'https://phone.example', phone: '1001', onEvent, onError });
+  const client = createApisnixPhone({ container: host as unknown as HTMLElement, url: 'https://phone.example', phone: '1001', mode, onEvent, onError });
   vi.advanceTimersByTime(250);
   const channel = frame.contentWindow.postMessage.mock.calls[0]![0].channel as string;
   const receive = (message: object, patch: object = {}) => listeners.get('message')?.({ origin: 'https://phone.example', source: frame.contentWindow, data: { protocol: PROTOCOL, channel, ...message }, ...patch } as unknown as MessageEvent);
@@ -83,5 +83,29 @@ describe('SDK lifecycle', () => {
     const assertion = expect(promise).rejects.toThrow('command-timeout');
     vi.advanceTimersByTime(5000); await assertion;
     h.client.destroy();
+  });
+});
+
+describe('CRM context and conference watchdog', () => {
+  it('sends a bounded card to the exact frame and correlates its response', async () => {
+    const h = harness(); h.receive({ type: 'ready' });
+    const contact = { firstName: 'Camille', lastName: 'Martin', phone: '1001', email: 'c@example.invalid', company: 'Example', address: '12 Example', city: 'Paris', country: 'France' };
+    const pending = h.client.setContact(contact, 'bridge-1');
+    const message = h.frame.contentWindow.postMessage.mock.calls.at(-1)![0];
+    expect(message).toMatchObject({ type: 'set-contact', contact, callId: 'bridge-1' });
+    h.receive({ type: 'result', requestId: message.requestId, code: 'contact-updated' });
+    await expect(pending).resolves.toBe('contact-updated');
+    await expect(h.client.setContact({ notes: 'x'.repeat(2001) })).resolves.toBe('invalid-contact');
+    h.client.destroy();
+  });
+  it('reports missing conference heartbeat and reload so the CRM can pause', () => {
+    const h = harness('conference'); h.receive({ type: 'ready' });
+    expect(h.frame.src).toContain('mode=conference');
+    vi.advanceTimersByTime(6000);
+    expect(h.onError).toHaveBeenCalledWith('heartbeat-timeout');
+    h.onError.mockClear(); h.receive({ type: 'ready' });
+    h.frameListeners.get('load')?.();
+    expect(h.onError).toHaveBeenCalledWith('heartbeat-timeout');
+    h.client.destroy(); expect(vi.getTimerCount()).toBe(0);
   });
 });

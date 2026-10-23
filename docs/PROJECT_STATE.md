@@ -1413,3 +1413,13 @@ de build Apple. Voir [PLATEFORMES_APPLE.md](PLATEFORMES_APPLE.md).
   et `git diff --check` réussis.
 - Aucun identifiant SIP reçu ou enregistré. Aucune migration serveur.
   La migration locale du paramètre Android est décrite dans NUMEROTATION_ANDROID.md.
+
+### Extension CRM du 23 octobre — fiche et conférence pilote
+
+Le SDK embarqué propose `setContact` (huit rubriques, identifiant et notes
+facultatifs), limité à l’affichage en mémoire et à l’appel courant. Voir le
+[contrat client](integration/INTEGRATION_API_FR.md). Le mode conférence est
+expérimental : VICIdial garde la numérotation client et les qualifications ;
+le téléphone conserve la session audio, sans l’ajouter à son Journal. La
+[recette isolée](VICIDIAL_PILOT.md) reste en cours ; aucune compatibilité
+commerciale des appels automatiques n’est encore affirmée.

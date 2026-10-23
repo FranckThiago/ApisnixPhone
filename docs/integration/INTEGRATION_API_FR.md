@@ -2,7 +2,7 @@
 
 ## Guide technique d'intégration client
 
-**Édition 1.0 - 23 octobre 2026**
+**Édition 1.1 - 23 octobre 2026**
 
 Intégrer un téléphone dans un CRM ou un site HTTPS, avec un accès individuel par phone et des événements exploitables par l'application cliente.
 
@@ -127,7 +127,7 @@ L'agent saisit l'identifiant et le mot de passe de son phone **dans le panneau A
 
 ### createApisnixPhone(options)
 
-Monte une iframe et retourne un objet avec `prepareCall(number)` et `destroy()`. Appeler cette fonction une seule fois pour le panneau conservé pendant la session de travail.
+Monte une iframe et retourne un objet avec `prepareCall(number)`, `setContact(contact, callId?)` et `destroy()`. Appeler cette fonction une seule fois pour le panneau conservé pendant la session de travail.
 
 | Option | Type et règle |
 | --- | --- |
@@ -541,3 +541,71 @@ Guide fondé sur les exports publics du SDK et les projections d'événements de
 **Nom de la solution intégrée : ApisnixPhone API.** Le téléphone ouvert seul reste identifié comme ApisnixPhone Web dans la supervision. L'utilisation du panneau ne change pas les droits de la ligne.
 
 **Fin du guide - édition 1.0.**
+
+<!-- pagebreak -->
+
+## 9. Fiche client fournie par le CRM — extension 1.1
+
+Le SDK expose aussi `setContact(contact, callId?)`. Cette commande remplace la
+fiche affichée dans le téléphone ; elle ne crée pas un contact enregistré.
+L’agent doit être connecté. Le CRM ne reçoit aucune fiche du téléphone en retour.
+
+| Champ | Limite en caractères |
+| --- | --- |
+| `firstName`, `lastName` | 100 chacun |
+| `phone` | 40 |
+| `email` | 254 |
+| `company` | 200 |
+| `address` | 400 |
+| `city` | 120 |
+| `country` | 100 |
+| `id` (facultatif, référence CRM) | 100 |
+| `notes` (facultatif) | 2 000 |
+
+Tous les champs sont des chaînes facultatives. Les huit rubriques principales
+restent visibles dans la fiche dépliée ; une valeur absente affiche un tiret.
+Aucun HTML n’est interprété. Les champs inconnus sont refusés. Limiter les données
+à celles utiles à l’agent ; ne jamais transmettre de mots de passe dans la fiche.
+
+```js
+const result = await phone.setContact({
+  id: 'crm-123', firstName: 'Camille', lastName: 'Martin',
+  phone: '+33100000001', email: 'camille@example.invalid',
+  company: 'Atelier Lumen', address: '12 rue des Exemples',
+  city: 'Paris', country: 'France', notes: 'Fiche fictive de démonstration',
+}, currentCallId);
+```
+
+Pendant un appel, `currentCallId` doit être l’`id` du dernier événement `call`
+correspondant à l’appel principal. Un résultat de recherche CRM arrivé après le
+changement d’appel est refusé (`stale-call`). Sans appel, omettre cet argument.
+Effacer explicitement avec `phone.setContact(null, currentCallId)`. À chaque
+changement d’appel ou déconnexion, le panneau retire la fiche précédente.
+L’application CRM doit renvoyer la fiche lorsqu’elle reçoit le nouvel appel.
+
+Résultats : `contact-updated`, `invalid-contact`, `stale-call`, `not-connected`.
+Les mêmes rejets de promesse que `prepareCall` s’appliquent (chargement, expiration,
+rechargement ou destruction). Le traitement demeure uniquement en mémoire de
+l’iframe : ni journal, stockage navigateur, enregistrement audio, ni HTTP.
+
+### Pilote de conférence VICIdial — périmètre séparé
+
+L’option expérimentale `mode: 'conference'` affiche le panneau de conférence.
+VICIdial reste responsable des appels clients automatiques et manuels, de leur
+raccrochage et qualification. `prepareCall` y retourne `call-in-progress`.
+L’agent répond explicitement à l’invitation de conférence ; aucun décrochage
+automatique d’invitation inconnue n’est ajouté. La conférence n’est pas enregistrée
+par le panneau comme un appel client dans son Journal.
+
+Les événements `call` concernent alors **la session audio agent**, pas les appels
+prospects. Un même identifiant de conférence peut couvrir plusieurs fiches CRM.
+Le CRM doit remplacer/effacer leur contexte au changement de client. Un contrôle
+périodique déclenche `onError('heartbeat-timeout')` après plus de cinq secondes
+sans réponse, au prochain contrôle d’une seconde, ou lors du rechargement de
+l’iframe. Le CRM doit demander la pause native et vérifier son état serveur.
+Un navigateur suspendu peut retarder ce contrôle : il ne remplace pas une
+surveillance serveur. Une reconnexion ne rend pas l’agent disponible automatiquement.
+
+Ce mode reste un pilote isolé, sans engagement de compatibilité générale, SSO,
+transfert ou écoute. La recette réelle et ses limites sont consignées dans
+`docs/VICIDIAL_PILOT.md` avant toute remise commerciale.

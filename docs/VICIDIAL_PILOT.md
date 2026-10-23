@@ -52,8 +52,18 @@ Arrêter ces deux processus retire le banc. Le port 5185 reste indépendant.
   panneau invalident la disponibilité du banc. Un onglet suspendu peut retarder
   ce contrôle navigateur : ce n’est pas un mécanisme serveur de disponibilité.
 
-Le SDK `apisnix-embed.js`, son protocole et son guide restent inchangés.
-Ce pilote n’ajoute aucune capacité automatique à l’API destinée aux clients.
+Le SDK expose désormais `setContact` : huit champs et notes facultatives,
+affichage volatil corrélé à l’appel. Le mode `conference` conserve une session
+SIP distincte des clients VICIdial, désactive la préparation de numéros et la
+journalisation locale de cette session. Un heartbeat signale la perte de panneau.
+Il ne commande jamais automatiquement les appels prospects.
+
+L’adaptateur live du dépôt de gestion est limité par une configuration serveur
+au triplet agent 5102 / phone test003 / campagne APX_API. La copie native APX_API
+a été créée le 23 octobre depuis CampTES2, inactive et sans ses listes de prospects.
+La recette réelle reste en cours ; ne pas la présenter comme validée.
+Le banc local comprend maintenant l’appel manuel avec qualification et huit
+champs de fiche client.
 
 ## Passage à une vraie campagne : travail restant
 

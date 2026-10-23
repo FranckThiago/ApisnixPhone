@@ -6,14 +6,27 @@ import { AppProvider, useApp, usePhone } from '../app/AppContext';
 import { useI18n } from '../i18n';
 import { allowedOrigins, authorizedMessage, command, envelope, PROTOCOL, type PhoneEvent } from './protocol';
 import { prepareResult, publicCall, publicState } from './state';
+import { validContact, visibleContact, type ContactContext } from './contact';
+import { ContactCard } from './ContactCard';
+import { ConferencePhone } from '../vicidial/ConferencePhone';
 
 type Parent = { origin: string; channel: string };
 const origins = allowedOrigins(import.meta.env.VITE_EMBED_ALLOWED_ORIGINS, location.origin, import.meta.env.VITE_APP_MODE !== 'live', import.meta.env.DEV);
+const conferenceMode = new URLSearchParams(location.search).get('mode') === 'conference';
 function Phone({ parent }: { parent: Parent }) {
   const { phone, sessionOpen, setDial, setView, logout } = useApp();
   const snapshot = usePhone();
   const { t } = useI18n();
   const seenCalls = useRef(new Map<string, string>());
+  const [contactContext, setContactContext] = useState<ContactContext | null>(null);
+  const currentCallId = snapshot.call && snapshot.call.phase !== 'ended' ? snapshot.call.id : null;
+  const contact = visibleContact(contactContext, sessionOpen, currentCallId);
+  // Clear on every session/call boundary, including a logout followed by a new login.
+  useEffect(() => phone.subscribe(() => {
+    const value = phone.getSnapshot();
+    const callId = value.call && value.call.phase !== 'ended' ? value.call.id : null;
+    setContactContext(current => value.connection === 'offline' || current && current.callId !== callId ? null : current);
+  }), [phone]);
   useEffect(() => {
     const send = (event: PhoneEvent) => window.parent.postMessage({ ...event, protocol: PROTOCOL, channel: parent.channel }, parent.origin);
     send({ type: 'ready' });
@@ -22,9 +35,19 @@ function Phone({ parent }: { parent: Parent }) {
       if (!authorizedMessage(event, window.parent, new Set([parent.origin]), parent.channel)) return;
       if (envelope(event.data) && event.data.type === 'hello') {
         send({ type: 'ready' }); send({ type: 'state', state: publicState(phone.getSnapshot(), sessionOpen) });
+        if (conferenceMode && sessionOpen && phone.getSnapshot().call) send({ type: 'call', call: publicCall(phone.getSnapshot().call!) });
       }
       if (!command(event.data)) return;
-      const code = prepareResult(event.data.number, phone.getSnapshot(), sessionOpen);
+      if (event.data.type === 'set-contact') {
+        const value = phone.getSnapshot();
+        const callId = value.call && value.call.phase !== 'ended' ? value.call.id : null;
+        const code = !sessionOpen ? 'not-connected' : !validContact(event.data.contact) ? 'invalid-contact'
+          : (event.data.callId ?? null) !== callId ? 'stale-call' : 'contact-updated';
+        if (code === 'contact-updated') setContactContext(event.data.contact === null ? null : { contact: event.data.contact as NonNullable<ContactContext>['contact'], callId });
+        send({ type: 'result', requestId: event.data.requestId, code });
+        return;
+      }
+      const code = conferenceMode ? 'call-in-progress' : prepareResult(event.data.number, phone.getSnapshot(), sessionOpen);
       if (code === 'prepared') {
         if (phone.getSnapshot().call?.phase === 'ended') phone.dismiss();
         setDial(event.data.number); setView('phone');
@@ -58,7 +81,8 @@ function Phone({ parent }: { parent: Parent }) {
       <span>{sessionOpen ? t('embed.line', { phone: snapshot.account?.username ?? '' }) : t('embed.secure')}</span>
       {sessionOpen && <button className="icon-button" aria-label={t('action.signOut')} onClick={signOut}><LogOut size={17} /></button>}
     </header>
-    <div className="embed-body"><App embedded /></div>
+    {contact && <ContactCard contact={contact} />}
+    <div className="embed-body">{conferenceMode ? <ConferencePhone /> : <App embedded />}</div>
   </div>;
 }
 export function EmbeddedPhone() {
@@ -89,5 +113,5 @@ export function EmbeddedPhone() {
     return () => { stopped = true; window.removeEventListener('message', receive); };
   }, [parent]);
   if (!parent) return <main className="embed-wait"><ShieldCheck size={32} /><h1>{t('embed.waitTitle')}</h1><p>{t('embed.waitText')}</p></main>;
-  return <AppProvider embedded><Phone parent={parent} /></AppProvider>;
+  return <AppProvider embedded recordCalls={!conferenceMode}><Phone parent={parent} /></AppProvider>;
 }

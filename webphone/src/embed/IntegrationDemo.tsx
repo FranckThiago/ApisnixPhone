@@ -3,6 +3,8 @@ import { ArrowUpRight, Check, ChevronRight, CircleHelp, Clock3, ContactRound, La
 import { LanguagePicker } from '../features/auth/Login';
 import { useI18n, type MessageKey } from '../i18n';
 import { createApisnixPhone, type PhoneEvent, type PublicState } from './client';
+import { ContactCard } from './ContactCard';
+import type { CustomerContact } from './contact';
 import { sameNumber } from '../domain/numbers';
 
 const contacts = [
@@ -10,6 +12,7 @@ const contacts = [
   { name: 'Alex Laurent', company: 'Nordia Conseil', number: '+3220000001', initials: 'AL', color: 'lilac' },
   { name: 'Sarah Moreau', company: 'Studio Océane', number: '+33100000002', initials: 'SM', color: 'peach' },
 ];
+const details: CustomerContact[] = contacts.map((item, index) => ({ id: 'example-' + index, firstName: item.name.split(' ')[0], lastName: item.name.split(' ')[1], phone: item.number, email: ['camille', 'alex', 'sarah'][index] + '@example.invalid', company: item.company, address: ['12 rue des Exemples', '8 avenue Démo', '24 allée du Test'][index], city: ['Paris', 'Bruxelles', 'Lyon'][index], country: index === 1 ? 'Belgique' : 'France' }));
 const phaseLabels: Record<string, MessageKey> = {
   dialing: 'integration.dialing', 'ringing-out': 'integration.ringingOut', 'ringing-in': 'integration.ringingIn',
   active: 'integration.active', held: 'integration.held', ending: 'integration.ending', ended: 'integration.ended',
@@ -45,7 +48,7 @@ export function IntegrationDemo() {
       }
       if (event.type === 'call') {
         const match = contacts.findIndex(item => sameNumber(item.number, event.call.number));
-        if (match >= 0) setSelected(match);
+        if (match >= 0) { setSelected(match); if (event.call.phase !== 'ended') void client.current?.setContact(details[match]!, event.call.id).catch(() => undefined); }
         setActivities(items => [{ key: crypto.randomUUID(), label: phaseLabels[event.call.phase] ?? 'integration.updated', detail: event.call.number, time: Date.now() }, ...items].slice(0, 8));
         if (event.call.phase === 'ringing-in') setHidden(false);
       }
@@ -54,6 +57,9 @@ export function IntegrationDemo() {
       onError: () => { if (alive) { setReady(false); setFeedback('integration.unavailable'); } } });
     return () => { alive = false; client.current?.destroy(); client.current = null; };
   }, [phone]);
+  useEffect(() => {
+    if (state?.sessionOpen && !state.inCall) void client.current?.setContact(details[selected]!).catch(() => undefined);
+  }, [selected, state?.sessionOpen, state?.inCall]);
   const prepare = async () => {
     setHidden(false);
     if (matchMedia('(max-width: 800px)').matches) requestAnimationFrame(() => container.current?.scrollIntoView({ block: 'center', behavior: 'smooth' }));
@@ -89,7 +95,7 @@ export function IntegrationDemo() {
           {search && !contacts.some(item => `${item.name} ${item.company} ${item.number}`.toLocaleLowerCase().includes(search.toLocaleLowerCase())) && <p className="crm-empty">{t('integration.noResults')}</p>}
         </section>
         <section className="crm-detail"><div className="crm-detail-title"><span className={'crm-avatar large ' + contact.color}>{contact.initials}</span><div><p className="crm-kicker">{t('integration.contactCard')}</p><h2>{contact.name}</h2><p>{contact.company}</p></div><span className="crm-prospect">{t('integration.prospect')}</span></div>
-          <div className="crm-detail-content"><div><span>{t('integration.phone')}</span><strong>{contact.number}</strong><p>{t('integration.note')}</p></div><button className="crm-primary" disabled={!ready || !!state?.inCall} onClick={() => void prepare()}><Phone size={17} />{t('integration.prepare')}</button></div>
+          <ContactCard contact={details[selected]!} expanded /><div className="crm-detail-content"><div><span>{t('integration.phone')}</span><strong>{contact.number}</strong><p>{t('integration.note')}</p></div><button className="crm-primary" disabled={!ready || !!state?.inCall} onClick={() => void prepare()}><Phone size={17} />{t('integration.prepare')}</button></div>
           <p className="crm-feedback" role="status"><CircleHelp size={16} />{t(feedback)}</p>
         </section>
         <section className="crm-activity"><div className="crm-section-title"><h2>{t('integration.activity')}</h2><span><i />{t('integration.live')}</span></div>

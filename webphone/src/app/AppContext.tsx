@@ -81,7 +81,7 @@ const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : ne
 // Read straight from the PBX's public page: its origin is allowed by the site's connection policy.
 const announcements: AnnouncementsSource = demoPhone ? new DemoAnnouncementsSource() : new HttpAnnouncementsSource(announcementsUrlFromEnv(import.meta.env));
 
-export function AppProvider({ children, embedded = false }: { children: ReactNode; embedded?: boolean }) {
+export function AppProvider({ children, embedded = false, recordCalls = true }: { children: ReactNode; embedded?: boolean; recordCalls?: boolean }) {
   useEffect(() => bindPageLifecycle(phone), []);
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
@@ -118,6 +118,7 @@ export function AppProvider({ children, embedded = false }: { children: ReactNod
 
   // The journal only holds calls this browser really observed, written once when they end.
   useEffect(() => phone.subscribe(() => {
+    if (!recordCalls) return;
     const snapshot = phone.getSnapshot();
     for (const call of snapshot.completedCalls ?? [snapshot.call]) {
       if (!call || call.phase !== 'ended' || recorded.current.has(call.id) || !call.outcome || !call.endedAt) continue;
@@ -132,7 +133,7 @@ export function AppProvider({ children, embedded = false }: { children: ReactNod
       if (call.outcome === 'answered' && store.completeCallbacksFor(call.dialTarget)) notify(t('callbacks.doneToast'), 'success');
     }
     setWrapUpRecordId(snapshot.call?.phase === 'ended' ? recorded.current.get(snapshot.call.id) ?? null : null);
-  }), [notify]);
+  }), [notify, recordCalls]);
 
   // Problems reported by the line (microphone refused, hold rejected…) are said once, in plain words.
   const lastError = useRef<string | undefined>(undefined);

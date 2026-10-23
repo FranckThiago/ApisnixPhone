@@ -1,7 +1,28 @@
-import type { MessageKey } from './fr';
+import type {
+ MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  "conference.title": "Audio de la campaña",
+  "conference.connected": "Audio conectado a la campaña",
+  "conference.incoming": "La conferencia está llamando",
+  "conference.waiting": "Esperando la conferencia",
+  "conference.help": "Utilice el CRM para llamar, colgar o calificar. La sesión de audio permanece abierta entre clientes.",
+  "conference.answer": "Unirse a la conferencia",
+  "conference.unmute": "Activar micrófono",
+  "conference.mute": "Silenciar micrófono",
+  "conference.audio": "Activar audio",
+
+  "contactContext.title": "Ficha proporcionada por el CRM",
+  "contactContext.firstName": "Nombre",
+  "contactContext.lastName": "Apellidos",
+  "contactContext.phone": "Teléfono",
+  "contactContext.email": "Email",
+  "contactContext.company": "Empresa",
+  "contactContext.address": "Dirección",
+  "contactContext.city": "Ciudad",
+  "contactContext.country": "País",
+
   'pilot.demo': 'DEMO',
   'pilot.connected': 'Sesión de audio conectada',
   'pilot.disconnected': 'Conecta la sesión de audio',

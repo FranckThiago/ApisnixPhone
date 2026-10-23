@@ -1,3 +1,4 @@
+import { validContact, visibleContact } from '../src/embed/contact';
 import { describe, expect, it } from 'vitest';
 import { allowedOrigins, authorizedMessage, command, envelope, phoneEvent, phoneHint, PROTOCOL, safeOrigin } from '../src/embed/protocol';
 import { prepareResult, publicCall, publicState } from '../src/embed/state';
@@ -70,5 +71,22 @@ describe('embedded commands and public events', () => {
     expect(phoneEvent({ ...base, type: 'state', state: {} })).toBe(false);
     expect(phoneEvent({ ...base, type: 'call', call: null })).toBe(false);
     expect(phoneEvent({ ...base, type: 'result', requestId: 'req-1', code: 'unknown' })).toBe(false);
+  });
+});
+
+
+describe('CRM contact boundary', () => {
+  it('accepts exactly the display fields and rejects hidden data and overlong values', () => {
+    expect(validContact({ firstName: '<script>alert(1)</script>', notes: 'text' })).toBe(true); // rendered as React text
+    for (const value of [undefined, [], 'text', { password: 'secret' }, { phone: 123 }, { email: 'x'.repeat(255) }]) expect(validContact(value)).toBe(false);
+    expect(validContact(null)).toBe(true);
+  });
+  it('never shows a card on another call or a closed session', () => {
+    const context = { contact: { firstName: 'Example' }, callId: 'call-1' };
+    expect(visibleContact(context, true, 'call-1')).toEqual(context.contact);
+    expect(visibleContact(context, true, 'call-2')).toBeNull();
+    expect(visibleContact(context, true, null)).toBeNull();
+    expect(visibleContact(context, false, 'call-1')).toBeNull();
+    expect(command({ ...base, type: 'set-contact', requestId: 'r1', contact: null })).toBe(true);
   });
 });

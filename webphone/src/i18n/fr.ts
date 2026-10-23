@@ -1,5 +1,25 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  "conference.title": "Audio de la campagne",
+  "conference.connected": "Audio connecté à la campagne",
+  "conference.incoming": "La conférence vous appelle",
+  "conference.waiting": "En attente de la conférence",
+  "conference.help": "Utilisez les commandes du CRM pour appeler un client, raccrocher ou qualifier. La session audio reste ouverte entre les clients.",
+  "conference.answer": "Rejoindre la conférence",
+  "conference.unmute": "Réactiver le micro",
+  "conference.mute": "Couper le micro",
+  "conference.audio": "Activer le son",
+
+  "contactContext.title": "Fiche fournie par le CRM",
+  "contactContext.firstName": "Prénom",
+  "contactContext.lastName": "Nom",
+  "contactContext.phone": "Téléphone",
+  "contactContext.email": "Email",
+  "contactContext.company": "Entreprise",
+  "contactContext.address": "Adresse",
+  "contactContext.city": "Ville",
+  "contactContext.country": "Pays",
+
   'pilot.demo': 'DÉMO',
   'pilot.connected': 'Session audio ouverte',
   'pilot.disconnected': 'Session audio à connecter',
