@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ManagerDelegate } from '../src/telephony/SipPhoneController';
-import { browserSipEnvironment } from '../src/telephony/sipEnvironment';
+import { browserSipEnvironment, sipConfigFromEnv } from '../src/telephony/sipEnvironment';
 
 const fake = vi.hoisted(() => ({
   options: undefined as unknown as {
     delegate: ManagerDelegate;
     registerGuard(): Promise<boolean>;
-    userAgentOptions: { sessionDescriptionHandlerFactory(session: unknown, options: unknown): unknown };
+    userAgentOptions: { userAgentString: string; sessionDescriptionHandlerFactory(session: unknown, options: unknown): unknown };
   },
   factoryOptions: [] as unknown[],
   contacts: [] as string[],
@@ -39,10 +39,10 @@ vi.mock('sip.js', () => ({
   },
 }));
 
-async function setup() {
+async function setup(embedded = false) {
   const delegate = { onRegistered: vi.fn(), onLineTaken: vi.fn(), canReceiveCall: () => true } as unknown as ManagerDelegate;
   const manager = await browserSipEnvironment.createManager(
-    { domain: 'pbx.example', wssUrl: 'wss://pbx.example/ws' },
+    sipConfigFromEnv({ VITE_APP_MODE: 'live', VITE_SIP_DOMAIN: 'pbx.example', VITE_SIP_WSS_URL: 'wss://pbx.example/ws' } as ImportMetaEnv, embedded)!,
     { username: 'test', password: 'fictional-only' }, delegate,
     async () => { throw new Error('No microphone required'); }, undefined,
   );
@@ -50,6 +50,12 @@ async function setup() {
 }
 
 describe('SIP registration ownership during recovery', () => {
+  it('distinguishes the embedded API phone while preserving the browser guard prefix', async () => {
+    await setup();
+    expect(fake.options.userAgentOptions.userAgentString).toBe('ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2');
+    await setup(true);
+    expect(fake.options.userAgentOptions.userAgentString).toBe('ApisnixPhoneWeb/0.1.0 ApisnixPhoneAPI/0.1.0 SIP.js/0.21.2');
+  });
   beforeEach(() => { vi.useFakeTimers(); fake.contacts = []; fake.responds = true; fake.connected = true; fake.reject = false; });
   afterEach(() => vi.useRealTimers());
   it('distinguishes an empty binding, our binding, and another device', async () => {

@@ -55,7 +55,8 @@ export const browserSipEnvironment: SipEnvironment = {
         ...(recoveryContact ? { contactName: recoveryContact } : {}),
         contactParams: { transport: 'wss' },
         // Recognisable in the PBX's peer list and in supervision.
-        userAgentString: 'ApisnixPhoneWeb/0.1.0 SIP.js/0.21.2',
+        // Keep the browser prefix recognised by the deployed abandoned-call guard.
+        userAgentString: `ApisnixPhoneWeb/0.1.0 ${config.embedded ? 'ApisnixPhoneAPI/0.1.0 ' : ''}SIP.js/0.21.2`,
         logBuiltinEnabled: false,
         logConfiguration: false,
         // The original microphone track goes directly to the call, without Web Audio.
@@ -183,7 +184,7 @@ export const browserSipEnvironment: SipEnvironment = {
   },
 };
 
-export function sipConfigFromEnv(env: ImportMetaEnv) {
+export function sipConfigFromEnv(env: ImportMetaEnv, embedded = false) {
   const domain = String(env.VITE_SIP_DOMAIN ?? '').trim();
   const wssUrl = String(env.VITE_SIP_WSS_URL ?? '').trim();
   const iceServers = String(env.VITE_ICE_SERVERS ?? '').split(',').map(url => url.trim()).filter(Boolean);
@@ -192,5 +193,5 @@ export function sipConfigFromEnv(env: ImportMetaEnv) {
   // The PBX web server says whether this site is blocked (same host as the SIP domain unless overridden).
   const statusUrl = String(env.VITE_BLOCK_STATUS_URL ?? '').trim() || `https://${domain}/agc/apisnix/etat-telephonie.php`;
   const callWaitingLines = String(env.VITE_CALL_WAITING_LINES ?? '').split(',').map(line => line.trim()).filter(line => /^[a-zA-Z0-9_-]{1,64}$/.test(line));
-  return { domain, wssUrl, iceServers, statusUrl, callWaitingLines };
+  return { domain, wssUrl, iceServers, statusUrl, callWaitingLines, embedded };
 }

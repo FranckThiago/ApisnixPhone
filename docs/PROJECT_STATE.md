@@ -17,6 +17,10 @@ SameSite=Strict à traiter ; journal/profil/TURN non validés dans cette iframe.
 réussis. Loopback live permis uniquement sur serveur de développement et origine
 explicite ; build live toujours HTTPS. Frontend/backend et manuels inchangés ;
 réactivation du poste pilote documentée dans le dépôt privé.
+Nom de supervision préparé : **ApisnixPhone API** pour le mode intégré,
+**ApisnixPhone Web** pour le mode autonome. Marqueur SIP compatible avec le
+garde-fou PBX existant ; publication conjointe des deux composants encore à faire.
+252 tests frontend, typage, lint et build réussis pour cette distinction.
 
 
 

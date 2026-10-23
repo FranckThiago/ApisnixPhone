@@ -82,6 +82,20 @@ pas à elle seule qu’un phone appartient au client hôte : cela reste du resso
 des accès et contrôles existants. Un futur SSO nécessitera un backend dédié,
 pas un mot de passe placé dans le JavaScript du CRM.
 
+## Nom dans la supervision
+
+Le module intégré se déclare **ApisnixPhone API** ; le téléphone ouvert seul
+reste **ApisnixPhone Web**. La distinction est préparée dans le code des deux
+dépôts, non déployée. Elle exige la publication du téléphone et de la règle de
+reconnaissance dans `supervision/static/app.js`, puis une nouvelle connexion.
+
+Le User-Agent SIP intégré conserve le préfixe `ApisnixPhoneWeb/0.1.0` et ajoute
+`ApisnixPhoneAPI/0.1.0` avant le token SIP.js. Ce préfixe maintient la compatibilité
+avec le garde-fou PBX déjà déployé contre les appels abandonnés. La supervision
+reconnaît le marqueur API avant le cas Web, dans la liste, les fiches et la recherche.
+Le mode vient de la fenêtre encadrée, pas d’un paramètre fourni par le CRM.
+C’est une identité déclarative d’application, sans modification des droits.
+
 ## Contrat SDK v1
 
 - `createApisnixPhone({container, url, phone?, title?, onEvent?, onError?})` monte

@@ -70,7 +70,7 @@ const AppContext = createContext<AppValue | null>(null);
 
 // One controller for the whole page life: it must survive every view change.
 // `live` needs the public connection settings; anything else is the demonstration, which never touches the network.
-const sipConfig = sipConfigFromEnv(import.meta.env);
+const sipConfig = sipConfigFromEnv(import.meta.env, window.parent !== window);
 const demoPhone = sipConfig ? null : new DemoPhoneController();
 const phone: PhoneController = demoPhone ?? new CallWaitingPhoneController(sipConfig!, browserSipEnvironment);
 const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '');

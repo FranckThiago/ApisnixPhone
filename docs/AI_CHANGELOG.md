@@ -1,5 +1,14 @@
 # Journal des changements
 
+## 2026-10-23 — Identité ApisnixPhone API dans la supervision
+
+Mode encadré transmis à la configuration SIP, marqueur API dans le User-Agent
+et distinction API/Web préparée côté supervision dans le dépôt privé. Préfixe
+Web conservé pour le garde-fou existant. 252 tests, typage/lint/build ; contrôles
+de reconnaissance des noms et compatibilité du garde-fou réussis. Contrat, état
+et architecture alignés ; aucun déploiement, migration ou changement de droits.
+
+
 ## 2026-10-23 — Review et pilote SIP réel du module intégré
 
 Appels internes entrants/sortants et audio bidirectionnel mesurés sur le vrai

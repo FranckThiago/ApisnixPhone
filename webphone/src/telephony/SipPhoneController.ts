@@ -70,6 +70,8 @@ export interface Manager {
 export interface SessionMedia { microphone(): Promise<MediaStream>; audio?: HTMLAudioElement }
 
 export interface SipConfig {
+  /** Display identity only; never an authorization or a phone assignment. */
+  embedded?: boolean;
   /** Explicit build pilot; empty by default. No server permissions are granted here. */
   callWaitingLines?: string[];
   maxCalls?: 1 | 2;
