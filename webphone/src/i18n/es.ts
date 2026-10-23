@@ -2,6 +2,17 @@ import type { MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  'pilot.demo': 'DEMO',
+  'pilot.connected': 'Sesión de audio conectada',
+  'pilot.disconnected': 'Conecta la sesión de audio',
+  'pilot.keep': 'Permanece conectada entre llamadas de clientes.',
+  'pilot.explain': 'Conecta el audio antes de estar disponible.',
+  'pilot.joining': 'Conectando…',
+  'pilot.join': 'Abrir sesión de demostración',
+  'pilot.unmute': 'Activar micrófono',
+  'pilot.mute': 'Silenciar micrófono',
+  'pilot.failure': 'Simular pérdida de audio',
+  'pilot.noAudio': 'Simulación local · sin llamadas ni micrófono reales',
   "embed.line": "Puesto {phone}",
   "embed.secure": "Acceso individual",
   "embed.loginLead": "Conecta tu puesto para llamar desde este CRM.",

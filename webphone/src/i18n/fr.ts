@@ -1,5 +1,16 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  'pilot.demo': 'DÉMO',
+  'pilot.connected': 'Session audio ouverte',
+  'pilot.disconnected': 'Session audio à connecter',
+  'pilot.keep': 'Elle reste ouverte entre les appels clients.',
+  'pilot.explain': 'Connectez la session audio avant de vous rendre disponible.',
+  'pilot.joining': 'Connexion…',
+  'pilot.join': 'Ouvrir la session démo',
+  'pilot.unmute': 'Réactiver le micro',
+  'pilot.mute': 'Couper le micro',
+  'pilot.failure': 'Simuler une coupure audio',
+  'pilot.noAudio': 'Simulation locale · aucun appel ni micro réel',
   "embed.line": "Poste {phone}",
   "embed.secure": "Accès individuel",
   "embed.loginLead": "Connectez votre poste pour téléphoner depuis ce CRM.",

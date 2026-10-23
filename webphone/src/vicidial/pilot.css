@@ -1,0 +1,11 @@
+.conference-pilot { box-sizing:border-box; min-height:330px; padding:20px; background:#101730; color:#edf2ff; font-family:system-ui,sans-serif; text-align:center }
+.conference-pilot header { display:flex; align-items:center; gap:8px; margin-bottom:18px; font-size:14px }
+.conference-pilot header img { width:26px; height:26px }
+.conference-pilot header small { margin-left:auto; color:#ffd949; font-size:9px; letter-spacing:.08em }
+.conference-pilot h2 { margin:8px 0; font-size:17px }
+.conference-pilot p { color:#b6c2df; font-size:12px; line-height:1.5; margin:8px 0 16px }
+.conference-pilot .connected { color:#31d9ab }
+.conference-pilot button { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; border:0; border-radius:9px; background:#22ba91; color:#061e19; font:600 12px system-ui; cursor:pointer }
+.conference-pilot button:disabled { opacity:.5; cursor:wait }
+.conference-pilot .failure { background:transparent; color:#e9aab5; margin-top:5px; font-weight:400 }
+.conference-pilot footer { color:#9aa9ca; font-size:10px; margin-top:12px }

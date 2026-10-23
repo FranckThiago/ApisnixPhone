@@ -1,5 +1,15 @@
 # État du projet
 
+## Pilote VICIdial avec écran agent conservé — 23 octobre 2026
+
+[Banc local de conférence](VICIDIAL_PILOT.md) disponible : habillage agent existant
+dans le dépôt de gestion, panneau ApisnixPhone API simulé, qualification de clients
+successifs sans couper leur session audio commune, reprise explicite après une
+coupure. Développement local seulement ; aucun appel réel ni déploiement.
+Accès CRM multiéquipes, sélection exclusive du téléphone et raccordement aux
+événements/actions natifs restent à implémenter avant la recette de campagne.
+Le SDK publié et la release `20261023-embed-api` restent inchangés.
+
 ## Documentation technique d'intégration client — 23 octobre 2026
 
 [Guide et kit client](integration/README.md) prêts à transmettre : édition 1.0,

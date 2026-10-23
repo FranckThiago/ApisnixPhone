@@ -1,5 +1,13 @@
 # Architecture ApisnixPhone
 
+## Expérimentation VICIdial locale — 23 octobre 2026
+
+Le [pilote de conférence](VICIDIAL_PILOT.md) sépare la session audio permanente
+des appels clients gérés par VICIdial. `src/vicidial/` est une simulation locale
+gardée par le mode développement ; canal dédié, sans modification du SDK client
+ni de l’authentification live. Le banc dans le dépôt de gestion réutilise
+l’habillage agent existant. Le raccordement live reste à implémenter.
+
 ## Panneau téléphonique intégrable — 23 octobre 2026
 
 `src/embed/` ajoute une barrière d’origine avant `AppProvider`, puis réutilise

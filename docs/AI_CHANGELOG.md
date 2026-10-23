@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-23 — Banc VICIdial avec session audio persistante
+
+À la demande de Franck, conservation de l’écran agent APISNIX et préparation
+d’un pilote local simulé. Ajout de `src/vicidial/`, route de développement fermée
+dans les builds, panneau FR/EN/ES, protocole de démonstration indépendant du SDK,
+contrôle origine/source/canal et perte de heartbeat. Le banc privé réutilise
+agent.js/agent.css et distingue session audio, clients et qualification. Tests
+du cycle, du canal, de la garde et des transitions ; documentation du lancement,
+des limites et du futur raccordement CRM. Aucun compte, campagne, secret,
+migration ou déploiement modifié ; SDK et manuels clients inchangés.
+
 ## 2026-10-23 — Présentation et logo du guide d'intégration client
 
 Refonte du PDF à la demande de Franck : couverture APISNIX bleu/jaune, logo
