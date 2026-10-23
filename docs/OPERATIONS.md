@@ -1,5 +1,19 @@
 # Construction et validation
 
+## Construire et essayer l’intégration CRM — 23 octobre 2026
+
+**Développement local uniquement ; aucune nouvelle release de production.**
+`npm run build` produit maintenant aussi `dist/apisnix-embed.js` et ses modules
+associés dans `assets/`. Publier le répertoire complet lors d’une future release.
+Lancer la démo avec `VITE_APP_MODE=demo npm run dev -- --port 5185` depuis
+`webphone/`, puis ouvrir `/integration-demo` (forçage du mode pour ne pas hériter
+d’un `.env.local` live). Pas de compte PBX ni microphone nécessaires.
+`VITE_EMBED_ALLOWED_ORIGINS` est une configuration publique de build, vide par
+défaut en live. Ne pas ouvrir globalement l’iframe ou les API :
+[procédure d’activation future, prérequis et limites](WEBPHONE_EMBED.md).
+Aucune modification des sauvegardes, services, données ou en-têtes actuels.
+
+
 
 ## Badge des manqués serveur — 22 octobre 2026
 

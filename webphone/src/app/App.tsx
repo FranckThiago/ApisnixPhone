@@ -213,7 +213,7 @@ function Workspace() {
   );
 }
 
-export function App() {
+export function App({ embedded = false }: { embedded?: boolean }) {
   const { account } = usePhone();
   const { sessionOpen } = useApp();
   // A new language re-renders the whole tree, including the parts that format outside React.
@@ -227,5 +227,5 @@ export function App() {
     return () => media.removeEventListener('change', follow);
   }, []);
   // The workspace stays while the line reconnects; only a closed session returns to sign-in.
-  return <>{sessionOpen && account ? <Workspace /> : <Login />}<Toasts /></>;
+  return <>{sessionOpen && account ? <Workspace /> : <Login embedded={embedded} />}<Toasts /></>;
 }

@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
+  /** Explicit CRM origins allowed to initialize /embed. Live defaults to none. */
+  readonly VITE_EMBED_ALLOWED_ORIGINS?: string;
   readonly VITE_APP_MODE?: 'demo' | 'live';
   readonly VITE_SIP_DOMAIN?: string;
   readonly VITE_SIP_WSS_URL?: string;

@@ -80,7 +80,7 @@ const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : ne
 // Read straight from the PBX's public page: its origin is allowed by the site's connection policy.
 const announcements: AnnouncementsSource = demoPhone ? new DemoAnnouncementsSource() : new HttpAnnouncementsSource(announcementsUrlFromEnv(import.meta.env));
 
-export function AppProvider({ children }: { children: ReactNode }) {
+export function AppProvider({ children, embedded = false }: { children: ReactNode; embedded?: boolean }) {
   useEffect(() => bindPageLifecycle(phone), []);
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
@@ -91,7 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     window.addEventListener('online', retry);
     return () => { window.removeEventListener('beforeunload', warn); window.removeEventListener('online', retry); };
   }, []);
-  const [view, setView] = useState<View>('journal');
+  const [view, setView] = useState<View>(embedded ? 'phone' : 'journal');
   const [dial, setDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -237,11 +237,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
     setSessionOpen(false);
     // An explicit sign-out must not be undone by the browser signing back in on the next reload.
-    void forgetSilentAccess();
+    if (!embedded) void forgetSilentAccess();
     await phone.disconnect();
     store.close();
     recorded.current.clear();
-    setView('journal');
+    setView(embedded ? 'phone' : 'journal');
     setDial('');
     setSelectedContactId(null);
     setFavoritesOnly(false);
@@ -249,7 +249,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setRecordingsAccess({ state: 'idle' });
     // The recordings session belongs to the person, not to the browser left open.
     void recordings.signOut();
-  }, []);
+  }, [embedded]);
 
   const simulateIncoming = useCallback(() => {
     const caller = DEMO_CALLERS[incomingIndex.current++ % DEMO_CALLERS.length]!;

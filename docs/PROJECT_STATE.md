@@ -1,5 +1,19 @@
 # État du projet
 
+## Intégration CRM par poste — 23 octobre 2026
+
+**Première version locale, non publiée.** `/embed` réutilise le téléphone et
+ses accès individuels ; SDK navigateur `createApisnixPhone`, préparation du
+numéro et événements de connexion/appel. Démonstration Atelier CRM sur
+`/integration-demo`, deux postes fictifs, sans appel réel. Origines autorisées
+explicites, contrôle de fenêtre/canal, aucun mot de passe transmis au CRM.
+En live, intégration fermée par défaut ; en-têtes, sessions entre sites et
+appels réels à valider sur un futur pilote avant toute activation client.
+[Contrat, essai local et limites](WEBPHONE_EMBED.md). Production et manuels
+clients inchangés ; aucune migration ni création de compte. 250 tests, typage,
+lint et builds démo/live réussis ; parcours simulés et origines contrôlés.
+
+
 
 ## Badge du Journal alimenté par le serveur — 22 octobre 2026
 

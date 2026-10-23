@@ -1,5 +1,18 @@
 # Architecture ApisnixPhone
 
+## Panneau téléphonique intégrable — 23 octobre 2026
+
+`src/embed/` ajoute une barrière d’origine avant `AppProvider`, puis réutilise
+`App`/`PhoneDock` et le contrôleur existant. Le mode intégré commence au clavier,
+affiche le poste et la déconnexion, désactive liens d’accès et connexion silencieuse.
+Toutes les routes encadrées passent par la barrière. Le SDK ES crée une iframe
+et échange un protocole versionné avec origine, source et canal vérifiés ;
+projection explicite de l’état, sans secrets ni export d’historique.
+Le CRM fictif consomme ce même SDK. Le build émet `apisnix-embed.js` et ses
+modules associés ; aucun nouveau service ni dépendance. Fonction locale non
+activée en production. [Contrat et frontières de sécurité](WEBPHONE_EMBED.md).
+
+
 
 ## Badge des appels manqués récupérés — 22 octobre 2026
 

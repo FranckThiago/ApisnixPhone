@@ -1,3 +1,4 @@
+import { phoneHint } from '../../embed/protocol';
 import { clearRecoveryMarker } from './recovery';
 import { ArrowRight, Eye, EyeOff, Headphones, Languages, Link2, ShieldCheck, Zap } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -19,11 +20,11 @@ export function LanguagePicker() {
   );
 }
 
-export function Login() {
+export function Login({ embedded = false }: { embedded?: boolean }) {
   const { login, signingIn } = useApp();
   const { connection, error, demo } = usePhone();
-  const [link] = useState(pendingSignInLink);
-  const [username, setUsername] = useState(link?.username ?? '');
+  const [link] = useState(() => embedded ? null : pendingSignInLink());
+  const [username, setUsername] = useState(link?.username ?? (embedded ? phoneHint(location.search) : ''));
   const [password, setPassword] = useState(link?.password ?? '');
   const [visible, setVisible] = useState(false);
   const [setupFailed, setSetupFailed] = useState(false);
@@ -34,11 +35,11 @@ export function Login() {
   const { t } = useI18n();
   const busy = signingIn || connection === 'connecting' || connection === 'registering';
 
-  useEffect(() => onSignInLink(pasted => {
+  useEffect(() => embedded ? undefined : onSignInLink(pasted => {
     setUsername(pasted.username);
     setPassword(pasted.password);
     setLinkRound(round => round + 1);
-  }), []);
+  }), [embedded]);
 
   // A sign-in link has filled the form: send it as the person would, same checks, same offer to save.
   useEffect(() => {
@@ -51,10 +52,10 @@ export function Login() {
   // Otherwise, after a reload, an access the person saved in the browser signs back in by itself (real line only).
   const tried = useRef(false);
   useEffect(() => {
-    if (link || demo || tried.current || connection !== 'offline') return;
+    if (embedded || link || demo || tried.current || connection !== 'offline') return;
     tried.current = true;
     void savedCredentials().then(async saved => { if (saved) await login(saved); }).catch(() => setSetupFailed(true));
-  }, [link, demo, connection, login]);
+  }, [embedded, link, demo, connection, login]);
 
   const submit = async () => {
     if (busy) return;
@@ -64,7 +65,7 @@ export function Login() {
     try {
       if (await login(credentials)) {
         clearRecoveryMarker();
-        if (!demo) void offerToSave(credentials);
+        if (!demo && !embedded) void offerToSave(credentials);
       }
     } catch { setSetupFailed(true); }
   };
@@ -87,9 +88,9 @@ export function Login() {
           <img src="/apisnix-mark.png" alt="APISNIX" width={56} height={56} className="login-mark" />
           <p className="eyebrow">ApisnixPhone</p>
           <h1>{t('login.title')}</h1>
-          <p className="lead">{t('login.lead')}</p>
+          <p className="lead">{t(embedded ? 'embed.loginLead' : 'login.lead')}</p>
           {demo && <p className="callout">{t('login.demo')}</p>}
-          <label>{t('login.username')}<input name="username" value={username} onChange={event => setUsername(event.target.value)} autoComplete="username" maxLength={100} required autoFocus /></label>
+          <label>{t('login.username')}<input name="username" value={username} onChange={event => setUsername(event.target.value)} autoComplete="username" maxLength={100} required autoFocus={!embedded} /></label>
           <label>{t('login.password')}
             <span className="password"><input name="password" type={visible ? 'text' : 'password'} value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" maxLength={256} required />
               <button type="button" className="icon-button" aria-label={t(visible ? 'login.hidePassword' : 'login.showPassword')} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span></label>
@@ -98,7 +99,7 @@ export function Login() {
           <button type="submit" className="primary big" disabled={busy}>{busy ? t(connection === 'ready' ? 'login.opening' : connection === 'connecting' ? 'login.connecting' : 'login.registering') : <>{t('login.submit')} <ArrowRight size={18} /></>}</button>
           <p className="fine">{t('login.help')}</p>
           {/* For the administrator, out of the way: the page that prepares a customer's sign-in link. */}
-          <a className="discreet-link" href="/lien"><Link2 size={13} /> {t('login.linkGenerator')}</a>
+          {!embedded && <a className="discreet-link" href="/lien"><Link2 size={13} /> {t('login.linkGenerator')}</a>}
         </form>
       </section>
     </main>

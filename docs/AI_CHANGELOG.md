@@ -1,5 +1,25 @@
 # Journal des changements
 
+## 2026-10-23 — Première version intégrable par phone et démo CRM
+
+Ajout de `src/embed/` : SDK ES, protocole borné, barrière d’origine et panneau
+réutilisant l’application. Connexion manuelle individuelle, préparation d’appel
+avec validation utilisateur, remontée des états de ligne/appel ; aucune commande
+d’accès ni export de secrets. Atelier CRM fictif consomme le même module, ouvre
+la fiche à l’appel entrant et conserve la ligne lorsque le panneau est réduit.
+Adaptations ciblées App/AppContext/Login, textes FR/EN/ES, entrée SDK au build.
+Documentation d’intégration et sources de vérité alignées. Aucune migration,
+création de compte, publication en production ni modification des manuels.
+Validation : 250 tests (31 fichiers), typage/lint, builds démo et live isolé.
+Navigateur intégré : appel sortant puis entrant simulés avec événements CRM,
+fiche entrante sélectionnée, réduction sans coupure, déconnexion et poste 1002,
+affichage à 1366 et 390 px sans débordement horizontal. Depuis une autre origine,
+refus par défaut ; avec autorisation explicite, le SDK compilé ouvre le formulaire
+et retourne `not-connected` à une préparation avant connexion. Pas de validation
+audio/SIP réelle entre sites. Avertissement de taille du bundle Vite conservé.
+Preuves locales et sorties de contrôles dans `.work/embed-demo/`.
+
+
 
 ## 2026-10-22 — Badge des manqués après reconnexion
 
