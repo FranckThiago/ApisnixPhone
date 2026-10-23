@@ -117,3 +117,13 @@ describe('complete line sign-in', () => {
     } finally { timeout.mockRestore(); }
   });
 });
+
+it('checks CRM authorization before registering a real line', async () => {
+  const phone = new DemoPhoneController();
+  const connect = vi.spyOn(phone, 'connect');
+  const open = vi.fn();
+  const login = createLineLogin(phone, open, async () => { throw new Error('CRM refuses this team'); });
+  await expect(login(credentials)).rejects.toThrow('CRM refuses this team');
+  expect(connect).not.toHaveBeenCalled();
+  expect(open).not.toHaveBeenCalled();
+});

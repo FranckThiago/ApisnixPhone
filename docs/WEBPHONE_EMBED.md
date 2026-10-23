@@ -1,9 +1,9 @@
 # Intégration ApisnixPhone dans un CRM — première version
 
-État au 23 octobre 2026 : code et démonstration locale, **non déployés**.
-La production reste celle décrite dans OPERATIONS. Cette version livre un
-panneau réutilisable et un petit SDK navigateur, pas une API publique de création
-de comptes ni un accès serveur aux historiques.
+État au 23 octobre 2026 : version avec administration des domaines et sessions
+indépendantes des cookies tiers. Publication et preuves : [OPERATIONS](OPERATIONS.md).
+Cette version livre un panneau et un SDK navigateur, pas une API publique de
+création de comptes ni un accès serveur aux historiques.
 
 ## Essayer localement
 
@@ -68,8 +68,8 @@ du domaine client (les domaines `.example` ci-dessous sont des exemples) :
 
 L’utilisateur saisit ses accès **phone par phone** dans le formulaire
 ApisnixPhone. Le champ `phone` préremplit seulement l’identifiant : il n’accorde
-aucun droit et ne remplace pas l’authentification. En mode live, la connexion SIP
-et l’espace de données utilisent les mécanismes existants de la ligne.
+aucun droit et ne remplace pas l’authentification. En mode live, le serveur vérifie les accès de la ligne et son appartenance à
+l’équipe autorisée pour ce CRM avant de permettre la connexion SIP.
 Le CRM ne reçoit pas les mots de passe. Aucun identifiant partagé d’administrateur,
 aucune reconnexion silencieuse par coffre navigateur, aucun lien de connexion
 par fragment ni commande d’authentification ne sont utilisés dans l’iframe.
@@ -77,17 +77,15 @@ L’autocomplétion manuelle du navigateur reste possible.
 
 Un seul poste actif selon les règles actuelles du service : ouvrir la même ligne
 ailleurs peut reprendre sa connexion. Utiliser un phone distinct par agent.
-Cette version ne crée pas les phones, ne provisionne pas un client et ne prouve
-pas à elle seule qu’un phone appartient au client hôte : cela reste du ressort
-des accès et contrôles existants. Un futur SSO nécessitera un backend dédié,
+Cette version ne crée pas les phones : ils sont créés et affectés à l’équipe
+cliente dans les outils existants. Un futur SSO nécessitera un backend dédié,
 pas un mot de passe placé dans le JavaScript du CRM.
 
 ## Nom dans la supervision
 
 Le module intégré se déclare **ApisnixPhone API** ; le téléphone ouvert seul
-reste **ApisnixPhone Web**. La distinction est préparée dans le code des deux
-dépôts, non déployée. Elle exige la publication du téléphone et de la règle de
-reconnaissance dans `supervision/static/app.js`, puis une nouvelle connexion.
+reste **ApisnixPhone Web**. La distinction exige le téléphone et la règle de reconnaissance API dans
+`supervision/static/app.js`, puis une nouvelle connexion de la ligne.
 
 Le User-Agent SIP intégré conserve le préfixe `ApisnixPhoneWeb/0.1.0` et ajoute
 `ApisnixPhoneAPI/0.1.0` avant le token SIP.js. Ce préfixe maintient la compatibilité
@@ -130,40 +128,92 @@ règles que le clavier. L’ouverture du formulaire exige d’abord un parent au
 Toutes les routes chargées en iframe passent par cette barrière, y compris `/`
 et `/lien`. `/embed` ouvert seul affiche une explication, pas une connexion.
 
-## Activation future chez un client — non effectuée
+## Administrer les intégrations
 
-1. Définir `VITE_EMBED_ALLOWED_ORIGINS` au build avec les origines HTTPS exactes
-   des CRM autorisés, séparées par des virgules (port compris si présent).
-   En live, la liste vide refuse tous les parents ; aucune origine issue d’une
-   URL utilisateur n’est considérée comme une autorisation. Pas de wildcard.
-   En démo, l’origine du téléphone est admise automatiquement. En développement
-   Vite (`import.meta.env.DEV`), même avec SIP live, les loopbacks HTTP sont
-   admis seulement si explicitement configurés. Un build live reste HTTPS
-   uniquement et fermé par défaut. Exemple local : `http://127.0.0.1:5187`.
-2. Héberger le téléphone sur une origine distincte du CRM pour que la séparation
-   navigateur protège le formulaire. La démo locale partage volontairement une
-   origine ; elle illustre le flux, pas l’isolation de deux sites de production.
-3. Préparer les en-têtes **uniquement pour `/embed`** : CSP `frame-ancestors`
-   avec ces mêmes origines, sans interdiction contradictoire `X-Frame-Options`.
-   Garder le refus d’iframe sur les autres routes. Ne pas retirer globalement
-   les protections du site. Le CRM autorise cette origine dans `frame-src` et
-   délègue le microphone ; le SDK ajoute `allow` sur l’iframe mais ne peut pas
-   élargir une Permissions-Policy restrictive du parent.
-4. Autoriser la lecture CORS des modules SDK statiques par les domaines clients
-   (et leur `script-src`). Ne pas ouvrir les API de données pour cela.
-5. Vérifier en HTTPS les sessions HTTP, cookies tiers/partitionnés, stockage,
-   SIP WebSocket, permissions microphone, lecture audio et reconnexion sur les
-   navigateurs clients. Les mécanismes actuels de session peuvent demander une
-   adaptation pour un usage entre sites distincts : **session entre sites non validée**.
-   Les appels SIP réels locaux sont validés séparément, voir la review ci-dessous.
-6. Prévoir pilote sur phone dédié, sauvegarde des en-têtes/build et retour ciblé,
-   puis seulement publier selon OPERATIONS. Cette livraison ne modifie aucun
-   en-tête, backend, PBX, compte client ou déploiement de production.
+Dans **Supervision → Administration → Intégrations CRM** (superadministrateur) :
+
+1. Créer ou choisir une équipe cliente et y affecter ses phones. Les équipes
+   réservées ADMIN, Freelancer et À classer ne sont pas proposées.
+2. Saisir l’origine HTTPS exacte du CRM, sans chemin, paramètres, wildcard ou
+   port autre que 443 ; choisir l’équipe, puis « Autoriser ce CRM ».
+3. « Copier le code » fournit le module et le conteneur à installer dans le CRM.
+   Adapter ses dimensions et ajouter les événements/préparation d’appel selon
+   le contrat ci-dessus. Aucun mot de passe dans ce code.
+4. Modifier ou suspendre depuis cette même rubrique. Chaque modification
+   révoque les sessions de données de cette intégration. La suspension bloque
+   les prochaines connexions ; elle ne déconnecte pas une ligne SIP déjà
+   enregistrée. Se déconnecter du téléphone pour fermer aussi cette ligne.
+
+Un domaine correspond à une équipe ; plusieurs domaines peuvent partager une
+équipe. L’autorisation d’un domaine couvre les pages de cette origine : ne pas
+l’accorder à un site dont le client ne maîtrise pas tous les scripts.
+Aucun domaine client n’est autorisé automatiquement. Les changements prennent
+effet sans rebuild ni rechargement Caddy. Une édition concurrente est refusée
+plutôt qu’écrasée. La suppression d’une équipe supprime ses intégrations.
+
+Le CRM doit permettre `frame-src https://phone.apisnix-crm.com`, le chargement
+du SDK dans `script-src` et déléguer le microphone à l’iframe (le SDK pose
+`allow`). Une Permissions-Policy restrictive du CRM doit être adaptée par son
+administrateur. Le site téléphone autorise les modules statiques par CORS ;
+ses API restent sur la même origine, sans CORS client.
+
+## Session et isolation entre sites
+
+`/embed` est servi par le backend avec une CSP `frame-ancestors` dérivée des
+intégrations actives ; les autres pages continuent à refuser l’encadrement.
+Le handshake interroge `/api/embed-policy` avant de montrer le formulaire.
+La variable de build `VITE_EMBED_ALLOWED_ORIGINS` reste un outil de démonstration
+ou développement local ; elle n’accorde aucun accès dans un build live publié.
+
+`POST /api/embed-session` vérifie les accès phone via la passerelle PBX,
+l’équipe et l’intégration, puis émet un jeton opaque valable 8 h. Seule son
+empreinte SHA-256 est enregistrée en base. Le jeton brut reste dans la mémoire
+de l’iframe, jamais dans une URL, le stockage navigateur ou les événements SDK.
+Les requêtes journal/profil/audio/TURN utilisent Authorization et omettent les
+cookies ; les redirections et destinations hors `/api/` de la même origine
+sont refusées. Les fichiers audio sont chargés avec ce jeton puis lus via une
+URL blob révoquée à la fermeture du lecteur. L’API n’est pas un SSO pour le CRM.
+
+Chaque requête revalide le phone, l’utilisateur, l’attribution, l’équipe et la
+version de l’intégration. Les commandes administratives, exports et commandes
+de contrôle d’appel n’acceptent pas ces jetons. Les protections Origin/CSRF
+restent actives pour les mutations. Déconnexion/réouverture du même accès
+révoquent le jeton précédent ; rechargement de l’iframe exige une connexion.
+Après expiration, rouvrir la session ; aucune prolongation silencieuse.
+Le mode autonome conserve son cookie SameSite=Strict et son comportement.
 
 L’intégration navigateur n’ajoute pas de sonnerie fiable écran verrouillé sur
 mobile : cela nécessite un chantier distinct (application/push/prise d’appel).
 
-## Review et essais réels du 23 octobre 2026
+## Validation HTTPS de la release administrable — 23 octobre 2026
+
+Essais sur un second domaine enregistrable APISNIX, avec le bundle de production
+et la session sans cookies. Instrumentation temporaire du média uniquement
+(tonalité synthétique, SIP/WebRTC réels), retirée après vérification.
+
+- Entrant décroché 32 s : 1 548 paquets envoyés, 1 481 reçus avant raccrochage,
+  énergie audio reçue non nulle ; événement SDK ringing-in/active/ended.
+- Sortant interne 30 s : 1 446 paquets envoyés, 1 403 reçus avant raccrochage,
+  énergie non nulle ; préparation SDK puis action Appeler dans l’iframe.
+- Journal serveur visible dans l’iframe ; profil existant chargé et écrit.
+  Contrôle HTTP sans cookies : identité agent d’un seul phone, profil GET/PUT
+  200, endpoint ICE 200 (relais non activé pour ce poste), audio propre en Range
+  206 (32 octets seulement), audio étranger 404, admin/autre phone/équipe 403,
+  déconnexion 200 puis ancien jeton refusé 401. Aucun secret dans les événements.
+- Nom SIP API vérifié sur le peer et règle de supervision publiée.
+- Banc, route Echo et autorisation de test retirés ; classement initial du phone
+  et attribution conservés, aucune origine cliente activée automatiquement.
+
+Limites : le microphone physique du navigateur de test est resté en attente ;
+ces essais valident le média synthétique. Matériel audio, navigateur mobile et
+politique microphone du CRM réel restent à vérifier chez le client. Les premiers
+sortants de 9 s n’étaient pas des preuves du circuit interne : route runtime
+retirée par rechargement puis garde utilisant SIPCHANINFO(peername) vide.
+Validation finale sur route temporaire persistante, limitée au canal exact du
+phone, retirée avec comparaison du fichier avant/après. Aucune route opérateur
+externe validée. 258 tests frontend finaux, typage/lint ; 226 tests backend release.
+
+## Historique : premier pilote local du 23 octobre 2026
 
 **Avis : téléphonie intégrée validée localement ; activation client non prête.**
 Le pilote autorisé utilise un poste réel dédié, SIP.js et WebRTC réels, avec une
@@ -184,7 +234,7 @@ aucune validation des routes opérateur externes, du matériel audio ou d’un m
   agent, un seul poste dans le dashboard ; sélection d’un autre poste ou d’une
   équipe refusée 403. Session de vérification déconnectée (200).
 
-### Points bloquants de publication
+### Blocages constatés lors du premier pilote (traités par la version ci-dessus)
 
 1. Les en-têtes HTTPS de production refusent encore l’iframe avec
    `frame-ancestors 'none'`. Le module ES n’a pas d’autorisation CORS pour un
@@ -210,8 +260,8 @@ elles ne sont pas automatiquement exportées au CRM. Le numéro et l’identifia
 d’appel restent visibles par le site autorisé. Pas d’API publique d’historique,
 de contacts, de qualifications ou d’enregistrements livrée dans cette version.
 Les événements ne sont pas des webhooks et ne garantissent pas une livraison
-après fermeture du navigateur. La liste d’origines ne lie pas à elle seule une
-entreprise à ses phones : le paramètre `phone` reste un préremplissage.
+après fermeture du navigateur. Le paramètre `phone` reste un préremplissage ; la version administrable ajoute
+le contrôle serveur de son appartenance à l’équipe cliente.
 
 Vérifications : 251 tests, typage, lint et build réussis. Aucune nouvelle release
 frontend/backend ni migration. Réactivation, sauvegardes et retrait du circuit

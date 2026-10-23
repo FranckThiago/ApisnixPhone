@@ -1,12 +1,13 @@
 import type { Credentials, PhoneController } from '../../telephony/types';
 
 /** One complete sign-in at a time, including the workspace after REGISTER. */
-export function createLineLogin(phone: PhoneController, openWorkspace: (credentials: Credentials, profile: string) => Promise<void>) {
+export function createLineLogin(phone: PhoneController, openWorkspace: (credentials: Credentials, profile: string) => Promise<void>, beforeConnect?: (credentials: Credentials) => Promise<void>) {
   let pending: Promise<boolean> | null = null;
   return (input: Credentials): Promise<boolean> => {
     if (pending) return pending;
     const credentials = { ...input, username: input.username.trim() };
     pending = (async () => {
+      await beforeConnect?.(credentials);
       await phone.connect(credentials);
       await new Promise<void>(resolve => {
         const settled = () => !['connecting', 'registering'].includes(phone.getSnapshot().connection);

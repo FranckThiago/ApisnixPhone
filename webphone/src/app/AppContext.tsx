@@ -1,3 +1,4 @@
+import { isEmbeddedSession } from '../http/embeddedSession';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
 import { notificationsEnabled } from '../telephony/notifications';
@@ -187,13 +188,15 @@ export function AppProvider({ children, embedded = false }: { children: ReactNod
       store.setPreferences({ theme: storedTheme() });
     } else {
       setRecordingsAccess({ state: 'opening' });
-      setRecordingsAccess(await openLiveWorkspace(store, recordings, credentials, profile));
+      setRecordingsAccess(await openLiveWorkspace(store, recordings, credentials, profile, isEmbeddedSession()));
       store.setPreferences({ notifications: notificationsEnabled() });
     }
     applyTheme(store.getSnapshot().preferences.theme);
     const savedLanguage = store.getSnapshot().preferences.language;
     if (savedLanguage) setLanguage(savedLanguage);
     else store.setPreferences({ language: language() });
+  }, async credentials => {
+    if (!demoPhone && isEmbeddedSession()) await recordings.openWithLine(credentials.username, credentials.password);
   }), []);
 
   const loginAttempt = useRef<Promise<boolean> | null>(null);
@@ -202,7 +205,10 @@ export function AppProvider({ children, embedded = false }: { children: ReactNod
     setSigningIn(true);
     loginAttempt.current = (async () => {
       try {
-        if (!await signIn(credentials)) return false;
+        if (!await signIn(credentials)) {
+          if (isEmbeddedSession()) await recordings.signOut();
+          return false;
+        }
         lineCredentials.current = { ...credentials, username: credentials.username.trim() };
         setSessionOpen(true);
         if (demoPhone) void reopenRecordings();

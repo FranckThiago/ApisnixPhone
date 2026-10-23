@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Square } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { Flag } from '../../components/Flag';
@@ -34,13 +34,21 @@ function Unavailable({ message, retrying, onRetry }: { message: string; retrying
   );
 }
 
-function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: string | null; onPlay(fileId: string | null): void }) {
-  const { recordings } = useApp();
+function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: string | null; onPlay(fileId: string | null, label: string): void }) {
+  const { recordings, notify } = useApp();
   const { contacts } = useData();
   const { t } = useI18n();
   const info = describeNumber(call.number, call.direction);
   const contact = call.number ? findContact(contacts, call.number) : undefined;
   const name = contact?.name ?? (call.number ? info.display : t('rec.unknownNumber'));
+  const download = async (id: string) => {
+    try {
+      const src = await recordings.audioUrl(id, true);
+      const link = document.createElement('a'); link.href = src; link.download = 'appel-' + id;
+      document.body.append(link); link.click(); link.remove();
+      if (src.startsWith('blob:')) setTimeout(() => URL.revokeObjectURL(src), 60_000);
+    } catch { notify(t('rec.fileError'), 'danger'); }
+  };
   return (
     <li className="audio-row">
       <div className="audio-main">
@@ -57,8 +65,8 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
           : <span key={file.id} className="audio-actions">
               <span className="audio-length mono"><Clock3 size={13} aria-hidden="true" />{file.durationSeconds === null ? '—' : formatDuration(file.durationSeconds)}</span>
               <button type="button" className={'ghost small' + (playingId === file.id ? ' active-audio' : '')} aria-pressed={playingId === file.id}
-                onClick={() => onPlay(playingId === file.id ? null : file.id)}>{playingId === file.id ? <Square size={14} /> : <Play size={14} />} {t(playingId === file.id ? 'rec.stop' : 'rec.listen')}</button>
-              <a className="ghost small" href={recordings.audioUrl(file.id, true)} download title={t('rec.downloadTitle')}><Download size={14} /> {t('rec.download')}</a>
+                onClick={() => onPlay(playingId === file.id ? null : file.id, `${name} · ${formatDay(call.startedAt)} ${formatTime(call.startedAt)}`)}>{playingId === file.id ? <Square size={14} /> : <Play size={14} />} {t(playingId === file.id ? 'rec.stop' : 'rec.listen')}</button>
+              <button type="button" className="ghost small" onClick={() => void download(file.id)} title={t('rec.downloadTitle')}><Download size={14} /> {t('rec.download')}</button>
             </span>)}
       </span>
     </li>
@@ -68,7 +76,6 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
 export function Recordings() {
   const { recordings, notify, recordingsAccess, reopenRecordings } = useApp();
   const { demo } = usePhone();
-  const { contacts } = useData();
   const { t, tp } = useI18n();
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
   const [period, setPeriod] = useState<Period>('today');
@@ -78,6 +85,9 @@ export function Recordings() {
   // The player is declarative: the chosen file is state, the element follows it (autoplay on change).
   const [playing, setPlaying] = useState<{ id: string; src: string; label: string } | null>(null);
   const playingId = playing?.id ?? null;
+  const playGeneration = useRef(0);
+  useEffect(() => () => { playGeneration.current++; }, []);
+  useEffect(() => () => { if (playing?.src.startsWith('blob:')) URL.revokeObjectURL(playing.src); }, [playing]);
 
   // The access was opened with the line at sign-in; here we only read who the service says we are.
   useEffect(() => {
@@ -104,9 +114,16 @@ export function Recordings() {
     return () => { clearTimeout(first); clearInterval(timer); };
   }, [load]);
 
-  const play = (fileId: string | null, label: string) => {
-    setPlaying(fileId && fileId !== playingId ? { id: fileId, src: recordings.audioUrl(fileId, false), label } : null);
-  };
+  const handlePlay = useCallback(async (fileId: string | null, label: string) => {
+    const current = ++playGeneration.current;
+    setPlaying(null);
+    if (!fileId || fileId === playingId) return;
+    try {
+      const src = await recordings.audioUrl(fileId, false);
+      if (current !== playGeneration.current) { if (src.startsWith('blob:')) URL.revokeObjectURL(src); return; }
+      setPlaying({ id: fileId, src, label });
+    } catch { if (current === playGeneration.current) notify(t('rec.fileError'), 'danger'); }
+  }, [playingId, recordings, notify, t]);
 
   const groups = useMemo(() => {
     const result: Array<{ key: string; calls: RecordedCall[] }> = [];
@@ -141,7 +158,7 @@ export function Recordings() {
               </div>
               <div className="head-actions">
                 <button type="button" className="ghost small" onClick={() => void load()} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
-                <button type="button" className="ghost small" onClick={async () => { play(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
+                <button type="button" className="ghost small" onClick={async () => { void handlePlay(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
               </div>
             </div>
             {(pending > 0 || listing?.catchingUp || listing?.stale || error) && (
@@ -160,7 +177,7 @@ export function Recordings() {
                 <h2 className="day-label">{formatDay(group.calls[0]!.startedAt)}<span>{group.calls.length}</span></h2>
                 <ul className="audio-list">
                   {group.calls.map(call => <Row key={call.id} call={call} playingId={playingId}
-                    onPlay={fileId => play(fileId, `${(call.number && findContact(contacts, call.number)?.name) || call.number || t('rec.unknownNumber')} · ${formatDay(call.startedAt)} ${formatTime(call.startedAt)}`)} />)}
+                    onPlay={handlePlay} />)}
                 </ul>
               </div>
             ))}

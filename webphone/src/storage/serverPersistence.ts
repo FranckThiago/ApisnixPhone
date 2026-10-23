@@ -1,3 +1,4 @@
+import { sessionFetch } from '../http/embeddedSession';
 import { t } from '../i18n';
 import { type AppData, emptyData } from './DataStore';
 import { type Persistence } from './persistence';
@@ -15,7 +16,7 @@ export class ServerPersistence implements Persistence {
   private csrf = '';
   private profile = '';
   private sessionVersion: number | undefined;
-  constructor(private readonly base = '/api', private readonly fetchImpl: typeof fetch = (...args) => fetch(...args)) {}
+  constructor(private readonly base = '/api', private readonly fetchImpl: typeof fetch = (...args) => sessionFetch(...args)) {}
 
   private async request(path: string, init: RequestInit = {}) {
     let response: Response;

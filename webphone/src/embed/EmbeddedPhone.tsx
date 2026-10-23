@@ -1,3 +1,4 @@
+import { configureEmbeddedSession } from '../http/embeddedSession';
 import { useEffect, useRef, useState } from 'react';
 import { LogOut, ShieldCheck } from 'lucide-react';
 import { App } from '../app/App';
@@ -64,14 +65,29 @@ export function EmbeddedPhone() {
   const [parent, setParent] = useState<Parent | null>(null);
   const { t } = useI18n();
   useEffect(() => {
-    const receive = (event: MessageEvent<unknown>) => {
-      if (window.parent === window || !authorizedMessage(event, window.parent, origins) || !envelope(event.data) || event.data.type !== 'hello') return;
+    let stopped = false;
+    let checking = false;
+    const receive = async (event: MessageEvent<unknown>) => {
+      if (window.parent === window || event.source !== window.parent || !envelope(event.data) || event.data.type !== 'hello' || parent || checking) return;
       const next = { origin: event.origin, channel: event.data.channel };
-      setParent(current => current ?? next);
+      checking = true;
+      try {
+        let permitted = origins.has(next.origin);
+        if (import.meta.env.VITE_APP_MODE === 'live' && !import.meta.env.DEV || !permitted) {
+          const response = await fetch('/api/embed-policy?origin=' + encodeURIComponent(next.origin), { credentials: 'omit', cache: 'no-store', signal: AbortSignal.timeout(5000) });
+          const value = response.ok ? await response.json() : null;
+          permitted = value?.allowed === true && value.origin === next.origin;
+        }
+        if (!stopped && permitted) {
+          if (import.meta.env.VITE_APP_MODE === 'live') configureEmbeddedSession(next.origin);
+          setParent(current => current ?? next);
+        }
+      } catch { /* An unavailable policy never authorizes a parent. */ }
+      finally { checking = false; }
     };
     window.addEventListener('message', receive);
-    return () => window.removeEventListener('message', receive);
-  }, []);
+    return () => { stopped = true; window.removeEventListener('message', receive); };
+  }, [parent]);
   if (!parent) return <main className="embed-wait"><ShieldCheck size={32} /><h1>{t('embed.waitTitle')}</h1><p>{t('embed.waitText')}</p></main>;
   return <AppProvider embedded><Phone parent={parent} /></AppProvider>;
 }

@@ -11,8 +11,13 @@ par la supervision tout en conservant son préfixe Web pour le garde-fou PBX. Le
 et échange un protocole versionné avec origine, source et canal vérifiés ;
 projection explicite de l’état, sans secrets ni export d’historique.
 Le CRM fictif consomme ce même SDK. Le build émet `apisnix-embed.js` et ses
-modules associés ; aucun nouveau service ni dépendance. Fonction locale non
-activée en production. [Contrat et frontières de sécurité](WEBPHONE_EMBED.md).
+modules associés ; aucun nouveau service ni dépendance.
+Le backend supervision gère les origines/équipes et sert `/embed` avec sa CSP
+dynamique. `src/http/embeddedSession.ts` porte le jeton de ligne uniquement en
+mémoire ; journal, profil, TURN et chargement audio partagent ce transport sans
+cookies. L’autorisation HTTP précède SIP dans l’iframe ; le mode autonome garde
+ses cookies et son ordre de connexion. Les deux tables additives, la révocation
+et l’administration sont décrites dans le dépôt privé. [Contrat et frontières de sécurité](WEBPHONE_EMBED.md).
 
 
 

@@ -1,3 +1,4 @@
+import { sessionFetch, isEmbeddedSession, openEmbeddedSession, clearEmbeddedSession } from '../http/embeddedSession';
 import { customerNumber } from '../domain/numbers';
 import { language, t } from '../i18n';
 import { RecordingsError, type LineCall, type LineHistory, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
@@ -69,7 +70,7 @@ export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
 export class HttpRecordingsSource implements RecordingsSource {
   private csrf = '';
 
-  constructor(private readonly base: string, private readonly fetchImpl: Fetch = (...args) => fetch(...args)) {}
+  constructor(private readonly base: string, private readonly fetchImpl: Fetch = (...args) => sessionFetch(...args)) {}
 
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
     let response: Response;
@@ -113,13 +114,17 @@ export class HttpRecordingsSource implements RecordingsSource {
   }
 
   async openWithLine(username: string, password: string) {
-    await this.request('/line-session', { method: 'POST', body: JSON.stringify({ username, password }) });
+    if (isEmbeddedSession()) {
+      const response = await openEmbeddedSession(this.base, username, password);
+      if (!response.ok) throw new RecordingsError(t('rec.signIn'), response.status);
+    } else await this.request('/line-session', { method: 'POST', body: JSON.stringify({ username, password }) });
     return this.identity(await this.request<ServiceMe>('/me'));
   }
 
   async signOut() {
     try { await this.request('/logout', { method: 'POST', body: '{}' }); } catch { /* the cookie will expire on its own */ }
     this.csrf = '';
+    if (isEmbeddedSession()) clearEmbeddedSession();
   }
 
   async list(period: Period): Promise<RecordingsListing> {
@@ -139,7 +144,12 @@ export class HttpRecordingsSource implements RecordingsSource {
   }
 
   audioUrl(fileId: string, download: boolean) {
-    return `${this.base}/recordings/${encodeURIComponent(fileId)}/audio${download ? '?download=1' : ''}`;
+    const url = `${this.base}/recordings/${encodeURIComponent(fileId)}/audio${download ? '?download=1' : ''}`;
+    if (!isEmbeddedSession()) return url;
+    return this.fetchImpl(url, { credentials: 'omit', signal: AbortSignal.timeout(60000) }).then(async response => {
+      if (!response.ok) throw new RecordingsError(t('rec.unreachable'), response.status);
+      return URL.createObjectURL(await response.blob());
+    });
   }
 }
 

@@ -1,3 +1,4 @@
+import { sessionFetch } from '../http/embeddedSession';
 /** Per-call TURN settings and technical counters. No SDP, addresses, numbers or audio are retained. */
 export interface MediaAccess {
   enabled: true;
@@ -17,7 +18,7 @@ export class MediaAccessClient {
   private checkedAt = -Infinity;
   private pending?: Promise<MediaAccess | undefined>;
   // Native fetch must not receive this client as its `this` (Illegal invocation in browsers).
-  constructor(private account: string, private fetcher: typeof fetch = (...args) => fetch(...args)) {}
+  constructor(private account: string, private fetcher: typeof fetch = (...args) => sessionFetch(...args)) {}
 
   load(): Promise<MediaAccess | undefined> {
     if (this.pending) return this.pending;

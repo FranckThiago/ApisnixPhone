@@ -2,26 +2,18 @@
 
 ## Intégration CRM par poste — 23 octobre 2026
 
-**Première version locale, non publiée.** `/embed` réutilise le téléphone et
-ses accès individuels ; SDK navigateur `createApisnixPhone`, préparation du
-numéro et événements de connexion/appel. Démonstration Atelier CRM sur
-`/integration-demo`, deux postes fictifs, sans appel réel. Origines autorisées
-explicites, contrôle de fenêtre/canal, aucun mot de passe transmis au CRM.
-En live, intégration fermée par défaut. Pilote réel local validé le 23 octobre :
-appels internes entrants/sortants, audio WebRTC dans les deux sens (tonalité
-synthétique), événements SDK jusqu’au raccrochage. API réelle contrôlée
-séparément : une seule ligne, autres postes/équipes refusés. **Pas encore prêt
-pour un client sur un autre site** : CSP anti-iframe, chargement SDK et cookie
-SameSite=Strict à traiter ; journal/profil/TURN non validés dans cette iframe.
-[Contrat, review et limites](WEBPHONE_EMBED.md). 251 tests, typage, lint et build
-réussis. Loopback live permis uniquement sur serveur de développement et origine
-explicite ; build live toujours HTTPS. Frontend/backend et manuels inchangés ;
-réactivation du poste pilote documentée dans le dépôt privé.
-Nom de supervision préparé : **ApisnixPhone API** pour le mode intégré,
-**ApisnixPhone Web** pour le mode autonome. Marqueur SIP compatible avec le
-garde-fou PBX existant ; publication conjointe des deux composants encore à faire.
-252 tests frontend, typage, lint et build réussis pour cette distinction.
-
+**En service `20261023-embed-api` depuis 13:53:43 Douala.** Téléphone
+intégrable, SDK navigateur et nom **ApisnixPhone API**. L’administrateur gère
+les domaines HTTPS et équipes clientes dans Supervision → Administration →
+Intégrations CRM : autoriser, modifier, suspendre et copier le code. Aucun
+CRM client autorisé automatiquement. Vérification équipe/phone avant SIP,
+session de 8 h en mémoire indépendante des cookies tiers, profil/journal/audio/
+TURN limités à la ligne, CSP dynamique seulement sur `/embed`. Le CRM reçoit
+les événements documentés ; aucun historique complet ou secret exporté.
+Le mode autonome reste **ApisnixPhone Web**, cookie Strict inchangé.
+[Contrat et limites](WEBPHONE_EMBED.md), publication/retour dans OPERATIONS.
+258 tests frontend, typage/lint/build live ; 226 tests sur la release backend.
+Manuels inchangés. Les essais HTTPS de la release sont consignés dans OPERATIONS.
 
 
 ## Badge du Journal alimenté par le serveur — 22 octobre 2026

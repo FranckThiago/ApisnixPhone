@@ -68,7 +68,7 @@ export interface RecordingsSource {
   list(period: Period): Promise<RecordingsListing>;
   history(days: number): Promise<LineHistory>;
   /** Same file, streamed for listening or sent as an attachment for download. */
-  audioUrl(fileId: string, download: boolean): string;
+  audioUrl(fileId: string, download: boolean): string | Promise<string>;
 }
 
 export class RecordingsError extends Error {

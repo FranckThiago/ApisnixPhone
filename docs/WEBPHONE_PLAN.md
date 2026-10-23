@@ -2,13 +2,14 @@
 
 ## Première intégration dans un CRM — 23 octobre 2026
 
-Version locale disponible : connexion par phone dans un panneau intégré,
-préparation du numéro depuis une fiche CRM, suivi de sonnerie/conversation/fin
-et ouverture de la fiche correspondante à un entrant. Démo fictive, téléphone
-repliable sans démontage. Pas d’API d’administration, SSO ou appel automatique
-côté CRM. Activation client et validation HTTPS entre sites restent à réaliser.
-[Parcours et périmètre détaillés](WEBPHONE_EMBED.md).
-
+Version administrable publiée : connexion par phone dans un panneau intégré,
+préparation du numéro depuis une fiche CRM, événements d’appel et nom de
+supervision ApisnixPhone API. Domaines HTTPS et équipes gérés dans Administration
+→ Intégrations CRM, sans rebuild. Session sans cookies tiers, autorisation
+équipe/phone avant SIP, pas d’export automatique du profil ni des historiques.
+Pilote HTTPS entre sites validé avec appels internes et média synthétique ;
+matériel audio/mobile à valider chez le client. Pas de SSO, provisioning ou appel
+automatique. [Parcours et périmètre détaillés](WEBPHONE_EMBED.md).
 
 
 ## Badge des appels manqués récupérés — 22 octobre 2026

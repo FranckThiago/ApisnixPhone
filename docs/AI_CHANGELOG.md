@@ -1,5 +1,19 @@
 # Journal des changements
 
+## 2026-10-23 — Intégration CRM administrable publiée
+
+Origines HTTPS associées aux équipes dans la supervision, sessions par phone
+sans cookies tiers et autorisation avant SIP. Journal/profil/TURN/audio utilisent
+un transport commun avec jeton mémoire ; audio par blob. CSP dynamique limitée
+à /embed, SDK statique partageable, nom ApisnixPhone API. 258 tests frontend,
+typage/lint/build live ; 226 tests backend release, appels HTTPS entrants et
+sortants avec audio synthétique, API/isolation/révocation contrôlées. Deux tables
+additives côté serveur. Publication `20261023-embed-api` à 13:53:43 Douala,
+rollback de la première tentative et reprise documentés. Banc temporaire retiré,
+aucun domaine client ouvert par défaut. État, architecture, plan, contrat et
+exploitation alignés ; manuels inchangés.
+
+
 ## 2026-10-23 — Identité ApisnixPhone API dans la supervision
 
 Mode encadré transmis à la configuration SIP, marqueur API dans le User-Agent

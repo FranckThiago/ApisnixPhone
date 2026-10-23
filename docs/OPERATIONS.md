@@ -1,5 +1,41 @@
 # Construction et validation
 
+## Intégration CRM administrable — 23 octobre 2026
+
+Frontend et backend **`20261023-embed-api`**, actifs depuis **13:53:43 Douala**.
+258 tests frontend, typage, lint et build live (270 fichiers) ; 226 tests backend
+sur Hermes. Liste pilote double appel conservée. Rubrique de configuration dans
+la supervision, nom « ApisnixPhone API » et sessions sans cookies tiers.
+[Contrat, réglages et frontières](WEBPHONE_EMBED.md). Migration additive : deux
+tables et un index dans SQLite supervision ; aucune donnée existante supprimée.
+
+Caddy relaie `/embed` et `/embed/` vers le backend pour une CSP dynamique ;
+autres routes toujours non encadrables, CORS public seulement pour SDK/modules
+statiques, aucune ouverture CORS des API. `webphone_root` pointe sur le lien
+frontend courant. Pas de wildcard d’origine ; aucun client activé par défaut.
+
+Sauvegarde protégée cohérente (intégrité SQLite ok), anciennes releases,
+configuration, Caddy et manifests conservés sur Hermes sous
+`/root/apisnix-supervision-backups/20261023-embed-api/`.
+Première bascule annulée : remplacement du fichier config sans son propriétaire,
+donc lecture refusée au service. Service rétabli puis publication réussie avec
+UID/GID/mode conservés. Brève interruption de supervision ; Asterisk et les
+appels n’ont pas été redémarrés, collecte continue non garantie durant ce créneau.
+
+Retour ciblé : vérifier les cibles et comparer les empreintes, repointer le
+frontend vers `20261022-badge-manques`, le backend vers `20261022-offline-missed` ;
+restaurer uniquement les changements du bloc téléphone Caddy, valider/recharger,
+redémarrer seulement la supervision. Conserver SQLite courant et les changements
+concurrents ; tables additives compatibles avec la release précédente. Ne jamais
+restaurer globalement la base pour retirer cette interface. Détails opérationnels
+et contrôles du pilote dans `docs/INTEGRATIONS_CRM.md` du dépôt privé de gestion.
+
+
+Validation HTTPS finale : entrant 32 s et sortant interne 30 s, paquets/énergie
+bidirectionnels avec tonalité synthétique ; session, journal, profil, audio Range,
+isolation et révocation contrôlés. Banc et origine temporaires retirés,
+classement initial du phone rétabli. Détails/limites dans WEBPHONE_EMBED.
+
 ## Construire et essayer l’intégration CRM — 23 octobre 2026
 
 **Développement local uniquement ; aucune nouvelle release de production.**
