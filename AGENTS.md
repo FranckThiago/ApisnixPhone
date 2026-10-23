@@ -15,6 +15,10 @@
   `docs/OPERATIONS.md`. Commandes depuis `webphone/` :
   `npm ci`, `npm run dev`, `npm run typecheck`, `npm run lint`,
   `npm run test -- --run`, `npm run build`.
+  Le module VICIdial natif utilise un build PBX séparé :
+  `npm run build:conference` vers `dist-conference/`, jamais à publier comme
+  téléphone autonome. État et limites : `docs/VICIDIAL_PILOT.md` ; activation
+  par équipe dans l’administration CRM à la prochaine connexion.
   L'interface existe en français (défaut), anglais et espagnol : tout texte
   visible passe par `webphone/src/i18n/` et s'ajoute dans les trois
   dictionnaires. **Manuels clients : ne modifier ni les textes, ni les captures,

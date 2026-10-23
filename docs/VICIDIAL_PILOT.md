@@ -1,6 +1,57 @@
 # Pilote VICIdial avec l’écran APISNIX conservé
 
-## État au 23 octobre 2026
+## État courant : raccordement natif administrable
+
+Le pilote interorigine ci-dessous est désormais complété par un **module PBX
+same-origin**, publié le 23 octobre 2026. Administration → ApisnixPhone API active
+le remplacement par équipe à la prochaine connexion ; aucun client n’a été
+activé automatiquement. Les agents conservent écran, campagnes et permissions.
+Le domaine commun du CRM n’est plus utilisé comme identifiant d’équipe : la session
+VICIdial authentifiée détermine le groupe et le poste affecté. Un poste suspendu,
+inactif, sans configuration WebRTC ou avec mapping incohérent n’est pas converti.
+
+Le HTML retire le téléphone natif avant chargement, puis monte
+`native-conference.html` construit par `npm run build:conference`. Un jeton lié à
+la session, au poste et aux droits expire après huit heures. Le secret SIP reste
+dans l’iframe, sans URL ni stockage persistant. Pas de profil, journal ou TURN
+dynamique Hermes ; le réseau média direct/STUN doit être recetté côté client.
+
+Le watchdog privé confirme la présence du canal agent dans sa conférence exacte.
+La disponibilité exige heartbeat navigateur de moins de 12 s, contrôle serveur
+de moins de 6 s, audio actif et reprise explicite. Perte audio : pause de l’agent
+libre ou demande de pause après l’appel en cours ; la surveillance ne raccroche
+pas le prospect. Le serveur bloque aussi disponibilité et appel manuel sans bail
+sain. L’expiration/révocation retire le panneau : prévoir la reconnexion de l’agent
+avant la limite de huit heures. Une session en cours n’est pas révoquée par le
+simple changement du réglage d’équipe.
+
+Huit rubriques de fiche, texte uniquement, effacées hors appel/qualification.
+Entreprise est vide par défaut ; l’administrateur peut mapper Adresse 2 ou
+Référence fournisseur selon les données de l’équipe. Ce mapping n’altère pas
+la fiche native. Le journal des appels prospects reste celui de VICIdial.
+
+### Seconde recette réelle et nettoyage
+
+Agent 5102, phone test003, campagne APX_API : manuel **138 s**, automatique
+**63 s**, qualifications OKAY sur la même conférence ; mise en attente/reprise,
+coupure ciblée du canal agent et pause, reprise et appel manuel refusés côté serveur
+sans audio. Flux RTP dans les deux sens observés. Cette fois, capture microphone
+normale du navigateur, sans source synthétique injectée. Cela ne prouve pas la
+qualité d’une conversation humaine ni la compatibilité de tous les casques/réseaux.
+Traces d’enregistrement présentes ; restitution audio non contrôlée.
+
+Le transfert n’a pas été exécuté (droits de campagne conservés) et l’écoute
+superviseur reste à recetter. Activation/désactivation et mapping d’entreprise
+contrôlés sur un groupe sans agent connecté puis remis à zéro. Campagne/liste
+de test inactives, mapping agent restauré, agent déconnecté, destinations d’écho
+et exception de test désactivées, zéro session/équipe active dans le nouveau registre.
+266 tests frontend, typage/lint/deux builds et 38 assertions PHP réussis.
+
+[Captures natives et légendes](integration/captures/README.md), [guide client](integration/README.md).
+Exploitation détaillée et preuves privées : dépôt de gestion,
+`docs/VICIDIAL_CONFERENCE_PRODUCTION_20261023.md`.
+
+## Première recette isolée (historique)
 
 **Recette isolée réelle effectuée**, avec le nouvel écran agent conservé,
 agent 5102, phone test003 et copie native APX_API de CampTES2. Aucun prospect
@@ -72,7 +123,7 @@ au triplet de test et désactivé après recette. VICIdial conserve ses commande
 de numérotation, raccrochage et qualification. `address2` représente l’entreprise
 dans cette liste de test uniquement ; ce mapping n’est pas une règle universelle.
 
-## Avant une ouverture commerciale VICIdial
+## Blocages identifiés lors du premier pilote (historique)
 
 - Authentification agent/phone multiéquipes : une origine générique ne peut pas
   représenter toutes les équipes CRM. Le domaine temporaire limité au poste test

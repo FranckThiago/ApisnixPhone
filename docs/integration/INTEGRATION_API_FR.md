@@ -2,7 +2,7 @@
 
 ## Guide technique d'intégration client
 
-**Édition 1.1 - 23 octobre 2026**
+**Édition 1.2 - 23 octobre 2026**
 
 Intégrer un téléphone dans un CRM ou un site HTTPS, avec un accès individuel par phone et des événements exploitables par l'application cliente.
 
@@ -616,4 +616,50 @@ Les flux SIP/WebRTC étaient réels avec une source audio synthétique. Le micro
 physique, le navigateur et le domaine du client doivent encore être validés.
 Ce résultat ne vaut pas homologation pour toutes les campagnes.
 
-**Fin du guide - édition 1.1.**
+
+
+<!-- pagebreak -->
+
+## 15. VICIdial : activation par équipe
+
+Sur le CRM VICIdial hébergé par APISNIX, un module dédié utilise la session agent
+déjà authentifiée. Il reprend le poste affecté et les droits de campagne existants.
+Il ne demande pas une seconde connexion au phone et ne remplace pas l’écran agent.
+Ce raccordement est distinct du SDK pour les CRM externes décrit plus haut :
+il ne constitue pas un service SSO générique à copier sur un autre domaine.
+
+1. Dans Administration > ApisnixPhone API, rechercher l’équipe. Vérifier ses postes WebRTC et les fonctions de campagne avec APISNIX.
+2. Choisir si nécessaire le champ Entreprise : Adresse 2 ou Référence fournisseur. Par défaut, cette rubrique reste vide. Enregistrer ce champ ne change pas l’activation.
+3. Activer pour cette équipe. Le remplacement s’applique aux prochaines connexions ; les sessions ouvertes continuent avec leur téléphone actuel.
+4. L’agent se connecte au CRM, clique sur Connecter mon téléphone, rejoint la conférence, répond à l’invitation et autorise le microphone. Il reprend ensuite explicitement sa disponibilité.
+5. Pour revenir au téléphone précédent, désactiver l’équipe puis organiser la reconnexion des agents hors appel.
+
+Les appels automatiques et manuels, la mise en attente, le raccrochage et la
+qualification restent gérés par VICIdial selon les droits de l’agent. Les huit
+rubriques de la fiche sont affichées seulement pendant l’appel et sa qualification.
+Aucun historique complet ni secret SIP n’est envoyé au CRM par les événements SDK.
+
+La surveillance serveur vérifie le canal de conférence et la présence du panneau.
+Une perte audio empêche de redevenir disponible et de lancer un appel manuel.
+Après reconnexion audio, l’agent doit reprendre explicitement. La session du panneau
+expire au bout de huit heures : prévoir la reconnexion au CRM avant cette limite.
+Les téléphones classiques ou suspendus ne sont pas convertis automatiquement.
+
+Recette isolée : appel manuel de 138 s, automatique de 63 s, attente/reprise et
+pause après coupure audio ; capture microphone navigateur sans injection synthétique.
+La qualité d’écoute humaine, les réseaux clients, transferts, écoute superviseur
+et restitution des enregistrements doivent être vérifiés avant généralisation.
+Le panneau utilise le chemin média du PBX ; le TURN du téléphone autonome ne
+s’applique pas à ce module. Aucune équipe cliente n’est activée par défaut.
+
+<!-- pagebreak -->
+
+### Aperçu de l’administration
+
+![Administration par équipe](captures/vicidial-team-controls.jpg)
+
+L’administrateur choisit l’équipe, son activation et le champ Entreprise.
+Capture du module publié, filtrée sur des équipes de test ; aucun client activé
+automatiquement. Le changement prend effet à la prochaine connexion.
+
+**Fin du guide - édition 1.2.**

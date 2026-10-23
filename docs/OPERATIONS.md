@@ -1,5 +1,29 @@
 # Construction et validation
 
+## Conférence native VICIdial par équipe — 23 octobre 2026
+
+Publication PBX distincte de Hermes : sources privées `agent-skin/conference/`,
+page `admin-skin/apisnix-phone-api.php` et bundle Softphone `dist-conference/`.
+Construire depuis `webphone/` avec `npm run build:conference`, puis publier le
+bundle complet sous `/agc/apisnix/conference-phone/`, à la même origine que le CRM.
+Ne pas remplacer la release du téléphone autonome par ce build dédié.
+
+Le dépôt privé documente installation, sauvegarde protégée, manifeste final et
+retour ciblé dans `docs/VICIDIAL_CONFERENCE_PRODUCTION_20261023.md`. Le service
+`apisnix-conference` surveille les sessions ; état SQLite hors racine web.
+Aucune migration des tables VICIdial, aucun redémarrage Asterisk, aucune équipe
+cliente activée. Activation/désactivation administrateur : prochaine connexion,
+les sessions en cours continuent selon leur bail. Pour retirer le module, désactiver
+les équipes, attendre la déconnexion des sessions et utiliser le retour contrôlé ;
+ne pas restaurer une base ou une configuration PBX globale.
+
+Vérifications : 266 tests frontend, typage/lint, builds ordinaire et conférence ;
+38 assertions PHP ; appels isolés manuel 138 s et automatique 63 s, attente/reprise,
+pause après perte audio et refus serveur d’une reprise/appel manuel sans audio.
+Les ressources PBX et fichiers vendor sont comparés au manifeste. Les routes,
+affectations et services temporaires de recette sont nettoyés. Les releases
+Hermes restent celles des rubriques historiques suivantes.
+
 ## Extension fiche client et pilote conférence — 23 octobre 2026
 
 Frontend actif `20261023-conference-pilot`, source `58d81a9`, backend inchangé

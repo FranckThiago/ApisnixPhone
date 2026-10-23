@@ -11,7 +11,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, Flowable, KeepInFrame
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, Table, TableStyle, Image, Flowable, KeepInFrame
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'docs/integration/INTEGRATION_API_FR.md'
@@ -29,7 +29,7 @@ LEFT = 49
 CONTENT_WIDTH = WIDTH - 2 * LEFT
 GROUPS = {1: 'ACTIVATION', 2: 'INSTALLATION', 3: 'RÉFÉRENCE SDK', 4: 'RÉFÉRENCE SDK',
           5: 'RÉFÉRENCE SDK', 6: 'DONNÉES CRM', 7: 'SÉCURITÉ', 8: 'SESSIONS & ENVIRONNEMENT',
-          9: 'APPLICATIONS DYNAMIQUES', 10: 'ASSISTANCE', 11: 'VALIDATION', 12: 'LIVRAISON', 13: 'FICHE CLIENT', 14: 'PILOTE VICIDIAL'}
+          9: 'APPLICATIONS DYNAMIQUES', 10: 'ASSISTANCE', 11: 'VALIDATION', 12: 'LIVRAISON', 13: 'FICHE CLIENT', 14: 'PILOTE VICIDIAL', 15: 'VICIDIAL PAR ÉQUIPE'}
 styles = {
     'body': ParagraphStyle('Body', fontName='Guide', fontSize=9.4, leading=12.9, textColor=INK, spaceAfter=7),
     'intro': ParagraphStyle('Intro', fontName='GuideBold', fontSize=24, leading=29, textColor=INK, spaceAfter=18, keepWithNext=True),
@@ -195,7 +195,7 @@ def cover(c, doc):
     c.line(LEFT + 10, 105, WIDTH - LEFT - 10, 105)
     c.setFillColor(MUTED)
     c.setFont('Guide', 8)
-    c.drawString(LEFT + 10, 82, 'Édition 1.1  •  23 octobre 2026')
+    c.drawString(LEFT + 10, 82, 'Édition 1.2  •  23 octobre 2026')
     c.drawRightString(WIDTH - LEFT - 10, 82, 'Guide client / Français')
     c.restoreState()
 
@@ -245,6 +245,17 @@ def make_story():
             continue
         if line == '<!-- pagebreak -->':
             story.append(PageBreak())
+            i += 1
+            continue
+        picture = re.fullmatch(r'!\[([^]]*)\]\((captures/[^)]+)\)', line)
+        if picture:
+            asset = (SOURCE.parent / picture[2]).resolve()
+            if not asset.is_relative_to((SOURCE.parent / 'captures').resolve()):
+                raise ValueError('Image outside capture directory')
+            graphic = Image(str(asset))
+            scale = min(CONTENT_WIDTH / graphic.imageWidth, 590 / graphic.imageHeight)
+            graphic.drawWidth, graphic.drawHeight = graphic.imageWidth * scale, graphic.imageHeight * scale
+            story.extend([graphic, Spacer(1, 14)])
             i += 1
             continue
         if line.startswith('```'):
@@ -328,7 +339,7 @@ def make_story():
 def render(target, total):
     doc = GuideDoc(target, pagesize=A4, rightMargin=LEFT - 6, leftMargin=LEFT - 6,
         topMargin=68, bottomMargin=50, title='ApisnixPhone API - Guide technique d’intégration client',
-        author='APISNIX', subject='SDK navigateur v1 - Édition 1.1', invariant=1)
+        author='APISNIX', subject='SDK navigateur v1 - Édition 1.2', invariant=1)
     doc.build(make_story(), onFirstPage=cover, onLaterPages=lambda c, doc: page(c, doc, total))
     return doc.page
 
@@ -339,6 +350,7 @@ def build():
     total = render(BytesIO(), 0)
     assert render(str(OUTPUT), total) == total
     files = [(OUTPUT, OUTPUT.name), (SOURCE, SOURCE.name)]
+    files.extend((SOURCE.parent / name, name) for name in sorted(set(re.findall(r'!\[[^]]*\]\((captures/[^)]+)\)', SOURCE.read_text()))))
     files.extend((p, 'exemple/' + p.name) for p in sorted((SOURCE.parent / 'exemple').iterdir()) if p.is_file())
     with zipfile.ZipFile(ARCHIVE, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
         for path, name in files:

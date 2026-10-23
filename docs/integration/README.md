@@ -1,9 +1,9 @@
 # Documentation technique à remettre aux clients
 
-Édition française 1.1 du 23 octobre 2026, contrat SDK navigateur v1.
+Édition française 1.2 du 23 octobre 2026, contrat SDK navigateur v1.
 
 - [Guide maintenable](INTEGRATION_API_FR.md).
-- [PDF prêt à transmettre](../../output/pdf/ApisnixPhone-API-Guide-integration-FR.pdf), 17 pages.
+- [PDF prêt à transmettre](../../output/pdf/ApisnixPhone-API-Guide-integration-FR.pdf), 19 pages.
 - [Kit client](../../output/ApisnixPhone-API-Kit-integration-FR.zip) : PDF, source Markdown et dossier [exemple](exemple/README.md).
 - [Contrat interne et historique de validation](../WEBPHONE_EMBED.md), non inclus dans le kit.
 
@@ -28,7 +28,7 @@ déterministes pour des sources et une version de ReportLab identiques.
 La présentation reprend le logo original `branding/apisnix-mark.png`, sans
 modification, sur la couverture et en tête de chaque page. Couleurs APISNIX bleu
 et jaune, tableaux contrastés, encadrés de code en texte sélectionnable,
-pagination complète, 14 signets de sections et trois liens de navigation en
+pagination complète, 15 signets de sections et trois liens de navigation en
 couverture. Les chapitres restent groupés ; le générateur refuse une réduction
 excessive du texte et exige alors de revoir la pagination.
 
@@ -61,3 +61,11 @@ conférence expérimental. PDF de 17 pages rendu et contrôlé, 14 signets et ZI
 contenant le PDF courant. [Captures avec légendes](captures/README.md) disponibles
 séparément pour la documentation, les manuels et le site ; aucune publication
 automatique de ces visuels dans les manuels existants ou le site commercial.
+
+## Édition 1.2 : VICIdial par équipe
+
+Chapitre 15 : raccordement à la session native, activation administrable à la
+prochaine connexion, poste/droits conservés, expiration et recette client. Capture
+d’administration incluse dans le PDF et le ZIP ; le SDK externe conserve son
+contrat. 19 pages et 15 signets. La source détaillée est `VICIDIAL_PILOT.md` ;
+les recettes du premier pilote synthétique restent identifiées comme historiques.

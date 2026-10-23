@@ -1,6 +1,6 @@
 # Exemple client ApisnixPhone API
 
-Édition 1.0, 23 octobre 2026. Lire le guide technique joint avant utilisation.
+Exemple SDK inchangé, livré avec le guide édition 1.2, 23 octobre 2026. Lire le guide technique joint avant utilisation.
 
 ## Installation
 

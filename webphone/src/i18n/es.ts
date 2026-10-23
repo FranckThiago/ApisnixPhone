@@ -3,6 +3,9 @@ import type {
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  "nativeConference.connect": "Conectar mi teléfono",
+  "nativeConference.help": "Su sesión CRM proporciona el teléfono. Conéctelo, entre en la conferencia y vuelva a estar disponible.",
+  "nativeConference.expired": "Sesión no disponible. Cierre la sesión CRM y vuelva a entrar.",
   "conference.title": "Audio de la campaña",
   "conference.connected": "Audio conectado a la campaña",
   "conference.incoming": "La conferencia está llamando",

@@ -1,12 +1,26 @@
 # Architecture ApisnixPhone
 
-## Expérimentation VICIdial locale — 23 octobre 2026
+## Conférence VICIdial liée à la session native — 23 octobre 2026
 
-Le [pilote de conférence](VICIDIAL_PILOT.md) sépare la session audio permanente
-des appels clients gérés par VICIdial. `src/vicidial/` est une simulation locale
-gardée par le mode développement ; canal dédié, sans modification du SDK client
-ni de l’authentification live. Le banc dans le dépôt de gestion réutilise
-l’habillage agent existant. Le raccordement live reste à implémenter.
+`NativeConference.tsx` est construit séparément par `vite.conference.config.ts`
+et servi sur le PBX, à la même origine que VICIdial. Il réutilise SIP.js, sans
+AppProvider, profil/journal Hermes ni MediaAccessClient (`mediaAccess: false`).
+Le chemin média direct/STUN doit être validé sur le réseau client ; le TURN
+dynamique du téléphone autonome ne s’applique pas à ce panneau.
+
+Le hook privé lie un jeton aléatoire en mémoire à la session native, au poste,
+à la campagne et aux droits courants. Sa valeur hachée seule est persistée.
+L’iframe reçoit le secret SIP depuis un POST same-origin après validation ; ce
+secret ne traverse pas le canal parent, les URL ou le stockage navigateur.
+Le canal `apisnixphone.native-conference.v1` contrôle origine, fenêtre et nonce.
+Il transmet disponibilité et huit rubriques de contexte, sans historique global.
+
+Activation par groupe VICIdial à la prochaine connexion, sélection exclusive du
+téléphone avant livraison HTML, watchdog serveur toutes les deux secondes et
+garde sur disponibilité/appel manuel. Perte audio : pause et reprise explicite.
+Validité maximale de huit heures ; révocation si session, mapping ou droits changent.
+Le SDK externe et le banc local gardent leurs protocoles distincts.
+[Contrat, recette et limites](VICIDIAL_PILOT.md).
 
 ## Panneau téléphonique intégrable — 23 octobre 2026
 

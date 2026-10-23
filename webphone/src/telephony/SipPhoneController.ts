@@ -72,6 +72,8 @@ export interface SessionMedia { microphone(): Promise<MediaStream>; audio?: HTML
 export interface SipConfig {
   /** Display identity only; never an authorization or a phone assignment. */
   embedded?: boolean;
+  /** Native VICIdial owns authentication; do not call the independent Hermes media API. */
+  mediaAccess?: boolean;
   /** Explicit build pilot; empty by default. No server permissions are granted here. */
   callWaitingLines?: string[];
   maxCalls?: 1 | 2;

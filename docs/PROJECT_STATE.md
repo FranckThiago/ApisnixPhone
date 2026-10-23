@@ -1,6 +1,20 @@
 # État du projet
 
-## Pilote VICIdial avec écran agent conservé — 23 octobre 2026
+## Conférence VICIdial administrable — 23 octobre 2026
+
+En production sur le PBX, activation volontaire par équipe dans Administration
+→ ApisnixPhone API ; **aucune équipe cliente activée à la livraison**. La prochaine
+connexion VICIdial reprend son poste WebRTC et ses droits, sans accès phone à
+ressaisir ni autorisation d’origine commune à toutes les équipes. Le téléphone
+natif est remplacé avant chargement. Appels clients et qualification restent natifs.
+Manuel 138 s, automatique 63 s, mise en attente/reprise et pause serveur après
+perte audio validés sur campagne isolée. Capture microphone navigateur ordinaire,
+sans injection synthétique ; écoute humaine, transfert et supervision à recetter
+sur le matériel et les campagnes clients. Détails : [VICIDIAL_PILOT](VICIDIAL_PILOT.md).
+Build PBX dédié `npm run build:conference` ; Hermes reste inchangé. Guide technique
+édition 1.2 avec captures ; manuels existants non modifiés.
+
+## Première recette isolée VICIdial (historique) — 23 octobre 2026
 
 [Pilote VICIdial](VICIDIAL_PILOT.md) : appel manuel de 65 s et automatique de
 53 s qualifiés sur la même conférence réelle ; huit champs CRM affichés et
@@ -12,7 +26,7 @@ SDK étendu avec `setContact` et mode conférence ; 266 tests frontend réussis.
 
 ## Documentation technique d’intégration client — 23 octobre 2026
 
-[Guide et kit client](integration/README.md) : édition 1.1, fiche de huit champs,
+[Guide et kit client](integration/README.md) : édition 1.2, fiche de huit champs,
 contrat de corrélation, limites du mode conférence et captures séparées. Logo
 APISNIX conservé. Les manuels existants ne sont pas remplacés par le guide technique.
 

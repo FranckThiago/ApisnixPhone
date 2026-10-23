@@ -1,6 +1,6 @@
 # Captures ApisnixPhone API — 23 octobre 2026
 
-Les PNG ont été pris dans le navigateur intégré, sans retouche des états.
+Les images ont été prises dans le navigateur intégré, sans retouche des états.
 Toutes les fiches et destinations affichées sont fictives.
 
 | Fichier | Usage et légende |
@@ -18,3 +18,16 @@ ont été retirés après les essais. Les vues locales sont des illustrations.
 
 Les captures sont prêtes à sélectionner pour le guide technique, un manuel ou
 le site. Elles ne remplacent pas automatiquement les captures déjà publiées.
+
+## Module natif administrable — seconde recette
+
+| Fichier | Usage et légende |
+| --- | --- |
+| `vicidial-native-auto.jpg` | Appel automatique réel sur campagne isolée, fiche fictive, capture microphone navigateur sans injection synthétique. |
+| `vicidial-native-audio-loss.jpg` | Perte ciblée de conférence, pause et reprise refusée sans audio. |
+| `vicidial-team-controls.jpg` | Administration par équipe, champ Entreprise configurable ; toutes les équipes désactivées après recette. |
+
+Ces trois JPEG proviennent du navigateur intégré, sans retouche. Ils complètent
+les PNG du premier pilote et ne prouvent pas une écoute humaine ni la recette
+de transfert/supervision. Les campagnes clients réelles restent à valider avec
+leur matériel. La vue d’administration est intégrée au guide technique 1.2.

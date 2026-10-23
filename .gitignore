@@ -22,3 +22,5 @@ apps/
 webphone/node_modules/
 webphone/coverage/
 .claude/
+
+webphone/dist-conference/

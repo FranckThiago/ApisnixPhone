@@ -6,7 +6,7 @@ Cette version livre un panneau et un SDK navigateur, pas une API publique de
 création de comptes ni un accès serveur aux historiques.
 
 **Remise aux développeurs clients :** [guide technique et kit d'intégration](integration/README.md)
-(édition 1.1, PDF avec fiche client et pilote de conférence avec identité APISNIX et exemple HTML/JavaScript/CSS). Le guide client
+(édition 1.2, PDF avec fiche client et pilote de conférence avec identité APISNIX et exemple HTML/JavaScript/CSS). Le guide client
 décrit le contrat disponible, les champs transmis, la sécurité et la recette ;
 il exclut l'historique d'exploitation interne présent dans ce document.
 
@@ -288,3 +288,11 @@ local. Les CDR/enregistrements serveur restent indépendants. Heartbeat interori
 avec contrôle source/origine/canal ; la pause native appartient à l’adaptateur CRM.
 Un navigateur suspendu nécessite encore une surveillance serveur.
 Recette et limites : [pilote VICIdial](VICIDIAL_PILOT.md).
+
+## Raccordement VICIdial natif distinct du SDK externe
+
+Depuis le 23 octobre, le PBX dispose d’un module same-origin lié à sa session
+agent, administrable par équipe. Il utilise un build séparé et son propre canal ;
+il ne change pas l’autorisation par origine/équipe du SDK externe, ni son contrat
+d’événements. [Architecture, tests et limites](VICIDIAL_PILOT.md). Le chapitre 15
+du guide 1.2 explique cette activation native sans seconde connexion au phone.

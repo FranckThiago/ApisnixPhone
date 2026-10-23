@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-10-23 — Conférence VICIdial liée à la session et pilotable par équipe
+
+Build PBX dédié, authentification via session native et sélection exclusive du
+poste ; le SDK client externe conserve son contrat. Administration par groupe,
+watchdog et garde serveur privés, reprise explicite après perte audio. Capture
+micro ordinaire et appels isolés manuel/auto validés ; limites matérielles et
+fonctions non recettées documentées. Publication PBX sans bascule automatique de
+clients, aucun changement Hermes. Documentation architecture/exploitation/état,
+guide technique 1.2 et captures actualisés dans le même ensemble que le code.
+
 ## 2026-10-23 — Banc VICIdial avec session audio persistante
 
 À la demande de Franck, conservation de l’écran agent APISNIX et préparation

@@ -14,7 +14,7 @@ export const browserSipEnvironment: SipEnvironment = {
     const factory = Web.defaultSessionDescriptionHandlerFactory(() => microphone());
     const prepareMedia = async (): Promise<CallMediaOptions> => {
       const generation = ++preparation;
-      let access = await mediaAccess.load();
+      let access = config.mediaAccess === false ? undefined : await mediaAccess.load();
       if (access?.iceTransportPolicy === 'relay' && !await relayAvailable(access.iceServers)) {
         // Keep TURN as an option, with the original direct path available.
         access = { ...access, iceTransportPolicy: 'all' };
