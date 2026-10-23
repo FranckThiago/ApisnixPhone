@@ -11,7 +11,13 @@ d’un `.env.local` live). Pas de compte PBX ni microphone nécessaires.
 `VITE_EMBED_ALLOWED_ORIGINS` est une configuration publique de build, vide par
 défaut en live. Ne pas ouvrir globalement l’iframe ou les API :
 [procédure d’activation future, prérequis et limites](WEBPHONE_EMBED.md).
-Aucune modification des sauvegardes, services, données ou en-têtes actuels.
+Essais réels du 23 octobre : poste pilote réactivé sur instruction explicite,
+sauvegardes protégées et restauration de son classement dans le dépôt privé.
+Circuit d’écho temporaire en mémoire retiré ; aucun déploiement, migration,
+changement d’en-têtes ou redémarrage. Voir la [review](WEBPHONE_EMBED.md#review-et-essais-réels-du-23-octobre-2026).
+Pour un banc SIP live local, autoriser explicitement l’origine HTTP loopback dans
+`VITE_EMBED_ALLOWED_ORIGINS` et utiliser `npm run dev` : cette exception ne passe
+pas dans le build live. Ne pas copier d’accès réels dans les fixtures ou le build.
 
 
 

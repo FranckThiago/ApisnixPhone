@@ -1,5 +1,16 @@
 # Journal des changements
 
+## 2026-10-23 — Review et pilote SIP réel du module intégré
+
+Appels internes entrants/sortants et audio bidirectionnel mesurés sur le vrai
+PBX ; vérification des événements SDK et de l’isolation de l’API par ligne.
+Ajout de l’autorisation loopback explicite pour le serveur de développement
+avec SIP live, sans ouverture du build de production ; test de régression.
+251 tests, typage, lint et build réussis. WEBPHONE_EMBED, PROJECT_STATE et
+OPERATIONS précisent le périmètre validé et les blocages CSP/cookies entre
+sites. Pas de nouvelle release, migration ni modification des manuels ;
+opération du poste pilote consignée dans le dépôt privé.
+
 ## 2026-10-23 — Première version intégrable par phone et démo CRM
 
 Ajout de `src/embed/` : SDK ES, protocole borné, barrière d’origine et panneau

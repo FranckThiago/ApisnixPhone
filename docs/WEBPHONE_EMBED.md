@@ -122,8 +122,10 @@ et `/lien`. `/embed` ouvert seul affiche une explication, pas une connexion.
    des CRM autorisés, séparées par des virgules (port compris si présent).
    En live, la liste vide refuse tous les parents ; aucune origine issue d’une
    URL utilisateur n’est considérée comme une autorisation. Pas de wildcard.
-   En démo seulement, l’origine du téléphone et les loopbacks explicitement
-   configurés sont admis. Exemple local : `http://127.0.0.1:5187`.
+   En démo, l’origine du téléphone est admise automatiquement. En développement
+   Vite (`import.meta.env.DEV`), même avec SIP live, les loopbacks HTTP sont
+   admis seulement si explicitement configurés. Un build live reste HTTPS
+   uniquement et fermé par défaut. Exemple local : `http://127.0.0.1:5187`.
 2. Héberger le téléphone sur une origine distincte du CRM pour que la séparation
    navigateur protège le formulaire. La démo locale partage volontairement une
    origine ; elle illustre le flux, pas l’isolation de deux sites de production.
@@ -138,10 +140,66 @@ et `/lien`. `/embed` ouvert seul affiche une explication, pas une connexion.
 5. Vérifier en HTTPS les sessions HTTP, cookies tiers/partitionnés, stockage,
    SIP WebSocket, permissions microphone, lecture audio et reconnexion sur les
    navigateurs clients. Les mécanismes actuels de session peuvent demander une
-   adaptation pour un usage entre sites distincts : **non validé en appel réel**.
+   adaptation pour un usage entre sites distincts : **session entre sites non validée**.
+   Les appels SIP réels locaux sont validés séparément, voir la review ci-dessous.
 6. Prévoir pilote sur phone dédié, sauvegarde des en-têtes/build et retour ciblé,
    puis seulement publier selon OPERATIONS. Cette livraison ne modifie aucun
    en-tête, backend, PBX, compte client ou déploiement de production.
 
 L’intégration navigateur n’ajoute pas de sonnerie fiable écran verrouillé sur
 mobile : cela nécessite un chantier distinct (application/push/prise d’appel).
+
+## Review et essais réels du 23 octobre 2026
+
+**Avis : téléphonie intégrée validée localement ; activation client non prête.**
+Le pilote autorisé utilise un poste réel dédié, SIP.js et WebRTC réels, avec une
+tonalité synthétique remplaçant seulement le microphone. Le SDK prépare le numéro ;
+l’utilisateur déclenche l’appel dans le panneau. Appels internes uniquement :
+aucune validation des routes opérateur externes, du matériel audio ou d’un mobile.
+
+- Sortant décroché : 37 secondes, mesure avant raccrochage de 1 442 paquets
+  envoyés et 1 429 reçus ; énergie audio reçue non nulle.
+- Entrant décroché : 27 secondes, mesure de 1 208 paquets envoyés et 1 193 reçus ;
+  énergie audio reçue non nulle. Un entrant non décroché produit `missed`.
+- Le parent reçoit les phases dialing/ringing-in, active, ended et l’issue
+  answered. Champs observés conformes au contrat ; mot de passe absent.
+- Handshake vérifié entre deux origines locales distinctes. Les appels avec
+  interaction ont été effectués sur une même origine locale : ils ne valident
+  ni l’isolation du formulaire entre sites ni les cookies tiers.
+- API réelle testée séparément par session HTTP : authentification 200, rôle
+  agent, un seul poste dans le dashboard ; sélection d’un autre poste ou d’une
+  équipe refusée 403. Session de vérification déconnectée (200).
+
+### Points bloquants de publication
+
+1. Les en-têtes HTTPS de production refusent encore l’iframe avec
+   `frame-ancestors 'none'`. Le module ES n’a pas d’autorisation CORS pour un
+   import direct depuis un CRM tiers. Préparer une publication ciblée, ou
+   distribuer le SDK dans le site hôte, sans ouvrir les API de données.
+2. La session réelle porte `SameSite=Strict` (vérifié sur la réponse API).
+   L’authentification du journal/profil/TURN dans une iframe sur un autre site
+   demande un mécanisme approprié et des essais navigateur. Ne pas simplement
+   désactiver globalement la protection des cookies ou les contrôles CSRF.
+
+Le banc local n’exposait pas l’API serveur : le téléphone gardait sa connexion
+SIP mais fonctionnait avec un espace de données temporaire. `state.connection`
+et `sessionOpen` décrivent la session téléphonique ; ils ne garantissent pas
+la disponibilité du journal, du profil ou du relais TURN. La réussite du test
+HTTP séparé ne résout pas cette limite navigateur.
+
+### Ce qui sort vers le client
+
+Le **SDK navigateur** envoie uniquement les champs `state`/`call` documentés
+ci-dessus. L’API interne sert davantage de données au téléphone authentifié
+(journal, profil, métadonnées d’enregistrement), avec le périmètre de sa ligne ;
+elles ne sont pas automatiquement exportées au CRM. Le numéro et l’identifiant
+d’appel restent visibles par le site autorisé. Pas d’API publique d’historique,
+de contacts, de qualifications ou d’enregistrements livrée dans cette version.
+Les événements ne sont pas des webhooks et ne garantissent pas une livraison
+après fermeture du navigateur. La liste d’origines ne lie pas à elle seule une
+entreprise à ses phones : le paramètre `phone` reste un préremplissage.
+
+Vérifications : 251 tests, typage, lint et build réussis. Aucune nouvelle release
+frontend/backend ni migration. Réactivation, sauvegardes et retrait du circuit
+interne consignés dans le dépôt privé de gestion. Preuves locales exclues de Git :
+`.work/embed-live-review/`. Manuels clients inchangés.

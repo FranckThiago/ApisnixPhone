@@ -47,8 +47,8 @@ export function safeOrigin(value: string, local: boolean): string | null {
   } catch { /* A malformed origin cannot authorize a parent. */ }
   return null;
 }
-export function allowedOrigins(config: string | undefined, ownOrigin: string, demo: boolean): Set<string> {
-  const origins = new Set((config ?? '').split(',').map(s => safeOrigin(s.trim(), demo)).filter((s): s is string => s !== null));
+export function allowedOrigins(config: string | undefined, ownOrigin: string, demo: boolean, development = false): Set<string> {
+  const origins = new Set((config ?? '').split(',').map(s => safeOrigin(s.trim(), demo || development)).filter((s): s is string => s !== null));
   // The local demo works without provisioning a customer. Live is closed by default.
   if (demo && safeOrigin(ownOrigin, true)) origins.add(ownOrigin);
   return origins;

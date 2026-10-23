@@ -7,7 +7,7 @@ import { allowedOrigins, authorizedMessage, command, envelope, PROTOCOL, type Ph
 import { prepareResult, publicCall, publicState } from './state';
 
 type Parent = { origin: string; channel: string };
-const origins = allowedOrigins(import.meta.env.VITE_EMBED_ALLOWED_ORIGINS, location.origin, import.meta.env.VITE_APP_MODE !== 'live');
+const origins = allowedOrigins(import.meta.env.VITE_EMBED_ALLOWED_ORIGINS, location.origin, import.meta.env.VITE_APP_MODE !== 'live', import.meta.env.DEV);
 function Phone({ parent }: { parent: Parent }) {
   const { phone, sessionOpen, setDial, setView, logout } = useApp();
   const snapshot = usePhone();

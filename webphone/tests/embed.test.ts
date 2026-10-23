@@ -9,6 +9,13 @@ const base = { protocol: PROTOCOL, channel };
 const call: CallSnapshot = { id: 'call-1', direction: 'outbound', rawInput: '+33100000001', dialTarget: '0033100000001', phase: 'active', muted: false, holdPending: false, startedAt: 100, answeredAt: 200, dtmf: '1234', remoteName: 'Private name', failure: 'Internal error detail' };
 const snapshot: PhoneSnapshot = { demo: false, account: { username: '1001', domain: 'private.example' }, connection: 'ready', call: null, error: 'Private debug data' };
 describe('embedded origin boundary', () => {
+  it('allows an explicit loopback parent for live development without opening production', () => {
+    const local = 'http://127.0.0.1:5191';
+    expect([...allowedOrigins(local, local, false, true)]).toEqual([local]);
+    expect([...allowedOrigins(undefined, local, false, true)]).toEqual([]);
+    expect([...allowedOrigins('http://crm.example', local, false, true)]).toEqual([]);
+    expect([...allowedOrigins(local, local, false, false)]).toEqual([]);
+  });
   it('fails closed live, and never grants a wildcard or a URL path', () => {
     expect([...allowedOrigins(undefined, origin, false)]).toEqual([]);
     expect([...allowedOrigins('*, null, https://crm.example/path, http://crm.example, https://user:secret@crm.example', origin, false)]).toEqual([]);

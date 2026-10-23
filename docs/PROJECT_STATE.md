@@ -7,11 +7,16 @@ ses accès individuels ; SDK navigateur `createApisnixPhone`, préparation du
 numéro et événements de connexion/appel. Démonstration Atelier CRM sur
 `/integration-demo`, deux postes fictifs, sans appel réel. Origines autorisées
 explicites, contrôle de fenêtre/canal, aucun mot de passe transmis au CRM.
-En live, intégration fermée par défaut ; en-têtes, sessions entre sites et
-appels réels à valider sur un futur pilote avant toute activation client.
-[Contrat, essai local et limites](WEBPHONE_EMBED.md). Production et manuels
-clients inchangés ; aucune migration ni création de compte. 250 tests, typage,
-lint et builds démo/live réussis ; parcours simulés et origines contrôlés.
+En live, intégration fermée par défaut. Pilote réel local validé le 23 octobre :
+appels internes entrants/sortants, audio WebRTC dans les deux sens (tonalité
+synthétique), événements SDK jusqu’au raccrochage. API réelle contrôlée
+séparément : une seule ligne, autres postes/équipes refusés. **Pas encore prêt
+pour un client sur un autre site** : CSP anti-iframe, chargement SDK et cookie
+SameSite=Strict à traiter ; journal/profil/TURN non validés dans cette iframe.
+[Contrat, review et limites](WEBPHONE_EMBED.md). 251 tests, typage, lint et build
+réussis. Loopback live permis uniquement sur serveur de développement et origine
+explicite ; build live toujours HTTPS. Frontend/backend et manuels inchangés ;
+réactivation du poste pilote documentée dans le dépôt privé.
 
 
 
