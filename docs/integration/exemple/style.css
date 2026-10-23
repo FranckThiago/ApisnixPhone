@@ -1,0 +1,25 @@
+:root { font-family: system-ui, sans-serif; color: #18253b; background: #f3f6fa; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 24px; max-width: 1200px; margin: auto; padding: 24px; }
+.crm { padding: 24px; background: white; border: 1px solid #d5deea; border-radius: 18px; }
+h1 { margin: 0; font-size: 30px; }
+h2 { font-size: 19px; margin-top: 32px; }
+p { line-height: 1.6; }
+.eyebrow { color: #08745c; font-weight: 700; }
+.notice { background: #fff7de; padding: 12px; border-radius: 8px; }
+label { display: block; font-weight: 600; margin-bottom: 8px; }
+input { width: 100%; padding: 12px; border: 1px solid #9aaac0; border-radius: 8px; font: inherit; }
+button { padding: 12px 18px; margin-top: 12px; background: #08745c; color: white; border: 0; border-radius: 8px; font: inherit; cursor: pointer; }
+button:disabled { background: #dae1e9; color: #4a596d; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 3px solid #3172ce; outline-offset: 3px; }
+#message { min-height: 3em; }
+.phone-panel { width: 100%; height: 780px; min-width: 0; border: 1px solid #d5deea; border-radius: 18px; overflow: hidden; background: #10162d; }
+.phone-panel[hidden] { display: none; }
+ul { padding-left: 20px; }
+li { padding: 8px 0; overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  main { grid-template-columns: minmax(0, 1fr); padding: 12px; gap: 16px; }
+  .crm { padding: 18px; }
+  .phone-panel { height: 740px; }
+}

@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 2026-10-23 — Kit technique d'intégration destiné aux clients
+
+Ajout du guide français complet dans `docs/integration/`, PDF de 13 pages et
+archive client sous `output/`, avec exemple HTML/JavaScript/CSS sans secrets.
+Contrat vérifié contre le SDK publié : options, états, appels, résultats,
+sessions, portée des données, limites et recette. Générateur ReportLab
+reproductible dans `scripts/build-integration-guide.py`. README de maintenance,
+PROJECT_STATE et WEBPHONE_EMBED relient les livrables. 20 tests SDK/session,
+syntaxe et banc de comportement de l'exemple, contrôle visuel des 13 pages et
+archive vérifiés. Aucun envoi client ni déploiement/migration ; manuels existants
+préservés. La recette réseau, matériel et domaine du client reste nécessaire.
+
 ## 2026-10-23 — Intégration CRM administrable publiée
 
 Origines HTTPS associées aux équipes dans la supervision, sessions par phone

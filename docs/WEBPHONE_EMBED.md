@@ -5,6 +5,11 @@ indépendantes des cookies tiers. Publication et preuves : [OPERATIONS](OPERATIO
 Cette version livre un panneau et un SDK navigateur, pas une API publique de
 création de comptes ni un accès serveur aux historiques.
 
+**Remise aux développeurs clients :** [guide technique et kit d'intégration](integration/README.md)
+(édition 1.0, PDF de 13 pages et exemple HTML/JavaScript/CSS). Le guide client
+décrit le contrat disponible, les champs transmis, la sécurité et la recette ;
+il exclut l'historique d'exploitation interne présent dans ce document.
+
 ## Essayer localement
 
 Depuis `webphone/` :

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ApisnixPhone API - Exemple d'intégration</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <section class="crm" aria-labelledby="heading">
+      <p class="eyebrow">Exemple d'intégration client</p>
+      <h1 id="heading">ApisnixPhone API</h1>
+      <p>Connectez votre phone dans le panneau. Préparez un numéro ici, puis confirmez l'appel dans le téléphone.</p>
+      <p class="notice">Service réel : utiliser uniquement un accès et un numéro de test convenus avec APISNIX.</p>
+      <p id="connection" role="status">Chargement du téléphone…</p>
+      <form id="prepare-form">
+        <label for="number">Numéro à préparer</label>
+        <input id="number" name="number" type="tel" maxlength="40" autocomplete="off" required>
+        <button id="prepare" type="submit" disabled>Préparer l'appel</button>
+      </form>
+      <p id="message" role="status"></p>
+      <button id="toggle" type="button" aria-expanded="true" aria-controls="telephone">Réduire le téléphone</button>
+      <h2>Appels observés pendant cette session</h2>
+      <p>Aucune sauvegarde dans le CRM. Les appels antérieurs ne sont pas importés.</p>
+      <ul id="calls" aria-label="Appels observés"></ul>
+      <noscript>JavaScript doit être activé pour utiliser le téléphone.</noscript>
+    </section>
+    <section id="telephone" class="phone-panel" aria-label="Téléphone ApisnixPhone"></section>
+  </main>
+  <script type="module" src="./integration.js"></script>
+</body>
+</html>

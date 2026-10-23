@@ -1,5 +1,15 @@
 # État du projet
 
+## Documentation technique d'intégration client — 23 octobre 2026
+
+[Guide et kit client](integration/README.md) prêts à transmettre : édition 1.0,
+PDF français de 13 pages, source maintenable et exemple HTML/JavaScript/CSS.
+Contrat SDK, accès par phone, autorisation des domaines, données transmises,
+erreurs, sécurité, cycle de vie du panneau, exemple React et recette client.
+20 tests ciblés du SDK/session, banc de l'exemple et rendu des 13 pages vérifiés.
+Aucun envoi, changement de droits, migration ou déploiement ; release active
+inchangée. Les manuels d'utilisation existants restent inchangés.
+
 ## Intégration CRM par poste — 23 octobre 2026
 
 **En service `20261023-embed-api` depuis 13:53:43 Douala.** Téléphone
