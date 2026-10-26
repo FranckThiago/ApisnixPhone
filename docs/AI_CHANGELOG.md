@@ -11,8 +11,9 @@
   phrase SIP ou Reason → APX-CREDIT ; statut conservé, pas de faux diagnostic
   pour 403/marge ; 402 générique traduit séparément ; refus tardifs ignorés.
   Textes FR/EN/ES ; aucun texte serveur brut sauvegardé.
-- Tests numéros et contrôleur, typage/lint/build ; détails de validation et
-  publication dans OPERATIONS. Pas de migration, recharge ou changement PBX.
+- 277 tests au total (suite complète puis contrôleur enrichi), typage/lint/build
+  live isolé ; publication `20261026-pays-credit` à 10:52:01 Douala, source
+  `40cc59a`, retour protégé et contrôles HTTPS/navigateur dans OPERATIONS. Pas de migration, recharge ou changement PBX.
 - Sources de vérité alignées : PROJECT_STATE, WEBPHONE_PLAN, ARCHITECTURE,
   OPERATIONS. Manuels clients inchangés. La transmission réelle du motif
   opérateur jusqu'au navigateur reste à constater lors d'un refus réel.

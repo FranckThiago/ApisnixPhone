@@ -2,6 +2,29 @@
 
 ## Diagnostic crédit et pays entrants — 26 octobre 2026
 
+Frontend **`20261026-pays-credit`**, source `40cc59a`, actif depuis
+**10:52:01 Douala** sur Hermes. 276 tests complets réussis, puis un test
+supplémentaire de refus tardif et les 58 tests du contrôleur réussis (277 au
+total). Typage/lint, build live isolé `git archive` / `npm ci` réussis.
+Les trois paramètres live ont été repris du JS effectivement chargé par
+l'index précédent. Pas de liste `VITE_CALL_WAITING_LINES` dans cette entrée
+active avant publication ; cette absence est conservée, sans réactiver de pilote.
+
+Hermes et ancienne cible vérifiés. Copie intégrale/manifeste de l'ancienne
+release sous `/root/apisnix-phone-backups/20261026-pays-credit/` (0700),
+270 fichiers du nouveau build vérifiés avant bascule atomique ; anciennes
+ressources à empreinte conservées pour les onglets déjà ouverts. Index,
+JS/CSS, bibliothèque SIP, SDK et service worker conformes en HTTPS depuis
+Hermes ; navigateur intégré : `main-CzZJGOoq.js`, formulaire live visible,
+aucune erreur/alerte console. Aucun compte connecté ni appel réel provoqué.
+Caddy et supervision actifs, sans redémarrage ; PBX, backend, base et build
+conférence PBX inchangés. Aucune migration. Actualiser hors appel.
+
+Retour ciblé : vérifier `current` encore sur cette release et le repointer
+atomiquement vers `/srv/apisnixphone/releases/20261023-conference-pilot` ;
+ne pas restaurer la base. Preuves `.work/releases/20261026-pays-credit/`,
+archive SHA-256 `d79d34f69a6de22a04d8cd48b6c3a0c1a51c9ccbcde79b6b1b946f3196b8039c`.
+
 `APX-CREDIT` identifie un refus d’appel avec motif explicite de solde/crédit
 insuffisant (ex. `Insufficient Balance 19`), transmis dans la phrase SIP ou
 le texte de `Reason`. Les variantes françaises sont également reconnues.

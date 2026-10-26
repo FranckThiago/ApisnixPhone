@@ -2,7 +2,8 @@
 
 ## Pays entrants France/Canada et crédit insuffisant — 26 octobre 2026
 
-Implémenté et vérifié localement, publication en préparation. Pour un entrant
+En service `20261026-pays-credit`, source `40cc59a`, depuis **10:52:01 Douala**.
+Pour un entrant
 sans indicatif : 9 chiffres → France, 10 avec zéro initial → France, 10 sans
 zéro initial → Canada. Formats complets seulement ; extensions et indicatifs
 explicites préservés. Règle métier provisoire limitée aux deux pays confirmés
