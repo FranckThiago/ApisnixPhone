@@ -13,7 +13,7 @@ export interface ManagedSession {
   request?: { getHeader(name: string): string | undefined };
 }
 
-interface Rejection { message: { statusCode?: number } }
+interface Rejection { message: { statusCode?: number; reasonPhrase?: string; getHeader?(name: string): string | undefined } }
 /** A provisional response; `body` carries the far end's SDP when it offers early media. */
 interface ProgressResponse { message: { statusCode?: number; body?: string } }
 /** What the media preparation decided for the next outgoing call. */
@@ -101,6 +101,20 @@ export interface SipEnvironment {
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
 const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
+
+/** Only an explicit server balance reason proves this; a plain 403 does not. */
+function callFailure(message: Rejection['message']): string | undefined {
+  const status = message.statusCode ?? 0;
+  const reasonHeader = message.getHeader?.('Reason') ?? '';
+  const headerText = /\btext\s*=\s*"([^"\r\n]*)"/i.exec(reasonHeader)?.[1];
+  const exhausted = [message.reasonPhrase, headerText].some(value => {
+    const reason = (value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    return /^(?:insufficient (?:balance|credit|funds)|(?:balance|credit) (?:exhausted|depleted)|no (?:credit|funds)|out of credit|(?:credit|solde) (?:insuffisant|epuise|fini))(?:\s+\d+)?[.!]?$/i.test(reason);
+  });
+  if (status >= 400 && status <= 699 && exhausted) return t('sip.creditExhausted', { status });
+  if (status === 402) return t('sip.402');
+  return status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
+}
 const RECOVERY_DELAYS = [1000, 2000, 4000, 8000, 15000];
 
 /** Whole lengths only: « 1 min », « 15 min », « 1 h », « 24 h ». */
@@ -644,10 +658,11 @@ export class SipPhoneController implements PhoneController {
           if (media?.earlyMedia && response.message.body && !this.stopEarlyAudioWatch) this.watchEarlyAudio(id);
         },
         onReject: response => {
+          if (this.manager !== manager || this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
           this.callProgress.stop();
           const status = response.message.statusCode ?? 0;
           this.rejection = REJECTIONS[status] ?? 'failed';
-          this.rejectionReason = status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
+          this.rejectionReason = callFailure(response.message);
         },
       },
     });

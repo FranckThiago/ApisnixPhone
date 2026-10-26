@@ -1,5 +1,22 @@
 # Journal des changements
 
+## 26 octobre 2026 — Pays entrants et diagnostic crédit
+
+- Demande : afficher France/Canada pour les entrants sans indicatif et un
+  diagnostic spécifique quand le serveur signale un crédit épuisé.
+- `numbers.ts` : repli national d'affichage 9 chiffres → FR, 10 avec 0 → FR,
+  10 sans 0 → CA ; formats courts/anonymes/internationaux préservés, numéros
+  et rappels inchangés. Applicable à l'historique déjà présent.
+- `SipPhoneController.ts` : motif explicite de solde/crédit insuffisant dans
+  phrase SIP ou Reason → APX-CREDIT ; statut conservé, pas de faux diagnostic
+  pour 403/marge ; 402 générique traduit séparément ; refus tardifs ignorés.
+  Textes FR/EN/ES ; aucun texte serveur brut sauvegardé.
+- Tests numéros et contrôleur, typage/lint/build ; détails de validation et
+  publication dans OPERATIONS. Pas de migration, recharge ou changement PBX.
+- Sources de vérité alignées : PROJECT_STATE, WEBPHONE_PLAN, ARCHITECTURE,
+  OPERATIONS. Manuels clients inchangés. La transmission réelle du motif
+  opérateur jusqu'au navigateur reste à constater lors d'un refus réel.
+
 ## 2026-10-23 — Conférence VICIdial liée à la session et pilotable par équipe
 
 Build PBX dédié, authentification via session native et sélection exclusive du

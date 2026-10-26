@@ -184,6 +184,19 @@ adaptateurs du journal central/audio normalisent aussi les réponses anciennes.
 Notes, contacts, IDs, dates et tags sont conservés. Le backend applique la même
 règle à l'ingestion des appels et aux profils GET/PUT, avec migration explicite
 de l'historique. Le préfixe de routage reste ajouté par le PBX pour l'opérateur.
+Pour les entrants, `describeNumber` applique le repli d'affichage France/Canada
+confirmé le 26 octobre : neuf chiffres sans zéro initial ou dix avec 01–09 →
+France ; dix sans zéro initial → Canada. Les internationaux explicites restent
+prioritaires, les extensions restent internes. Journal local/central, recherche,
+carte d'appel et audio utilisent la même fonction ; aucun numéro de rappel ou
+numéro persisté n'est modifié par cette déduction. Détail dans WEBPHONE_PLAN.
+Le refus d'un INVITE inspecte aussi `reasonPhrase` et le texte de l'en-tête
+`Reason` : un motif explicite de crédit insuffisant produit le diagnostic
+`APX-CREDIT`, avec le statut SIP reçu, dans la carte de fin et l'historique
+observé du téléphone. Le journal central ne reçoit pas ce motif. Un 403 seul
+reste générique ; un 402 seul signifie paiement requis, sans affirmer un solde
+nul. Aucun texte serveur brut n'est affiché ou persisté. Un refus tardif d'un
+ancien appel/contrôleur est ignoré. Aucun changement d'authentification.
 `src/domain/callbacks.ts` porte les rappels planifiés.
 `src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
 pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le

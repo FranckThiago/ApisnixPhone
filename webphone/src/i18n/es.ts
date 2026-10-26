@@ -667,6 +667,8 @@ export const es: Record<MessageKey, string> = {
   'sip.resumeFailed': 'No se pudo reanudar la llamada.',
   'sip.micKept': '{reason} Se sigue usando el micrófono anterior.',
   'sip.outputFailed': 'Estos auriculares no se pueden seleccionar; se usa la salida del sistema.',
+  'sip.creditExhausted': 'APX-CREDIT — crédito agotado o insuficiente. Contacte con su administrador para recargar la cuenta. (SIP {status})',
+  'sip.402': 'SIP 402 Payment Required — el servidor requiere un pago. Contacte con su administrador.',
   'sip.403': 'SIP 403 Forbidden — llamada prohibida por el servidor.',
   'sip.404': 'SIP 404 Not Found — número o destino no encontrado.',
   'sip.480': 'SIP 480 — llamada no disponible en este momento. Inténtalo de nuevo; si persiste, contacta con tu administrador.',

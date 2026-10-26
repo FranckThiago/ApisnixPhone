@@ -312,8 +312,8 @@ ligne au besoin ; elles ne sont ni coupées ni masquées sur mobile. Le résumé
 garde au plus deux qualifications, les autres restant dans le détail.
 Quand la colonne pays est masquée (ligne de 580 px ou moins), le drapeau
 du pays connu apparaît dans la ligne secondaire sous l'identité, à côté du
-numéro pour un contact nommé ou du pays pour un numéro sans nom. Aucun pays
-n'est déduit par défaut et aucun drapeau n'est ajouté si le pays est inconnu.
+numéro pour un contact nommé ou du pays pour un numéro sans nom. Le repli national
+France/Canada ci-dessous s'applique aux entrants ; aucun drapeau si le pays reste inconnu.
 
 ### Identité et tokens proposés
 
@@ -557,9 +557,13 @@ Stocker séparément `rawInput`, `dialTarget` et les métadonnées d'affichage.
    `00` et sans `0` initial est donc lu avec son indicatif. `1001` et les numéros
    de 6 chiffres au plus restent « Numéro interne » ; indicatif inconnu : globe
    et « Pays non déterminé ».
-   Correction du 6 octobre : ces raccourcis nationaux concernent la composition,
-   pas les entrants. Un entrant de 7–10 chiffres sans +/00 reste de pays inconnu,
-   y compris les neuf chiffres français et les dix chiffres canadiens. Les
+   Règle entrante révisée le 26 octobre : Franck confirme que les numéros
+   reçus sans indicatif proviennent actuellement de France ou du Canada.
+   Neuf chiffres sans zéro initial → France ; dix chiffres commençant par
+   01–09 → France ; dix chiffres sans zéro initial → Canada. Les séparateurs
+   visuels sont ignorés pour ce classement seulement. Les autres formats
+   nationaux restent inconnus. C'est une hypothèse métier à réviser si de
+   nouveaux pays arrivent, pas une validation universelle. Les
    internationaux explicites +/00 et les formats internationaux complets de
    11–15 chiffres sans zéro initial sont validés par les métadonnées avant
    d’afficher un pays ; un indicatif incomplet ne suffit plus. Les extensions

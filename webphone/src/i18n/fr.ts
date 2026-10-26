@@ -665,6 +665,8 @@ export const fr = {
   'sip.resumeFailed': 'La reprise de l’appel a échoué.',
   'sip.micKept': '{reason} Le micro précédent reste utilisé.',
   'sip.outputFailed': 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.',
+  'sip.creditExhausted': 'APX-CREDIT — crédit épuisé ou insuffisant. Contactez votre administrateur pour recharger le compte. (SIP {status})',
+  'sip.402': 'SIP 402 Payment Required — paiement requis par le serveur. Contactez votre administrateur.',
   'sip.403': 'SIP 403 Forbidden — appel interdit par le serveur.',
   'sip.404': 'SIP 404 Not Found — numéro ou destination introuvable.',
   'sip.480': 'SIP 480 — appel indisponible pour le moment. Réessayez ; si cela persiste, contactez votre administrateur.',

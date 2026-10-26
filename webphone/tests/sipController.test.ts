@@ -8,7 +8,7 @@ const session = (id: string, user = '', displayName = ''): ManagedSession => ({ 
 function harness(remoteAudio?: HTMLAudioElement) {
   let delegate!: ManagerDelegate;
   let registerReject!: (status: number) => void;
-  let invite!: { onProgress(response?: { message: { statusCode?: number; body?: string } }): void; onReject(status: number): void };
+  let invite!: { onProgress(response?: { message: { statusCode?: number; body?: string } }): void; onReject(status: number, reasonPhrase?: string, reasonHeader?: string): void };
   const manager = {
     contactName: 'test-browser',
     connect: vi.fn(async () => delegate.onServerConnect()),
@@ -20,7 +20,7 @@ function harness(remoteAudio?: HTMLAudioElement) {
     unregister: vi.fn(async () => undefined),
     call: vi.fn(async (_destination: string, _options: undefined, options: Parameters<Manager['call']>[2]) => {
       invite = { onProgress: (response = { message: {} }) => options.requestDelegate.onProgress(response),
-                 onReject: status => options.requestDelegate.onReject({ message: { statusCode: status } }) };
+                 onReject: (status, reasonPhrase, reasonHeader) => options.requestDelegate.onReject({ message: { statusCode: status, reasonPhrase, getHeader: name => name === 'Reason' ? reasonHeader : undefined } }) };
       delegate.onCallCreated(session('out'));
     }),
     answer: vi.fn(async () => undefined),
@@ -349,6 +349,67 @@ describe('SIP controller', () => {
       });
       expect(h.phone.getSnapshot().error).toBe(`SIP ${status} ${meaning}.`);
     }
+  });
+
+  it.each([
+    [403, 'Insufficient Balance 19', undefined],
+    [403, 'Insufficient credit', undefined],
+    [503, 'Credit exhausted', undefined],
+    [403, 'Crédit fini', undefined],
+    [403, 'Forbidden', 'SIP;cause=403;text="Insufficient Balance 19"'],
+  ])('keeps the explicit balance diagnostic on the ended call (%s, %s)', async (status, reason, header) => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallHangup(session('out'));
+    h.invite.onReject(status, reason, header);
+    await Promise.resolve();
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', outcome: 'failed', failure: t('sip.creditExhausted', { status }) });
+    expect(h.phone.getSnapshot().error).toBe(t('sip.creditExhausted', { status }));
+    h.phone.dismiss();
+    h.phone.call('x', '+33100000002');
+    await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call?.failure).toBeUndefined();
+  });
+
+  it.each(['Forbidden', 'Loss to Destination 33 Exceeds Max Loss', 'Not insufficient balance', 'Credit check unavailable'])('does not invent exhausted credit from %s', async reason => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.invite.onReject(403, reason);
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call?.failure).toBe(t('sip.403'));
+  });
+
+  it('distinguishes payment required from explicit exhausted credit', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.invite.onReject(402, 'Payment Required');
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call?.failure).toBe(t('sip.402'));
+  });
+
+  it('ignores a late balance refusal belonging to the preceding call', async () => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('first', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    const oldInvite = h.invite;
+    h.phone.hangup();
+    h.delegate.onCallHangup(session('out'));
+    h.phone.dismiss();
+    h.phone.call('second', '+33100000002');
+    await vi.advanceTimersByTimeAsync(0);
+    h.invite.onReject(486, 'Busy Here');
+    oldInvite.onReject(403, 'Insufficient Balance 19');
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call).toMatchObject({ outcome: 'busy', failure: t('sip.486') });
   });
 
   it('does not carry a SIP refusal into the next call', async () => {

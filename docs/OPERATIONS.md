@@ -1,5 +1,19 @@
 # Construction et validation
 
+## Diagnostic crédit et pays entrants — 26 octobre 2026
+
+`APX-CREDIT` identifie un refus d’appel avec motif explicite de solde/crédit
+insuffisant (ex. `Insufficient Balance 19`), transmis dans la phrase SIP ou
+le texte de `Reason`. Les variantes françaises sont également reconnues.
+Le statut SIP reste visible ; un 403 générique ou un refus de marge/tarif
+ne permet pas ce diagnostic. Un 402 seul affiche « paiement requis ».
+Si le PBX masque le motif opérateur, le navigateur garde le refus générique :
+il faut alors un diagnostic serveur ciblé, pas une recharge déduite du seul code.
+Le message est traduit FR/EN/ES, conservé dans l’historique observé seulement ;
+aucun rattrapage des anciens motifs ni enrichissement du journal central.
+Le repli pays FR/CA recalcule aussi les anciens entrants à l’affichage, sans
+migration ni modification des numéros. Manuels clients inchangés.
+
 ## Conférence native VICIdial par équipe — 23 octobre 2026
 
 Publication PBX distincte de Hermes : sources privées `agent-skin/conference/`,

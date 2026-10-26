@@ -62,31 +62,31 @@ describe('display metadata', () => {
   });
 });
 
-// Synthetic numbers only: incoming national IDs do not become US numbers.
-it('leaves incoming national formats unknown without altering caller IDs or explicit international codes', () => {
-  for (const number of ['612345678', '123456789']) {
-    expect(describeNumber(number, 'inbound')).toMatchObject({ kind: 'unknown', display: number });
+// Synthetic numbers only; this fallback reflects the current FR/CA business scope.
+it('labels inbound national IDs by length, preserving their digits and separators', () => {
+  for (const value of ['612345678', '123456789', '0612345678', '01 23 45 67 89']) {
+    expect(describeNumber(value, 'inbound')).toMatchObject({ kind: 'national', country: 'FR', display: value });
   }
-  expect(describeNumber('15145550100', 'inbound').country).toBe('CA');
-  expect(describeNumber('12125550100', 'inbound').country).toBe('US');
-  expect(describeNumber('+41220000001', 'inbound').country).toBe('CH');
-  expect(describeNumber('1001', 'inbound').country).toBeUndefined();
-  expect(describeNumber('90033123456789', 'outbound')).toMatchObject({ country: 'FR', display: '90033123456789' });
-  expect(describeNumber(parseDialInput('+33123456789').dialTarget).country).toBe('FR');
+  for (const value of ['5145550100', '4185550100', '2125550100', '(514) 555-0100']) {
+    expect(describeNumber(value, 'inbound')).toMatchObject({ kind: 'national', country: 'CA', display: value });
+  }
 });
 
-// Fictional Canadian subscriber; both national and explicit international forms.
-it('does not mistake a Canadian national ID for Peru, nor a French one for another country', () => {
-  for (const value of ['5145550100', '4185550100', '2125550100', '123456789', '0612345678']) {
+it('preserves explicit international identities and leaves other inbound formats unknown', () => {
+  for (const value of ['+15145550100', '0015145550100', '15145550100']) expect(describeNumber(value, 'inbound').country).toBe('CA');
+  expect(describeNumber('12125550100', 'inbound').country).toBe('US');
+  expect(describeNumber('+51987654321', 'inbound').country).toBe('PE');
+  expect(describeNumber('+41220000001', 'inbound').country).toBe('CH');
+  expect(describeNumber('33612345678', 'inbound').country).toBe('FR');
+  for (const value of ['+1514', '+612345678', '00612345678', '012345678', '0000000000', '1234567', '12345678', 'anonymous', 'abc123456789', '*72#']) {
     expect(describeNumber(value, 'inbound')).toMatchObject({ kind: 'unknown', display: value });
     expect(describeNumber(value, 'inbound').country).toBeUndefined();
   }
-  expect(describeNumber('+15145550100', 'inbound').country).toBe('CA');
-  expect(describeNumber('0015145550100', 'inbound').country).toBe('CA');
-  expect(describeNumber('+51987654321', 'inbound').country).toBe('PE');
-  expect(describeNumber('33612345678', 'inbound').country).toBe('FR');
-  expect(describeNumber('+1514', 'inbound').country).toBeUndefined();
-  expect(describeNumber('0612345678', 'outbound').country).toBe('FR');
+  expect(describeNumber('1001', 'inbound').kind).toBe('internal');
+  expect(describeNumber('1001', 'inbound').country).toBeUndefined();
+  // Outgoing numbers retain their pre-existing interpretation.
+  expect(describeNumber('999000102', 'outbound').country).toBeUndefined();
+  expect(describeNumber('90033123456789', 'outbound')).toMatchObject({ country: 'FR', display: '90033123456789' });
 });
 
 it('recovers only a complete, valid and concordant provider identity', () => {

@@ -110,10 +110,15 @@ export function describeNumber(dialTarget: string, direction?: 'inbound' | 'outb
   if (!dialTarget || /[*#]/.test(dialTarget)) return { kind: 'unknown', display: dialTarget };
   if (direction === 'inbound') {
     const compact = dialTarget.replace(VISUAL_SEPARATORS, '');
-    // Bare national caller IDs can also be valid international numbers (e.g.
-    // a Canadian 514… looks like Peru +51). Never guess from those 7–10 digits.
+    // APISNIX currently receives national IDs only from France and Canada.
+    // Display-only business rule: never add a prefix to the caller ID or callback.
     const explicit = compact.startsWith('+') || compact.startsWith('00');
     if (!explicit && /^\d{1,6}$/.test(compact)) return { kind: 'internal', display: dialTarget };
+    if (!explicit) {
+      const country = /^[1-9]\d{8}$/.test(compact) || /^0[1-9]\d{8}$/.test(compact) ? 'FR'
+        : /^[1-9]\d{9}$/.test(compact) ? 'CA' : undefined;
+      if (country) return { kind: 'national', country, countryName: countryName(country), display: dialTarget };
+    }
     const international = explicit ? compact.replace(/^00/, '+')
       : /^[1-9]\d{10,14}$/.test(compact) ? '+' + compact : undefined;
     const number = international && /^\+\d+$/.test(international)

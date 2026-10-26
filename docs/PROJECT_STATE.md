@@ -1,5 +1,17 @@
 # État du projet
 
+## Pays entrants France/Canada et crédit insuffisant — 26 octobre 2026
+
+Implémenté et vérifié localement, publication en préparation. Pour un entrant
+sans indicatif : 9 chiffres → France, 10 avec zéro initial → France, 10 sans
+zéro initial → Canada. Formats complets seulement ; extensions et indicatifs
+explicites préservés. Règle métier provisoire limitée aux deux pays confirmés
+par Franck ; numéros intacts et anciens appels recalculés à l’affichage.
+Diagnostic `APX-CREDIT` pour les refus avec motif explicite de crédit/solde
+insuffisant, en FR/EN/ES. Un 403 seul reste générique ; un 402 seul indique un
+paiement requis. Limite : le motif doit parvenir au navigateur. Détails dans
+ARCHITECTURE, WEBPHONE_PLAN et OPERATIONS ; manuels clients inchangés.
+
 ## Conférence VICIdial administrable — 23 octobre 2026
 
 En production sur le PBX, activation volontaire par équipe dans Administration
