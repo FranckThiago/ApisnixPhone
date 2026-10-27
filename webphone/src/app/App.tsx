@@ -68,7 +68,6 @@ function Workspace() {
   const announcements = useAnnouncements(announcementsSource);
   const now = useNow();
 
-  useEffect(() => { document.documentElement.dataset.density = preferences.density; }, [preferences.density]);
   // A callback that comes due is announced once: in the page, and by the system when the person allowed it.
   const announced = useRef(new Set<string>());
   const dueCallbacks = callbacks.filter(callback => !callback.doneAt && callback.dueAt <= now);

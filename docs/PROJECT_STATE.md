@@ -1,5 +1,14 @@
 # État du projet
 
+## Réglages réorganisés — 27 octobre 2026
+
+Deux colonnes indépendantes évitent les vides imposés par la hauteur Audio.
+Une colonne sur mobile ; choix de densité retiré, espacement confortable unique.
+Ancien champ de profil conservé sans effet pour compatibilité. 277 tests,
+typage et lint réussis ; rendu ordinateur/mobile contrôlé en démonstration.
+Publication en préparation ; manuels inchangés. Détail dans WEBPHONE_PLAN.
+
+
 ## Pays entrants France/Canada et crédit insuffisant — 26 octobre 2026
 
 En service `20261026-pays-credit`, source `40cc59a`, depuis **10:52:01 Douala**.

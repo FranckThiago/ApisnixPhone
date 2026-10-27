@@ -121,7 +121,3 @@
   --call-line: rgb(255 255 255 / 14%);
   color-scheme: dark;
 }
-
-:root[data-density='compact'] {
-  --row: 50px;
-}

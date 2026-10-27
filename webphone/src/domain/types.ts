@@ -55,6 +55,7 @@ export type Theme = 'light' | 'dark' | 'system';
 export interface Preferences {
   theme: Theme;
   language?: 'fr' | 'en' | 'es';
+  /** Legacy profile field, retained for server/older-client compatibility; no display effect. */
   density: 'comfortable' | 'compact';
   /** Listening volume, 0–200 %: above 100 % the voice and the sounds are amplified. */
   volume: number;

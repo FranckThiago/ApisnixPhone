@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 27 octobre 2026 — Réglages rangés et retrait de la densité
+
+Settings.tsx et app.css : Audio à gauche, autres cartes empilées à droite,
+espacements réguliers ; empilement mobile conservé. Retrait du sélecteur,
+de ses trois traductions et de la règle CSS compacte ; App.tsx ne pose plus
+data-density. Champ historique dans Preferences conservé pour le serveur
+et les anciennes versions, sans migration ni perte des réglages. Plan et
+état alignés ; manuels inchangés. 277 tests, typage/lint et recette navigateur.
+
+
 ## 26 octobre 2026 — Pays entrants et diagnostic crédit
 
 - Demande : afficher France/Canada pour les entrants sans indicatif et un

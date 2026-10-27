@@ -405,11 +405,20 @@ vérifiée. L'interface doit rester complète pour les usages validés.
 
 ## 7. Réglages et valeurs initiales
 
+Les réglages occupent deux colonnes indépendantes sur ordinateur : Audio à
+gauche, Apparence → Appels → Données → Compte à droite, avec 16 px entre
+les cartes. Sous le seuil mobile existant, elles s'empilent dans cet ordre,
+Audio en premier. Les petites cartes n'attendent plus la hauteur du bloc Audio.
+Le choix de densité est supprimé : il ne réduisait que la hauteur minimale
+de certaines listes (62 à 50 px), sans agir sur les réglages. L'espacement
+confortable devient unique ; l'ancien champ de profil `density` reste accepté
+pour compatibilité, sans effet visuel et sans migration.
+
 | Réglage utilisateur | Valeur initiale / règle |
 | --- | --- |
 | Langue | Français par défaut ; anglais et espagnol au choix sur l'écran de connexion et dans Réglages → Apparence (demande de Franck, 29 septembre), retenus par le navigateur |
 | Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
-| Densité | Confortable ; compacte possible sur petits écrans |
+| Espacement | Affichage confortable unique ; sélecteur de densité retiré le 27 octobre 2026 |
 | Blocs Audio | Réglages → Audio en trois blocs encadrés (demande de Franck, 8 octobre) : Micro (autorisation, périphérique, niveau fixe à 100 %, test, annulation d'écho, réduction de bruit), Écoute (casque/sortie, volume d'écoute), Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier) |
 | Micro | Périphérique système ; choix explicite possible |
 | Autorisation du micro | Ligne dédiée dans Réglages → Audio (demande de Franck, 28 septembre) : état lu par l'API Permissions quand elle existe, bouton qui redemande l'accès, étapes de déblocage quand le navigateur a retenu un refus — aucune page ne peut alors le forcer à redemander |
