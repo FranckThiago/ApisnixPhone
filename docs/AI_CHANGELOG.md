@@ -7,7 +7,9 @@ espacements réguliers ; empilement mobile conservé. Retrait du sélecteur,
 de ses trois traductions et de la règle CSS compacte ; App.tsx ne pose plus
 data-density. Champ historique dans Preferences conservé pour le serveur
 et les anciennes versions, sans migration ni perte des réglages. Plan et
-état alignés ; manuels inchangés. 277 tests, typage/lint et recette navigateur.
+état alignés ; manuels inchangés. 277 tests, typage/lint/build live et recette
+navigateur. Publié `20261027-reglages` à 18:23:25 Douala ; sauvegarde, preuves
+et retour ciblé dans OPERATIONS.
 
 
 ## 26 octobre 2026 — Pays entrants et diagnostic crédit

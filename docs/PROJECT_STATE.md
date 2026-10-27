@@ -6,7 +6,9 @@ Deux colonnes indépendantes évitent les vides imposés par la hauteur Audio.
 Une colonne sur mobile ; choix de densité retiré, espacement confortable unique.
 Ancien champ de profil conservé sans effet pour compatibilité. 277 tests,
 typage et lint réussis ; rendu ordinateur/mobile contrôlé en démonstration.
-Publication en préparation ; manuels inchangés. Détail dans WEBPHONE_PLAN.
+En service `20261027-reglages`, source `90701c6`, depuis 18:23:25 Douala.
+Build live et contrôle HTTPS/navigateur réussis ; manuels inchangés.
+Détail dans WEBPHONE_PLAN et OPERATIONS.
 
 
 ## Pays entrants France/Canada et crédit insuffisant — 26 octobre 2026

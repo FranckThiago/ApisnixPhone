@@ -1,5 +1,32 @@
 # Construction et validation
 
+## Réglages sans vides et densité retirée — 27 octobre 2026
+
+Frontend `20261027-reglages`, source `90701c6`, actif depuis **18:23:25 Douala**.
+Deux colonnes indépendantes, une sur mobile ; espacement confortable unique.
+Ancien champ `density` ignoré par l'affichage et conservé dans les profils pour
+compatibilité. Aucun changement du serveur, de la base, du SIP ou de la conférence
+PBX ; aucune migration ni mise à jour des manuels.
+
+277 tests, typage/lint et build live isolé (`git archive` / `npm ci`) réussis.
+Recette démo : 1440/1024/390 px, thèmes clair/sombre, libellés FR/ES, intervalles
+16 px, absence du sélecteur et absence de débordement. Une erreur de contexte
+React pendant le remplacement à chaud des modules de développement disparaît
+après rechargement complet ; connexion et page Réglages sans nouvelle erreur.
+Formulaire public vérifié avec `main-B3XeNouB.js`, aucune erreur/alerte console.
+Aucun compte réel connecté ni appel provoqué.
+
+Hermes/IP et cible précédente identifiés. Copie intégrale et manifeste comparés
+sous `/root/apisnix-phone-backups/20261027-reglages/` (0700). 270 fichiers vérifiés,
+anciens assets conservés, paramètres live repris du bundle actif. Bascule atomique,
+contrôles HTTPS index/JS/CSS/SIP/SDK/service worker réussis ; Caddy et supervision
+actifs sans redémarrage. Preuves `.work/releases/20261027-reglages/` et aperçus
+`.work/settings-layout/`. Archive SHA-256 `066e5af1e28db12c843ad034cd14bf3f169677c297d0eb40dad9a399f60be8e0`.
+Retour : vérifier current sur cette release, puis repointer atomiquement vers
+`/srv/apisnixphone/releases/20261026-pays-credit`. Ne pas restaurer la base.
+Actualisation hors appel pour charger la nouvelle interface.
+
+
 ## Diagnostic crédit et pays entrants — 26 octobre 2026
 
 Frontend **`20261026-pays-credit`**, source `40cc59a`, actif depuis
