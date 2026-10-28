@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 28 octobre 2026 — Conserver le volume pendant l’appel
+
+Le volume était enfant du pavé, démonté à chaque appel. `PhoneDock.tsx`
+place désormais la même carte sous la vue repos ou appel, avec la préférence
+existante ; aucun changement de chaîne audio, de traduction ni de données.
+Plan et état alignés. Typage/lint et parcours démo : lancement, conversation,
+volume 100→95 %, attente/reprise, DTMF, mobile 390 px sans débordement,
+fin d’appel conservant 95 %, aucune erreur console. Aucun appel réel provoqué.
+Manuels inchangés, aucune migration ; publication consignée dans OPERATIONS.
+
 ## 27 octobre 2026 — Réglages rangés et retrait de la densité
 
 Settings.tsx et app.css : Audio à gauche, autres cartes empilées à droite,

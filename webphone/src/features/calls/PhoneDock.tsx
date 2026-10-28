@@ -72,8 +72,7 @@ function Keypad({ onKey, compact = false }: { onKey(key: string): void; compact?
 function Dialer() {
   const { dial, setDial, placeCall, openContact } = useApp();
   const { connection } = usePhone();
-  const { contacts, preferences } = useData();
-  const { store } = useApp();
+  const { contacts } = useData();
   const { t } = useI18n();
   const field = useRef<HTMLInputElement>(null);
   const input = parseDialInput(dial);
@@ -127,15 +126,24 @@ function Dialer() {
         </button>
       </section>
       <DueCallbacks />
-      <section className="dock-card audio-card" aria-label={t('nav.audio')}>
-        <Headphones size={20} aria-hidden="true" />
-        <div><b>{t('volume.label')}</b><small>{preferences.volume} %</small></div>
-        <label className={'volume tone-' + volumeTone(preferences.volume)}><VolumeMark volume={preferences.volume} />
-          <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')}
-            onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
-        </label>
-      </section>
     </>
+  );
+}
+
+/** Shared by idle and in-call views so changing phase never hides the volume. */
+function ListeningVolume() {
+  const { store } = useApp();
+  const { preferences } = useData();
+  const { t } = useI18n();
+  return (
+    <section className="dock-card audio-card" aria-label={t('nav.audio')}>
+      <Headphones size={20} aria-hidden="true" />
+      <div><b>{t('volume.label')}</b><small>{preferences.volume} %</small></div>
+      <label className={'volume tone-' + volumeTone(preferences.volume)}><VolumeMark volume={preferences.volume} />
+        <input type="range" min={0} max={MAX_VOLUME} step={5} value={preferences.volume} aria-label={t('volume.label')}
+          onChange={event => store.setPreferences({ volume: Number(event.target.value) })} />
+      </label>
+    </section>
   );
 }
 
@@ -294,5 +302,6 @@ export function PhoneDock() {
   const { call } = usePhone();
   const { t } = useI18n();
   return <aside className="dock" aria-label={t('dock.label')}><OtherCall />{call ? <CallCard key={call.id} call={call} /> : <Dialer />}
+    <ListeningVolume />
     {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> {t('dock.note')}</p>}</aside>;
 }

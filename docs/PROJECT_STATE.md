@@ -1,5 +1,13 @@
 # État du projet
 
+## Volume accessible pendant l’appel — 28 octobre 2026
+
+Le volume d’écoute quitte le composant de numérotation pour rester dans le
+panneau téléphone, y compris en sonnerie, conversation, attente, DTMF et fin
+d’appel. Valeur, couleurs et commande audio existantes conservées. Typage/lint
+et recette en démonstration ordinateur/mobile réussis (95 % conservé après
+attente/reprise et raccrochage). Publication à suivre dans OPERATIONS.
+
 ## Réglages réorganisés — 27 octobre 2026
 
 Deux colonnes indépendantes évitent les vides imposés par la hauteur Audio.
