@@ -6,7 +6,8 @@ Le volume d’écoute quitte le composant de numérotation pour rester dans le
 panneau téléphone, y compris en sonnerie, conversation, attente, DTMF et fin
 d’appel. Valeur, couleurs et commande audio existantes conservées. Typage/lint
 et recette en démonstration ordinateur/mobile réussis (95 % conservé après
-attente/reprise et raccrochage). Publication à suivre dans OPERATIONS.
+attente/reprise et raccrochage). En service `20261028-volume` depuis 18:03:49 Douala ; build live et contrôles
+HTTPS/navigateur réussis. Détails et retour dans OPERATIONS.
 
 ## Réglages réorganisés — 27 octobre 2026
 

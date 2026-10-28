@@ -1,5 +1,29 @@
 # Construction et validation
 
+## Volume d’écoute pendant l’appel — 28 octobre 2026
+
+Frontend `20261028-volume`, source `cb8288a`, actif depuis **18:03:49 Douala**.
+Carte volume commune au repos et à l’appel, conservée en sonnerie, conversation,
+attente, DTMF et fin d’appel. Valeur, commande audio et couleurs inchangées.
+Typage/lint et build live isolé réussis ; parcours démo ordinateur/mobile
+390 px, réglage 100→95 %, attente/reprise/DTMF/raccrochage, sans débordement
+ni erreur console. Aucun compte réel connecté ni appel réel provoqué.
+
+Hermes/IP et ancienne cible vérifiés. Sauvegarde intégrale protégée et manifeste
+comparé : `/root/apisnix-phone-backups/20261028-volume/`. 270 fichiers vérifiés,
+anciens assets conservés et paramètres live repris du JS actif ; bascule atomique
+et empreintes HTTPS index/JS/CSS/SIP/SDK/service worker conformes. Caddy et
+supervision actifs sans redémarrage. Formulaire public chargé avec
+`main-Db-VHx4o.js`, aucune erreur/alerte console. PBX, base, backend, conférence
+native et manuels inchangés ; aucune migration.
+
+Retour : contrôler current sur cette release puis repointer atomiquement vers
+`/srv/apisnixphone/releases/20261027-reglages`, sans restauration de base.
+Preuves Softphone `.work/releases/20261028-volume/`, capture de démonstration
+`.work/volume-call/mobile.png`. Archive SHA-256
+`feab08205675e50c2cd50c5a2f4b344c9e792cc9cdbf9f27974d5492a709440b`.
+Actualiser hors appel pour charger le correctif.
+
 ## Réglages sans vides et densité retirée — 27 octobre 2026
 
 Frontend `20261027-reglages`, source `90701c6`, actif depuis **18:23:25 Douala**.
