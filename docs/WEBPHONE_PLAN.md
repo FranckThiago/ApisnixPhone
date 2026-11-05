@@ -611,6 +611,10 @@ déconnexion ferme les données en mémoire, sans supprimer celles du serveur.
 Le chargement doit réussir avant l'ouverture du téléphone ; aucun repli vide
 silencieux si le service est inaccessible. Erreurs de sauvegarde visibles et
 réessai, attente des écritures au logout, confirmation d'un abandon non sauvegardé.
+Depuis le 5 novembre, les qualifications seules sont reprises dans le journal
+Supervision SIP des responsables autorisés ; options personnalisées par groupe,
+rafraîchies sous une minute. Notes et contacts ne sont pas exposés.
+
 Le profil suit le poste, sans accès superviseur via cette API ; le secret SIP
 n'est pas conservé. Une révision refuse les écrasements concurrents.
 

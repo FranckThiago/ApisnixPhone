@@ -1,5 +1,25 @@
 # Construction et validation
 
+## Qualifications par groupe — 5 novembre 2026
+
+Frontend **20261105-qualifications** actif depuis **15:49:04 Douala** sur Hermes,
+après backend de supervision 20261105-qualifications-calendar à 15:47:45.
+Options chargées par GET /api/qualifications, choix du groupe exclusivement
+côté serveur à partir de la session de ligne (cookie ou embed). Rafraîchissement
+après ouverture, chaque minute et au focus ; repli sur les options déjà chargées
+si service indisponible. Aucun changement de SIP, microphone ou conférence native.
+
+Typage, lint, 279 tests et build live réussis ; les trois paramètres publics
+live de la version précédente sont repris. Vérification HTTPS par empreinte de
+270 fichiers, anciens assets conservés pour les onglets ouverts. Sauvegarde
+protégée sur Hermes : `/root/apisnix-phone-backups/20261105-qualifications/`.
+Retour : comparer la cible active au reçu puis repointer atomiquement current
+vers `/srv/apisnixphone/releases/20261028-volume`. Aucun restart Caddy ni
+restauration de données ; la version précédente conserve les qualifications
+standard et continue de sauvegarder les tags. Actualiser le téléphone hors appel
+pour charger les nouveaux contrôles. Manuels clients inchangés. Contrat des
+qualifications et retrait backend décrits dans le dépôt privé de gestion.
+
 ## Volume d’écoute pendant l’appel — 28 octobre 2026
 
 Frontend `20261028-volume`, source `cb8288a`, actif depuis **18:03:49 Douala**.

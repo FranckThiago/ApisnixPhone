@@ -7,7 +7,7 @@ import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
 import { dayKey, fold, formatDay, formatDuration, formatLongDuration, formatTime } from '../../domain/format';
 import { countryLabel, countryName, describeNumber } from '../../domain/numbers';
-import { CALL_TAGS, CALLBACK_TAG, outcomeLabel, tagLabel, talkSeconds, type CallRecord } from '../../domain/types';
+import { CALLBACK_TAG, outcomeLabel, tagLabel, talkSeconds, type CallRecord } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact } from '../../storage/DataStore';
 import type { useLineHistory } from './useLineHistory';
@@ -24,7 +24,7 @@ function DirectionIcon({ call }: { call: CallRecord }) {
 }
 
 export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeof useLineHistory>; onSeen(): void }) {
-  const { placeCall, store, openContact, notify, recordingsAccess, reopenRecordings } = useApp();
+  const { callTags, placeCall, store, openContact, notify, recordingsAccess, reopenRecordings } = useApp();
   const { calls: localCalls, contacts } = useData();
   const { demo } = usePhone();
   const { t, language } = useI18n();
@@ -155,7 +155,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
                           <div className="detail-duration"><dt><Clock3 size={13} aria-hidden="true" />{t('detail.talk')}</dt><dd>{seconds ? formatDuration(seconds) : '—'}</dd></div>
                         </dl>
                         {scope === 'device' && <div className="tags" role="group" aria-label={t('detail.tags')}>
-                          {CALL_TAGS.map(tag => {
+                          {callTags.map(tag => {
                             const active = call.tags.includes(tag);
                             return <button key={tag} type="button" className={'tag' + (active ? ' active' : '')} aria-pressed={active}
                               onClick={() => store.updateCall(call.id, { tags: active ? call.tags.filter(other => other !== tag) : [...call.tags, tag] })}>{tagLabel(tag)}</button>;

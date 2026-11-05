@@ -1,5 +1,19 @@
 # État du projet
 
+## Qualifications du groupe — 5 novembre 2026
+
+En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur
+ajoute ses options depuis le Journal de Supervision SIP → Qualifications du
+groupe. ApisnixPhone les récupère pour sa seule ligne après ouverture de la
+session de données, chaque minute et au retour sur l'onglet. Fin d'appel et
+journal du téléphone utilisent ce catalogue ; six options standard conservées,
+24 personnalisées maximum par équipe. Les anciens tags restent lisibles.
+Les qualifications sauvegardées sont maintenant visibles dans le journal et
+le CSV de Supervision SIP pour les responsables autorisés ; notes et contacts
+restent dans le profil privé. Rapprochement prudent, sans modifier le résultat
+technique ni les qualifications VICIdial. Contrat et sauvegarde backend dans
+le dépôt privé Gestion_CRM-APISNIX.
+
 ## Volume accessible pendant l’appel — 28 octobre 2026
 
 Le volume d’écoute quitte le composant de numérotation pour rester dans le

@@ -12,7 +12,7 @@ import { Kbd } from '../../components/Kbd';
 import { VolumeMark } from '../../components/VolumeMark';
 import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
-import { CALL_TAGS, CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel, volumeTone } from '../../domain/types';
+import { CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel, volumeTone } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact, searchContacts } from '../../storage/DataStore';
 import { keypadTone } from '../../telephony/audio';
@@ -175,7 +175,7 @@ function useSeconds(from: number | undefined, until?: number) {
 }
 
 function WrapUp({ call }: { call: CallSnapshot }) {
-  const { phone, store, wrapUpRecordId, placeCall, openContact, notify } = useApp();
+  const { callTags, phone, store, wrapUpRecordId, placeCall, openContact, notify } = useApp();
   const { calls, contacts } = useData();
   const { t } = useI18n();
   const record = calls.find(item => item.id === wrapUpRecordId);
@@ -197,7 +197,7 @@ function WrapUp({ call }: { call: CallSnapshot }) {
       {record && (
         <>
           <div className="tags" role="group" aria-label={t('wrapup.tags')}>
-            {CALL_TAGS.map(tag => {
+            {callTags.map(tag => {
               const active = record.tags.includes(tag);
               return <button key={tag} type="button" className={'tag' + (active ? ' active' : '')} aria-pressed={active}
                 onClick={() => store.updateCall(record.id, { tags: active ? record.tags.filter(other => other !== tag) : [...record.tags, tag] })}>{tagLabel(tag)}</button>;

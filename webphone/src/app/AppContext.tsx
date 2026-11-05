@@ -3,6 +3,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { parseDialInput } from '../domain/numbers';
 import { notificationsEnabled } from '../telephony/notifications';
 import { bindPageLifecycle } from '../telephony/pageLifecycle';
+import { CALL_TAGS } from '../domain/types';
+import { loadCallTags } from '../qualifications/client';
 import { t, language, setLanguage } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence } from '../storage/persistence';
@@ -29,6 +31,7 @@ export interface Toast {
 }
 
 interface AppValue {
+  callTags: readonly string[];
   phone: PhoneController;
   store: DataStore;
   /** The recordings of the person's own phone, served by the supervision service. */
@@ -92,6 +95,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     window.addEventListener('online', retry);
     return () => { window.removeEventListener('beforeunload', warn); window.removeEventListener('online', retry); };
   }, []);
+  const [callTags, setCallTags] = useState<readonly string[]>(CALL_TAGS);
   const [view, setView] = useState<View>(embedded ? 'phone' : 'journal');
   const [dial, setDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -102,6 +106,15 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   const [signingIn, setSigningIn] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [recordingsAccess, setRecordingsAccess] = useState<RecordingsAccess>({ state: 'idle' });
+  useEffect(() => {
+    if (demoPhone || recordingsAccess.state !== 'open') return;
+    let active = true;
+    const refresh = () => { void loadCallTags(apiBase).then(labels => { if (active) setCallTags(labels); }).catch(() => undefined); };
+    refresh();
+    const timer = setInterval(refresh, 60000);
+    window.addEventListener('focus', refresh);
+    return () => { active = false; clearInterval(timer); window.removeEventListener('focus', refresh); };
+  }, [recordingsAccess.state]);
   // The line's credentials, in memory for this session only: the recordings access reuses them, nothing else.
   const lineCredentials = useRef<Credentials | null>(null);
   const recorded = useRef(new Map<string, string>());
@@ -219,6 +232,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
         store.close();
         lineCredentials.current = null;
         setRecordingsAccess({ state: 'idle' });
+    setCallTags(CALL_TAGS);
         await recordings.signOut();
         throw error;
       } finally { setSigningIn(false); loginAttempt.current = null; }
@@ -254,6 +268,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     setFavoritesOnly(false);
     lineCredentials.current = null;
     setRecordingsAccess({ state: 'idle' });
+    setCallTags(CALL_TAGS);
     // The recordings session belongs to the person, not to the browser left open.
     void recordings.signOut();
   }, [embedded]);
@@ -270,9 +285,9 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
+    callTags, phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
-  }), [view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
+  }), [callTags, view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
