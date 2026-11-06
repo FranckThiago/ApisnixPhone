@@ -770,3 +770,25 @@ describe('sign-in', () => {
     expect(await settled).toBe('ready');
   });
 });
+
+describe('passive connection quality', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+  it('reads only the current established call and discards an answer after hangup', async () => {
+    const h = harness(); await ready(h);
+    let settle!: (value: { source: 'media'; rttMs: number }) => void;
+    const read = vi.fn(() => new Promise(resolve => { settle = resolve; }));
+    Object.assign(h.manager, { readConnectionQuality: read });
+    expect(await h.phone.readConnectionQuality()).toBeNull();
+    expect(read).not.toHaveBeenCalled();
+    h.phone.call('x', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    h.delegate.onCallAnswered(session('out'));
+    const pending = h.phone.readConnectionQuality();
+    expect(read).toHaveBeenCalledTimes(1);
+    h.delegate.onCallHangup(session('out'));
+    settle({ source: 'media', rttMs: 600 });
+    expect(await pending).toBeNull();
+    expect(h.manager.hangup).not.toHaveBeenCalled();
+    await h.phone.disconnect();
+  });
+});

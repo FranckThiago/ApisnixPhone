@@ -1,4 +1,5 @@
 import type { CallDirection, CallOutcome } from '../domain/types';
+import type { ConnectionSample } from '../connection/connection-monitor.mjs';
 
 /** An open WebSocket is not a registered account; a registered account is not an established call. */
 export type ConnectionState =
@@ -63,6 +64,8 @@ export interface Credentials {
 }
 
 export interface PhoneController {
+  /** Passive media latency only; never reconnects or changes an active call. */
+  readConnectionQuality?(): Promise<ConnectionSample | null>;
   getSnapshot(): PhoneSnapshot;
   subscribe(listener: () => void): () => void;
   connect(credentials: Credentials): Promise<void>;

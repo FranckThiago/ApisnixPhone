@@ -1,5 +1,23 @@
 # Architecture ApisnixPhone
 
+## Mesure de connexion passive — 6 novembre 2026
+
+`connection/ConnectionAlert.tsx` reste monté au niveau App à travers login et
+navigation. `connection-monitor.mjs` gère seuils, confirmations, timeout 4 s,
+absence de chevauchement, pause onglet caché et annulation des résultats tardifs.
+Même module que `agent-skin/connection-monitor.mjs` du dépôt privé CRM ; conserver
+les deux exemplaires identiques. Démo sans sonde de production.
+
+Le contrôleur expose `readConnectionQuality()` sans commande SIP : lecture du
+RTT ICE du seul appel sélectionné, compteur figé expiré après 10 s. Hors appel
+ou stats absentes : GET HTTPS 204 vers le PBX, sans cookies, sans cache, sans
+identifiant. Le délai HTTPS est un indicateur applicatif, pas un ping ICMP ou
+une garantie audio. Une panne du serveur n’est pas attribuée au réseau local.
+Gigue/pertes non utilisées comme déclencheurs. Rien n’est persisté ou transmis
+en télémétrie. Bandeau avec hauteur réservée, y compris navigation mobile,
+région accessible silencieuse sauf changement d’état. Builds conférence séparés
+inchangés ; raccord agent et endpoint documentés dans le dépôt privé.
+
 ## Qualifications du groupe — 5 novembre 2026
 
 En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur

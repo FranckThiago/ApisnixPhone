@@ -1,4 +1,5 @@
 import { incomingNumber } from '../domain/numbers';
+import type { ConnectionSample } from '../connection/connection-monitor.mjs';
 import type { CallOutcome } from '../domain/types';
 import { t, type MessageKey } from '../i18n';
 import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, RemoteVoice, Ringer } from './audio';
@@ -35,6 +36,7 @@ export interface ManagerDelegate {
 }
 
 export interface Manager {
+  readConnectionQuality?(session: ManagedSession): Promise<ConnectionSample | null>;
   /** Random SIP contact identity, retained only while recovering this browser session. */
   contactName: string;
   focusSession?(session: ManagedSession | undefined): void;
@@ -183,6 +185,12 @@ export class SipPhoneController implements PhoneController {
               private callProgress: CallProgressSoundPlayer = new CallProgressSounds()) {}
 
   getSnapshot = () => this.snapshot;
+  readConnectionQuality = async () => {
+    const session = this.session;
+    if (!session || !['active', 'held'].includes(this.snapshot.call?.phase ?? '')) return null;
+    const result = await this.manager?.readConnectionQuality?.(session);
+    return this.session === session ? result ?? null : null;
+  };
 
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);

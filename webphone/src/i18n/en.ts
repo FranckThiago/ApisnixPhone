@@ -1,8 +1,14 @@
-import type {
- MessageKey } from './fr';
+import type { MessageKey } from './fr';
 
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
+  'quality.slow': "Unstable connection",
+  'quality.impact': "Your call quality may be affected.",
+  'quality.lost': "Server connection interrupted",
+  'quality.checkNetwork': "Check your network.",
+  'quality.audioLost': "Audio connection interrupted",
+
+
   "nativeConference.connect": "Connect my phone",
   "nativeConference.help": "Your CRM session supplies the phone. Connect it, join the conference, then resume availability.",
   "nativeConference.expired": "Session unavailable. Log out of the CRM and log back in.",

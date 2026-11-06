@@ -1,5 +1,14 @@
 # État du projet
 
+## Alerte de connexion — 6 novembre 2026
+
+Bandeau bas silencieux sur login et espace connecté, FR/EN/ES : trois mesures
+> 400 ms pour avertir, trois < 300 ms pour masquer, minimum quatre secondes
+entre première et troisième. Coupure confirmée en rouge, hors ligne immédiat.
+RTT audio prioritaire, sonde HTTPS du PBX en repli ; aucune action sur les appels.
+Implémentation et recette locale validées, publication à vérifier dans OPERATIONS.
+Qualifications, volume, données et manuels conservés.
+
 ## Qualifications du groupe — 5 novembre 2026
 
 En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur

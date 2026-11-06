@@ -1,4 +1,5 @@
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { ConnectionAlert } from '../connection/ConnectionAlert';
 import { AlarmClock, AudioLines, BookUser, History, LogOut, Moon, ShieldAlert, Phone, PhoneOff, Search, Settings as SettingsIcon, Sun, WifiOff } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { CommandPalette } from '../components/CommandPalette';
@@ -226,5 +227,5 @@ export function App({ embedded = false }: { embedded?: boolean }) {
     return () => media.removeEventListener('change', follow);
   }, []);
   // The workspace stays while the line reconnects; only a closed session returns to sign-in.
-  return <>{sessionOpen && account ? <Workspace /> : <Login embedded={embedded} />}<Toasts /></>;
+  return <>{sessionOpen && account ? <Workspace /> : <Login embedded={embedded} />}<Toasts /><ConnectionAlert /></>;
 }

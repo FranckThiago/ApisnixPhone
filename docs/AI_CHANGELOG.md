@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-11-06 — Alerte de connexion temporisée
+
+Bandeau commun login/espace, moteur passif 400/300 ms, rouge en coupure,
+traductions FR/EN/ES et espace réservé sur mobile. Lecture RTT du seul appel
+courant via le contrôleur (y compris sélection double appel), repli HTTPS du PBX,
+aucune commande SIP ni télémétrie. Modules, styles, tests et documents courants
+actualisés ensemble. Typage/lint/build et tests validés localement, recette
+navigateur ; publication à vérifier dans OPERATIONS. Pas de migration, compte,
+manuel, dépendance ou build conférence modifié.
+
 ## Qualifications du groupe — 5 novembre 2026
 
 En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur

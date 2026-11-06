@@ -1,5 +1,11 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  'quality.slow': "Connexion instable",
+  'quality.impact': "La qualité de vos appels peut être dégradée.",
+  'quality.lost': "Connexion au serveur interrompue",
+  'quality.checkNetwork': "Vérifiez votre réseau.",
+  'quality.audioLost': "Connexion audio interrompue",
+
   "nativeConference.connect": "Connecter mon téléphone",
   "nativeConference.help": "Votre session CRM fournit le poste. Connectez le téléphone, rejoignez la conférence, puis reprenez votre disponibilité.",
   "nativeConference.expired": "Session indisponible. Déconnectez-vous du CRM puis reconnectez-vous.",

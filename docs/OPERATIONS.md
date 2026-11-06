@@ -1,5 +1,22 @@
 # Construction et validation
 
+## Alerte de connexion — 6 novembre 2026
+
+Implémentation locale validée ; publication à vérifier. Base `08fe0e2` conforme
+à `20261105-qualifications`, paramètres live existants conservés.
+290 tests (289 de suite puis test supplémentaire du résultat tardif), typage,
+lint et build ; simulation login dans le navigateur intégré en FR/ES, mobile
+390 px sans débordement, orange/rouge/rétablissement vérifiés. Aucun compte réel
+connecté ni appel provoqué. Fixture locale `tests/browser/connectionAlert.html`,
+servie par Vite live uniquement pour tester le login avec délais simulés, sans
+soumettre le formulaire. Les fixtures ne font pas partie du build publié.
+
+La publication requiert d’abord la sonde PBX `connection-check.php` (204,
+Cache-Control no-store, CORS anonyme) ; sans elle, le repli affiche une alerte
+serveur après trois échecs. Sauvegarde protégée et bascule atomique habituelles,
+anciens assets conservés. Aucun changement backend, base, configuration SIP ou
+manuel ; ne pas redémarrer de service. Détail privé : ALERTE_CONNEXION.md.
+
 ## Qualifications par groupe — 5 novembre 2026
 
 Frontend **20261105-qualifications** actif depuis **15:49:04 Douala** sur Hermes,

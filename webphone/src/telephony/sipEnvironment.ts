@@ -1,4 +1,5 @@
 import { MediaAccessClient, observeMedia, relayAvailable, type MediaAccess } from './mediaPath';
+import { createMediaReader } from '../connection/connection-monitor.mjs';
 import type { CallMediaOptions, Manager, SipEnvironment } from './SipPhoneController';
 
 /** Real browser bindings. SIP.js is loaded on demand, so the demonstration never ships it. */
@@ -136,6 +137,12 @@ export const browserSipEnvironment: SipEnvironment = {
       await manager.disconnect().catch(() => undefined);
       await closing;
     };
+    const readMedia = createMediaReader();
+    const readConnectionQuality = async (session: unknown) => {
+      const pc = (session as { sessionDescriptionHandler?: { peerConnection?: RTCPeerConnection } }).sessionDescriptionHandler?.peerConnection;
+      const result = await readMedia(pc);
+      return result ? { ...result, key: pc } : null;
+    };
     const sentAudioPackets = async (session: unknown) => {
       const handler = (session as { sessionDescriptionHandler?: { peerConnection?: RTCPeerConnection } }).sessionDescriptionHandler;
       const stats = await handler?.peerConnection?.getStats();
@@ -153,7 +160,7 @@ export const browserSipEnvironment: SipEnvironment = {
         pc?.getSenders().forEach(sender => { if (sender.track?.kind === 'audio') sender.track.enabled = audible && !manager.isMuted(session); });
       }
     };
-    return Object.assign(manager, { focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    return Object.assign(manager, { readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {

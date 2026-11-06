@@ -118,6 +118,7 @@ export class CallWaitingPhoneController implements PhoneController {
     const manager = () => { if (!this.manager) throw new Error('Line unavailable'); return this.manager; };
     return {
       contactName: 'shared-registration',
+      readConnectionQuality: s => manager().readConnectionQuality?.(s) ?? Promise.resolve(null),
       connect: async () => { delegate.onServerConnect(); },
       isConnected: () => this.manager?.isConnected() ?? false,
       register: async () => { delegate.onRegistered(); },
@@ -163,6 +164,7 @@ export class CallWaitingPhoneController implements PhoneController {
     }
   }
   getSnapshot = () => this.snapshot;
+  readConnectionQuality = () => this.children[this.selected].readConnectionQuality();
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
 
   async connect(credentials: Credentials) {

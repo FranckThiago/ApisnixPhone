@@ -1,8 +1,14 @@
-import type {
- MessageKey } from './fr';
+import type { MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  'quality.slow': "Conexión inestable",
+  'quality.impact': "La calidad de sus llamadas puede verse afectada.",
+  'quality.lost': "Conexión con el servidor interrumpida",
+  'quality.checkNetwork': "Compruebe su red.",
+  'quality.audioLost': "Conexión de audio interrumpida",
+
+
   "nativeConference.connect": "Conectar mi teléfono",
   "nativeConference.help": "Su sesión CRM proporciona el teléfono. Conéctelo, entre en la conferencia y vuelva a estar disponible.",
   "nativeConference.expired": "Sesión no disponible. Cierre la sesión CRM y vuelva a entrar.",
