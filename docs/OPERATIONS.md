@@ -1,6 +1,26 @@
 # Construction et validation
 
-## Alerte de connexion — 6 novembre 2026
+## Retour à la normale sous 350 ms — 6 novembre 2026
+
+En service **20261106-connection-recovery350**, source `286c217`, depuis
+**13:20:58 Douala**. Le seuil de retrait orange/rouge passe à < 350 ms après
+trois mesures consécutives ; déclenchement > 400 ms et temporisation conservés.
+290 tests, typage/lint et build live isolé depuis Git réussis ; 52 tests CRM.
+Build avec les trois paramètres publics actifs, dépendances du npm ci vérifié :
+270 fichiers conformes, seuls index.html et le bundle principal changent.
+Archive SHA-256 `236eb738374c37e86b4d95801ed0c2dbb935a02d2472dbb65e7de8b5bfa777e0`.
+
+Ancienne release `20261106-connection-alert` contrôlée, sauvegarde intégrale
+vérifiée sous `/root/apisnix-phone-backups/20261106-connection-recovery350/`
+(0700), anciennes ressources conservées et bascule atomique. `rollback.py`
+y contrôle la release active puis repointe sur `20261106-connection-alert`.
+Aucune restauration DB ni restart ; Caddy/supervision actifs. Ressources HTTPS
+conformes, nouveau `main-CiKpXVxg.js` chargé dans le navigateur intégré,
+bandeau masqué et aucune erreur console. Pas de session client ni appel réel.
+Preuves : `.work/releases/20261106-connection-recovery350/`. Raccord CRM aligné,
+manuels inchangés ; actualiser les onglets hors appel pour charger ce réglage.
+
+## Publication initiale de l’alerte — 6 novembre 2026
 
 En service `20261106-connection-alert`, source `ec65f48`, depuis
 **11:04:52 Douala le 6 novembre 2026**. Base `08fe0e2` conforme à
