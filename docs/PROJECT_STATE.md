@@ -1,9 +1,11 @@
 # État du projet
 
+**Ajustement préparé :** retour automatique sous 350 ms demandé par Franck ; publication de ce réglage encore à effectuer.
+
 ## Alerte de connexion — 6 novembre 2026
 
 Bandeau bas silencieux sur login et espace connecté, FR/EN/ES : trois mesures
-> 400 ms pour avertir, trois < 300 ms pour masquer, minimum quatre secondes
+> 400 ms pour avertir, trois < 350 ms pour masquer, minimum quatre secondes
 entre première et troisième. Coupure confirmée en rouge, hors ligne immédiat.
 RTT audio prioritaire, sonde HTTPS du PBX en repli ; aucune action sur les appels.
 En service `20261106-connection-alert` depuis 11:04:52 Douala ; 270 fichiers

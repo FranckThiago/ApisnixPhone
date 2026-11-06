@@ -3,7 +3,7 @@
 ## Alerte de connexion — 6 novembre 2026
 
 Alerte commune login/espace connecté, en bas sans recouvrir les commandes :
-orange après trois mesures > 400 ms, masquée après trois < 300 ms ; rouge en
+orange après trois mesures > 400 ms, masquée après trois < 350 ms ; rouge en
 coupure confirmée. Délai entre mesures 2 s, confirmation sur au moins 4 s.
 Texte utilisateur sans compteur technique, FR/EN/ES. Mesure audio si disponible,
 indicateur HTTPS sinon ; aucune action automatique sur les appels.

@@ -1,5 +1,13 @@
 # Journal des changements
 
+## 2026-11-06 — Retour à la normale sous 350 ms
+
+Le seuil de retrait de l’alerte passe de 300 à 350 ms à la demande de Franck,
+après trois mesures consécutives et au moins quatre secondes. Avertissement
+> 400 ms et coupure conservés. Moteur identique à la copie CRM, tests adaptés
+aux limites 349/350 ms pour les alertes orange et rouge. État et plan alignés,
+publication à suivre. Aucun changement de données, dépendance ou manuel.
+
 ## 2026-11-06 — Alerte de connexion temporisée
 
 Bandeau commun login/espace, moteur passif 400/300 ms, rouge en coupure,

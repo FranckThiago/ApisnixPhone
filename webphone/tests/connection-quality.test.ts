@@ -9,13 +9,16 @@ describe('400 ms connection warning', () => {
       expect(gate.sample({ source: 'http', rttMs }, time!).level).not.toBe('slow');
     expect(gate.sample({ source: 'http', rttMs: 900 }, 12000).level).toBe('slow');
   });
-  it('keeps a warning in the 300–400 band and clears only after three readings below 300', () => {
-    const gate = createQualityGate();
-    for (const time of [0, 2000, 4000]) gate.sample({ source: 'http', rttMs: 450 }, time);
-    for (const time of [6000, 8000, 10000]) expect(gate.sample({ source: 'http', rttMs: 300 }, time).level).toBe('slow');
-    expect(gate.sample({ source: 'http', rttMs: 250 }, 12000).level).toBe('slow');
-    expect(gate.sample({ source: 'http', rttMs: 250 }, 14000).level).toBe('slow');
-    expect(gate.sample({ source: 'http', rttMs: 250 }, 16000).level).toBe('good');
+  it('keeps orange/red in the 350–400 band and clears only after three readings below 350', () => {
+    for (const level of ['slow', 'lost']) {
+      const gate = createQualityGate();
+      for (const time of [0, 2000, 4000]) gate.sample({ source: 'http', rttMs: 450, lost: level === 'lost' }, time);
+      for (const time of [6000, 8000, 10000]) expect(gate.sample({ source: 'http', rttMs: 350 }, time).level).toBe(level);
+      for (const time of [12000, 14000]) expect(gate.sample({ source: 'http', rttMs: 349 }, time).level).toBe(level);
+      expect(gate.sample({ source: 'http', rttMs: 350 }, 16000).level).toBe(level);
+      for (const time of [18000, 20000]) expect(gate.sample({ source: 'http', rttMs: 349 }, time).level).toBe(level);
+      expect(gate.sample({ source: 'http', rttMs: 349 }, 22000).level).toBe('good');
+    }
   });
   it('does not treat missing/invalid stats or a new source as confirmed recovery', () => {
     const gate = createQualityGate();

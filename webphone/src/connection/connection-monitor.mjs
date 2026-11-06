@@ -7,7 +7,7 @@ export function createQualityGate() {
     sample(value, now) {
       if (value.source !== source) { kind = undefined; count = 0; source = value.source; }
       const next = value.lost ? 'lost' : Number.isFinite(value.rttMs) && value.rttMs >= 0
-        ? value.rttMs > 400 ? 'slow' : value.rttMs < 300 ? 'good' : 'middle' : 'unknown';
+        ? value.rttMs > 400 ? 'slow' : value.rttMs < 350 ? 'good' : 'middle' : 'unknown';
       if (next !== kind) { kind = next; count = 0; since = now; }
       count++;
       if (value.source === 'offline' && value.lost) level = 'lost';
