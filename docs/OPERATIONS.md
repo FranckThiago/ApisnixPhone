@@ -2,8 +2,16 @@
 
 ## Alerte de connexion — 6 novembre 2026
 
-Implémentation locale validée ; publication à vérifier. Base `08fe0e2` conforme
-à `20261105-qualifications`, paramètres live existants conservés.
+En service `20261106-connection-alert`, source `ec65f48`, depuis
+**11:04:52 Douala le 6 novembre 2026**. Base `08fe0e2` conforme à
+`20261105-qualifications`, trois paramètres publics live conservés.
+Build isolé depuis Git / npm ci ; 270 fichiers vérifiés et anciennes ressources
+conservées avant bascule atomique. Archive SHA-256
+`9120b6c35b702391cf2370a4d20f3d7d36023a27d2c9928facf5b9b46c2ad47b`.
+Caddy et supervision actifs sans restart ; page publique chargée dans le
+navigateur intégré avec `main-BcAsHDeh.js` et bandeau masqué en liaison normale,
+aucune erreur publique observée. L’erreur React de rechargement à chaud observée
+pendant les modifications du banc local a disparu après recharge complète.
 290 tests (289 de suite puis test supplémentaire du résultat tardif), typage,
 lint et build ; simulation login dans le navigateur intégré en FR/ES, mobile
 390 px sans débordement, orange/rouge/rétablissement vérifiés. Aucun compte réel
@@ -11,10 +19,14 @@ connecté ni appel provoqué. Fixture locale `tests/browser/connectionAlert.html
 servie par Vite live uniquement pour tester le login avec délais simulés, sans
 soumettre le formulaire. Les fixtures ne font pas partie du build publié.
 
-La publication requiert d’abord la sonde PBX `connection-check.php` (204,
+La sonde PBX `connection-check.php` a été publiée et vérifiée avant bascule (204,
 Cache-Control no-store, CORS anonyme) ; sans elle, le repli affiche une alerte
-serveur après trois échecs. Sauvegarde protégée et bascule atomique habituelles,
-anciens assets conservés. Aucun changement backend, base, configuration SIP ou
+serveur après trois échecs. Sauvegarde protégée complète vérifiée :
+`/root/apisnix-phone-backups/20261106-connection-alert/` avec manifestes, reçu,
+archive et `rollback.py`. Pour revenir : ce script compare current à cette
+release puis repointe atomiquement sur `20261105-qualifications`, sans restaurer
+la base. Preuves locales `.work/releases/20261106-connection-alert/` et captures
+simulées `.work/connection-alert/`. Actualiser les onglets hors appel seulement. Aucun changement backend, base, configuration SIP ou
 manuel ; ne pas redémarrer de service. Détail privé : ALERTE_CONNEXION.md.
 
 ## Qualifications par groupe — 5 novembre 2026

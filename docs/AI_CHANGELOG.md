@@ -7,7 +7,9 @@ traductions FR/EN/ES et espace réservé sur mobile. Lecture RTT du seul appel
 courant via le contrôleur (y compris sélection double appel), repli HTTPS du PBX,
 aucune commande SIP ni télémétrie. Modules, styles, tests et documents courants
 actualisés ensemble. Typage/lint/build et tests validés localement, recette
-navigateur ; publication à vérifier dans OPERATIONS. Pas de migration, compte,
+navigateur ; version `20261106-connection-alert` publiée à 11:04:52 Douala,
+270 fichiers conformes, page publique vérifiée, sauvegarde complète et retour
+atomique consignés dans OPERATIONS. Pas de migration, compte,
 manuel, dépendance ou build conférence modifié.
 
 ## Qualifications du groupe — 5 novembre 2026

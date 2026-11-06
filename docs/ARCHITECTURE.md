@@ -5,7 +5,7 @@
 `connection/ConnectionAlert.tsx` reste monté au niveau App à travers login et
 navigation. `connection-monitor.mjs` gère seuils, confirmations, timeout 4 s,
 absence de chevauchement, pause onglet caché et annulation des résultats tardifs.
-Même module que `agent-skin/connection-monitor.mjs` du dépôt privé CRM ; conserver
+Même module que `agent-skin/connection-monitor.js` du dépôt privé CRM ; conserver
 les deux exemplaires identiques. Démo sans sonde de production.
 
 Le contrôleur expose `readConnectionQuality()` sans commande SIP : lecture du
