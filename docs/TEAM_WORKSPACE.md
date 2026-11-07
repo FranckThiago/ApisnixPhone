@@ -59,5 +59,8 @@ pas une garantie que le destinataire décrochera.
 succès/refus/délai du transfert, et à une réponse tardive après une nouvelle
 conversation. Typage/lint et recette navigateur locale : consigne lue, rappel de
 groupe créé et réservé, transfert simulé, qualification de fin d’appel conservée.
-Publication en préparation ; les transferts réels ne sont pas annoncés testés.
-Le déploiement et les reçus seront consignés dans OPERATIONS.
+En service **20261107-team-tools**, source `572c489`, depuis **13:07:02 Douala**
+le 7 novembre. Backend à 13:05:27, raccord interne PBX à 13:11:52. Aucun groupe
+réel activé à la livraison. Ressources HTTPS conformes et formulaire public
+chargé sans erreur console. Aucun appel réel provoqué ; conversation et audio
+transférés restent à valider. Sauvegardes, reçus et retour dans [OPERATIONS](OPERATIONS.md).

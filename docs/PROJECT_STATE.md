@@ -1,12 +1,16 @@
 # État du projet
 
-## Outils d’équipe — 7 novembre 2026 (validation locale)
+## Outils d’équipe — 7 novembre 2026
 
 Menu Équipe, rappels personnels/de groupe et promotion, consignes avec lecture,
 objections pendant l’appel, aide, évaluations et objectifs. Transfert direct vers
 un agent connecté du même groupe si le superviseur l’active ; Freelancer exclu.
-Raccord serveur interne à usage unique. Aucun nouvel accès aux profils privés.
-[Contrat et limites](TEAM_WORKSPACE.md). Publication en préparation.
+Raccord serveur interne à usage unique. Visibilité superviseur limitée aux rappels ;
+contacts et notes d’appels privés préservés. En service **20261107-team-tools**,
+source `572c489`, depuis **13:07:02 Douala**, après le backend à 13:05:27.
+299 tests, typage/lint et builds réussis ; 270 fichiers et ressources HTTPS
+vérifiés, formulaire public intact. Aucun groupe réel activé ni appel provoqué.
+[Contrat et limites](TEAM_WORKSPACE.md), sauvegarde et retrait dans OPERATIONS.
 
 
 ## Script d'appel par équipe — 7 novembre 2026

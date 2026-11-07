@@ -1,8 +1,42 @@
 # Construction et validation
 
+## Équipe, rappels partagés et transferts — 7 novembre 2026
+
+Release active **20261107-team-tools**, source `572c489`, depuis **13:07:02
+Douala**. Backend du même nom depuis 13:05:27, raccord PBX depuis 13:11:52.
+Menu Équipe, rappels personnels ou de groupe, promotion et réservation avant
+appel, consignes, objections, aide, qualité et objectifs. Transferts activables
+par le superviseur ; aucune équipe activée à la livraison et Freelancer exclu.
+[Contrat et limites](TEAM_WORKSPACE.md).
+
+299 tests, typage/lint, build live exporté de Git et build conférence séparé
+réussis. Trois paramètres publics conservés, aucune dépendance ajoutée.
+270 fichiers vérifiés, assets précédents conservés pour les onglets ouverts.
+Archive SHA-256 :
+`9e99b98a4e5568105de344ca82b07373212e8162a5bdd1e7ebf3c5b62d37d83a`.
+Empreintes HTTPS conformes ; `main-D9EJDex8.js` chargé dans le navigateur
+intégré, formulaire public intact et aucune erreur console. Recette locale :
+consigne lue, rappel partagé créé et réservé, transfert simulé et qualification
+de fin d’appel conservée. Pas de conversation/audio réels transférés pour cette
+recette ; aucun compte client connecté ni appel provoqué.
+
+Identité Hermes, cible précédente et fichiers comparés avant publication.
+Sauvegarde intégrale, manifestes, archive, `receipt.json` et `rollback.py` dans
+`/root/apisnix-phone-backups/20261107-team-tools/`. Retour atomique vers
+`20261107-supervisor-management`, sans restart Caddy/SIP ni restauration de
+données. Recharger hors appel. Preuves locales ignorées : `.work/team-tools/`.
+
+En cas de retrait backend, utiliser la release compatible avec les marqueurs de
+promotion, **20261107-team-tools-rollback-compatible**, puis conserver la base
+courante. Un ancien profil ne doit pas recréer un rappel partagé ; les données
+collectives restent stockées mais ne sont plus visibles dans l’ancienne interface.
+Procédure et clés protégées documentées uniquement dans le dépôt CRM privé
+(`docs/SUPERVISION_OUTILS_EQUIPE_20261107.md`). Aucun manuel modifié ; build
+conférence compilé pour contrôle mais non publié ni fonctionnellement modifié.
+
 ## Scripts d'appel supervisés — 7 novembre 2026
 
-En service **20261107-supervisor-management**, source `359c090`, depuis
+Publication précédente **20261107-supervisor-management**, source `359c090`, à
 **12:04:44 Douala**. Backend du même nom actif depuis 12:03:51 ; Gestion expose
 qualifications, script commun par équipe et activation explicite par poste.
 Le script apparaît au-dessus du volume en conversation/attente, peut être réduit,
