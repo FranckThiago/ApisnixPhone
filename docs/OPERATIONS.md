@@ -1,5 +1,31 @@
 # Construction et validation
 
+## Scripts d'appel supervisés — 7 novembre 2026
+
+En service **20261107-supervisor-management**, source `359c090`, depuis
+**12:04:44 Douala**. Backend du même nom actif depuis 12:03:51 ; Gestion expose
+qualifications, script commun par équipe et activation explicite par poste.
+Le script apparaît au-dessus du volume en conversation/attente, peut être réduit,
+et disparaît à la fin de l'appel. Aucun poste activé par cette livraison.
+
+294 tests, typage/lint et build live depuis un export Git isolé réussis.
+Trois paramètres publics live conservés ; 270 fichiers vérifiés, anciennes
+ressources reprises pour les onglets ouverts. Archive SHA-256 :
+`61cd6dbdad4238f8cee8a35f22cc01cbc9461a670ee58bbffde9c5c67ea07492`.
+Ressources HTTPS conformes, `main-0wM_zs3T.js` chargé dans le navigateur intégré,
+formulaire public intact et aucune erreur console. Essai fictif : script
+réductible, volume accessible et script absent après raccrochage. Le conflit de
+clés React détecté pendant le développement a été corrigé et vérifié.
+
+Sauvegarde intégrale protégée et `rollback.py` :
+`/root/apisnix-phone-backups/20261107-supervisor-management/`. Le script vérifie
+la cible active puis repointe atomiquement vers `20261106-connection-recovery350`.
+Aucun restart Caddy/SIP ni restauration de données. Backend : deux tables
+additives, anciennes données conservées, retrait documenté dans le dépôt privé
+CRM (`docs/SUPERVISION_GESTION_20261107.md`). Preuves locales ignorées :
+`.work/supervisor-management/`. Recharger hors appel ; aucun appel réel, compte,
+manuels ou build conférence native modifiés.
+
 ## Retour à la normale sous 350 ms — 6 novembre 2026
 
 En service **20261106-connection-recovery350**, source `286c217`, depuis

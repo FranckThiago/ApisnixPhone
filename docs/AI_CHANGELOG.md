@@ -10,7 +10,9 @@ panneau réductible et défilant. Un script par équipe, titre 120 caractères e
 Les qualifications personnalisées se gèrent désormais dans Gestion → Qualifications.
 
 294 tests, typage et lint réussis ; essai navigateur sur appel fictif et volume
-accessible. Publication préparée, pas encore annoncée en service. La conférence
+accessible. En service **20261107-supervisor-management**, source `359c090`,
+depuis **12:04:44 Douala** ; 270 fichiers conformes, page publique sans erreur.
+Sauvegarde et retrait dans OPERATIONS. La conférence
 VICIdial native utilise un build séparé et ne reçoit pas ce panneau.
 
 ## 2026-11-06 — Retour à la normale sous 350 ms
