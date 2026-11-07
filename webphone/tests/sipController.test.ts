@@ -26,6 +26,7 @@ function harness(remoteAudio?: HTMLAudioElement) {
     answer: vi.fn(async () => undefined),
     decline: vi.fn(async () => undefined),
     hangup: vi.fn(async () => undefined),
+    transfer: vi.fn(async (): Promise<void> => undefined),
     hold: vi.fn(async () => undefined),
     unhold: vi.fn(async () => undefined),
     mute: vi.fn(),
@@ -790,5 +791,23 @@ describe('passive connection quality', () => {
     expect(await pending).toBeNull();
     expect(h.manager.hangup).not.toHaveBeenCalled();
     await h.phone.disconnect();
+  });
+});
+
+
+describe('transfer keeps the originating conversation safe', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+  it('keeps the call on rejection and hangs up only after a confirmed result', async () => {
+    const h=harness();await ready(h);h.phone.call('x','+33100000001');await vi.advanceTimersByTimeAsync(0);h.delegate.onCallAnswered(session('out'));
+    h.manager.transfer.mockRejectedValueOnce(new Error('busy'));
+    await expect(h.phone.transfer('a2')).rejects.toThrow();expect(h.manager.hangup).not.toHaveBeenCalled();expect(h.phone.getSnapshot().call?.phase).toBe('active');
+    await h.phone.transfer('a2');expect(h.manager.hangup).toHaveBeenCalledOnce();
+  });
+  it('never hangs up a new call after a late transfer result', async () => {
+    const h=harness();await ready(h);h.phone.call('x','+33100000001');await vi.advanceTimersByTimeAsync(0);h.delegate.onCallAnswered(session('out'));
+    let finish!:()=>void;h.manager.transfer.mockImplementationOnce(()=>new Promise<void>(resolve=>{finish=resolve;}));
+    const result=h.phone.transfer('a2');h.delegate.onCallHangup(session('out'));await vi.advanceTimersByTimeAsync(0);h.phone.dismiss();
+    h.delegate.onCallReceived(session('new','1003'));h.delegate.onCallAnswered(session('new'));finish();await result;expect(h.manager.hangup).not.toHaveBeenCalled();expect(h.phone.getSnapshot().call?.id).toBe('new');
   });
 });

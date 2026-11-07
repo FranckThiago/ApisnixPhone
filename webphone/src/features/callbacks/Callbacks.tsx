@@ -1,3 +1,4 @@
+import { GroupCallbacks, PromoteCallback } from '../../team/TeamWorkspace';
 import { AlarmClock, Check, Clock3, Phone, Trash2, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { useApp, useData } from '../../app/AppContext';
@@ -29,6 +30,7 @@ function Row({ callback, now, overdue = false }: { callback: Callback; now: numb
         {done ? <button type="button" className="icon-button" aria-label={t('callbacks.reopen')} title={t('callbacks.reopen')} onClick={() => store.updateCallback(callback.id, { doneAt: undefined })}><Undo2 size={17} /></button> : (
           <>
             <button type="button" className="mini-call" onClick={() => placeCall(callback.number)}><Phone size={16} /> {t('action.call')}</button>
+            <PromoteCallback callback={callback} />
             <button type="button" className="icon-button" aria-label={t('callbacks.postpone')} title={t('callbacks.postpone')} onClick={() => store.updateCallback(callback.id, { dueAt: Math.max(now, callback.dueAt) + 3_600_000 })}><AlarmClock size={17} /></button>
             <button type="button" className="icon-button" aria-label={t('callbacks.markDone')} title={t('callbacks.markDone')} onClick={() => store.updateCallback(callback.id, { doneAt: Date.now() })}><Check size={18} /></button>
           </>
@@ -56,6 +58,7 @@ export function Callbacks() {
           <p className="lead">{t('callbacks.lead')}</p></div>
         {typed.valid && <CallbackScheduler number={dial} />}
       </header>
+      <GroupCallbacks />
       {pending === 0 && groups.done.length === 0 ? (
         <div className="panel empty"><AlarmClock size={28} /><b>{t('callbacks.emptyTitle')}</b><p>{t('callbacks.emptyText')}</p></div>
       ) : (

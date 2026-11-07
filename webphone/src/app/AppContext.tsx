@@ -23,7 +23,7 @@ import { announcementsUrlFromEnv, DemoAnnouncementsSource, HttpAnnouncementsSour
 import type { RecordingsSource } from '../recordings/types';
 import { applyTheme, storedTheme } from './theme';
 
-export type View = 'journal' | 'contacts' | 'audio' | 'callbacks' | 'settings' | 'phone';
+export type View = 'journal' | 'contacts' | 'audio' | 'callbacks' | 'settings' | 'phone' | 'team';
 
 export interface Toast {
   id: number;

@@ -53,6 +53,7 @@ export interface Manager {
   answer(session: ManagedSession): Promise<void>;
   decline(session: ManagedSession): Promise<void>;
   hangup(session: ManagedSession): Promise<void>;
+  transfer?(session: ManagedSession, destination: string): Promise<void>;
   hold(session: ManagedSession): Promise<void>;
   unhold(session: ManagedSession): Promise<void>;
   mute(session: ManagedSession): void;
@@ -708,6 +709,19 @@ export class SipPhoneController implements PhoneController {
     if (!this.session || !this.manager) return this.finish(call.answeredAt ? 'answered' : 'cancelled');
     this.updateCall({ phase: 'ending' });
     this.manager.hangup(this.session).catch(() => this.finish(call.answeredAt ? 'answered' : 'cancelled'));
+  }
+
+  private transferring = false;
+  async transfer(extension: string) {
+    const session=this.session, manager=this.manager, call=this.snapshot.call;
+    if(this.transferring || !session || !manager?.transfer || call?.phase!=='active' || call.holdPending || !/^[A-Za-z0-9_.-]{1,64}$/.test(extension)) throw new Error(t('team.transferFailed'));
+    this.transferring=true;
+    try {
+      await manager.transfer(session,`sip:${extension}@${this.config.domain}`);
+      // Never hang up a replacement call after a late result from the former dialog.
+      if(this.session===session && this.snapshot.call?.id===call.id && this.snapshot.call.phase!=='ended') this.hangup();
+    } catch { throw new Error(t('team.transferFailed')); }
+    finally { this.transferring=false; }
   }
 
   dismiss() {

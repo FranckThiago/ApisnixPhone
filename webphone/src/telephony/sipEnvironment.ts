@@ -1,3 +1,5 @@
+import { confirmedTransfer } from './transfer';
+import type { Session } from 'sip.js';
 import { MediaAccessClient, observeMedia, relayAvailable, type MediaAccess } from './mediaPath';
 import { createMediaReader } from '../connection/connection-monitor.mjs';
 import type { CallMediaOptions, Manager, SipEnvironment } from './SipPhoneController';
@@ -160,7 +162,12 @@ export const browserSipEnvironment: SipEnvironment = {
         pc?.getSenders().forEach(sender => { if (sender.track?.kind === 'audio') sender.track.enabled = audible && !manager.isMuted(session); });
       }
     };
-    return Object.assign(manager, { readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    const transfer = (session: Session, destination: string) => {
+      const uri=UserAgent.makeURI(destination);
+      if(!uri)return Promise.reject(new Error('Invalid transfer destination'));
+      return confirmedTransfer(session,uri);
+    };
+    return Object.assign(manager, { transfer, readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {

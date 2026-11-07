@@ -81,6 +81,8 @@ export interface PhoneController {
   switchCall?(): void;
   decline(): void;
   hangup(): void;
+  /** Transfer one established call; resolves only after the PBX confirms success. */
+  transfer?(extension: string): Promise<void>;
   /** Clears an ended call once its wrap-up is done. */
   dismiss(): void;
   setMuted(muted: boolean): void;

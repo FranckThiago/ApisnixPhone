@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Outils d’équipe — 7 novembre 2026 (validation locale)
+
+Menu Équipe, rappels personnels/de groupe et promotion, consignes avec lecture,
+objections pendant l’appel, aide, évaluations et objectifs. Transfert direct vers
+un agent connecté du même groupe si le superviseur l’active ; Freelancer exclu.
+Raccord serveur interne à usage unique. Aucun nouvel accès aux profils privés.
+[Contrat et limites](TEAM_WORKSPACE.md). Publication en préparation.
+
+
 ## Script d'appel par équipe — 7 novembre 2026
 
 Le superviseur prépare un script dans Supervision → Gestion → Script d'appel,

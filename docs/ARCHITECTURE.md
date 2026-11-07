@@ -1,5 +1,7 @@
 # Architecture ApisnixPhone
 
+Outils d’équipe, rappels partagés et transfert SIP confirmé : [TEAM_WORKSPACE](TEAM_WORKSPACE.md).
+
 ## Script d'appel supervisé — 7 novembre 2026
 
 `callScripts/client.ts` lit GET `/api/call-script` avec `sessionFetch` (cookie ou
