@@ -1,5 +1,23 @@
 # Architecture ApisnixPhone
 
+## Script d'appel supervisé — 7 novembre 2026
+
+`callScripts/client.ts` lit GET `/api/call-script` avec `sessionFetch` (cookie ou
+session embed existante). Le serveur déduit le poste, l'équipe et l'attribution ;
+aucun sélecteur client et aucun droit de gestion accordé à l'agent. Réponse bornée
+et validée, délai 10 s, refus 401/403 ou script null masquent le panneau.
+
+`watchCallScript` lit après ouverture de session/données, toutes les 60 s lorsque
+visible, au focus/retour réseau et au retour de l'onglet. Pas de chevauchement ;
+arrêt rejette les résultats tardifs. Panne temporaire : texte conservé en mémoire.
+Déconnexion : état effacé. Aucun stockage local, profil, journal ou télémétrie.
+
+`CallScriptCard` affiche du texte React, jamais HTML, au-dessus de ListeningVolume
+pour l'appel actif/en attente ; clé distincte du CallCard et réinitialisation à
+chaque nouvel appel. En démo, texte fictif traduit FR/EN/ES et aucune requête réseau.
+L'API et les tables additives sont documentées dans le dépôt privé CRM,
+`docs/SUPERVISION_GESTION_20261107.md`. Build conférence native inchangé.
+
 ## Mesure de connexion passive — 6 novembre 2026
 
 `connection/ConnectionAlert.tsx` reste monté au niveau App à travers login et
@@ -21,8 +39,7 @@ inchangés ; raccord agent et endpoint documentés dans le dépôt privé.
 ## Qualifications du groupe — 5 novembre 2026
 
 En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur
-ajoute ses options depuis le Journal de Supervision SIP → Qualifications du
-groupe. ApisnixPhone les récupère pour sa seule ligne après ouverture de la
+ajoute ses options depuis Supervision SIP → Gestion → Qualifications. ApisnixPhone les récupère pour sa seule ligne après ouverture de la
 session de données, chaque minute et au retour sur l'onglet. Fin d'appel et
 journal du téléphone utilisent ce catalogue ; six options standard conservées,
 24 personnalisées maximum par équipe. Les anciens tags restent lisibles.

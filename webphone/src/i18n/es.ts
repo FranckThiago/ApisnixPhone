@@ -2,6 +2,12 @@ import type { MessageKey } from './fr';
 
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
+  "script.title": "Guion de llamada",
+  "script.collapse": "Contraer el guion",
+  "script.expand": "Mostrar el guion",
+  "script.demoTitle": "Presentación — demostración",
+  "script.demoContent": "Hola, soy Camille. Gracias por atender mi llamada.\n\n1. Explique brevemente el motivo de la llamada.\n2. Escuche las necesidades de su interlocutor.\n3. Proponga el siguiente paso y confirme su disponibilidad.\n\n¡Gracias por su tiempo, que tenga un buen día!",
+
   'quality.slow': "Conexión inestable",
   'quality.impact': "La calidad de sus llamadas puede verse afectada.",
   'quality.lost': "Conexión con el servidor interrumpida",

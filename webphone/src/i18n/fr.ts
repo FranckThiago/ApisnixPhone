@@ -1,5 +1,11 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
+  "script.title": "Script d’appel",
+  "script.collapse": "Réduire le script",
+  "script.expand": "Afficher le script",
+  "script.demoTitle": "Présentation — démonstration",
+  "script.demoContent": "Bonjour, je suis Camille. Merci de prendre mon appel.\n\n1. Présentez brièvement l’objet de votre appel.\n2. Écoutez le besoin de votre interlocuteur.\n3. Proposez une prochaine étape et confirmez ses disponibilités.\n\nMerci pour votre temps, excellente journée !",
+
   'quality.slow': "Connexion instable",
   'quality.impact': "La qualité de vos appels peut être dégradée.",
   'quality.lost': "Connexion au serveur interrompue",

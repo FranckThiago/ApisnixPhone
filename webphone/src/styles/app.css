@@ -568,3 +568,14 @@ a.ghost { text-decoration: none; }
   .connection-alert strong, .connection-alert strong + span { display: block; }
   .toasts, .line-alert.notification-offer { bottom: calc(96px + var(--connection-space, 0px) + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* Team scripts are read-only, independently scrollable, and leave the volume accessible. */
+.call-script-card { padding: 16px; }
+.call-script-card header { display: flex; align-items: center; gap: 10px; }
+.call-script-card header div { min-width: 0; flex: 1; }
+.call-script-card header small, .call-script-card header b { display: block; overflow-wrap: anywhere; }
+.call-script-card header small { font-size: 11px; margin-bottom: 4px; color: var(--muted); }
+.call-script-card header b { font-size: 14px; }
+.call-script-card header button { flex-shrink: 0; }
+.call-script-text { margin-top: 14px; max-height: 240px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.7; }
+.call-script-text[hidden] { display: none; }

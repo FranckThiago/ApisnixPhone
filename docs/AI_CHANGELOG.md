@@ -1,5 +1,18 @@
 # Journal des changements
 
+## Script d'appel par équipe — 7 novembre 2026
+
+Le superviseur prépare un script dans Supervision → Gestion → Script d'appel,
+puis choisit explicitement les postes qui doivent le voir. Pendant une conversation
+ou une mise en attente, ApisnixPhone affiche ce texte au-dessus du volume, dans un
+panneau réductible et défilant. Un script par équipe, titre 120 caractères et texte
+12 000 caractères maximum. Aperçu et sélection des postes côté supervision.
+Les qualifications personnalisées se gèrent désormais dans Gestion → Qualifications.
+
+294 tests, typage et lint réussis ; essai navigateur sur appel fictif et volume
+accessible. Publication préparée, pas encore annoncée en service. La conférence
+VICIdial native utilise un build séparé et ne reçoit pas ce panneau.
+
 ## 2026-11-06 — Retour à la normale sous 350 ms
 
 Le seuil de retrait de l’alerte passe de 300 à 350 ms à la demande de Franck,

@@ -1,5 +1,18 @@
 # État du projet
 
+## Script d'appel par équipe — 7 novembre 2026
+
+Le superviseur prépare un script dans Supervision → Gestion → Script d'appel,
+puis choisit explicitement les postes qui doivent le voir. Pendant une conversation
+ou une mise en attente, ApisnixPhone affiche ce texte au-dessus du volume, dans un
+panneau réductible et défilant. Un script par équipe, titre 120 caractères et texte
+12 000 caractères maximum. Aperçu et sélection des postes côté supervision.
+Les qualifications personnalisées se gèrent désormais dans Gestion → Qualifications.
+
+294 tests, typage et lint réussis ; essai navigateur sur appel fictif et volume
+accessible. Publication préparée, pas encore annoncée en service. La conférence
+VICIdial native utilise un build séparé et ne reçoit pas ce panneau.
+
 ## Alerte de connexion — 6 novembre 2026
 
 Bandeau bas silencieux sur login et espace connecté, FR/EN/ES : trois mesures
@@ -13,8 +26,7 @@ Qualifications, volume, données et manuels conservés.
 ## Qualifications du groupe — 5 novembre 2026
 
 En service **20261105-qualifications** depuis 15:49:04 Douala. Le superviseur
-ajoute ses options depuis le Journal de Supervision SIP → Qualifications du
-groupe. ApisnixPhone les récupère pour sa seule ligne après ouverture de la
+ajoute ses options depuis Supervision SIP → Gestion → Qualifications. ApisnixPhone les récupère pour sa seule ligne après ouverture de la
 session de données, chaque minute et au retour sur l'onglet. Fin d'appel et
 journal du téléphone utilisent ce catalogue ; six options standard conservées,
 24 personnalisées maximum par équipe. Les anciens tags restent lisibles.

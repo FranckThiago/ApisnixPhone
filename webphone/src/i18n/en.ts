@@ -2,6 +2,12 @@ import type { MessageKey } from './fr';
 
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
+  "script.title": "Call script",
+  "script.collapse": "Collapse script",
+  "script.expand": "Show script",
+  "script.demoTitle": "Introduction — demo",
+  "script.demoContent": "Hello, this is Camille. Thank you for taking my call.\n\n1. Briefly explain the reason for your call.\n2. Listen to what the person needs.\n3. Suggest a next step and confirm their availability.\n\nThank you for your time. Have a great day!",
+
   'quality.slow': "Unstable connection",
   'quality.impact': "Your call quality may be affected.",
   'quality.lost': "Server connection interrupted",

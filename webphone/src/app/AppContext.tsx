@@ -5,6 +5,7 @@ import { notificationsEnabled } from '../telephony/notifications';
 import { bindPageLifecycle } from '../telephony/pageLifecycle';
 import { CALL_TAGS } from '../domain/types';
 import { loadCallTags } from '../qualifications/client';
+import { loadCallScript, watchCallScript, type CallScript } from '../callScripts/client';
 import { t, language, setLanguage } from '../i18n';
 import { DataStore, findContact } from '../storage/DataStore';
 import { indexedDbPersistence } from '../storage/persistence';
@@ -32,6 +33,7 @@ export interface Toast {
 
 interface AppValue {
   callTags: readonly string[];
+  callScript: CallScript | null;
   phone: PhoneController;
   store: DataStore;
   /** The recordings of the person's own phone, served by the supervision service. */
@@ -96,6 +98,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     return () => { window.removeEventListener('beforeunload', warn); window.removeEventListener('online', retry); };
   }, []);
   const [callTags, setCallTags] = useState<readonly string[]>(CALL_TAGS);
+  const [callScript, setCallScript] = useState<CallScript | null>(null);
   const [view, setView] = useState<View>(embedded ? 'phone' : 'journal');
   const [dial, setDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -115,6 +118,10 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     window.addEventListener('focus', refresh);
     return () => { active = false; clearInterval(timer); window.removeEventListener('focus', refresh); };
   }, [recordingsAccess.state]);
+  useEffect(() => {
+    if (demoPhone || !sessionOpen || recordingsAccess.state !== 'open') return;
+    return watchCallScript(() => loadCallScript(apiBase), setCallScript, document, window);
+  }, [sessionOpen, recordingsAccess.state]);
   // The line's credentials, in memory for this session only: the recordings access reuses them, nothing else.
   const lineCredentials = useRef<Credentials | null>(null);
   const recorded = useRef(new Map<string, string>());
@@ -233,6 +240,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
         lineCredentials.current = null;
         setRecordingsAccess({ state: 'idle' });
     setCallTags(CALL_TAGS);
+    setCallScript(null);
         await recordings.signOut();
         throw error;
       } finally { setSigningIn(false); loginAttempt.current = null; }
@@ -269,6 +277,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     lineCredentials.current = null;
     setRecordingsAccess({ state: 'idle' });
     setCallTags(CALL_TAGS);
+    setCallScript(null);
     // The recordings session belongs to the person, not to the browser left open.
     void recordings.signOut();
   }, [embedded]);
@@ -285,9 +294,9 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    callTags, phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
+    callTags, callScript: sessionOpen && recordingsAccess.state === 'open' ? callScript : null, phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
-  }), [callTags, view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
+  }), [callTags, callScript, view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

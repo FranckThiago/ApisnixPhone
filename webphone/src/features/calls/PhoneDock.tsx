@@ -10,6 +10,7 @@ import { formatDue, groupCallbacks } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
 import { VolumeMark } from '../../components/VolumeMark';
+import { CallScriptCard } from './CallScriptCard';
 import { formatDuration } from '../../domain/format';
 import { countryLabel, describeNumber, filterDialCharacters, parseDialInput } from '../../domain/numbers';
 import { CALLBACK_TAG, MAX_VOLUME, outcomeLabel, tagLabel, volumeTone } from '../../domain/types';
@@ -302,6 +303,7 @@ export function PhoneDock() {
   const { call } = usePhone();
   const { t } = useI18n();
   return <aside className="dock" aria-label={t('dock.label')}><OtherCall />{call ? <CallCard key={call.id} call={call} /> : <Dialer />}
+    {call && (call.phase === 'active' || call.phase === 'held') && <CallScriptCard key={'script:' + call.id} />}
     <ListeningVolume />
     {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> {t('dock.note')}</p>}</aside>;
 }
