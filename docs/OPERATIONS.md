@@ -1,8 +1,22 @@
 # Construction et validation
 
+## Statistiques quotidiennes du poste — 9 novembre 2026
+
+Release **20261109-daily-stats**, publiée à 12:34:32 Douala après le backend
+`20261109-phone-daily-stats`. L'historique demande les compteurs du jour en
+plus de la page du journal. Si le backend est ancien ou que le jour reçu
+est écoulé, les cartes du poste affichent « — ».
+
+304 tests, typage, lint, build live et empreintes HTTPS vérifiés. Le
+navigateur intégré charge `main-COTnuEEw.js` sans connexion à une ligne.
+Sauvegarde et reçu dans `/root/apisnix-phone-backups/20261109-daily-stats/`.
+Si cette release est toujours active, retour atomique de `current` vers
+`20261109-call-diagnostics`. Le frontend et le backend peuvent être retirés
+séparément. Aucune migration ni restauration de données.
+
 ## Motifs des refus SIP — 9 novembre 2026
 
-Release active **20261109-call-diagnostics** à 10:54:16 Douala. Motifs
+Release précédente **20261109-call-diagnostics**, publiée à 10:54:16 Douala. Motifs
 explicites traduits dans les trois langues pour la limite locale d'appels,
 le crédit insuffisant, l'absence de tarif ou de route, la règle de routage
 et le consentement requis. Un code générique reste générique si le détail

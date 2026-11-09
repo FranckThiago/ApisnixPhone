@@ -1,5 +1,12 @@
 # État du projet
 
+## Statistiques quotidiennes du poste — 9 novembre 2026
+
+Les cartes du journal « Tous les appels du poste » couvrent la journée
+Africa/Douala du poste autorisé, indépendamment de la page de 50 appels.
+La vue « Journal du téléphone » garde ses statistiques locales.
+[Publication et validation](OPERATIONS.md#statistiques-quotidiennes-du-poste--9-novembre-2026).
+
 ## Motifs des refus SIP — 9 novembre 2026
 
 ApisnixPhone en production reconnaît le refus explicite de limite d'appels

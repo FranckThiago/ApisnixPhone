@@ -7,7 +7,14 @@ type Fetch = typeof fetch;
 
 interface ServiceRecording { id: string; state: string; duration: number | null; created_at: number }
 interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; answered_at?: number | null; ended_at?: number | null; outcome?: string; complete?: number; recordings?: ServiceRecording[] }
-interface ServiceDashboard { journal?: ServiceEntry[]; truncated?: boolean; recordings_truncated?: boolean; journal_fresh?: boolean; journal_caught_up?: boolean }
+interface ServiceDashboard {
+  journal?: ServiceEntry[];
+  truncated?: boolean;
+  recordings_truncated?: boolean;
+  journal_fresh?: boolean;
+  journal_caught_up?: boolean;
+  daily_stats?: { begin: number; end: number; count: number; outbound: number; outbound_answered: number; missed: number; talk_seconds: number };
+}
 interface ServiceMe { user: { name: string; role: string }; endpoint: { extension: string; alias: string } | null; csrf: string }
 
 
@@ -138,8 +145,14 @@ export class HttpRecordingsSource implements RecordingsSource {
     const bounded = Math.min(90, Math.max(1, Math.floor(days)));
     const to = dayString(Date.now());
     const from = dayString(Date.now() - (bounded - 1) * 86_400_000);
-    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}`);
+    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&daily=1`);
+    const daily = data.daily_stats;
     return { calls: toLineCalls(data.journal ?? []), truncated: data.truncated === true,
+      dailyStats: daily && {
+        begin: daily.begin * 1000, end: daily.end * 1000, count: daily.count,
+        outbound: daily.outbound, outboundAnswered: daily.outbound_answered,
+        missed: daily.missed, talkSeconds: daily.talk_seconds,
+      },
       catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
   }
 

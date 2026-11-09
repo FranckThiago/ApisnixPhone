@@ -417,7 +417,7 @@ export const en: Record<MessageKey, string> = {
   'journal.opening': 'Opening the extension history…',
   'journal.connectFirst': 'Connect the line to see its history.',
   'journal.loading': 'Loading the extension’s calls…',
-  'journal.truncated': 'The 500 most recent calls are shown.',
+  'journal.truncated': 'The journal shows the most recent calls. Statistics cover the whole day.',
   'journal.stale': 'The link with the server’s call log is interrupted; the latest calls may be missing.',
   'journal.catchingUp': 'Importing recent calls.',
   'journal.auto': 'Extension history refreshed automatically.',

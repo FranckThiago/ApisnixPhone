@@ -40,15 +40,22 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
     outcome: call.outcome, tags: [],
   })), [scope, localCalls, history]);
 
-  const todayKey = dayKey(useNow());
-  const today = useMemo(() => calls.filter(call => dayKey(call.startedAt) === todayKey), [calls, todayKey]);
-  const stats = {
+  const now = useNow();
+  const todayKey = dayKey(now);
+  const today = useMemo(() => localCalls.filter(call => dayKey(call.startedAt) === todayKey), [localCalls, todayKey]);
+  const outbound = today.filter(call => call.direction === 'outbound');
+  const deviceStats = {
     count: today.length,
     talk: today.reduce((total, call) => total + talkSeconds(call), 0),
     missed: today.filter(call => call.outcome === 'missed').length,
-    reached: today.filter(call => call.direction === 'outbound').length
-      ? Math.round(100 * today.filter(call => call.direction === 'outbound' && call.outcome === 'answered').length / today.filter(call => call.direction === 'outbound').length) : null,
+    reached: outbound.length ? Math.round(100 * outbound.filter(call => call.outcome === 'answered').length / outbound.length) : null,
   };
+  const daily = history?.dailyStats;
+  const lineStats = recordingsAccess.state === 'open' && daily && daily.begin <= now && now < daily.end ? {
+    count: daily.count, talk: daily.talkSeconds, missed: daily.missed,
+    reached: daily.outbound ? Math.round(100 * daily.outboundAnswered / daily.outbound) : null,
+  } : null;
+  const stats = scope === 'line' ? lineStats : deviceStats;
 
   const rows = useMemo(() => {
     const text = fold(query.trim());
@@ -93,16 +100,16 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
           recordingsAccess.state !== 'open' ? t('journal.connectFirst') :
           historyError ? <>{historyError} <button type="button" className="ghost small" onClick={refresh}>{t('action.retry')}</button></> :
           loading && !history ? t('journal.loading') :
-          history?.truncated ? t('journal.truncated') :
           history?.stale ? t('journal.stale') :
-          history?.catchingUp ? t('journal.catchingUp') : t('journal.auto')}
+          history?.catchingUp ? t('journal.catchingUp') :
+          history?.truncated ? t('journal.truncated') : t('journal.auto')}
       </div>}
 
       <section className="stats" aria-label={t(scope === 'line' ? 'stats.labelLine' : 'stats.labelDevice')}>
-        <article><Phone size={18} /><span>{t('stats.calls')}</span><strong>{stats.count}</strong></article>
-        <article className="accent"><Clock3 size={18} /><span>{t('stats.talk')}</span><strong>{formatLongDuration(stats.talk)}</strong></article>
-        <article><PhoneOutgoing size={18} /><span>{t('stats.reached')}</span><strong>{stats.reached === null ? '—' : `${stats.reached} %`}</strong></article>
-        <article className={stats.missed ? 'alert' : ''}><PhoneMissed size={18} /><span>{t('stats.missed')}</span><strong>{stats.missed}</strong></article>
+        <article><Phone size={18} /><span>{t('stats.calls')}</span><strong>{stats?.count ?? '—'}</strong></article>
+        <article className="accent"><Clock3 size={18} /><span>{t('stats.talk')}</span><strong>{stats ? formatLongDuration(stats.talk) : '—'}</strong></article>
+        <article><PhoneOutgoing size={18} /><span>{t('stats.reached')}</span><strong>{stats?.reached == null ? '—' : `${stats.reached} %`}</strong></article>
+        <article className={stats?.missed ? 'alert' : ''}><PhoneMissed size={18} /><span>{t('stats.missed')}</span><strong>{stats?.missed ?? '—'}</strong></article>
       </section>
 
       <section className="panel">

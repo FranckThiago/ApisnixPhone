@@ -48,9 +48,21 @@ export interface LineCall {
 
 export interface LineHistory {
   calls: LineCall[];
+  dailyStats?: LineDayStats;
   truncated: boolean;
   catchingUp: boolean;
   stale: boolean;
+}
+
+export interface LineDayStats {
+  /** Start and end of the server's reporting day, in milliseconds. */
+  begin: number;
+  end: number;
+  count: number;
+  outbound: number;
+  outboundAnswered: number;
+  missed: number;
+  talkSeconds: number;
 }
 
 export type Period = 'today' | 'yesterday' | 'week' | 'month';

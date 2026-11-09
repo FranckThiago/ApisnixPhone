@@ -415,7 +415,7 @@ export const fr = {
   'journal.opening': 'Ouverture de l’historique du poste…',
   'journal.connectFirst': 'Connectez la ligne pour voir son historique.',
   'journal.loading': 'Chargement des appels du poste…',
-  'journal.truncated': 'Les 500 appels les plus récents sont affichés.',
+  'journal.truncated': 'Le journal affiche les appels les plus récents. Les statistiques portent sur toute la journée.',
   'journal.stale': 'La liaison avec le journal du serveur est interrompue ; les derniers appels peuvent manquer.',
   'journal.catchingUp': 'Import des appels récents en cours.',
   'journal.auto': 'Historique du poste actualisé automatiquement.',

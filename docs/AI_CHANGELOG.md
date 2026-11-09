@@ -1,5 +1,11 @@
 # Journal des changements
 
+## Statistiques quotidiennes du poste — 9 novembre 2026
+
+Les cartes utilisent les totaux du serveur pour la journée, y compris les
+appels absents de la page du journal. Le calcul local reste réservé au
+journal du téléphone. 304 tests, typage, lint et publication live vérifiés.
+
 ## Motifs des refus SIP — 9 novembre 2026
 
 Messages FR/EN/ES pour la limite locale, les tarifs, les routes, le filtrage

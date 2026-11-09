@@ -69,7 +69,8 @@ describe('recordings client', () => {
       'GET /me': () => me('agent'),
       'POST /line-session': init => (JSON.parse(String(init.body)).password === 'good' ? { status: 200, body: { ok: true } } : { status: 401, body: { error: 'Identifiant ou mot de passe de la ligne incorrect.' } }),
       'POST /logout': init => ((init.headers as Record<string, string>)['X-CSRF-Token'] === 'token-1' ? { status: 200, body: { ok: true } } : { status: 403, body: { error: 'Accès refusé.' } }),
-      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, outcome: 'ANSWERED', complete: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], journal_fresh: true, journal_caught_up: false, truncated: true } }),
+      'GET /dashboard': () => ({ status: 200, body: { journal: [{ entry_id: 'call:1', id: 1, number: '0100', direction: 'outbound', started_at: 1, outcome: 'ANSWERED', complete: 1, recordings: [{ id: 'x', state: 'available', duration: 3, created_at: 1 }] }], daily_stats: { begin: 1700000000, end: 1700086400, count: 153, outbound: 153, outbound_answered: 91, missed: 0, talk_seconds: 2650 },
+        journal_fresh: true, journal_caught_up: false, truncated: true } }),
     });
     const source = new HttpRecordingsSource('/api', fetchImpl);
     await expect(source.openWithLine('D1001', 'bad')).rejects.toMatchObject({ status: 401, message: 'Identifiant ou mot de passe de la ligne incorrect.' });
@@ -84,6 +85,11 @@ describe('recordings client', () => {
     const history = await source.history(30);
     expect(history.calls).toMatchObject([{ id: 'call:1', number: '0100', outcome: 'answered' }]);
     expect(history.catchingUp).toBe(true);
+    expect(calls.at(-1)!.url).toContain('&daily=1');
+    expect(history.dailyStats).toEqual({
+      begin: 1700000000000, end: 1700086400000, count: 153, outbound: 153,
+      outboundAnswered: 91, missed: 0, talkSeconds: 2650,
+    });
     expect(calls.find(call => call.url.includes('/dashboard'))!.url).toMatch(/\/api\/dashboard\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}$/);
     expect(source.audioUrl('demo:0', false)).toBe('/api/recordings/demo%3A0/audio');
     expect(source.audioUrl('demo:0', true)).toBe('/api/recordings/demo%3A0/audio?download=1');
