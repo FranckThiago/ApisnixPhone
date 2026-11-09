@@ -1,5 +1,19 @@
 # Construction et validation
 
+## Bouton de vitesse du lecteur — 9 novembre 2026
+
+Release **20261109-round-speed** sur Hermes. Le bouton rond de la vue Audio
+reprend le cycle de la supervision (×1,0 → ×1,5 → ×2,0 → ×0,5). La barre
+de lecture prend l'espace disponible et occupe sa propre ligne sur mobile.
+
+Typage, lint, 305 tests et build live validés. Le navigateur a vérifié les
+vitesses de lecture et le déplacement dans un audio de test, avec une barre
+de 478 px dans un lecteur de 792 px et de 228 px sur une fenêtre de 375 px.
+Publication statique uniquement. Sauvegarde et reçu dans
+`/root/apisnix-phone-backups/20261109-round-speed/`. Pour retirer cette
+version, repointer `current` vers `20261109-search-player` si
+`20261109-round-speed` est toujours active.
+
 ## Recherche du journal et lecteur audio — 9 novembre 2026
 
 Release **20261109-search-player**, publiée à 13:03:16 Douala après

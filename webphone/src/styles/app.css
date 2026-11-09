@@ -531,25 +531,36 @@ a.ghost { text-decoration: none; }
   width: 36px; height: 36px; border-radius: 10px;
   color: var(--on-yellow); background: var(--yellow);
 }
-.recording-player-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.recording-player-controls > .mono { color: var(--muted); font-size: 12px; }
+.recording-player-controls {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center; gap: 8px; margin-top: 8px;
+}
+.recording-player-timeline {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px;
+}
+.recording-player-timeline > .mono { color: var(--muted); font-size: 12px; }
 .recording-player-toggle {
   display: grid; place-items: center; flex: none;
   width: 36px; height: 36px; border-radius: 50%;
   background: var(--yellow); color: var(--on-yellow);
 }
-.recording-player-position { flex: 1 1 48px; min-width: 24px; accent-color: var(--yellow); }
-.recording-player-controls select {
-  padding: 3px 5px; border-radius: 7px; border: 1px solid var(--border);
-  background: var(--surface-2); color: var(--text); font-size: 12px;
+input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-color: var(--yellow); }
+.recording-player-speed {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: 50%;
+  background: var(--brand-soft); color: var(--brand-strong); font-size: 12px; font-weight: 700;
 }
+.recording-player-speed:hover { box-shadow: inset 0 0 0 1px currentColor; }
 .recording-player-volume { display: flex; align-items: center; }
 .recording-player-volume input { width: clamp(36px, 6vw, 72px); }
-.below-recording-player { scroll-margin-top: 110px; }
+.below-recording-player { scroll-margin-top: 120px; }
 @media (max-width: 540px) {
   .recording-player { padding-inline: 9px; }
-  .recording-player-controls { gap: 5px; }
+  .recording-player-controls, .recording-player-timeline { gap: 5px; }
+  .recording-player-timeline { grid-column: 1 / -1; grid-row: 2; }
+  .recording-player-speed { grid-column: 3; }
+  .recording-player-volume { grid-column: 4; }
   .recording-player-volume input { display: none; }
+  .below-recording-player { scroll-margin-top: 144px; }
 }
 .spin { animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 760px) {

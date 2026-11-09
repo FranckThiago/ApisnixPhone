@@ -509,7 +509,7 @@ export const en: Record<MessageKey, string> = {
   'rec.closePlayer': 'Close player',
   'rec.pause': 'Pause',
   'rec.position': 'Playback position',
-  'rec.speed': 'Playback speed',
+  'rec.speed': 'Playback speed {current}. Switch to {next}.',
   'rec.mute': 'Mute',
   'rec.playerVolume': 'Playback volume',
   'rec.truncated': 'Some files on this page are not shown.',

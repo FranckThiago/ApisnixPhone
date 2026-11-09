@@ -1,7 +1,13 @@
 import { AudioLines, Pause, Play, Volume2, VolumeX, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { formatDuration } from '../../domain/format';
-import { useI18n } from '../../i18n';
+import { locale, useI18n } from '../../i18n';
+
+const playbackRates = [0.5, 1, 1.5, 2];
+
+function formatRate(rate: number) {
+  return `×${rate.toLocaleString(locale(), { minimumFractionDigits: 1 })}`;
+}
 
 export function RecordingPlayer({ src, label, onClose, onError }: {
   src: string;
@@ -17,6 +23,8 @@ export function RecordingPlayer({ src, label, onClose, onError }: {
   const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
+  const nextSpeed = playbackRates[(playbackRates.indexOf(speed) + 1) % playbackRates.length] ?? 1;
+  const speedLabel = t('rec.speed', { current: formatRate(speed), next: formatRate(nextSpeed) });
 
   const toggle = () => {
     const media = audio.current;
@@ -42,22 +50,26 @@ export function RecordingPlayer({ src, label, onClose, onError }: {
       <div className="recording-player-controls">
         <button className="recording-player-toggle" type="button" onClick={toggle}
           aria-label={t(playing ? 'rec.pause' : 'rec.listen')}>{playing ? <Pause size={17} /> : <Play size={17} />}</button>
-        <span className="mono">{formatDuration(position)}</span>
-        <input className="recording-player-position" type="range" min={0} max={duration || 1} step={0.1}
-          value={Math.min(position, duration)} disabled={!duration}
-          aria-label={t('rec.position')} aria-valuetext={formatDuration(position)} onChange={event => {
-            const next = event.currentTarget.valueAsNumber;
-            if (audio.current) audio.current.currentTime = next;
-            setPosition(next);
-          }} />
-        <span className="mono">{duration ? formatDuration(duration) : '—'}</span>
-        <select aria-label={t('rec.speed')} value={speed} onChange={event => {
-          const rate = Number(event.currentTarget.value);
-          if (audio.current) audio.current.playbackRate = rate;
-          setSpeed(rate);
-        }}>
-          {[0.75, 1, 1.25, 1.5, 2].map(rate => <option value={rate} key={rate}>{rate}×</option>)}
-        </select>
+        <div className="recording-player-timeline">
+          <span className="mono">{formatDuration(position)}</span>
+          <input className="recording-player-position" type="range" min={0} max={duration || 1} step={0.1}
+            value={Math.min(position, duration)} disabled={!duration}
+            aria-label={t('rec.position')} aria-valuetext={formatDuration(position)} onChange={event => {
+              const next = event.currentTarget.valueAsNumber;
+              if (audio.current) audio.current.currentTime = next;
+              setPosition(next);
+            }} />
+          <span className="mono">{duration ? formatDuration(duration) : '—'}</span>
+        </div>
+        <button className="recording-player-speed" type="button" aria-label={speedLabel} title={speedLabel}
+          onClick={() => {
+            const media = audio.current;
+            if (!media) return;
+            media.defaultPlaybackRate = nextSpeed;
+            media.playbackRate = nextSpeed;
+            media.preservesPitch = true;
+            setSpeed(nextSpeed);
+          }}>{formatRate(speed)}</button>
         <div className="recording-player-volume">
           <button type="button" className="icon-button" aria-label={t('rec.mute')} aria-pressed={muted}
             onClick={() => { if (audio.current) audio.current.muted = !muted; setMuted(!muted); }}>

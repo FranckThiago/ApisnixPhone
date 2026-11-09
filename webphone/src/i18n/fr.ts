@@ -507,7 +507,7 @@ export const fr = {
   'rec.closePlayer': 'Fermer le lecteur',
   'rec.pause': 'Pause',
   'rec.position': 'Position de lecture',
-  'rec.speed': 'Vitesse de lecture',
+  'rec.speed': 'Vitesse de lecture {current}. Passer à {next}.',
   'rec.mute': 'Couper le son',
   'rec.playerVolume': 'Volume de lecture',
   'rec.truncated': 'Certains fichiers de cette page ne sont pas affichés.',

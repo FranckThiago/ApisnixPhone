@@ -1,5 +1,10 @@
 # Journal des changements
 
+## Bouton de vitesse du lecteur — 9 novembre 2026
+
+Le bouton rond reprend les quatre vitesses de la supervision. La barre de
+lecture s'étend dans le lecteur Audio et passe sur une ligne dédiée sur mobile.
+
 ## Recherche du journal et lecteur audio — 9 novembre 2026
 
 Le journal du poste recherche avant pagination. Nouveau lecteur dans

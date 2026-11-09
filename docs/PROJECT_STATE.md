@@ -4,8 +4,10 @@
 
 La recherche et les filtres de direction portent sur tout l'historique
 disponible du poste, avec 50 résultats par page. Le lecteur d'enregistrement
-reste en haut de la vue Audio pendant le défilement, avec pause, progression,
-vitesse et volume. [Publication](OPERATIONS.md#recherche-du-journal-et-lecteur-audio--9-novembre-2026).
+reste en haut de la vue Audio pendant le défilement. Son bouton rond reprend
+les vitesses de la supervision (×0,5, ×1,0, ×1,5 et ×2,0). La barre de lecture
+prend la largeur disponible, sur sa propre ligne en affichage mobile.
+[Publication](OPERATIONS.md#bouton-de-vitesse-du-lecteur--9-novembre-2026).
 
 ## Historique paginé du poste — 9 novembre 2026
 
