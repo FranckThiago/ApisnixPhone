@@ -1,5 +1,14 @@
 # État du projet
 
+## Recherche dans Audio — 9 novembre 2026
+
+Ajout préparé et validé : champ nom, numéro ou pays au-dessus des périodes,
+effacement en un clic, recherche sur toute la période autorisée avant les pages
+de 50. Attente de 300 ms après saisie, retour à la première page et réponses
+obsolètes ignorées. La lecture continue pendant le filtrage. Les noms viennent
+des contacts synchronisés ; un indicatif partagé peut couvrir plusieurs pays.
+FR/EN/ES, démo et mobile vérifiés. [Publication](OPERATIONS.md#recherche-dans-audio--9-novembre-2026).
+
 ## Recherche du journal et lecteur audio — 9 novembre 2026
 
 La recherche et les filtres de direction portent sur tout l'historique

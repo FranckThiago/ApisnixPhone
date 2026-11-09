@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Recherche dans Audio — 9 novembre 2026
+
+Champ de recherche et bouton d'effacement dans Recordings, traductions FR/EN/ES,
+transmission de la recherche et des indicatifs à `/api/dashboard` via
+`line_audio=1&recorded=1`, démo raccordée aux contacts fictifs. Période et pages
+conservées, retour page 1 après saisie, délai de 300 ms, anciennes réponses
+ignorées. Le lecteur n'est pas remonté à chaque filtre. 307 tests, typage,
+lint, build et recette ordinateur/mobile réussis. Aucun secret ni migration.
+État, contrat d'API, périmètre et procédure de publication actualisés.
+
 ## Bouton de vitesse du lecteur — 9 novembre 2026
 
 Le bouton rond reprend les quatre vitesses de la supervision. La barre de

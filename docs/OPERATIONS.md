@@ -1,5 +1,20 @@
 # Construction et validation
 
+## Recherche dans Audio — 9 novembre 2026
+
+Version préparée `20261109-audio-search` : déployer d'abord le support
+`line_audio=1` de la supervision, puis le build statique du téléphone. Aucun
+changement de schéma ni de configuration SIP. Le backend accepte toujours
+les requêtes des anciens téléphones. Retirer le frontend avant le backend
+pour revenir en arrière.
+
+307 tests, typage, lint et build réussis. Recette en démonstration : nom,
+numéro, pays, période, effacement, absence de résultat, espaces de fin et
+lecture conservée pendant le filtre ; écran 390 px sans débordement.
+Les ressources live reprennent les trois variables publiques déjà actives :
+`VITE_APP_MODE`, `VITE_SIP_DOMAIN`, `VITE_SIP_WSS_URL`.
+Publication et sauvegardes à consigner après vérification.
+
 ## Bouton de vitesse du lecteur — 9 novembre 2026
 
 Release **20261109-round-speed** sur Hermes. Le bouton rond de la vue Audio

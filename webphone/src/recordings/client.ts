@@ -1,7 +1,9 @@
 import { sessionFetch, isEmbeddedSession, openEmbeddedSession, clearEmbeddedSession } from '../http/embeddedSession';
-import { customerNumber } from '../domain/numbers';
+import { customerNumber, sameNumber } from '../domain/numbers';
+import { fold } from '../domain/format';
+import type { Contact } from '../domain/types';
 import { language, t } from '../i18n';
-import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
+import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type Period, type RecordedCall, type RecordingFile, type RecordingSearch, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
 
 type Fetch = typeof fetch;
 
@@ -143,9 +145,15 @@ export class HttpRecordingsSource implements RecordingsSource {
     if (isEmbeddedSession()) clearEmbeddedSession();
   }
 
-  async list(period: Period, page = 1): Promise<RecordingsListing> {
+  async list(period: Period, page = 1, search?: RecordingSearch): Promise<RecordingsListing> {
     const { from, to } = periodBounds(period);
-    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&recorded=1&page=${page}`);
+    const params = new URLSearchParams({ from, to, recorded: '1', page: String(page) });
+    if (search?.query.trim()) {
+      params.set('line_audio', '1');
+      params.set('q', search.query.trim());
+      if (search.callingCodes.length) params.set('calling', search.callingCodes.join(','));
+    }
+    const data = await this.request<ServiceDashboard>(`/dashboard?${params}`);
     return { calls: toRecordedCalls(data.journal ?? []), page: data.page ?? 1, pageCount: data.page_count ?? 1,
       truncated: data.recordings_truncated === true || (data.page_count === undefined && data.truncated === true),
       catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
@@ -184,7 +192,7 @@ export class HttpRecordingsSource implements RecordingsSource {
 /** Fictional recordings for the demonstration: no network, a generated tone as audio. */
 export class DemoRecordingsSource implements RecordingsSource {
   private open = false;
-  constructor(private readonly now = () => Date.now()) {}
+  constructor(private readonly now = () => Date.now(), private readonly contacts: () => Contact[] = () => []) {}
 
   async session() { return this.open ? this.identity() : null; }
   async openWithLine(username: string) { this.open = true; return this.identity(username); }
@@ -194,7 +202,7 @@ export class DemoRecordingsSource implements RecordingsSource {
     return { name: t('rec.demoName'), extension: username || 'demo', alias: t('rec.demoAlias') };
   }
 
-  async list(period: Period): Promise<RecordingsListing> {
+  async list(period: Period, requestedPage = 1, search?: RecordingSearch): Promise<RecordingsListing> {
     const now = this.now();
     const script: Array<[number, string, 'outbound' | 'inbound', number | null]> = [
       [6, '+33100000001', 'outbound', null], [47, '+33100000002', 'inbound', 166], [146, '+2250000000001', 'outbound', 369],
@@ -202,12 +210,27 @@ export class DemoRecordingsSource implements RecordingsSource {
       [3100, '+237600000001', 'inbound', 288], [4400, '+41220000001', 'outbound', 75], [9000, '+14165550100', 'outbound', 640],
     ];
     const { from, to } = periodBounds(period, now);
+    const text = fold(search?.query.trim() ?? '');
+    const compact = customerNumber(text).replace(/[\s().+-]/g, '');
+    const numeric = /^[0-9*#]{2,100}$/.test(compact);
+    const canonical = compact.startsWith('00') ? compact.slice(2) : /^0[1-9]/.test(compact) ? '33' + compact.slice(1) : compact;
+    const contacts = this.contacts().filter(contact => text && !numeric && fold(contact.name).includes(text));
     const calls = script.map(([minutesAgo, number, direction, seconds], index): RecordedCall => {
       const startedAt = now - minutesAgo * 60_000;
       return { id: `demo-audio-${index}`, number, direction, startedAt,
                files: [{ id: `demo-file-${index}`, state: seconds === null ? 'processing' : 'available', durationSeconds: seconds, createdAt: startedAt }] };
-    }).filter(call => { const day = dayString(call.startedAt); return day >= from && day <= to; });
-    return { calls, page: 1, pageCount: 1, catchingUp: false, stale: false };
+    }).filter(call => {
+      const day = dayString(call.startedAt);
+      if (day < from || day > to) return false;
+      if (!text) return true;
+      const key = call.number.replace(/^\+|^00/, '');
+      return (numeric && (key.includes(compact) || key.includes(canonical)))
+        || contacts.some(contact => contact.numbers.some(number => sameNumber(number.value, call.number)))
+        || (key.length > 6 && search!.callingCodes.some(code => key.startsWith(code)));
+    });
+    const pageCount = Math.max(1, Math.ceil(calls.length / 50));
+    const page = Math.min(pageCount, Math.max(1, requestedPage));
+    return { calls: calls.slice((page - 1) * 50, page * 50), page, pageCount, catchingUp: false, stale: false };
   }
 
 

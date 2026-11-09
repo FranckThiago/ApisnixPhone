@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DemoRecordingsSource, HttpRecordingsSource, periodBounds, toLineCalls, toRecordedCalls } from '../src/recordings/client';
+import { demoSeed } from '../src/telephony/demoSeed';
 import { RecordingsError, type RecordingsSource } from '../src/recordings/types';
 
 type Call = { url: string; init: RequestInit };
@@ -120,6 +121,34 @@ describe('recordings client', () => {
       `/api/dashboard?from=${from}&to=${to}&recorded=1&page=22`,
       `/api/dashboard?from=${from}&to=${to}&page=2&line_history=1&q=France&direction=missed&calling=33`,
     ]);
+  });
+
+  it('sends the audio search with its selected period and page, and clears it without changing access', async () => {
+    const { calls, fetchImpl } = fakeService({
+      'GET /dashboard': () => ({ status: 200, body: { page: 2, page_count: 4, journal: [] } }),
+    });
+    const source = new HttpRecordingsSource('/api', fetchImpl);
+    expect(await source.list('month', 2, { query: '  Côte & France  ', callingCodes: ['225', '33'] }))
+      .toMatchObject({ page: 2, pageCount: 4 });
+    const params = new URL(calls[0]!.url, 'https://example.invalid').searchParams;
+    expect(Object.fromEntries(params)).toEqual({ ...periodBounds('month'), recorded: '1', page: '2', line_audio: '1', q: 'Côte & France', calling: '225,33' });
+    await source.list('week', 1, { query: '   ', callingCodes: ['33'] });
+    expect(calls.at(-1)!.url).toBe(`/api/dashboard?from=${periodBounds('week').from}&to=${periodBounds('week').to}&recorded=1&page=1`);
+    expect(calls).toHaveLength(2);
+  });
+
+  it('searches the demo audio by formatted number, contact and country while retaining the period', async () => {
+    const now = new Date(2026, 8, 24, 12).getTime();
+    const source = new DemoRecordingsSource(() => now, () => demoSeed(now).contacts);
+    const search = (query: string, callingCodes: string[] = []) => source.list('week', 1, { query, callingCodes });
+    expect((await search('Camille')).calls).toHaveLength(2);
+    expect((await search('01 00 00 00 01')).calls).toHaveLength(2);
+    expect((await search('0033100000001')).calls).toHaveLength(2);
+    expect((await search('Ines')).calls).toHaveLength(1);
+    expect((await search('France', ['33'])).calls).toHaveLength(3);
+    expect((await search('introuvable')).calls).toHaveLength(0);
+    expect((await source.list('today', 1, { query: 'Ines', callingCodes: [] })).calls).toHaveLength(0);
+    expect((await search('')).calls).toHaveLength(9);
   });
 
   it('refuses a supervisor account and reports a closed session without a password prompt loop', async () => {

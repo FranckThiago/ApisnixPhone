@@ -82,7 +82,7 @@ const phone: PhoneController = demoPhone ?? new CallWaitingPhoneController(sipCo
 const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '');
 const store = new DataStore(demoPhone ? (typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence) : new ServerPersistence(apiBase));
 // Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
-const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource() : new HttpRecordingsSource(apiBase);
+const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource(undefined, () => store.getSnapshot().contacts) : new HttpRecordingsSource(apiBase);
 // Read straight from the PBX's public page: its origin is allowed by the site's connection policy.
 const announcements: AnnouncementsSource = demoPhone ? new DemoAnnouncementsSource() : new HttpAnnouncementsSource(announcementsUrlFromEnv(import.meta.env));
 

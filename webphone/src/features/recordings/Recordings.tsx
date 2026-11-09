@@ -1,11 +1,11 @@
-import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Square } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Search, Square, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { Flag } from '../../components/Flag';
 import { Pagination } from '../../components/Pagination';
 import { dayKey, formatDay, formatDuration, formatTime } from '../../domain/format';
-import { countryLabel, describeNumber } from '../../domain/numbers';
+import { countryLabel, countrySearchCodes, describeNumber } from '../../domain/numbers';
 import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing } from '../../recordings/types';
 import { findContact } from '../../storage/DataStore';
 import { t, useI18n, type MessageKey } from '../../i18n';
@@ -78,10 +78,17 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
 export function Recordings() {
   const { recordings, notify, recordingsAccess, reopenRecordings } = useApp();
   const { demo } = usePhone();
-  const { t, tp } = useI18n();
+  const { t, tp, language } = useI18n();
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
   const [period, setPeriod] = useState<Period>('today');
   const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
+  const [settledQuery, setSettledQuery] = useState('');
+  const queryPending = query.trim() !== settledQuery;
+  useEffect(() => {
+    const timer = setTimeout(() => setSettledQuery(query.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
   const [reload, setReload] = useState(0);
   const [listing, setListing] = useState<RecordingsListing | null>(null);
   const [error, setError] = useState('');
@@ -102,9 +109,9 @@ export function Recordings() {
     return () => { cancelled = true; };
   }, [recordings, recordingsAccess.state]);
 
-  // Cancel obsolete results when the user changes the period, page, or line.
+  // Search the whole authorized period on the server; ignore obsolete responses.
   useEffect(() => {
-    if (!identity) return;
+    if (!identity || queryPending) return;
     let cancelled = false;
     let pending = false;
     const load = async () => {
@@ -112,7 +119,8 @@ export function Recordings() {
       pending = true;
       setLoading(true);
       try {
-        const result = await recordings.list(period, page);
+        const search = settledQuery ? { query: settledQuery, callingCodes: countrySearchCodes(settledQuery, language) } : undefined;
+        const result = await recordings.list(period, page, search);
         if (!cancelled) { setListing(result); setError(''); }
       } catch (raised) {
         if (cancelled) return;
@@ -126,7 +134,16 @@ export function Recordings() {
     const first = setTimeout(() => void load(), 0);
     const timer = page === 1 ? setInterval(() => { if (!document.hidden) void load(); }, 60_000) : undefined;
     return () => { cancelled = true; clearTimeout(first); clearInterval(timer); };
-  }, [identity, period, page, recordings, reload]);
+  }, [identity, period, page, recordings, reload, queryPending, settledQuery, language]);
+
+  const changeQuery = (next: string) => {
+    setQuery(next);
+    if (next.trim() === query.trim()) return;
+    setListing(null);
+    setError('');
+    setLoading(true);
+    setPage(1);
+  };
 
   const changePeriod = (next: Period) => {
     if (next === period) return;
@@ -188,6 +205,13 @@ export function Recordings() {
             message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || t('rec.notOpen')} />
         : (
           <section className={'panel' + (playing ? ' below-recording-player' : '')} ref={panel}>
+            <div className="toolbar audio-search">
+              <label className="search wide"><Search size={16} aria-hidden="true" />
+                <input value={query} maxLength={100} onChange={event => changeQuery(event.target.value)}
+                  placeholder={t('rec.searchPlaceholder')} aria-label={t('rec.search')} />
+              </label>
+              {query && <button type="button" className="ghost small" onClick={() => changeQuery('')} aria-label={t('rec.clearSearch')} title={t('rec.clearSearch')}><X size={16} /></button>}
+            </div>
             <div className="toolbar">
               <div className="tabs" role="tablist" aria-label={t('rec.period')}>
                 {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => changePeriod(key)}>{t(label)}</button>)}
@@ -206,8 +230,8 @@ export function Recordings() {
             )}
             {listing?.truncated && <p className="audio-notice" role="status">{t('rec.truncated')}</p>}
             {groups.length === 0 ? (
-              <div className="empty"><AudioLines size={28} /><b>{t(loading && !listing ? 'rec.loading' : 'rec.empty')}</b>
-                <p>{t('rec.emptyHint')}</p></div>
+              <div className="empty" role="status"><AudioLines size={28} /><b>{t(loading && !listing ? 'rec.loading' : settledQuery ? 'rec.noMatch' : 'rec.empty')}</b>
+                {!loading && <p>{t(settledQuery ? 'rec.noMatchHint' : 'rec.emptyHint')}</p>}</div>
             ) : groups.map(group => (
               <div key={group.key} className="day-group">
                 <h2 className="day-label">{formatDay(group.calls[0]!.startedAt)}<span>{group.calls.length}</span></h2>

@@ -248,6 +248,14 @@ observé du téléphone. Le journal central ne reçoit pas ce motif. Un 403 seul
 reste générique ; un 402 seul signifie paiement requis, sans affirmer un solde
 nul. Aucun texte serveur brut n'est affiché ou persisté. Un refus tardif d'un
 ancien appel/contrôleur est ignoré. Aucun changement d'authentification.
+La vue Audio transmet une recherche non vide par `line_audio=1&recorded=1`
+avec `q`, les indicatifs `calling`, les bornes de période et `page`. Le serveur
+filtre le numéro et les noms des contacts synchronisés avant les pages de 50,
+sous l'identité du poste et son attribution. À vide, la requête audio initiale
+reste utilisée, y compris pour les fichiers sans appel associé. Le champ attend
+300 ms, remet la page à 1, ignore les réponses devenues obsolètes et conserve
+le lecteur. Les indicatifs partagés peuvent correspondre à plusieurs pays.
+
 `src/domain/callbacks.ts` porte les rappels planifiés.
 `src/storage/DataStore.ts` maintient le profil en mémoire et regroupe les écritures
 pendant 300 ms. En ligne réelle, `ServerPersistence` charge puis sauvegarde le
@@ -265,7 +273,7 @@ utilisés ensuite restent en mémoire jusqu’à la fermeture de la session. Le 
 d’effacement retire les collections en conservant les réglages et le choix de
 conservation. Il ne touche pas au journal central ni aux fichiers audio.
 Le journal observé est limité à 1000 appels / 30 jours, le journal central et les
-audios aux 30 derniers jours calendaires et à la date de nouvelle attribution,
+audios aux trois derniers mois calendaires et à la date de nouvelle attribution,
 y compris les exports, lectures directes et téléchargements.
 
 Une révision protège contre les écrasements concurrents (409). L’état de sauvegarde
