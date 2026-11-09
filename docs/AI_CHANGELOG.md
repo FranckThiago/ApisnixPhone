@@ -1,5 +1,11 @@
 # Journal des changements
 
+## Motifs des refus SIP — 9 novembre 2026
+
+Messages FR/EN/ES pour la limite locale, les tarifs, les routes, le filtrage
+et le consentement explicites. Détection de crédit et motifs génériques
+conservés. 304 tests et publication live vérifiés sur Hermes, sans migration.
+
 ## Outils d’équipe — 7 novembre 2026
 
 Menu Équipe, rappels personnels/de groupe et promotion, consignes avec lecture,

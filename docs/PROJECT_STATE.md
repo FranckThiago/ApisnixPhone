@@ -1,5 +1,11 @@
 # État du projet
 
+## Motifs des refus SIP — 9 novembre 2026
+
+ApisnixPhone en production reconnaît le refus explicite de limite d'appels
+et les motifs opérateur documentés. Les statuts sans raison distinctive
+gardent un message générique. [Publication et vérification](OPERATIONS.md#motifs-des-refus-sip--9-novembre-2026).
+
 ## Outils d’équipe — 7 novembre 2026
 
 Menu Équipe, rappels personnels/de groupe et promotion, consignes avec lecture,

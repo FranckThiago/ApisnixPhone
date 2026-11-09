@@ -103,18 +103,28 @@ export interface SipEnvironment {
 }
 
 const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
-const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
+const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 470: 'sip.470', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
 
-/** Only an explicit server balance reason proves this; a plain 403 does not. */
+/** Match known reasons only. A generic SIP status cannot identify an operator policy. */
 function callFailure(message: Rejection['message']): string | undefined {
   const status = message.statusCode ?? 0;
+  if (status < 400 || status > 699) return;
   const reasonHeader = message.getHeader?.('Reason') ?? '';
   const headerText = /\btext\s*=\s*"([^"\r\n]*)"/i.exec(reasonHeader)?.[1];
-  const exhausted = [message.reasonPhrase, headerText].some(value => {
-    const reason = (value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-    return /^(?:insufficient (?:balance|credit|funds)|(?:balance|credit) (?:exhausted|depleted)|no (?:credit|funds)|out of credit|(?:credit|solde) (?:insuffisant|epuise|fini))(?:\s+\d+)?[.!]?$/i.test(reason);
-  });
-  if (status >= 400 && status <= 699 && exhausted) return t('sip.creditExhausted', { status });
+  const reasons = [message.reasonPhrase, headerText].map(value =>
+    (value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim());
+  const matches = (pattern: RegExp) => reasons.some(reason => pattern.test(reason));
+
+  if (status === 480 && matches(/^(?:Temporarily Unavailable \(Call limit\)|Call limit(?: reached)?)$/i)) {
+    return t('sip.callLimit', { status });
+  }
+  if (matches(/^(?:insufficient (?:balance|credit|funds)|(?:balance|credit) (?:exhausted|depleted)|no (?:credit|funds)|out of credit|(?:credit|solde) (?:insuffisant|epuise|fini))(?:\s+\d+)?[.!]?$/i)) {
+    return t('sip.creditExhausted', { status });
+  }
+  if (matches(/^No Rates Found(?: for (?:Customer|Account) \d+)?$/i)) return t('sip.noRates', { status });
+  if (matches(/^No Routes (?:Found|For the Call)$/i)) return t('sip.noRoute', { status });
+  if (matches(/^Loss to Destination [0-9+]+ Exceeds Max Loss$/i)) return t('sip.routePolicy', { status });
+  if (status === 470 && matches(/^Consent Needed$/i)) return t('sip.consentNeeded', { status });
   if (status === 402) return t('sip.402');
   return status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
 }

@@ -1,5 +1,21 @@
 # Construction et validation
 
+## Motifs des refus SIP — 9 novembre 2026
+
+Release active **20261109-call-diagnostics** à 10:54:16 Douala. Motifs
+explicites traduits dans les trois langues pour la limite locale d'appels,
+le crédit insuffisant, l'absence de tarif ou de route, la règle de routage
+et le consentement requis. Un code générique reste générique si le détail
+ne traverse pas le PBX. Les libellés déjà enregistrés sont conservés.
+
+304 tests, typecheck, lint, build live et ressources HTTPS vérifiés. Le
+formulaire public a chargé `main-BCdXKrmy.js` dans le navigateur intégré,
+sans connexion de ligne ni appel réel. Archive SHA-256
+`cbb3a1f4c73c3b7f57632a1fd16b493f3d79298002ec6626ce96eeaf0e5ac67f`.
+Sauvegarde et reçu dans `/root/apisnix-phone-backups/20261109-call-diagnostics/`.
+Si cette release est toujours active, retour atomique de `current` vers
+`20261107-team-tools`. Aucun redémarrage ni restauration de données.
+
 ## Équipe, rappels partagés et transferts — 7 novembre 2026
 
 Release active **20261107-team-tools**, source `572c489`, depuis **13:07:02

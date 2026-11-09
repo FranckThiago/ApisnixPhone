@@ -376,7 +376,7 @@ describe('SIP controller', () => {
     expect(h.phone.getSnapshot().call?.failure).toBeUndefined();
   });
 
-  it.each(['Forbidden', 'Loss to Destination 33 Exceeds Max Loss', 'Not insufficient balance', 'Credit check unavailable'])('does not invent exhausted credit from %s', async reason => {
+  it.each(['Forbidden', 'Not insufficient balance', 'Credit check unavailable'])('does not invent exhausted credit from %s', async reason => {
     const h = harness();
     await ready(h);
     h.phone.call('x', '+33100000001');
@@ -384,6 +384,23 @@ describe('SIP controller', () => {
     h.invite.onReject(403, reason);
     h.delegate.onCallHangup(session('out'));
     expect(h.phone.getSnapshot().call?.failure).toBe(t('sip.403'));
+  });
+
+  it.each([
+    [480, 'Temporarily Unavailable (Call limit) ', undefined, 'sip.callLimit'],
+    [480, 'Temporarily Unavailable', 'SIP;cause=480;text="Call limit reached"', 'sip.callLimit'],
+    [403, 'No Rates Found for Account 81', undefined, 'sip.noRates'],
+    [403, 'Loss to Destination 33 Exceeds Max Loss', undefined, 'sip.routePolicy'],
+    [500, 'No Routes For the Call', undefined, 'sip.noRoute'],
+    [470, 'Consent Needed', undefined, 'sip.consentNeeded'],
+  ] as const)('shows the confirmed reason for SIP %s (%s)', async (status, reason, header, key) => {
+    const h = harness();
+    await ready(h);
+    h.phone.call('x', '+33100000001');
+    await vi.advanceTimersByTimeAsync(0);
+    h.invite.onReject(status, reason, header);
+    h.delegate.onCallHangup(session('out'));
+    expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', failure: t(key, { status }) });
   });
 
   it('distinguishes payment required from explicit exhausted credit', async () => {
