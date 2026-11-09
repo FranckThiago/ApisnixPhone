@@ -9,6 +9,9 @@ conservées, retour page 1 après saisie, délai de 300 ms, anciennes réponses
 ignorées. Le lecteur n'est pas remonté à chaque filtre. 307 tests, typage,
 lint, build et recette ordinateur/mobile réussis. Aucun secret ni migration.
 État, contrat d'API, périmètre et procédure de publication actualisés.
+Publié sur Hermes à 18:23:39 Douala, source `d194f7c`, release
+`20261109-audio-search`. 270 fichiers, ressources HTTPS, page publique et
+collecteurs vérifiés. Sauvegarde et rollback protégés, aucune migration.
 
 ## Bouton de vitesse du lecteur — 9 novembre 2026
 

@@ -2,18 +2,25 @@
 
 ## Recherche dans Audio — 9 novembre 2026
 
-Version préparée `20261109-audio-search` : déployer d'abord le support
-`line_audio=1` de la supervision, puis le build statique du téléphone. Aucun
-changement de schéma ni de configuration SIP. Le backend accepte toujours
-les requêtes des anciens téléphones. Retirer le frontend avant le backend
-pour revenir en arrière.
+Release active **20261109-audio-search**, source `d194f7c`, depuis
+**18:23:39 Douala** sur Hermes. Backend compatible publié à 18:23:11.
+Build live isolé à partir du commit, mêmes trois variables publiques
+`VITE_APP_MODE`, `VITE_SIP_DOMAIN`, `VITE_SIP_WSS_URL` ; 270 fichiers
+vérifiés, anciennes ressources conservées pour les onglets ouverts.
 
 307 tests, typage, lint et build réussis. Recette en démonstration : nom,
 numéro, pays, période, effacement, absence de résultat, espaces de fin et
 lecture conservée pendant le filtre ; écran 390 px sans débordement.
-Les ressources live reprennent les trois variables publiques déjà actives :
-`VITE_APP_MODE`, `VITE_SIP_DOMAIN`, `VITE_SIP_WSS_URL`.
-Publication et sauvegardes à consigner après vérification.
+Page publique rechargée avec le nouveau module, aucune erreur console,
+ressources HTTPS conformes. Aucun appel réel lancé pour cette recette.
+
+Sauvegarde intégrale et reçus protégés dans
+`/root/apisnix-phone-backups/20261109-audio-search/`. Le `rollback.py`
+contrôle release et empreintes puis repointe sur **20261109-round-speed**,
+sans redémarrage. Retirer le frontend avant le backend si nécessaire.
+Pas de migration ni changement SIP ; seule la supervision a été redémarrée
+pour publier l'API. Santé 200 et quatre collecteurs connectés après publication.
+Preuves locales : `.work/audio-search/`, captures dans `proofs/`.
 
 ## Bouton de vitesse du lecteur — 9 novembre 2026
 

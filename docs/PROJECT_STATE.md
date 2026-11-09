@@ -2,7 +2,7 @@
 
 ## Recherche dans Audio — 9 novembre 2026
 
-Ajout préparé et validé : champ nom, numéro ou pays au-dessus des périodes,
+En service depuis le 9 novembre à 18:23:39 Douala : champ nom, numéro ou pays au-dessus des périodes,
 effacement en un clic, recherche sur toute la période autorisée avant les pages
 de 50. Attente de 300 ms après saisie, retour à la première page et réponses
 obsolètes ignorées. La lecture continue pendant le filtrage. Les noms viennent
