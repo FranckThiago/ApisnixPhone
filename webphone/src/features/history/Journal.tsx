@@ -1,15 +1,17 @@
 import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
 import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
+import { Pagination } from '../../components/Pagination';
 import { dayKey, fold, formatDay, formatDuration, formatLongDuration, formatTime } from '../../domain/format';
 import { countryLabel, countryName, describeNumber } from '../../domain/numbers';
 import { CALLBACK_TAG, outcomeLabel, tagLabel, talkSeconds, type CallRecord } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact } from '../../storage/DataStore';
+import type { LineHistory } from '../../recordings/types';
 import type { useLineHistory } from './useLineHistory';
 
 type Filter = 'all' | 'outbound' | 'inbound' | 'missed';
@@ -24,15 +26,43 @@ function DirectionIcon({ call }: { call: CallRecord }) {
 }
 
 export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeof useLineHistory>; onSeen(): void }) {
-  const { callTags, placeCall, store, openContact, notify, recordingsAccess, reopenRecordings } = useApp();
+  const { callTags, placeCall, store, openContact, notify, recordings, recordingsAccess, reopenRecordings } = useApp();
   const { calls: localCalls, contacts } = useData();
   const { demo } = usePhone();
   const { t, language } = useI18n();
   const [scope, setScope] = useState<'line' | 'device'>(demo ? 'device' : 'line');
-  const { history, error: historyError, loading, refresh } = lineHistory;
+  const [request, setRequest] = useState({ page: 1 });
+  const [archive, setArchive] = useState<{ request: typeof request; access: typeof recordingsAccess; history?: LineHistory; error?: string }>();
+  const panel = useRef<HTMLElement>(null);
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (scope !== 'line' || recordingsAccess.state !== 'open' || request.page === 1) return;
+    let cancelled = false;
+    recordings.history(request.page).then(history => {
+      if (!cancelled) setArchive({ request, access: recordingsAccess, history });
+    }).catch(error => {
+      if (!cancelled) setArchive({ request, access: recordingsAccess, error: error instanceof Error ? error.message : t('journal.historyUnavailable') });
+    });
+    return () => { cancelled = true; };
+  }, [recordings, recordingsAccess, request, scope, t]);
+
+  const archived = archive?.request === request && archive.access === recordingsAccess ? archive : undefined;
+  const history = request.page === 1 ? lineHistory.history : archived?.history;
+  const historyError = request.page === 1 ? lineHistory.error : archived?.error;
+  const loading = request.page === 1 ? lineHistory.loading : !archived;
+  const pagination = history ?? lineHistory.history;
+  const openPage = (page: number) => {
+    setOpenId(null);
+    setRequest({ page });
+    panel.current?.scrollIntoView({ block: 'start' });
+  };
+  const refresh = () => {
+    if (request.page === 1) lineHistory.refresh();
+    else setRequest({ page: request.page });
+  };
 
   const calls: CallRecord[] = useMemo(() => scope === 'device' ? localCalls : (history?.calls ?? []).map((call): CallRecord => ({
     id: call.id, direction: call.direction, dialTarget: call.number, startedAt: call.startedAt,
@@ -50,7 +80,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
     missed: today.filter(call => call.outcome === 'missed').length,
     reached: outbound.length ? Math.round(100 * outbound.filter(call => call.outcome === 'answered').length / outbound.length) : null,
   };
-  const daily = history?.dailyStats;
+  const daily = lineHistory.history?.dailyStats;
   const lineStats = recordingsAccess.state === 'open' && daily && daily.begin <= now && now < daily.end ? {
     count: daily.count, talk: daily.talkSeconds, missed: daily.missed,
     reached: daily.outbound ? Math.round(100 * daily.outboundAnswered / daily.outbound) : null,
@@ -91,7 +121,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
       </header>
 
       {!demo && <div className="tabs" role="tablist" aria-label={t('journal.source')}>
-        <button role="tab" aria-selected={scope === 'line'} className={scope === 'line' ? 'active' : ''} onClick={() => { setScope('line'); onSeen(); }}>{t('journal.tabLine')}</button>
+        <button role="tab" aria-selected={scope === 'line'} className={scope === 'line' ? 'active' : ''} onClick={() => { if (scope !== 'line') setRequest({ page: 1 }); setScope('line'); onSeen(); }}>{t('journal.tabLine')}</button>
         <button role="tab" aria-selected={scope === 'device'} className={scope === 'device' ? 'active' : ''} onClick={() => setScope('device')}>{t('journal.tabDevice')}</button>
       </div>}
       {scope === 'line' && <div className="scope" role="status">
@@ -112,13 +142,13 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
         <article className={stats?.missed ? 'alert' : ''}><PhoneMissed size={18} /><span>{t('stats.missed')}</span><strong>{stats?.missed ?? '—'}</strong></article>
       </section>
 
-      <section className="panel">
+      <section className="panel" ref={panel}>
         <div className="toolbar">
           <div className="tabs" role="tablist" aria-label={t('journal.filter')}>
             {FILTERS.map(([key, label]) => <button key={key} role="tab" aria-selected={filter === key} className={filter === key ? 'active' : ''} onClick={() => { setFilter(key); if (key === 'missed' && (demo || scope === 'line')) onSeen(); }}>{t(label)}</button>)}
           </div>
           <label className="search"><Search size={16} aria-hidden="true" />
-            <input value={query} onChange={event => setQuery(event.target.value)} placeholder={t('journal.searchPlaceholder')} aria-label={t('journal.search')} /></label>
+            <input value={query} onChange={event => setQuery(event.target.value)} placeholder={t(scope === 'line' ? 'journal.searchPage' : 'journal.searchPlaceholder')} aria-label={t('journal.search')} /></label>
         </div>
 
         {scope === 'line' && (!history || historyError || recordingsAccess.state !== 'open') ? null : groups.length === 0 ? (
@@ -189,6 +219,9 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
             </ul>
           </div>
         ))}
+        {scope === 'line' && recordingsAccess.state === 'open' && pagination &&
+          <Pagination page={history?.page ?? Math.min(request.page, pagination.pageCount)} pageCount={pagination.pageCount}
+            busy={loading && !history} onChange={openPage} />}
       </section>
     </div>
   );

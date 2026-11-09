@@ -579,3 +579,32 @@ a.ghost { text-decoration: none; }
 .call-script-card header button { flex-shrink: 0; }
 .call-script-text { margin-top: 14px; max-height: 240px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.7; }
 .call-script-text[hidden] { display: none; }
+
+.history-pager {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+.history-pager-buttons, .history-pager-number {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+.history-pager-number > span { padding: 0 4px; color: var(--muted); }
+.history-pager button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--brand);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.history-pager button:hover:not(:disabled):not([aria-current]) { background: var(--brand-soft); border-color: var(--brand); }
+.history-pager button[aria-current="page"] { color: var(--on-yellow); background: var(--yellow); border-color: var(--yellow-strong); font-weight: 700; }

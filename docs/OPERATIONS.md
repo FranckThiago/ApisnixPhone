@@ -1,5 +1,23 @@
 # Construction et validation
 
+## Historique paginé du poste — 9 novembre 2026
+
+Release **20261109-agent-history**, publiée à 12:48:52 Douala. Le journal du
+poste demande une seule page sur la période de trois mois. Les filtres et
+la recherche du journal s'appliquent à la page affichée. Audio conserve ses
+périodes, ajoute « 3 derniers mois », et demande les appels avec audio avant
+pagination. Le journal personnel reste distinct. L'accès demeure limité
+au poste de la session agent et à son attribution actuelle.
+
+305 tests, typage, lint et build live. Navigateur testé sur des données
+fictives (50/50/7), retour au début, changement de période et compteurs
+stables. Copie de production pour 1502 : 2 603 entrées accessibles sur 53
+pages dans chaque vue, 3 entrées sur la dernière, poste voisin refusé.
+270 fichiers et ressources HTTPS vérifiés. Sauvegarde et reçu dans
+`/root/apisnix-phone-backups/20261109-agent-history/`. Retour atomique de
+`current` vers `20261109-daily-stats` si cette release est toujours active.
+Aucune migration, modification du backend ou coupure d'appel.
+
 ## Statistiques quotidiennes du poste — 9 novembre 2026
 
 Release **20261109-daily-stats**, publiée à 12:34:32 Douala après le backend

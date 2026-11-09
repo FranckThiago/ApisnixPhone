@@ -25,7 +25,12 @@ export interface RecordingsIdentity {
   alias?: string;
 }
 
-export interface RecordingsListing {
+export interface PageInfo {
+  page: number;
+  pageCount: number;
+}
+
+export interface RecordingsListing extends PageInfo {
   /** The server limited the result; older files may not be shown. */
   truncated?: boolean;
   calls: RecordedCall[];
@@ -46,7 +51,7 @@ export interface LineCall {
   outcome: 'answered' | 'no-answer' | 'missed' | 'busy' | 'failed' | 'cancelled' | 'unknown';
 }
 
-export interface LineHistory {
+export interface LineHistory extends PageInfo {
   calls: LineCall[];
   dailyStats?: LineDayStats;
   truncated: boolean;
@@ -65,7 +70,7 @@ export interface LineDayStats {
   talkSeconds: number;
 }
 
-export type Period = 'today' | 'yesterday' | 'week' | 'month';
+export type Period = 'today' | 'yesterday' | 'week' | 'month' | 'quarter';
 
 /**
  * Access to the recordings of one's own phone. The service has the PBX confirm the
@@ -77,8 +82,8 @@ export interface RecordingsSource {
   /** Opens the recordings of the line itself: the PBX confirms the line's credentials, nothing else is typed. */
   openWithLine(username: string, password: string): Promise<RecordingsIdentity>;
   signOut(): Promise<void>;
-  list(period: Period): Promise<RecordingsListing>;
-  history(days: number): Promise<LineHistory>;
+  list(period: Period, page?: number): Promise<RecordingsListing>;
+  history(page?: number): Promise<LineHistory>;
   /** Same file, streamed for listening or sent as an attachment for download. */
   audioUrl(fileId: string, download: boolean): string | Promise<string>;
 }

@@ -1,5 +1,13 @@
 # État du projet
 
+## Historique paginé du poste — 9 novembre 2026
+
+Dans ApisnixPhone, le journal du poste et Audio parcourent les données
+disponibles des trois derniers mois par pages de 50. Navigation numérotée
+en bas à droite, dans les couleurs APISNIX. Audio propose « 3 derniers mois »
+et demande uniquement les entrées avec fichier. Les cartes couvrent toujours
+la journée du poste. [Publication et validation](OPERATIONS.md#historique-paginé-du-poste--9-novembre-2026).
+
 ## Statistiques quotidiennes du poste — 9 novembre 2026
 
 Les cartes du journal « Tous les appels du poste » couvrent la journée

@@ -3,13 +3,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { Flag } from '../../components/Flag';
+import { Pagination } from '../../components/Pagination';
 import { dayKey, formatDay, formatDuration, formatTime } from '../../domain/format';
 import { countryLabel, describeNumber } from '../../domain/numbers';
 import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing } from '../../recordings/types';
 import { findContact } from '../../storage/DataStore';
 import { t, useI18n, type MessageKey } from '../../i18n';
 
-const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week'], ['month', 'rec.month']];
+const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week'], ['month', 'rec.month'], ['quarter', 'rec.quarter']];
 
 function message(error: unknown): string {
   return error instanceof RecordingsError ? error.message : t('rec.unreachable');
@@ -79,9 +80,12 @@ export function Recordings() {
   const { t, tp } = useI18n();
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
   const [period, setPeriod] = useState<Period>('today');
+  const [page, setPage] = useState(1);
+  const [reload, setReload] = useState(0);
   const [listing, setListing] = useState<RecordingsListing | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const panel = useRef<HTMLElement>(null);
   // The player is declarative: the chosen file is state, the element follows it (autoplay on change).
   const [playing, setPlaying] = useState<{ id: string; src: string; label: string } | null>(null);
   const playingId = playing?.id ?? null;
@@ -97,22 +101,48 @@ export function Recordings() {
     return () => { cancelled = true; };
   }, [recordings, recordingsAccess.state]);
 
-  const load = useCallback(async () => {
-    if (!identity) return;
-    setLoading(true);
-    try { setListing(await recordings.list(period)); setError(''); }
-    catch (raised) {
-      if (raised instanceof RecordingsError && raised.status === 401) { setIdentity(null); setListing(null); }
-      setError(message(raised));
-    } finally { setLoading(false); }
-  }, [identity, period, recordings]);
-
-  // Refreshed on opening, on each period change, then every minute: a file finishes processing on its own.
+  // Cancel obsolete results when the user changes the period, page, or line.
   useEffect(() => {
+    if (!identity) return;
+    let cancelled = false;
+    let pending = false;
+    const load = async () => {
+      if (pending || cancelled) return;
+      pending = true;
+      setLoading(true);
+      try {
+        const result = await recordings.list(period, page);
+        if (!cancelled) { setListing(result); setError(''); }
+      } catch (raised) {
+        if (cancelled) return;
+        if (raised instanceof RecordingsError && raised.status === 401) { setIdentity(null); setListing(null); }
+        setError(message(raised));
+      } finally {
+        pending = false;
+        if (!cancelled) setLoading(false);
+      }
+    };
     const first = setTimeout(() => void load(), 0);
-    const timer = setInterval(() => { if (!document.hidden) void load(); }, 60_000);
-    return () => { clearTimeout(first); clearInterval(timer); };
-  }, [load]);
+    const timer = page === 1 ? setInterval(() => { if (!document.hidden) void load(); }, 60_000) : undefined;
+    return () => { cancelled = true; clearTimeout(first); clearInterval(timer); };
+  }, [identity, period, page, recordings, reload]);
+
+  const changePeriod = (next: Period) => {
+    if (next === period) return;
+    setListing(null);
+    setError('');
+    setLoading(true);
+    setPage(1);
+    setPeriod(next);
+  };
+  const changePage = (next: number) => {
+    setError('');
+    setLoading(true);
+    setPage(next);
+    // Also allows retrying a page that failed or a page clamped by the server.
+    setReload(value => value + 1);
+    panel.current?.scrollIntoView({ block: 'start' });
+  };
 
   const handlePlay = useCallback(async (fileId: string | null, label: string) => {
     const current = ++playGeneration.current;
@@ -151,13 +181,13 @@ export function Recordings() {
         : identity === null ? <Unavailable retrying={false} onRetry={() => void reopenRecordings()}
             message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || t('rec.notOpen')} />
         : (
-          <section className="panel">
+          <section className="panel" ref={panel}>
             <div className="toolbar">
               <div className="tabs" role="tablist" aria-label={t('rec.period')}>
-                {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => setPeriod(key)}>{t(label)}</button>)}
+                {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => changePeriod(key)}>{t(label)}</button>)}
               </div>
               <div className="head-actions">
-                <button type="button" className="ghost small" onClick={() => void load()} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
+                <button type="button" className="ghost small" onClick={() => setReload(value => value + 1)} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
                 <button type="button" className="ghost small" onClick={async () => { void handlePlay(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
               </div>
             </div>
@@ -183,6 +213,7 @@ export function Recordings() {
             ))}
             <footer className="audio-foot"><span>{tp('rec.ready', ready)}</span>
               <span className="playing-now" hidden={!playing}><AudioLines size={14} aria-hidden="true" /> {playing?.label}</span></footer>
+            {listing && <Pagination page={listing.page} pageCount={listing.pageCount} busy={loading} onChange={changePage} />}
           </section>
         )}
       {/* Outside the list: a refresh never interrupts the listening. */}

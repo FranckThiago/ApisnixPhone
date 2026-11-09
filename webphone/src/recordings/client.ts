@@ -13,6 +13,8 @@ interface ServiceDashboard {
   recordings_truncated?: boolean;
   journal_fresh?: boolean;
   journal_caught_up?: boolean;
+  page?: number;
+  page_count?: number;
   daily_stats?: { begin: number; end: number; count: number; outbound: number; outbound_answered: number; missed: number; talk_seconds: number };
 }
 interface ServiceMe { user: { name: string; role: string }; endpoint: { extension: string; alias: string } | null; csrf: string }
@@ -29,6 +31,13 @@ export function periodBounds(period: Period, now = Date.now()): { from: string; 
   if (period === 'yesterday') return { from: day(1), to: day(1) };
   if (period === 'month') return { from: day(29), to: day(0) };
   if (period === 'week') return { from: day(6), to: day(0) };
+  if (period === 'quarter') {
+    const today = new Date(now);
+    const target = new Date(today.getFullYear(), today.getMonth() - 3, 1);
+    const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+    target.setDate(Math.min(today.getDate(), lastDay));
+    return { from: dayString(target.getTime()), to: day(0) };
+  }
   return { from: day(0), to: day(0) };
 }
 
@@ -134,20 +143,22 @@ export class HttpRecordingsSource implements RecordingsSource {
     if (isEmbeddedSession()) clearEmbeddedSession();
   }
 
-  async list(period: Period): Promise<RecordingsListing> {
+  async list(period: Period, page = 1): Promise<RecordingsListing> {
     const { from, to } = periodBounds(period);
-    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}`);
-    return { calls: toRecordedCalls(data.journal ?? []), truncated: data.truncated === true || data.recordings_truncated === true, catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
+    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&recorded=1&page=${page}`);
+    return { calls: toRecordedCalls(data.journal ?? []), page: data.page ?? 1, pageCount: data.page_count ?? 1,
+      truncated: data.recordings_truncated === true || (data.page_count === undefined && data.truncated === true),
+      catchingUp: data.journal_caught_up === false, stale: data.journal_fresh === false };
   }
 
 
-  async history(days: number): Promise<LineHistory> {
-    const bounded = Math.min(90, Math.max(1, Math.floor(days)));
-    const to = dayString(Date.now());
-    const from = dayString(Date.now() - (bounded - 1) * 86_400_000);
-    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&daily=1`);
+  async history(page = 1): Promise<LineHistory> {
+    const { from, to } = periodBounds('quarter');
+    const dailyRequest = page === 1 ? '&daily=1' : '';
+    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&page=${page}${dailyRequest}`);
     const daily = data.daily_stats;
-    return { calls: toLineCalls(data.journal ?? []), truncated: data.truncated === true,
+    return { calls: toLineCalls(data.journal ?? []), page: data.page ?? 1, pageCount: data.page_count ?? 1,
+      truncated: data.page_count === undefined && data.truncated === true,
       dailyStats: daily && {
         begin: daily.begin * 1000, end: daily.end * 1000, count: daily.count,
         outbound: daily.outbound, outboundAnswered: daily.outbound_answered,
@@ -192,13 +203,12 @@ export class DemoRecordingsSource implements RecordingsSource {
       return { id: `demo-audio-${index}`, number, direction, startedAt,
                files: [{ id: `demo-file-${index}`, state: seconds === null ? 'processing' : 'available', durationSeconds: seconds, createdAt: startedAt }] };
     }).filter(call => { const day = dayString(call.startedAt); return day >= from && day <= to; });
-    return { calls, catchingUp: false, stale: false };
+    return { calls, page: 1, pageCount: 1, catchingUp: false, stale: false };
   }
 
 
-  async history(days: number): Promise<LineHistory> {
-    void days;
-    return { calls: [], truncated: false, catchingUp: false, stale: false };
+  async history(): Promise<LineHistory> {
+    return { calls: [], page: 1, pageCount: 1, truncated: false, catchingUp: false, stale: false };
   }
 
   audioUrl() {

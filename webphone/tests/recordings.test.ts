@@ -3,14 +3,14 @@ import { DemoRecordingsSource, HttpRecordingsSource, periodBounds, toLineCalls, 
 import { RecordingsError, type RecordingsSource } from '../src/recordings/types';
 
 type Call = { url: string; init: RequestInit };
-function fakeService(routes: Record<string, (init: RequestInit) => { status: number; body?: unknown }>) {
+function fakeService(routes: Record<string, (init: RequestInit, url: string) => { status: number; body?: unknown }>) {
   const calls: Call[] = [];
   const fetchImpl = (async (input: RequestInfo | URL, init: RequestInit = {}) => {
     const url = String(input);
     calls.push({ url, init });
     const path = url.replace(/^\/api/, '').split('?')[0]!;
     const route = routes[`${init.method ?? 'GET'} ${path}`];
-    const answer = route ? route(init) : { status: 404, body: { error: 'Élément introuvable.' } };
+    const answer = route ? route(init, url) : { status: 404, body: { error: 'Élément introuvable.' } };
     return new Response(answer.body === undefined ? '' : JSON.stringify(answer.body), { status: answer.status, headers: { 'Content-Type': 'application/json' } });
   }) as typeof fetch;
   return { calls, fetchImpl };
@@ -61,6 +61,7 @@ describe('recordings client', () => {
     expect(periodBounds('yesterday', noon)).toEqual({ from: '2026-09-23', to: '2026-09-23' });
     expect(periodBounds('month', noon)).toEqual({ from: '2026-08-26', to: '2026-09-24' });
     expect(periodBounds('month', new Date(2026, 0, 5, 12).getTime())).toEqual({ from: '2025-12-07', to: '2026-01-05' });
+    expect(periodBounds('quarter', new Date(2026, 4, 31, 12).getTime())).toEqual({ from: '2026-02-28', to: '2026-05-31' });
     expect(periodBounds('week', noon)).toEqual({ from: '2026-09-18', to: '2026-09-24' });
   });
 
@@ -81,8 +82,8 @@ describe('recordings client', () => {
     expect(listing.catchingUp).toBe(true);
     expect(listing.truncated).toBe(true);
     await source.list('month');
-    expect(calls.at(-1)!.url).toBe(`/api/dashboard?from=${periodBounds('month').from}&to=${periodBounds('month').to}`);
-    const history = await source.history(30);
+    expect(calls.at(-1)!.url).toBe(`/api/dashboard?from=${periodBounds('month').from}&to=${periodBounds('month').to}&recorded=1&page=1`);
+    const history = await source.history(1);
     expect(history.calls).toMatchObject([{ id: 'call:1', number: '0100', outcome: 'answered' }]);
     expect(history.catchingUp).toBe(true);
     expect(calls.at(-1)!.url).toContain('&daily=1');
@@ -90,13 +91,33 @@ describe('recordings client', () => {
       begin: 1700000000000, end: 1700086400000, count: 153, outbound: 153,
       outboundAnswered: 91, missed: 0, talkSeconds: 2650,
     });
-    expect(calls.find(call => call.url.includes('/dashboard'))!.url).toMatch(/\/api\/dashboard\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}$/);
+    expect(calls.find(call => call.url.includes('/dashboard'))!.url).toMatch(/\/api\/dashboard\?from=\d{4}-\d{2}-\d{2}&to=\d{4}-\d{2}-\d{2}&recorded=1&page=1$/);
     expect(source.audioUrl('demo:0', false)).toBe('/api/recordings/demo%3A0/audio');
     expect(source.audioUrl('demo:0', true)).toBe('/api/recordings/demo%3A0/audio?download=1');
     await source.signOut();
     expect(calls.at(-1)!.url).toBe('/api/logout');
     // The line's password travels once, to the line-session request only.
     expect(calls.filter(call => JSON.stringify(call.init).includes('good'))).toHaveLength(1);
+  });
+
+  it('loads an older journal or audio page from the server without downloading the intervening pages', async () => {
+    const { calls, fetchImpl } = fakeService({
+      'GET /dashboard': (_init, url) => {
+        const params = new URL(url, 'https://example.invalid').searchParams;
+        const page = Number(params.get('page'));
+        return { status: 200, body: { page, page_count: 38, truncated: page < 38,
+          journal: [{ id: page, direction: 'outbound', number: '0100', started_at: 1,
+            recordings: [{ id: 'file-' + page, state: 'available', duration: 3, created_at: 1 }] }] } };
+      },
+    });
+    const source = new HttpRecordingsSource('/api', fetchImpl);
+    expect(await source.history(38)).toMatchObject({ page: 38, pageCount: 38, truncated: false, calls: [{ id: 'call:38' }] });
+    expect(await source.list('quarter', 22)).toMatchObject({ page: 22, pageCount: 38, truncated: false, calls: [{ id: 'call:22' }] });
+    const { from, to } = periodBounds('quarter');
+    expect(calls.map(call => call.url)).toEqual([
+      `/api/dashboard?from=${from}&to=${to}&page=38`,
+      `/api/dashboard?from=${from}&to=${to}&recorded=1&page=22`,
+    ]);
   });
 
   it('refuses a supervisor account and reports a closed session without a password prompt loop', async () => {

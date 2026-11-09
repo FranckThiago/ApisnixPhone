@@ -1,5 +1,12 @@
 # Journal des changements
 
+## Historique paginé du poste — 9 novembre 2026
+
+Journal et Audio paginés par 50, accès direct à la première et dernière page.
+La fenêtre de trois mois utilise l'API déjà en service. Les compteurs du jour
+restent indépendants et les pages anciennes se chargent à la demande.
+305 tests, navigation navigateur et publication HTTPS vérifiés.
+
 ## Statistiques quotidiennes du poste — 9 novembre 2026
 
 Les cartes utilisent les totaux du serveur pour la journée, y compris les

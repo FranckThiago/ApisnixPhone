@@ -4,7 +4,7 @@ import type { LineHistory } from '../src/recordings/types';
 
 const journal = (ids = ['offline-1', 'offline-2']): LineHistory => ({ calls: ids.map((id, i) => ({
   id, number: '0100', direction: 'inbound', outcome: 'missed', startedAt: 100 + i, endedAt: 200 + i,
-})), truncated: false, catchingUp: false, stale: false });
+})), page: 1, pageCount: 1, truncated: false, catchingUp: false, stale: false });
 const deferred = <T>() => { let resolve!: (value: T) => void; let reject!: (error: Error) => void;
   const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 function setup(history = vi.fn<() => Promise<LineHistory>>().mockResolvedValue(journal())) {
@@ -24,7 +24,7 @@ describe('line history for the journal badge', () => {
     expect(env.state.history).toBeNull();
     response.resolve(journal()); await response.promise;
     expect(unseenMissedCalls(env.state.history!.calls, 0)).toHaveLength(2);
-    expect(env.history).toHaveBeenCalledWith(30);
+    expect(env.history).toHaveBeenCalledWith(1);
     env.feed.stop();
   });
   it('does not add a second copy of calls on refresh and keeps new completions unseen', async () => {

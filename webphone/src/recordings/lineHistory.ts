@@ -14,7 +14,7 @@ export function watchLineHistory(source: Pick<RecordingsSource, 'history'>, publ
     pending = true;
     publish(state = { ...state, loading: true });
     try {
-      const history = await source.history(30);
+      const history = await source.history(1);
       if (!stopped) state = { history, error: '', loading: false };
     } catch (error) {
       if (!stopped) state = { ...state, error: error instanceof Error ? error.message : t('journal.historyUnavailable'), loading: false };
