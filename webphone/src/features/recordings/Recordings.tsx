@@ -9,6 +9,7 @@ import { countryLabel, describeNumber } from '../../domain/numbers';
 import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing } from '../../recordings/types';
 import { findContact } from '../../storage/DataStore';
 import { t, useI18n, type MessageKey } from '../../i18n';
+import { RecordingPlayer } from './RecordingPlayer';
 
 const PERIODS: Array<[Period, MessageKey]> = [['today', 'day.today'], ['yesterday', 'day.yesterday'], ['week', 'rec.week'], ['month', 'rec.month'], ['quarter', 'rec.quarter']];
 
@@ -177,11 +178,16 @@ export function Recordings() {
         )}
       </header>
 
+      {playing && (
+        <RecordingPlayer key={playing.id} src={playing.src} label={playing.label}
+          onClose={() => void handlePlay(null, '')} onError={() => { setPlaying(null); notify(t('rec.fileError'), 'danger'); }} />
+      )}
+
       {identity === undefined || recordingsAccess.state === 'opening' ? <div className="panel empty"><AudioLines size={28} /><b>{t('rec.openingAll')}</b></div>
         : identity === null ? <Unavailable retrying={false} onRetry={() => void reopenRecordings()}
             message={recordingsAccess.state === 'failed' ? recordingsAccess.message : error || t('rec.notOpen')} />
         : (
-          <section className="panel" ref={panel}>
+          <section className={'panel' + (playing ? ' below-recording-player' : '')} ref={panel}>
             <div className="toolbar">
               <div className="tabs" role="tablist" aria-label={t('rec.period')}>
                 {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => changePeriod(key)}>{t(label)}</button>)}
@@ -211,16 +217,10 @@ export function Recordings() {
                 </ul>
               </div>
             ))}
-            <footer className="audio-foot"><span>{tp('rec.ready', ready)}</span>
-              <span className="playing-now" hidden={!playing}><AudioLines size={14} aria-hidden="true" /> {playing?.label}</span></footer>
+            <footer className="audio-foot"><span>{tp('rec.ready', ready)}</span></footer>
             {listing && <Pagination page={listing.page} pageCount={listing.pageCount} busy={loading} onChange={changePage} />}
           </section>
         )}
-      {/* Outside the list: a refresh never interrupts the listening. */}
-      {playing && (
-        <audio key={playing.id} className="audio-player" src={playing.src} controls autoPlay preload="none" aria-label={t('rec.playing', { label: playing.label })}
-          onEnded={() => setPlaying(null)} onError={() => { setPlaying(null); notify(t('rec.fileError'), 'danger'); }} />
-      )}
     </div>
   );
 }

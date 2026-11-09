@@ -1,10 +1,27 @@
 # Construction et validation
 
+## Recherche du journal et lecteur audio — 9 novembre 2026
+
+Release **20261109-search-player**, publiée à 13:03:16 Douala après
+`20261109-agent-journal-search`. ApisnixPhone transmet la recherche et la
+direction au serveur avant pagination. La recherche par nom utilise les
+contacts synchronisés du poste. Les indicatifs partagés peuvent couvrir
+plusieurs pays. L'onglet personnel conserve sa recherche locale. Le lecteur
+Audio reste visible au défilement, avec pause, position, vitesse, volume
+et fermeture. La liste reste paginée par 50.
+
+305 tests, typage, lint, build live et ressources HTTPS vérifiés.
+Navigateur testé sur un résultat ancien, changement de page, audio
+synthétique démarré loin dans la liste, pause, vitesse et déplacement.
+Sauvegarde et reçu dans `/root/apisnix-phone-backups/20261109-search-player/`.
+Retour de `current` vers `20261109-agent-history` si cette release est
+toujours active. Ce retour peut précéder le retour backend sans migration.
+
 ## Historique paginé du poste — 9 novembre 2026
 
 Release **20261109-agent-history**, publiée à 12:48:52 Douala. Le journal du
-poste demande une seule page sur la période de trois mois. Les filtres et
-la recherche du journal s'appliquent à la page affichée. Audio conserve ses
+poste demande une seule page sur la période de trois mois. Dans cette ancienne
+release, les filtres et la recherche étaient limités à la page affichée. Audio conserve ses
 périodes, ajoute « 3 derniers mois », et demande les appels avec audio avant
 pagination. Le journal personnel reste distinct. L'accès demeure limité
 au poste de la session agent et à son attribution actuelle.

@@ -1,5 +1,6 @@
-import { AsYouType, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js';
+import { AsYouType, getCountries, getCountryCallingCode, parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js';
 import { locale, t } from '../i18n';
+import { fold } from './format';
 
 /**
  * What the user typed, what will really be dialled, and display-only metadata
@@ -60,6 +61,14 @@ export function countryName(country: CountryCode | undefined, language = locale(
   } catch {
     return country;
   }
+}
+
+/** Country search on the server uses the numbering plan, not a contact's location. */
+export function countrySearchCodes(query: string, language: string): string[] {
+  const name = fold(query.trim());
+  if (name.length < 2 || /[0-9]/.test(name)) return [];
+  return [...new Set(getCountries().filter(country => fold(countryName(country, language) ?? '').includes(name))
+    .map(country => getCountryCallingCode(country)))];
 }
 
 /** Canadian area codes supplied by APISNIX; any other +1 code is read as the United States unless the metadata knows better. */

@@ -59,6 +59,12 @@ export interface LineHistory extends PageInfo {
   stale: boolean;
 }
 
+export interface LineSearch {
+  query: string;
+  direction: 'all' | 'outbound' | 'inbound' | 'missed';
+  callingCodes: string[];
+}
+
 export interface LineDayStats {
   /** Start and end of the server's reporting day, in milliseconds. */
   begin: number;
@@ -83,7 +89,7 @@ export interface RecordingsSource {
   openWithLine(username: string, password: string): Promise<RecordingsIdentity>;
   signOut(): Promise<void>;
   list(period: Period, page?: number): Promise<RecordingsListing>;
-  history(page?: number): Promise<LineHistory>;
+  history(page?: number, search?: LineSearch): Promise<LineHistory>;
   /** Same file, streamed for listening or sent as an attachment for download. */
   audioUrl(fileId: string, download: boolean): string | Promise<string>;
 }

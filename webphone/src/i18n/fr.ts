@@ -415,7 +415,7 @@ export const fr = {
   'pagination.next': 'Page suivante',
   'pagination.last': 'Dernière page',
   'pagination.position': 'Page {page} sur {count}',
-  'journal.searchPage': 'Rechercher sur cette page…',
+  'journal.searchLine': 'Rechercher dans tout l’historique…',
   'journal.scopeDevice': 'Journal du téléphone',
   'journal.source': 'Source du journal',
   'journal.tabLine': 'Tous les appels du poste',
@@ -503,6 +503,13 @@ export const fr = {
   'contacts.selectHint': 'Sa fiche, ses numéros et vos derniers échanges s’affichent ici.',
 
   // Recordings
+  'rec.playerTitle': 'Enregistrement',
+  'rec.closePlayer': 'Fermer le lecteur',
+  'rec.pause': 'Pause',
+  'rec.position': 'Position de lecture',
+  'rec.speed': 'Vitesse de lecture',
+  'rec.mute': 'Couper le son',
+  'rec.playerVolume': 'Volume de lecture',
   'rec.truncated': 'Certains fichiers de cette page ne sont pas affichés.',
   'rec.week': '7 derniers jours',
   'rec.month': '30 derniers jours',

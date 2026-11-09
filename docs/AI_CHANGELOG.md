@@ -1,5 +1,11 @@
 # Journal des changements
 
+## Recherche du journal et lecteur audio — 9 novembre 2026
+
+Le journal du poste recherche avant pagination. Nouveau lecteur dans
+la vue Audio avec commandes et progression visibles pendant le défilement.
+305 tests, typage, lint, parcours navigateur et publication HTTPS vérifiés.
+
 ## Historique paginé du poste — 9 novembre 2026
 
 Journal et Audio paginés par 50, accès direct à la première et dernière page.

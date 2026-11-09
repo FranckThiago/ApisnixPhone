@@ -417,7 +417,7 @@ export const es: Record<MessageKey, string> = {
   'pagination.next': 'Página siguiente',
   'pagination.last': 'Última página',
   'pagination.position': 'Página {page} de {count}',
-  'journal.searchPage': 'Buscar en esta página…',
+  'journal.searchLine': 'Buscar en todo el historial…',
   'journal.scopeDevice': 'Registro del teléfono',
   'journal.source': 'Origen del registro',
   'journal.tabLine': 'Todas las llamadas de la extensión',
@@ -505,6 +505,13 @@ export const es: Record<MessageKey, string> = {
   'contacts.selectHint': 'Su ficha, sus números y tus últimas llamadas aparecen aquí.',
 
   // Recordings
+  'rec.playerTitle': 'Grabación',
+  'rec.closePlayer': 'Cerrar reproductor',
+  'rec.pause': 'Pausa',
+  'rec.position': 'Posición de reproducción',
+  'rec.speed': 'Velocidad de reproducción',
+  'rec.mute': 'Silenciar',
+  'rec.playerVolume': 'Volumen de reproducción',
   'rec.truncated': 'Algunos archivos de esta página no se muestran.',
   'rec.week': 'Últimos 7 días',
   'rec.month': 'Últimos 30 días',

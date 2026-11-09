@@ -417,7 +417,7 @@ export const en: Record<MessageKey, string> = {
   'pagination.next': 'Next page',
   'pagination.last': 'Last page',
   'pagination.position': 'Page {page} of {count}',
-  'journal.searchPage': 'Search this page…',
+  'journal.searchLine': 'Search the entire history…',
   'journal.scopeDevice': 'Phone history',
   'journal.source': 'Call log source',
   'journal.tabLine': 'All calls of the extension',
@@ -505,6 +505,13 @@ export const en: Record<MessageKey, string> = {
   'contacts.selectHint': 'Their card, numbers and your recent calls appear here.',
 
   // Recordings
+  'rec.playerTitle': 'Recording',
+  'rec.closePlayer': 'Close player',
+  'rec.pause': 'Pause',
+  'rec.position': 'Playback position',
+  'rec.speed': 'Playback speed',
+  'rec.mute': 'Mute',
+  'rec.playerVolume': 'Playback volume',
   'rec.truncated': 'Some files on this page are not shown.',
   'rec.week': 'Last 7 days',
   'rec.month': 'Last 30 days',

@@ -1,7 +1,7 @@
 import { sessionFetch, isEmbeddedSession, openEmbeddedSession, clearEmbeddedSession } from '../http/embeddedSession';
 import { customerNumber } from '../domain/numbers';
 import { language, t } from '../i18n';
-import { RecordingsError, type LineCall, type LineHistory, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
+import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type Period, type RecordedCall, type RecordingFile, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
 
 type Fetch = typeof fetch;
 
@@ -152,10 +152,14 @@ export class HttpRecordingsSource implements RecordingsSource {
   }
 
 
-  async history(page = 1): Promise<LineHistory> {
+  async history(page = 1, search?: LineSearch): Promise<LineHistory> {
     const { from, to } = periodBounds('quarter');
-    const dailyRequest = page === 1 ? '&daily=1' : '';
-    const data = await this.request<ServiceDashboard>(`/dashboard?from=${from}&to=${to}&page=${page}${dailyRequest}`);
+    const params = new URLSearchParams({ from, to, page: String(page), line_history: '1' });
+    if (!search && page === 1) params.set('daily', '1');
+    if (search?.query) params.set('q', search.query);
+    if (search && search.direction !== 'all') params.set('direction', search.direction);
+    if (search?.callingCodes.length) params.set('calling', search.callingCodes.join(','));
+    const data = await this.request<ServiceDashboard>(`/dashboard?${params}`);
     const daily = data.daily_stats;
     return { calls: toLineCalls(data.journal ?? []), page: data.page ?? 1, pageCount: data.page_count ?? 1,
       truncated: data.page_count === undefined && data.truncated === true,

@@ -7,7 +7,7 @@ import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
 import { Pagination } from '../../components/Pagination';
 import { dayKey, fold, formatDay, formatDuration, formatLongDuration, formatTime } from '../../domain/format';
-import { countryLabel, countryName, describeNumber } from '../../domain/numbers';
+import { countryLabel, countryName, countrySearchCodes, describeNumber } from '../../domain/numbers';
 import { CALLBACK_TAG, outcomeLabel, tagLabel, talkSeconds, type CallRecord } from '../../domain/types';
 import { useI18n, type MessageKey } from '../../i18n';
 import { findContact } from '../../storage/DataStore';
@@ -32,35 +32,46 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
   const { t, language } = useI18n();
   const [scope, setScope] = useState<'line' | 'device'>(demo ? 'device' : 'line');
   const [request, setRequest] = useState({ page: 1 });
-  const [archive, setArchive] = useState<{ request: typeof request; access: typeof recordingsAccess; history?: LineHistory; error?: string }>();
+  const [archive, setArchive] = useState<{ request: typeof request; key: string; access: typeof recordingsAccess; history?: LineHistory; error?: string }>();
   const panel = useRef<HTMLElement>(null);
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
+  const [settledQuery, setSettledQuery] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
+  const queryPending = query.trim() !== settledQuery;
+  const isFiltered = Boolean(settledQuery) || filter !== 'all';
+  const useLivePage = request.page === 1 && !isFiltered;
+  const searchKey = JSON.stringify([settledQuery, filter, language]);
 
   useEffect(() => {
-    if (scope !== 'line' || recordingsAccess.state !== 'open' || request.page === 1) return;
+    const timer = setTimeout(() => setSettledQuery(query.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  useEffect(() => {
+    if (scope !== 'line' || recordingsAccess.state !== 'open' || useLivePage || queryPending) return;
     let cancelled = false;
-    recordings.history(request.page).then(history => {
-      if (!cancelled) setArchive({ request, access: recordingsAccess, history });
+    const search = isFiltered ? { query: settledQuery, direction: filter, callingCodes: countrySearchCodes(settledQuery, language) } : undefined;
+    recordings.history(request.page, search).then(history => {
+      if (!cancelled) setArchive({ request, key: searchKey, access: recordingsAccess, history });
     }).catch(error => {
-      if (!cancelled) setArchive({ request, access: recordingsAccess, error: error instanceof Error ? error.message : t('journal.historyUnavailable') });
+      if (!cancelled) setArchive({ request, key: searchKey, access: recordingsAccess, error: error instanceof Error ? error.message : t('journal.historyUnavailable') });
     });
     return () => { cancelled = true; };
-  }, [recordings, recordingsAccess, request, scope, t]);
+  }, [recordings, recordingsAccess, request, scope, t, useLivePage, queryPending, isFiltered, settledQuery, filter, language, searchKey]);
 
-  const archived = archive?.request === request && archive.access === recordingsAccess ? archive : undefined;
-  const history = request.page === 1 ? lineHistory.history : archived?.history;
-  const historyError = request.page === 1 ? lineHistory.error : archived?.error;
-  const loading = request.page === 1 ? lineHistory.loading : !archived;
-  const pagination = history ?? lineHistory.history;
+  const archived = archive?.request === request && archive.key === searchKey && archive.access === recordingsAccess ? archive : undefined;
+  const history = queryPending ? undefined : useLivePage ? lineHistory.history : archived?.history;
+  const historyError = queryPending ? undefined : useLivePage ? lineHistory.error : archived?.error;
+  const loading = queryPending || (useLivePage ? lineHistory.loading : !archived);
+  const pagination = history ?? (!queryPending && !isFiltered ? lineHistory.history : undefined);
   const openPage = (page: number) => {
     setOpenId(null);
     setRequest({ page });
     panel.current?.scrollIntoView({ block: 'start' });
   };
   const refresh = () => {
-    if (request.page === 1) lineHistory.refresh();
+    if (useLivePage) lineHistory.refresh();
     else setRequest({ page: request.page });
   };
 
@@ -88,6 +99,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
   const stats = scope === 'line' ? lineStats : deviceStats;
 
   const rows = useMemo(() => {
+    if (scope === 'line') return calls;
     const text = fold(query.trim());
     const digits = query.replace(/[^\d+]/g, '');
     return calls.filter(call => {
@@ -99,7 +111,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
       return fold(name).includes(text) || fold(country).includes(text) || (digits.length > 1 && call.dialTarget.includes(digits))
         || call.tags.some(tag => fold(tag).includes(text) || fold(tagLabel(tag)).includes(text));
     });
-  }, [calls, contacts, filter, query, language]);
+  }, [calls, contacts, filter, query, language, scope]);
 
   const groups = useMemo(() => {
     const result: Array<{ key: string; calls: CallRecord[] }> = [];
@@ -145,10 +157,11 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
       <section className="panel" ref={panel}>
         <div className="toolbar">
           <div className="tabs" role="tablist" aria-label={t('journal.filter')}>
-            {FILTERS.map(([key, label]) => <button key={key} role="tab" aria-selected={filter === key} className={filter === key ? 'active' : ''} onClick={() => { setFilter(key); if (key === 'missed' && (demo || scope === 'line')) onSeen(); }}>{t(label)}</button>)}
+            {FILTERS.map(([key, label]) => <button key={key} role="tab" aria-selected={filter === key} className={filter === key ? 'active' : ''} onClick={() => { setFilter(key); setRequest({ page: 1 }); if (key === 'missed' && (demo || scope === 'line')) onSeen(); }}>{t(label)}</button>)}
           </div>
           <label className="search"><Search size={16} aria-hidden="true" />
-            <input value={query} onChange={event => setQuery(event.target.value)} placeholder={t(scope === 'line' ? 'journal.searchPage' : 'journal.searchPlaceholder')} aria-label={t('journal.search')} /></label>
+            <input value={query} maxLength={100} onChange={event => { setQuery(event.target.value); setRequest({ page: 1 }); }}
+              placeholder={t(scope === 'line' ? 'journal.searchLine' : 'journal.searchPlaceholder')} aria-label={t('journal.search')} /></label>
         </div>
 
         {scope === 'line' && (!history || historyError || recordingsAccess.state !== 'open') ? null : groups.length === 0 ? (

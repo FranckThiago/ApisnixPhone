@@ -1,5 +1,12 @@
 # État du projet
 
+## Recherche du journal et lecteur audio — 9 novembre 2026
+
+La recherche et les filtres de direction portent sur tout l'historique
+disponible du poste, avec 50 résultats par page. Le lecteur d'enregistrement
+reste en haut de la vue Audio pendant le défilement, avec pause, progression,
+vitesse et volume. [Publication](OPERATIONS.md#recherche-du-journal-et-lecteur-audio--9-novembre-2026).
+
 ## Historique paginé du poste — 9 novembre 2026
 
 Dans ApisnixPhone, le journal du poste et Audio parcourent les données

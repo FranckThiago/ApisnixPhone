@@ -113,10 +113,12 @@ describe('recordings client', () => {
     const source = new HttpRecordingsSource('/api', fetchImpl);
     expect(await source.history(38)).toMatchObject({ page: 38, pageCount: 38, truncated: false, calls: [{ id: 'call:38' }] });
     expect(await source.list('quarter', 22)).toMatchObject({ page: 22, pageCount: 38, truncated: false, calls: [{ id: 'call:22' }] });
+    await source.history(2, { query: 'France', direction: 'missed', callingCodes: ['33'] });
     const { from, to } = periodBounds('quarter');
     expect(calls.map(call => call.url)).toEqual([
-      `/api/dashboard?from=${from}&to=${to}&page=38`,
+      `/api/dashboard?from=${from}&to=${to}&page=38&line_history=1`,
       `/api/dashboard?from=${from}&to=${to}&recorded=1&page=22`,
+      `/api/dashboard?from=${from}&to=${to}&page=2&line_history=1&q=France&direction=missed&calling=33`,
     ]);
   });
 
