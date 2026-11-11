@@ -3,7 +3,7 @@ import { customerNumber, sameNumber } from '../domain/numbers';
 import { fold } from '../domain/format';
 import type { Contact } from '../domain/types';
 import { language, t } from '../i18n';
-import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type Period, type RecordedCall, type RecordingFile, type RecordingSearch, type RecordingsIdentity, type RecordingsListing, type RecordingsSource } from './types';
+import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type Period, type RecordedCall, type RecordingFile, type RecordingSearch, type RecordingsIdentity, type RecordingsListing, type RecordingsSource, type AudioOrder } from './types';
 
 type Fetch = typeof fetch;
 
@@ -145,9 +145,10 @@ export class HttpRecordingsSource implements RecordingsSource {
     if (isEmbeddedSession()) clearEmbeddedSession();
   }
 
-  async list(period: Period, page = 1, search?: RecordingSearch): Promise<RecordingsListing> {
+  async list(period: Period, page = 1, search?: RecordingSearch, order: AudioOrder = 'recent'): Promise<RecordingsListing> {
     const { from, to } = periodBounds(period);
     const params = new URLSearchParams({ from, to, recorded: '1', page: String(page) });
+    if (order !== 'recent') params.set('order', order);
     if (search?.query.trim()) {
       params.set('line_audio', '1');
       params.set('q', search.query.trim());
@@ -202,7 +203,7 @@ export class DemoRecordingsSource implements RecordingsSource {
     return { name: t('rec.demoName'), extension: username || 'demo', alias: t('rec.demoAlias') };
   }
 
-  async list(period: Period, requestedPage = 1, search?: RecordingSearch): Promise<RecordingsListing> {
+  async list(period: Period, requestedPage = 1, search?: RecordingSearch, order: AudioOrder = 'recent'): Promise<RecordingsListing> {
     const now = this.now();
     const script: Array<[number, string, 'outbound' | 'inbound', number | null]> = [
       [6, '+33100000001', 'outbound', null], [47, '+33100000002', 'inbound', 166], [146, '+2250000000001', 'outbound', 369],
@@ -228,6 +229,10 @@ export class DemoRecordingsSource implements RecordingsSource {
         || contacts.some(contact => contact.numbers.some(number => sameNumber(number.value, call.number)))
         || (key.length > 6 && search!.callingCodes.some(code => key.startsWith(code)));
     });
+    if (order !== 'recent') {
+      const seconds = (call: RecordedCall) => call.files.reduce((sum, file) => sum + (file.durationSeconds ?? 0), 0);
+      calls.sort((a, b) => (order === 'audio_desc' ? seconds(b) - seconds(a) : seconds(a) - seconds(b)) || b.startedAt - a.startedAt);
+    }
     const pageCount = Math.max(1, Math.ceil(calls.length / 50));
     const page = Math.min(pageCount, Math.max(1, requestedPage));
     return { calls: calls.slice((page - 1) * 50, page * 50), page, pageCount, catchingUp: false, stale: false };

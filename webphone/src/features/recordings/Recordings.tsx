@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Search, Square, X } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Search, Square, X, ArrowDownUp } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
@@ -6,7 +6,7 @@ import { Flag } from '../../components/Flag';
 import { Pagination } from '../../components/Pagination';
 import { dayKey, formatDay, formatDuration, formatTime } from '../../domain/format';
 import { countryLabel, countrySearchCodes, describeNumber } from '../../domain/numbers';
-import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing } from '../../recordings/types';
+import { RecordingsError, type Period, type RecordedCall, type RecordingsIdentity, type RecordingsListing, type AudioOrder } from '../../recordings/types';
 import { findContact } from '../../storage/DataStore';
 import { t, useI18n, type MessageKey } from '../../i18n';
 import { RecordingPlayer } from './RecordingPlayer';
@@ -36,7 +36,7 @@ function Unavailable({ message, retrying, onRetry }: { message: string; retrying
   );
 }
 
-function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: string | null; onPlay(fileId: string | null, label: string): void }) {
+function Row({ call, playingId, onPlay, showDate = false }: { call: RecordedCall; playingId: string | null; onPlay(fileId: string | null, label: string): void; showDate?: boolean }) {
   const { recordings, notify } = useApp();
   const { contacts } = useData();
   const { t } = useI18n();
@@ -59,7 +59,7 @@ function Row({ call, playingId, onPlay }: { call: RecordedCall; playingId: strin
       <Avatar name={contact?.name ?? call.number} size={38} />
       <span className="who"><b>{name}</b><small>{contact ? info.display : countryLabel(info)}</small></span>
       <span className="where"><Flag info={info} />{countryLabel(info)}</span>
-      <span className="when">{formatTime(call.startedAt)}</span>
+      <span className="when">{showDate ? formatDay(call.startedAt) + ' · ' : ''}{formatTime(call.startedAt)}</span>
       </div>
       <span className="audio-files">
         {call.files.map(file => file.state !== 'available'
@@ -82,6 +82,7 @@ export function Recordings() {
   const [identity, setIdentity] = useState<RecordingsIdentity | null | undefined>(undefined);
   const [period, setPeriod] = useState<Period>('today');
   const [page, setPage] = useState(1);
+  const [order, setOrder] = useState<AudioOrder>('recent');
   const [query, setQuery] = useState('');
   const [settledQuery, setSettledQuery] = useState('');
   const queryPending = query.trim() !== settledQuery;
@@ -120,7 +121,7 @@ export function Recordings() {
       setLoading(true);
       try {
         const search = settledQuery ? { query: settledQuery, callingCodes: countrySearchCodes(settledQuery, language) } : undefined;
-        const result = await recordings.list(period, page, search);
+        const result = await recordings.list(period, page, search, order);
         if (!cancelled) { setListing(result); setError(''); }
       } catch (raised) {
         if (cancelled) return;
@@ -134,7 +135,7 @@ export function Recordings() {
     const first = setTimeout(() => void load(), 0);
     const timer = page === 1 ? setInterval(() => { if (!document.hidden) void load(); }, 60_000) : undefined;
     return () => { cancelled = true; clearTimeout(first); clearInterval(timer); };
-  }, [identity, period, page, recordings, reload, queryPending, settledQuery, language]);
+  }, [identity, period, page, order, recordings, reload, queryPending, settledQuery, language]);
 
   const changeQuery = (next: string) => {
     setQuery(next);
@@ -143,6 +144,15 @@ export function Recordings() {
     setError('');
     setLoading(true);
     setPage(1);
+  };
+
+  const changeOrder = (next: AudioOrder) => {
+    if (next === order) return;
+    setListing(null);
+    setError('');
+    setLoading(true);
+    setPage(1);
+    setOrder(next);
   };
 
   const changePeriod = (next: Period) => {
@@ -175,13 +185,15 @@ export function Recordings() {
 
   const groups = useMemo(() => {
     const result: Array<{ key: string; calls: RecordedCall[] }> = [];
+    // Ranked by duration: one list over the whole period, each row shows its date.
+    if (order !== 'recent') return listing?.calls.length ? [{ key: 'ranked', calls: listing.calls }] : result;
     for (const call of listing?.calls ?? []) {
       const key = dayKey(call.startedAt);
       const last = result[result.length - 1];
       if (last?.key === key) last.calls.push(call); else result.push({ key, calls: [call] });
     }
     return result;
-  }, [listing]);
+  }, [listing, order]);
   const ready = listing?.calls.reduce((total, call) => total + call.files.filter(file => file.state === 'available').length, 0) ?? 0;
   const pending = listing?.calls.reduce((total, call) => total + call.files.filter(file => file.state !== 'available').length, 0) ?? 0;
 
@@ -216,6 +228,12 @@ export function Recordings() {
               <div className="tabs" role="tablist" aria-label={t('rec.period')}>
                 {PERIODS.map(([key, label]) => <button key={key} role="tab" aria-selected={period === key} className={period === key ? 'active' : ''} onClick={() => changePeriod(key)}>{t(label)}</button>)}
               </div>
+              <label className="audio-order"><ArrowDownUp size={14} aria-hidden="true" />
+                <select value={order} onChange={event => changeOrder(event.target.value as AudioOrder)} aria-label={t('rec.order')}>
+                  <option value="recent">{t('rec.orderRecent')}</option>
+                  <option value="audio_desc">{t('rec.orderLongest')}</option>
+                  <option value="audio_asc">{t('rec.orderShortest')}</option>
+                </select></label>
               <div className="head-actions">
                 <button type="button" className="ghost small" onClick={() => setReload(value => value + 1)} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
                 <button type="button" className="ghost small" onClick={async () => { void handlePlay(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
@@ -234,9 +252,9 @@ export function Recordings() {
                 {!loading && <p>{t(settledQuery ? 'rec.noMatchHint' : 'rec.emptyHint')}</p>}</div>
             ) : groups.map(group => (
               <div key={group.key} className="day-group">
-                <h2 className="day-label">{formatDay(group.calls[0]!.startedAt)}<span>{group.calls.length}</span></h2>
+                <h2 className="day-label">{group.key === 'ranked' ? t(order === 'audio_desc' ? 'rec.rankedLongest' : 'rec.rankedShortest') : formatDay(group.calls[0]!.startedAt)}<span>{group.calls.length}</span></h2>
                 <ul className="audio-list">
-                  {group.calls.map(call => <Row key={call.id} call={call} playingId={playingId}
+                  {group.calls.map(call => <Row key={call.id} call={call} playingId={playingId} showDate={group.key === 'ranked'}
                     onPlay={handlePlay} />)}
                 </ul>
               </div>

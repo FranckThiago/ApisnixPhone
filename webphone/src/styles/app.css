@@ -663,3 +663,8 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 }
 .history-pager button:hover:not(:disabled):not([aria-current]) { background: var(--brand-soft); border-color: var(--brand); }
 .history-pager button[aria-current="page"] { color: var(--on-yellow); background: var(--yellow); border-color: var(--yellow-strong); font-weight: 700; }
+
+/* Audio: rank by recorded duration over the whole period, like the supervision. */
+.audio-order { display: inline-flex; align-items: center; gap: 6px; padding: 0 4px 0 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--muted); }
+.audio-order select { border: 0; background: none; color: var(--text); font: inherit; font-size: 13px; font-weight: 600; padding: 7px 4px; cursor: pointer; outline: none; }
+.audio-order:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }

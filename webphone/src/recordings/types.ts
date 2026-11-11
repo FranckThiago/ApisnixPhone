@@ -66,6 +66,8 @@ export interface LineSearch {
 }
 
 export type RecordingSearch = Pick<LineSearch, 'query' | 'callingCodes'>;
+/** Same ranking as the supervision journal: newest first, or by recorded duration over the whole period. */
+export type AudioOrder = 'recent' | 'audio_desc' | 'audio_asc';
 
 export interface LineDayStats {
   /** Start and end of the server's reporting day, in milliseconds. */
@@ -90,7 +92,7 @@ export interface RecordingsSource {
   /** Opens the recordings of the line itself: the PBX confirms the line's credentials, nothing else is typed. */
   openWithLine(username: string, password: string): Promise<RecordingsIdentity>;
   signOut(): Promise<void>;
-  list(period: Period, page?: number, search?: RecordingSearch): Promise<RecordingsListing>;
+  list(period: Period, page?: number, search?: RecordingSearch, order?: AudioOrder): Promise<RecordingsListing>;
   history(page?: number, search?: LineSearch): Promise<LineHistory>;
   /** Same file, streamed for listening or sent as an attachment for download. */
   audioUrl(fileId: string, download: boolean): string | Promise<string>;
