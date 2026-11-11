@@ -4,6 +4,8 @@ import type { MessageKey } from './fr';
 export const en: Record<MessageKey, string> = {
   "team.title": "Team",
   "team.callTools": "Tools during the call",
+  "team.dockLead": "Notices, help and follow-up",
+  "team.pending": "{count} to check",
   "team.lead": "Shared callbacks, instructions and coaching.",
   "team.accessDenied": "Your team access has changed. Sign in again.",
   "team.conflict": "This information has changed. Refresh before trying again.",
@@ -298,6 +300,7 @@ export const en: Record<MessageKey, string> = {
   'dialer.field': 'Number to call',
   'dialer.placeholder': 'Name or number',
   'dialer.backspace': 'Delete the last character',
+  'dialer.backspaceHint': 'Delete · hold to clear everything',
   'dialer.exact': 'Number exactly as dialled',
   'dialer.allowed': 'Digits, +, * and # only.',
   'dialer.suggestions': 'Matching contacts',

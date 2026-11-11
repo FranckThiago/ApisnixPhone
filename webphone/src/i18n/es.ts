@@ -4,6 +4,8 @@ import type { MessageKey } from './fr';
 export const es: Record<MessageKey, string> = {
   "team.title": "Equipo",
   "team.callTools": "Herramientas durante la llamada",
+  "team.dockLead": "Consignas, ayuda y seguimiento",
+  "team.pending": "{count} por consultar",
   "team.lead": "Recordatorios compartidos, instrucciones y acompañamiento.",
   "team.accessDenied": "Tu acceso al equipo ha cambiado. Inicia sesión de nuevo.",
   "team.conflict": "Esta información ha cambiado. Actualiza antes de volver a intentarlo.",
@@ -298,6 +300,7 @@ export const es: Record<MessageKey, string> = {
   'dialer.field': 'Número al que llamar',
   'dialer.placeholder': 'Nombre o número',
   'dialer.backspace': 'Borrar el último carácter',
+  'dialer.backspaceHint': 'Borrar · mantener para borrar todo',
   'dialer.exact': 'Número marcado tal cual',
   'dialer.allowed': 'Solo cifras, +, * y #.',
   'dialer.suggestions': 'Contactos que coinciden',

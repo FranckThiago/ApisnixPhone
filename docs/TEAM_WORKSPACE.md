@@ -2,12 +2,16 @@
 
 ## Parcours
 
-Le menu Équipe fournit consignes avec confirmation de lecture, réponses aux
-objections, demande d’aide/réponse du superviseur, objectifs collectifs par
-qualification et évaluations personnelles. Un badge signale les consignes,
-réponses et évaluations à consulter. Les réponses aux objections sont également
-accessibles pendant l’appel dans la carte « Outils pendant l’appel », entre
-le script et le volume. Texte brut, pas de HTML.
+Pas de menu Équipe : une carte « Équipe » s’affiche sous le clavier, et sous la
+carte d’appel pendant une conversation, seulement si le groupe a les outils
+partagés ou si l’agent a des évaluations. Elle regroupe la demande d’aide et sa
+réponse, le transfert pendant un appel actif (liste des collègues connectés),
+puis des lignes dépliables : consignes avec confirmation de lecture, réponses
+aux objections, objectifs collectifs par qualification, évaluations personnelles
+et accès aux rappels de groupe (vue Rappels). Un badge jaune dans son en-tête
+compte les consignes, réponses et évaluations à consulter. Changement non publié
+au 11 novembre : la production garde le menu jusqu’à la prochaine release.
+Texte brut, pas de HTML.
 Les nouveaux libellés de l’interface sont disponibles en français, anglais et espagnol.
 
 Planifier un rappel propose Personnel (par défaut) ou Groupe si l’équipe autorise

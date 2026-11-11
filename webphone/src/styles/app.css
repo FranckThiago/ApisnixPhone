@@ -243,7 +243,12 @@ input[type=range] { accent-color: var(--brand); }
 .dial-field { padding: 12px 14px 10px; border-radius: 16px; border: 1.5px solid var(--border); background: var(--surface-2); transition: border-color .15s, box-shadow .15s; }
 .dial-field:focus-within { border-color: var(--green); box-shadow: 0 0 0 4px var(--green-soft); } .dial-field.invalid:not(:focus-within) { border-color: var(--yellow-strong); }
 .dial-field label { font-size: 11.5px; color: var(--muted); font-weight: 600; }
-.dial-row { display: flex; align-items: center; gap: 4px; }
+.dial-row { display: flex; align-items: center; gap: 8px; }
+.dial-erase { display: grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  box-shadow: var(--shadow-sm); cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; transition: background .15s, border-color .15s, color .15s, transform .08s; }
+.dial-erase:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+.dial-erase:active { transform: scale(.92); }
+.dial-erase:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .dial-row input { flex: 1; min-width: 0; width: 100%; border: 0; background: none; outline: none; font-size: 23px; font-weight: 650; letter-spacing: .4px; padding: 4px 0; font-variant-numeric: tabular-nums; }
 .dial-row input::placeholder { color: var(--faint); font-weight: 500; font-size: 18px; letter-spacing: 0; }
 .dial-hint { display: flex; align-items: center; gap: 8px; min-height: 20px; font-size: 12.5px; color: var(--muted); }

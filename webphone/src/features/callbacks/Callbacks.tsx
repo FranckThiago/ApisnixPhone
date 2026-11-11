@@ -1,4 +1,4 @@
-import { GroupCallbacks, PromoteCallback } from '../../team/TeamWorkspace';
+import { GroupCallbacks, PromoteCallback } from '../../team/GroupCallbacks';
 import { AlarmClock, Check, Clock3, Phone, Trash2, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { useApp, useData } from '../../app/AppContext';

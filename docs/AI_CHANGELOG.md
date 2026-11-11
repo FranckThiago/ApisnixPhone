@@ -1,5 +1,19 @@
 # Journal des changements
 
+## Équipe sous le clavier et bouton Effacer — 11 novembre 2026
+
+Le menu latéral Équipe et sa page sont supprimés. `team/TeamDock.tsx`
+remplace `CallTeamTools` : une carte du dock affichée seulement si des fonctions
+de gestion sont activées, avec Aide et Transférer en tuiles, puis consignes,
+objections, objectifs, évaluations et rappels de groupe en lignes dépliables.
+Le badge passe du menu à l'en-tête de la carte. Transfert par liste de
+collègues (avatar, nom, poste) au lieu d'un menu déroulant. `TeamWorkspace.tsx`
+devient `GroupCallbacks.tsx` (vue Rappels inchangée). Bouton Effacer du
+numéroteur encadré, appui long de 550 ms pour tout effacer, idée reprise de la
+session du dépôt de gestion après coordination. Libellés FR/EN/ES. 309 tests,
+typage, lint, build ; recette démo bureau/mobile, thèmes clair/sombre,
+consigne lue, effacement simple et long, transfert confirmé. Non publié.
+
 ## Zone Équipe pendant l'appel — 11 novembre 2026
 
 La zone affichée sous la carte d'appel quand les outils partagés sont activés

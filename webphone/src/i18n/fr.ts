@@ -2,6 +2,8 @@
 export const fr = {
   "team.title": "Équipe",
   "team.callTools": "Outils pendant l’appel",
+  "team.dockLead": "Consignes, aide et suivi",
+  "team.pending": "{count} à consulter",
   "team.lead": "Vos rappels partagés, consignes et accompagnement.",
   "team.accessDenied": "L’accès à cette équipe a changé. Reconnectez-vous.",
   "team.conflict": "Ces informations ont changé. Actualisez avant de réessayer.",
@@ -296,6 +298,7 @@ export const fr = {
   'dialer.field': 'Numéro à appeler',
   'dialer.placeholder': 'Nom ou numéro',
   'dialer.backspace': 'Effacer le dernier caractère',
+  'dialer.backspaceHint': 'Effacer · maintenir pour tout effacer',
   'dialer.exact': 'Numéro exactement composé',
   'dialer.allowed': 'Chiffres, +, * et # uniquement.',
   'dialer.suggestions': 'Contacts correspondants',

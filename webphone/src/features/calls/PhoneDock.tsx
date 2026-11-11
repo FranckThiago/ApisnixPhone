@@ -1,4 +1,4 @@
-import { CallTeamTools } from '../../team/CallTeamTools';
+import { TeamDock } from '../../team/TeamDock';
 import { WaitingCallCard } from './WaitingCallCard';
 import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -77,6 +77,9 @@ function Dialer() {
   const { contacts } = useData();
   const { t } = useI18n();
   const field = useRef<HTMLInputElement>(null);
+  // Holding the erase key clears the whole number; the click that follows must not erase again.
+  const eraseHold = useRef<{ timer?: number; cleared: boolean }>({ cleared: false });
+  const stopErase = () => window.clearTimeout(eraseHold.current.timer);
   const input = parseDialInput(dial);
   const info = describeNumber(input.dialTarget);
   const known = input.valid ? findContact(contacts, input.dialTarget) : undefined;
@@ -102,7 +105,16 @@ function Dialer() {
               placeholder={t('dialer.placeholder')} aria-describedby="dial-hint"
               onChange={event => setDial(/[a-zA-ZÀ-ÿ]/.test(event.target.value) ? event.target.value.slice(0, 40) : filterDialCharacters(event.target.value))}
               onKeyDown={event => { if (event.key === 'Enter' && ready) placeCall(dial); }} />
-            {dial && <button type="button" className="icon-button" aria-label={t('dialer.backspace')} onClick={() => { setDial(dial.slice(0, -1)); field.current?.focus(); }}><Delete size={18} /></button>}
+            {dial && <button type="button" className="dial-erase" aria-label={t('dialer.backspace')} title={t('dialer.backspaceHint')}
+              onPointerDown={() => {
+                eraseHold.current.cleared = false;
+                eraseHold.current.timer = window.setTimeout(() => { eraseHold.current.cleared = true; setDial(''); field.current?.focus(); }, 550);
+              }}
+              onPointerUp={stopErase} onPointerLeave={stopErase} onPointerCancel={stopErase}
+              onClick={() => {
+                if (eraseHold.current.cleared) { eraseHold.current.cleared = false; return; }
+                setDial(dial.slice(0, -1)); field.current?.focus();
+              }}><Delete size={19} strokeWidth={2.2} /></button>}
           </div>
           <p id="dial-hint" className="dial-hint">
             {input.valid ? <><Flag info={info} size={18} /><span>{known ? `${known.name} · ` : ''}{countryLabel(info)}</span><span className="dial-exact" title={t('dialer.exact')}>{input.dialTarget}</span></>
@@ -305,7 +317,7 @@ export function PhoneDock() {
   const { t } = useI18n();
   return <aside className="dock" aria-label={t('dock.label')}><OtherCall />{call ? <CallCard key={call.id} call={call} /> : <Dialer />}
     {call && (call.phase === 'active' || call.phase === 'held') && <CallScriptCard key={'script:' + call.id} />}
-    {call && (call.phase === 'active' || call.phase === 'held') && <CallTeamTools key={'team:'+call.id} />}
+    <TeamDock key={call ? 'team:' + call.id : 'team'} />
     <ListeningVolume />
     {call && call.phase !== 'ended' && <p className="dock-note"><StickyNote size={14} /> {t('dock.note')}</p>}</aside>;
 }
