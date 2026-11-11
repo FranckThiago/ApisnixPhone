@@ -1,5 +1,16 @@
 # Construction et validation
 
+## Audio sur téléphone — 11 novembre 2026
+
+Release active **20261111-audio-mobile**, source `ac4fe50`, depuis
+**15:25:01 Douala** sur Hermes. Frontend seul : en classement par durée, la
+date de l'appel reste visible sous le nom sur téléphone, et les onglets de
+période défilent sur une ligne. Vérifié à 375 px en démo. Build live isolé,
+313 tests, typage, lint et build réussis ; 270 fichiers, `index.html`, JS et
+CSS principaux changés ; HTTPS et empreintes vérifiés par le script.
+Sauvegarde dans `/root/apisnix-phone-backups/20261111-audio-mobile/`.
+Retour : repointer `current` sur **20261111-gestion-features**, sans redémarrage.
+
 ## Fonctions d'équipe activables, connexion et Audio — 11 novembre 2026
 
 Release active **20261111-gestion-features**, source `f56f709`, depuis
