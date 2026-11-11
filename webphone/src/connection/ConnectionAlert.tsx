@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { WifiOff, Wifi } from 'lucide-react';
+import { WifiOff, Wifi, CheckCircle2 } from 'lucide-react';
 import { useApp, usePhone } from '../app/AppContext';
 import { useI18n } from '../i18n';
 import { startConnectionMonitor, type ConnectionQuality } from './connection-monitor.mjs';
@@ -17,7 +17,18 @@ export function ConnectionAlert() {
     return startConnectionMonitor({ url: `https://${domain}/agc/apisnix/connection-check.php`,
       readMedia: () => phone.readConnectionQuality?.() ?? Promise.resolve(null), onChange: setQuality });
   }, [demo, phone]);
-  const visible = quality.level === 'slow' || quality.level === 'lost';
+  // After an interruption, a green confirmation stays three seconds then disappears.
+  const [restored, setRestored] = useState(false);
+  const previous = useRef<ConnectionQuality['level']>('unknown');
+  useEffect(() => {
+    const was = previous.current; previous.current = quality.level;
+    if (quality.level !== 'good') { setRestored(false); return; }
+    if (was !== 'lost') return;
+    setRestored(true);
+    const timer = window.setTimeout(() => setRestored(false), 3000);
+    return () => window.clearTimeout(timer);
+  }, [quality.level]);
+  const visible = quality.level === 'slow' || quality.level === 'lost' || restored;
   useLayoutEffect(() => {
     const root = document.documentElement;
     const measure = () => root.style.setProperty('--connection-space', visible ? `${bar.current?.offsetHeight ?? 0}px` : '0px');
@@ -27,10 +38,11 @@ export function ConnectionAlert() {
     return () => { observer.disconnect(); root.style.removeProperty('--connection-space'); };
   }, [visible]);
   const lost = quality.level === 'lost';
-  return <aside ref={bar} className={`connection-alert${lost ? ' is-lost' : ''}`} hidden={!visible}
+  const ok = restored && quality.level === 'good';
+  return <aside ref={bar} className={`connection-alert${lost ? ' is-lost' : ok ? ' is-restored' : ''}`} hidden={!visible}
     role="status" aria-live="polite" aria-atomic="true">
-    {lost ? <WifiOff size={20} aria-hidden="true" /> : <Wifi size={20} aria-hidden="true" />}
-    <span><strong>{t(lost ? quality.source === 'media' ? 'quality.audioLost' : 'quality.lost' : 'quality.slow')}</strong>
-      <span>{t(lost ? 'quality.checkNetwork' : 'quality.impact')}</span></span>
+    {ok ? <CheckCircle2 size={20} aria-hidden="true" /> : lost ? <WifiOff size={20} aria-hidden="true" /> : <Wifi size={20} aria-hidden="true" />}
+    <span><strong>{t(ok ? 'quality.restored' : lost ? quality.source === 'media' ? 'quality.audioLost' : 'quality.lost' : 'quality.slow')}</strong>
+      <span>{t(ok ? 'quality.restoredDetail' : lost ? 'quality.checkNetwork' : 'quality.impact')}</span></span>
   </aside>;
 }

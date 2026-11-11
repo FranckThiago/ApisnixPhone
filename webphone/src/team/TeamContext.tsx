@@ -7,7 +7,7 @@ import { DemoTeamClient } from './demo';
 import { createSerialRefresh } from './serialRefresh';
 
 export function TeamProvider({ children }: { children: ReactNode }) {
-  const { store, recordingsAccess } = useApp();
+  const { store, recordingsAccess, notify, phone } = useApp();
   const { demo } = usePhone();
   const client = useMemo(() => demo ? new DemoTeamClient()
     : new HttpTeamClient(String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '')), [demo]);
@@ -73,6 +73,27 @@ export function TeamProvider({ children }: { children: ReactNode }) {
       document.removeEventListener('visibilitychange', update);
     };
   }, [demo, recordingsAccess.state, refresh]);
+
+  // A call ended by an administrator from the supervision is announced once.
+  // Hangups already present at the first load are never announced again.
+  const announced = useRef<Set<number> | null>(null);
+  useEffect(() => {
+    const hangups = workspace?.admin_hangups;
+    if (!hangups) return;
+    if (!announced.current) { announced.current = new Set(hangups.map(item => item.id)); return; }
+    for (const item of hangups) if (!announced.current.has(item.id)) {
+      announced.current.add(item.id);
+      notify(t('call.adminHangup'), 'danger');
+    }
+  }, [workspace, notify]);
+  const lastEnded = useRef('');
+  useEffect(() => phone.subscribe(() => {
+    const call = phone.getSnapshot().call;
+    if (call?.phase !== 'ended' || lastEnded.current === call.id) return;
+    lastEnded.current = call.id;
+    // The supervision records the hangup just after the line ends: read it shortly after.
+    window.setTimeout(() => { void refresh(); }, 1500);
+  }), [phone, refresh]);
 
   const request = useCallback(async <T,>(path: string, body?: unknown): Promise<T> => {
     const current = epoch.current;

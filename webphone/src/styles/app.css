@@ -613,6 +613,7 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 .connection-alert svg { flex: none; }
 .connection-alert strong { font-weight: 750; margin-right: 9px; }
 .connection-alert.is-lost { background: #ffebeb; color: #991b1b; border-color: #ef9a9a; }
+.connection-alert.is-restored { background: #e7f8ee; color: #11643a; border-color: #7fd3a4; }
 .shell { height: calc(100vh - var(--connection-space, 0px)); height: calc(100dvh - var(--connection-space, 0px)); }
 .login { padding-bottom: var(--connection-space, 0px); }
 .toasts { bottom: calc(22px + var(--connection-space, 0px)); }

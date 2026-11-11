@@ -70,6 +70,8 @@ export const en: Record<MessageKey, string> = {
   'quality.lost': "Server connection interrupted",
   'quality.checkNetwork': "Check your network.",
   'quality.audioLost': "Audio connection interrupted",
+  'quality.restored': "Connection restored",
+  'quality.restoredDetail': "Your calls can resume normally.",
 
 
   "nativeConference.connect": "Connect my phone",
@@ -331,6 +333,7 @@ export const en: Record<MessageKey, string> = {
   'call.wait': 'Please wait…',
   'call.keypad': 'Keypad',
   'call.hangUp': 'Hang up',
+  'call.adminHangup': 'Call ended by an administrator from the supervision.',
   'wrapup.tags': 'Tag the call',
   'wrapup.notePlaceholder': 'Note about this call…',
   'wrapup.callBack': 'Call back',

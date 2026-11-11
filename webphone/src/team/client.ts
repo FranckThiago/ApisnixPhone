@@ -5,7 +5,7 @@ import type { Callback } from '../domain/types';
 export interface Peer { id: string; name: string; extension: string; assignment_version: number; connected: boolean }
 export interface Resource { id: string; kind: 'notice' | 'objection'; title: string; content: string; revision: number; read: boolean }
 export interface Help { id: string; message: string; reply: string; status: 'open' | 'answered' | 'closed' }
-export interface Workspace { endpoint_id: string; assignment_version: number; team_id: string; policy: {shared_enabled: boolean; transfers_enabled: boolean}; resources: Resource[]; help: Help[]; peers: Peer[] }
+export interface Workspace { endpoint_id: string; assignment_version: number; team_id: string; policy: {shared_enabled: boolean; transfers_enabled: boolean}; resources: Resource[]; help: Help[]; peers: Peer[]; admin_hangups?: {id: number; at: number}[] }
 export interface GroupCallback extends Callback { revision: number; claimed_by: string | null; claimed_name: string | null; owner: string }
 export interface CallbackPage { callbacks: GroupCallback[]; promoted: string[]; count: number; page: number; pages: number }
 export interface Review {id: string; call_id: number; number: string; started_at: number; score: number; criteria: {label: string; score: number; comment: string}[]; comment: string; action_plan: string; audio_second: number | null; follow_up: number | null; revision: number; ack_revision: number | null}

@@ -1,22 +1,30 @@
-// Kept identical in ApisnixPhone webphone/src/connection/connection-monitor.mjs.
+// Kept identical in ApisnixPhone webphone/src/connection/connection-monitor.mjs and agent-skin/connection-monitor.js.
 // Passive measurements only: never register, reconnect, alter or end a call.
+// Intermittent failures (timeouts, refused probes, heavy audio packet loss) are
+// counted on a sliding window: three within 30 s mean an unstable connection
+// even when good answers are interleaved. Sustained failures still mean "lost".
+export const BURST_WINDOW_MS = 30000, BURST_COUNT = 3, LOSS_SLOW_PCT = 5, LOSS_EVENT_PCT = 10;
 export function createQualityGate() {
-  let level = 'unknown', kind, count = 0, since = 0, source;
+  let level = 'unknown', kind, count = 0, since = 0, source, events = [];
+  const burst = now => (events = events.filter(at => now - at <= BURST_WINDOW_MS)).length >= BURST_COUNT;
   return {
-    reset() { kind = undefined; count = 0; source = undefined; },
+    reset() { kind = undefined; count = 0; source = undefined; events = []; },
     sample(value, now) {
-      if (value.source !== source) { kind = undefined; count = 0; source = value.source; }
+      if (value.source !== source) { kind = undefined; count = 0; source = value.source; events = []; }
+      const loss = Number.isFinite(value.lossPct) ? value.lossPct : 0;
+      if (value.lost || loss >= LOSS_EVENT_PCT) events.push(now);
       const next = value.lost ? 'lost' : Number.isFinite(value.rttMs) && value.rttMs >= 0
-        ? value.rttMs > 400 ? 'slow' : value.rttMs < 350 ? 'good' : 'middle' : 'unknown';
+        ? value.rttMs > 400 || loss > LOSS_SLOW_PCT ? 'slow' : value.rttMs < 350 ? 'good' : 'middle' : 'unknown';
       if (next !== kind) { kind = next; count = 0; since = now; }
       count++;
       if (value.source === 'offline' && value.lost) level = 'lost';
       else if (count >= 3 && now - since >= 4000) {
-        if (next === 'good') level = 'good';
+        if (next === 'lost') { level = 'lost'; events = []; } // Already announced as interrupted.
         else if (next === 'slow') level = 'slow';
-        else if (next === 'lost') level = 'lost';
+        else if (next === 'good' && !burst(now)) level = 'good';
         // An intermediate/unavailable measurement never declares recovery.
       }
+      if (level !== 'lost' && burst(now)) level = 'slow';
       return { level, source: value.source };
     },
   };
@@ -43,9 +51,21 @@ export function createMediaReader() {
       if (!pair || !Number.isFinite(pair.currentRoundTripTime) || pair.currentRoundTripTime < 0) return null;
       const marker = pair.responsesReceived ?? pair.totalRoundTripTime ?? pair.timestamp;
       const old = seen.get(pc), now = performance.now();
-      if (!old || old.id !== pair.id || old.marker !== marker) seen.set(pc, { id: pair.id, marker, at: now });
+      // Received audio: packets lost since the previous reading, never the whole call average.
+      let lost = 0, received = 0, audio = false;
+      stats.forEach(report => {
+        if (report.type === 'inbound-rtp' && (report.kind ?? report.mediaType) === 'audio' && !report.isRemote) {
+          audio = true; lost += Math.max(0, report.packetsLost || 0); received += report.packetsReceived || 0;
+        }
+      });
+      const previous = old && old.id === pair.id ? { lost: old.lost, received: old.received } : null;
+      if (!old || old.id !== pair.id || old.marker !== marker) seen.set(pc, { id: pair.id, marker, at: now, lost, received });
       else if (now - old.at > 10000) return null;
-      return { source: 'media', rttMs: pair.currentRoundTripTime * 1000 };
+      else { old.lost = lost; old.received = received; }
+      const result = { source: 'media', rttMs: pair.currentRoundTripTime * 1000 };
+      const lostDelta = previous ? lost - previous.lost : 0, total = previous ? lostDelta + received - previous.received : 0;
+      if (audio && total >= 20 && lostDelta >= 0) result.lossPct = 100 * lostDelta / total;
+      return result;
     } catch { return null; }
   };
 }

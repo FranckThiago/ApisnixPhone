@@ -68,6 +68,8 @@ export const fr = {
   'quality.lost': "Connexion au serveur interrompue",
   'quality.checkNetwork': "Vérifiez votre réseau.",
   'quality.audioLost': "Connexion audio interrompue",
+  'quality.restored': "Connexion rétablie",
+  'quality.restoredDetail': "Vos appels peuvent reprendre normalement.",
 
   "nativeConference.connect": "Connecter mon téléphone",
   "nativeConference.help": "Votre session CRM fournit le poste. Connectez le téléphone, rejoignez la conférence, puis reprenez votre disponibilité.",
@@ -329,6 +331,7 @@ export const fr = {
   'call.wait': 'Patientez…',
   'call.keypad': 'Clavier',
   'call.hangUp': 'Raccrocher',
+  'call.adminHangup': 'Appel terminé par un administrateur depuis la supervision.',
   'wrapup.tags': 'Qualifier l’appel',
   'wrapup.notePlaceholder': 'Note sur cet appel…',
   'wrapup.callBack': 'Rappeler',

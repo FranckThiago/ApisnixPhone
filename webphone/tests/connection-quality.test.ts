@@ -32,6 +32,41 @@ describe('400 ms connection warning', () => {
   });
 });
 
+describe('intermittent timeouts and audio loss', () => {
+  it('warns after three timeouts within 30 s even with good answers in between', () => {
+    const gate = createQualityGate();
+    const steps: [number, boolean][] = [[0, true], [2000, false], [4000, true], [6000, false], [8000, false], [10000, true]];
+    const levels = steps.map(([time, lost]) => gate.sample({ source: 'http', rttMs: 80, lost }, time).level);
+    expect(levels.slice(0, 5)).not.toContain('slow');
+    expect(levels.at(-1)).toBe('slow');
+    for (const time of [12000, 14000, 16000, 30000]) expect(gate.sample({ source: 'http', rttMs: 80 }, time).level).toBe('slow');
+    expect(gate.sample({ source: 'http', rttMs: 80 }, 40001).level).toBe('good');
+  });
+  it('two isolated timeouts in 30 s never warn', () => {
+    const gate = createQualityGate();
+    for (const [time, lost] of [[0, true], [10000, false], [20000, true], [22000, false], [24000, false], [26000, false]] as [number, boolean][])
+      expect(gate.sample({ source: 'http', rttMs: 80, lost }, time).level).not.toBe('slow');
+  });
+  it('sustained audio packet loss during a call is unstable', () => {
+    const gate = createQualityGate();
+    for (const time of [0, 2000]) gate.sample({ source: 'media', rttMs: 60, lossPct: 7 }, time);
+    expect(gate.sample({ source: 'media', rttMs: 60, lossPct: 7 }, 4000).level).toBe('slow');
+  });
+  it('reads received-audio loss between two readings only', async () => {
+    const read = createMediaReader();
+    let responses = 1, lost = 0, received = 0;
+    const pc = { connectionState: 'connected', getStats: async () => new Map<string, object>([
+      ['p', { id: 'p', type: 'candidate-pair', nominated: true, state: 'succeeded', responsesReceived: responses, currentRoundTripTime: 0.05 }],
+      ['a', { type: 'inbound-rtp', kind: 'audio', packetsLost: lost, packetsReceived: received }],
+    ]) } as unknown as RTCPeerConnection;
+    expect(await read(pc)).toEqual({ source: 'media', rttMs: 50 });
+    responses = 2; lost = 10; received = 90;
+    expect(await read(pc)).toEqual({ source: 'media', rttMs: 50, lossPct: 10 });
+    responses = 3; received = 190;
+    expect(await read(pc)).toEqual({ source: 'media', rttMs: 50, lossPct: 0 });
+  });
+});
+
 function setup(fetcher: typeof fetch, readMedia?: () => Promise<ConnectionSample | null>) {
   const target = Object.assign(new EventTarget(), { navigator: { onLine: true }, fetch: fetcher });
   const doc = Object.assign(new EventTarget(), { hidden: false });
