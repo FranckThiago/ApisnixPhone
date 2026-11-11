@@ -1,5 +1,25 @@
 # Construction et validation
 
+## Équipe sous le clavier — 11 novembre 2026
+
+Release active **20261111-team-dock**, source `e25d996`, depuis **13:56:17
+Douala** sur Hermes. Frontend seul : pas de backend, de migration ni de
+changement SIP. Build live isolé à partir du commit, mêmes trois variables
+publiques ; 270 fichiers, seuls `index.html`, le JS et le CSS principaux
+changent par rapport à la release précédente. Anciennes ressources conservées
+pour les onglets ouverts.
+
+309 tests, typage, lint et build réussis dans le dossier isolé. Recette démo
+bureau et mobile, thèmes clair et sombre : menu Équipe absent, carte Équipe
+sous le clavier, consigne lue, effacement simple et appui long, transfert
+confirmé par la liste des collègues. Après bascule : HTTPS et empreintes
+vérifiés par le script, Caddy et supervision actifs, page publique chargée
+avec le nouveau bundle, sans erreur ni ressource non HTTPS. Aucun appel réel.
+
+Sauvegarde intégrale et reçu dans `/root/apisnix-phone-backups/20261111-team-dock/`.
+Retour : repointer atomiquement `current` sur **20261111-team-refresh**, sans
+redémarrage. Preuves locales : `.work/team-dock-20261111/`.
+
 ## Correctifs de l'espace Équipe — 11 novembre 2026
 
 Release active **20261111-team-refresh**, source `2bf84dc`, depuis

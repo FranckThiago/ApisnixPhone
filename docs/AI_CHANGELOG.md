@@ -12,7 +12,8 @@ devient `GroupCallbacks.tsx` (vue Rappels inchangée). Bouton Effacer du
 numéroteur encadré, appui long de 550 ms pour tout effacer, idée reprise de la
 session du dépôt de gestion après coordination. Libellés FR/EN/ES. 309 tests,
 typage, lint, build ; recette démo bureau/mobile, thèmes clair/sombre,
-consigne lue, effacement simple et long, transfert confirmé. Non publié.
+consigne lue, effacement simple et long, transfert confirmé. Publié sur Hermes
+à 13:56:17 Douala, release `20261111-team-dock`, source `e25d996`.
 
 ## Zone Équipe pendant l'appel — 11 novembre 2026
 

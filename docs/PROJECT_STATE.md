@@ -1,5 +1,15 @@
 # État du projet
 
+## Équipe sous le clavier — 11 novembre 2026
+
+En service depuis le 11 novembre à 13:56:17 Douala : plus de menu Équipe. Une
+carte Équipe apparaît sous le clavier, et sous la carte d'appel pendant une
+conversation, seulement si des fonctions de gestion sont activées : aide,
+transfert vers un collègue choisi dans une liste, consignes, objections,
+objectifs, évaluations et accès aux rappels de groupe. Badge des éléments à
+consulter dans son en-tête. Bouton Effacer encadré, appui long pour tout
+effacer. [Publication](OPERATIONS.md#équipe-sous-le-clavier--11-novembre-2026).
+
 ## Correctifs de l'espace Équipe — 11 novembre 2026
 
 En service depuis le 11 novembre à 13:23:52 Douala : une action de l'espace

@@ -9,8 +9,8 @@ réponse, le transfert pendant un appel actif (liste des collègues connectés),
 puis des lignes dépliables : consignes avec confirmation de lecture, réponses
 aux objections, objectifs collectifs par qualification, évaluations personnelles
 et accès aux rappels de groupe (vue Rappels). Un badge jaune dans son en-tête
-compte les consignes, réponses et évaluations à consulter. Changement non publié
-au 11 novembre : la production garde le menu jusqu’à la prochaine release.
+compte les consignes, réponses et évaluations à consulter. En service depuis la
+release **20261111-team-dock** du 11 novembre.
 Texte brut, pas de HTML.
 Les nouveaux libellés de l’interface sont disponibles en français, anglais et espagnol.
 
