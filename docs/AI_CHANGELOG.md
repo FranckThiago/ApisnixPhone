@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Fusion dans main — 11 novembre 2026
+
+`main` était resté au 13 octobre (`b74d46c`) pendant que le travail avançait sur
+une chaîne linéaire de branches `codex/*` et `claude/*`. Toutes les branches
+locales et distantes étant déjà contenues dans la release en service
+(`20261111-team-refresh`), `main` a été avancé en avance rapide, sans commit de
+fusion ni conflit : il porte désormais exactement le code publié sur Hermes.
+Les anciennes branches et worktrees sont conservés.
+
 ## Revue du travail du 22 octobre au 9 novembre — 11 novembre 2026
 
 Revue des 40 commits de `dadcb14` à `58dcbc5` (release `20261109-audio-search`) :
