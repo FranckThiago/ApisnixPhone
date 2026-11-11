@@ -43,15 +43,16 @@ export function TeamDock() {
   // Only the functions the supervisor left on for this team are shown.
   const on = (key: TeamFeature) => shared && workspace?.policy.features?.[key] !== false;
   const coaching = reviews.length > 0 && (!shared || workspace?.policy.features?.coaching !== false);
-  const anything = on('help') || on('transfers') || on('notices') || on('objections') || on('callbacks') || on('goals') || coaching;
-  if (!workspace || !anything) return null;
-
   const call = snapshot.call;
   const inCall = call?.phase === 'active' || call?.phase === 'held';
-  const showTransfer = on('transfers') && workspace.policy.transfers_enabled && Boolean(phone.transfer) && inCall;
+  const showTransfer = on('transfers') && Boolean(workspace?.policy.transfers_enabled) && Boolean(phone.transfer) && inCall;
   const canTransfer = showTransfer && !snapshot.otherCall && !snapshot.switchingCall && call?.phase === 'active';
-  const notices = workspace.resources.filter(resource => resource.kind === 'notice');
-  const objections = workspace.resources.filter(resource => resource.kind === 'objection');
+  const notices = workspace?.resources.filter(resource => resource.kind === 'notice') ?? [];
+  const objections = workspace?.resources.filter(resource => resource.kind === 'objection') ?? [];
+  // A row is drawn only when it has something to show; transfer only exists during a call.
+  const hasRows = on('notices') || (on('objections') && objections.length > 0) || (on('goals') && objectives.length > 0) || coaching || on('callbacks');
+  const hasTiles = on('help') || showTransfer;
+  if (!workspace || (!hasRows && !hasTiles)) return null;
   const openHelp = workspace.help.filter(item => item.status !== 'closed');
   const unreadNotices = notices.filter(notice => !notice.read).length;
   const answered = workspace.help.filter(item => item.status === 'answered').length;
@@ -77,11 +78,11 @@ export function TeamDock() {
     <section className="dock-card call-team-card" aria-label={t('team.title')}>
       <header className="call-team-head">
         <span className="call-team-icon"><Users size={18} aria-hidden="true" /></span>
-        <div><small>{t('team.title')}</small><b>{t(inCall && shared ? 'team.callTools' : 'team.dockLead')}</b></div>
+        <div><small>{t('team.title')}</small><b>{inCall && hasTiles ? t('team.callTools') : on('help') || on('notices') ? t('team.dockLead') : t('team.title')}</b></div>
         {pending > 0 && <i className="call-team-count alert" title={t('team.pending', { count: pending })} aria-label={t('team.pending', { count: pending })}>{pending}</i>}
       </header>
 
-      {(on('help') || showTransfer) && (
+      {hasTiles && (
         <div className={'call-team-actions' + (showTransfer && on('help') ? '' : ' single')}>
           {on('help') && <button type="button" className={'call-team-action' + (panel === 'help' ? ' active' : '')} aria-expanded={panel === 'help'} onClick={() => toggle('help')}>
             <LifeBuoy size={17} aria-hidden="true" /><span>{t('team.help')}</span>
@@ -132,7 +133,7 @@ export function TeamDock() {
         </div>
       )}
 
-      <ul className="team-dock-rows">
+      {hasRows && <ul className="team-dock-rows">
         {on('notices') && (
           <Row icon={<Megaphone size={16} aria-hidden="true" />} label={t('team.notices')} count={unreadNotices} alert
             open={panel === 'notices'} onToggle={() => toggle('notices')}>
@@ -197,7 +198,7 @@ export function TeamDock() {
             </button>
           </li>
         )}
-      </ul>
+      </ul>}
     </section>
   );
 }
