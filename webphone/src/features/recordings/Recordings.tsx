@@ -52,7 +52,7 @@ function Row({ call, playingId, onPlay, showDate = false }: { call: RecordedCall
     } catch { notify(t('rec.fileError'), 'danger'); }
   };
   return (
-    <li className="audio-row">
+    <li className={'audio-row' + (showDate ? ' is-ranked' : '')}>
       <div className="audio-main">
       <span className={'direction ' + (call.direction === 'inbound' ? 'inbound' : 'outbound')} title={t(call.direction === 'inbound' ? 'direction.inbound' : 'direction.outbound')}>
         {call.direction === 'inbound' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}</span>

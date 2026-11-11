@@ -473,6 +473,9 @@ input[type=range] { accent-color: var(--brand); }
   .call-banner button:first-child { flex: 1; display: flex; gap: 8px; align-items: center; padding: 11px 14px; text-align: left; color: #fff; } .banner-hangup { padding: 0 16px; background: var(--danger); color: #fff; }
   .contacts-layout, .settings-grid, .login { grid-template-columns: minmax(0, 1fr); } .login-brand { display: none; } .login-mark { display: block; } .login-form { padding: 24px 16px; } .login-form form { padding: 28px 22px 22px; }
   .audio-row .where, .audio-row .when { display: none; }
+  /* Ranked by duration: the date is the only way to place the call, keep it under the name. */
+  .audio-row.is-ranked .audio-main { flex-wrap: wrap; } .audio-row.is-ranked .when { display: block; flex: 0 0 100%; text-align: left; padding-left: 86px; font-size: 12px; margin-top: -4px; }
+  .audio-search + .toolbar .tabs { display: flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; } .audio-search + .toolbar .tabs button { white-space: nowrap; flex: none; }
   .callback-row { grid-template-columns: 40px minmax(0, 1fr); } .callback-row .due, .callback-row .callback-note { grid-column: 2 / -1; } .callback-row .callback-note { white-space: normal; } .callback-row .callback-actions { grid-column: 1 / -1; justify-content: flex-start; }
   .toasts { bottom: 96px; width: calc(100% - 28px); }
   .call-detail { padding-left: 18px; } .call-detail dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } .row-call { opacity: 1; transform: none; }
