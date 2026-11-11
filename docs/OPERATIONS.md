@@ -1,5 +1,26 @@
 # Construction et validation
 
+## Fonctions d'équipe activables, connexion et Audio — 11 novembre 2026
+
+Release active **20261111-gestion-features**, source `f56f709`, depuis
+**14:45:25 Douala** sur Hermes. Frontend seul ; les fonctions affichées
+suivent `policy.features` de la supervision **20261111-gestion-lot** publiée
+juste avant (14:41:50). Build live isolé à partir du commit, mêmes trois
+variables publiques ; 270 fichiers, seuls `index.html`, le JS et le CSS
+principaux changent. Anciennes ressources conservées pour les onglets ouverts.
+
+Contenu : dock Équipe limité aux fonctions activées dans Gestion (aide,
+transfert, consignes, réponses, rappels de groupe, objectifs, coaching),
+alerte de connexion sur timeouts répétés et perte audio, bandeau vert
+« Connexion rétablie » 3 s, notification du raccrochage par un administrateur,
+tri des audios par durée. 313 tests, typage, lint et build réussis dans le
+dossier isolé ; HTTPS et empreintes vérifiés par le script, Caddy et
+supervision actifs. Aucun appel réel.
+
+Sauvegarde intégrale et reçu dans `/root/apisnix-phone-backups/20261111-gestion-features/`.
+Retour : repointer atomiquement `current` sur **20261111-team-dock**, sans
+redémarrage (sans features, l'ancienne release affiche tout comme avant).
+
 ## Équipe sous le clavier — 11 novembre 2026
 
 Release active **20261111-team-dock**, source `e25d996`, depuis **13:56:17
