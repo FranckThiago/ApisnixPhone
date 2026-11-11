@@ -5,6 +5,7 @@ import { Avatar } from '../components/Avatar';
 import { dateFormat, useI18n } from '../i18n';
 import { useTeam } from './context';
 import { useTeamAction } from './useTeamAction';
+import type { TeamFeature } from './client';
 
 type Panel = 'help' | 'transfer' | 'notices' | 'answers' | 'goals' | 'reviews';
 const date = (ms: number) => dateFormat({ dateStyle: 'short', timeStyle: 'short' }).format(ms);
@@ -39,11 +40,15 @@ export function TeamDock() {
   const [target, setTarget] = useState('');
   const [help, setHelp] = useState('');
   const shared = Boolean(workspace?.policy.shared_enabled);
-  if (!workspace || (!shared && !reviews.length)) return null;
+  // Only the functions the supervisor left on for this team are shown.
+  const on = (key: TeamFeature) => shared && workspace?.policy.features?.[key] !== false;
+  const coaching = reviews.length > 0 && (!shared || workspace?.policy.features?.coaching !== false);
+  const anything = on('help') || on('transfers') || on('notices') || on('objections') || on('callbacks') || on('goals') || coaching;
+  if (!workspace || !anything) return null;
 
   const call = snapshot.call;
   const inCall = call?.phase === 'active' || call?.phase === 'held';
-  const showTransfer = shared && workspace.policy.transfers_enabled && Boolean(phone.transfer) && inCall;
+  const showTransfer = on('transfers') && workspace.policy.transfers_enabled && Boolean(phone.transfer) && inCall;
   const canTransfer = showTransfer && !snapshot.otherCall && !snapshot.switchingCall && call?.phase === 'active';
   const notices = workspace.resources.filter(resource => resource.kind === 'notice');
   const objections = workspace.resources.filter(resource => resource.kind === 'objection');
@@ -51,7 +56,7 @@ export function TeamDock() {
   const unreadNotices = notices.filter(notice => !notice.read).length;
   const answered = workspace.help.filter(item => item.status === 'answered').length;
   const unreadReviews = reviews.filter(review => review.ack_revision !== review.revision).length;
-  const pending = (shared ? unreadNotices + answered : 0) + unreadReviews;
+  const pending = (on('notices') ? unreadNotices : 0) + (on('help') ? answered : 0) + (coaching ? unreadReviews : 0);
   const toggle = (next: Panel) => setPanel(panel === next ? null : next);
 
   const transfer = async () => {
@@ -76,12 +81,12 @@ export function TeamDock() {
         {pending > 0 && <i className="call-team-count alert" title={t('team.pending', { count: pending })} aria-label={t('team.pending', { count: pending })}>{pending}</i>}
       </header>
 
-      {shared && (
-        <div className={'call-team-actions' + (showTransfer ? '' : ' single')}>
-          <button type="button" className={'call-team-action' + (panel === 'help' ? ' active' : '')} aria-expanded={panel === 'help'} onClick={() => toggle('help')}>
+      {(on('help') || showTransfer) && (
+        <div className={'call-team-actions' + (showTransfer && on('help') ? '' : ' single')}>
+          {on('help') && <button type="button" className={'call-team-action' + (panel === 'help' ? ' active' : '')} aria-expanded={panel === 'help'} onClick={() => toggle('help')}>
             <LifeBuoy size={17} aria-hidden="true" /><span>{t('team.help')}</span>
             {answered > 0 && <i className="call-team-dot" aria-hidden="true" />}
-          </button>
+          </button>}
           {showTransfer && (
             <button type="button" className={'call-team-action' + (panel === 'transfer' ? ' active' : '')} aria-expanded={panel === 'transfer'}
               disabled={!canTransfer || busy} onClick={() => { toggle('transfer'); void refresh(); }}>
@@ -91,7 +96,7 @@ export function TeamDock() {
         </div>
       )}
 
-      {shared && panel === 'help' && (
+      {on('help') && panel === 'help' && (
         <div className="call-team-transfer">
           {openHelp.map(item => (
             <div className="team-dock-item" key={item.id}><p className="team-copy">{item.message}</p><b>{item.reply || t('team.helpPending')}</b></div>
@@ -128,7 +133,7 @@ export function TeamDock() {
       )}
 
       <ul className="team-dock-rows">
-        {shared && (
+        {on('notices') && (
           <Row icon={<Megaphone size={16} aria-hidden="true" />} label={t('team.notices')} count={unreadNotices} alert
             open={panel === 'notices'} onToggle={() => toggle('notices')}>
             {notices.map(notice => (
@@ -141,7 +146,7 @@ export function TeamDock() {
             {!notices.length && <p className="call-team-hint">{t('team.empty')}</p>}
           </Row>
         )}
-        {shared && objections.length > 0 && (
+        {on('objections') && objections.length > 0 && (
           <Row icon={<MessageSquareQuote size={16} aria-hidden="true" />} label={t('team.objections')} count={objections.length}
             open={panel === 'answers'} onToggle={() => toggle('answers')}>
             <div className="call-team-answers">
@@ -154,7 +159,7 @@ export function TeamDock() {
             </div>
           </Row>
         )}
-        {shared && objectives.length > 0 && (
+        {on('goals') && objectives.length > 0 && (
           <Row icon={<Target size={16} aria-hidden="true" />} label={t('team.goals')} open={panel === 'goals'} onToggle={() => toggle('goals')}>
             {objectives.map(goal => (
               <div className="team-dock-item" key={goal.id}>
@@ -165,7 +170,7 @@ export function TeamDock() {
             ))}
           </Row>
         )}
-        {reviews.length > 0 && (
+        {coaching && (
           <Row icon={<ClipboardCheck size={16} aria-hidden="true" />} label={t('team.coaching')} count={unreadReviews} alert
             open={panel === 'reviews'} onToggle={() => toggle('reviews')}>
             {reviews.map(review => {
@@ -185,7 +190,7 @@ export function TeamDock() {
             })}
           </Row>
         )}
-        {shared && (
+        {on('callbacks') && (
           <li>
             <button type="button" className="team-dock-row" onClick={() => setView('callbacks')}>
               <AlarmClock size={16} aria-hidden="true" /><span>{t('team.groupCallbacks')}</span><ChevronRight size={16} className="call-team-chevron" aria-hidden="true" />

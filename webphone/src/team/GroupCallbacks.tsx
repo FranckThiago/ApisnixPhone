@@ -15,7 +15,7 @@ export function PromoteCallback({ callback }: { callback: Callback }) {
   const { store } = useApp();
   const { t } = useI18n();
   const { busy, run } = useTeamAction();
-  if (!workspace?.policy.shared_enabled || callback.doneAt) return null;
+  if (!workspace?.policy.shared_enabled || workspace.policy.features?.callbacks === false || callback.doneAt) return null;
   const promote = () => {
     if (!window.confirm(t('team.shareConfirm', { number: callback.number }))) return;
     void run(async () => {
@@ -39,7 +39,8 @@ export function GroupCallbacks() {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
-  const shared = Boolean(workspace?.policy.shared_enabled);
+  // Group callbacks also follow the team's switch in Gestion.
+  const shared = Boolean(workspace?.policy.shared_enabled) && workspace?.policy.features?.callbacks !== false;
 
   useEffect(() => {
     if (!shared) return;
