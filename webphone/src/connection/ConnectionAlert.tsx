@@ -11,23 +11,25 @@ export function ConnectionAlert() {
   const { t } = useI18n();
   const [quality, setQuality] = useState<ConnectionQuality>({ level: 'unknown', source: 'http' });
   const bar = useRef<HTMLElement>(null);
+  // After an interruption, a green confirmation stays three seconds then disappears.
+  const [restoredAt, setRestoredAt] = useState(0);
   useEffect(() => {
     if (demo) return; // Demonstration never probes production.
     const domain = String(import.meta.env.VITE_SIP_DOMAIN).trim();
+    let last: ConnectionQuality['level'] = 'unknown';
     return startConnectionMonitor({ url: `https://${domain}/agc/apisnix/connection-check.php`,
-      readMedia: () => phone.readConnectionQuality?.() ?? Promise.resolve(null), onChange: setQuality });
+      readMedia: () => phone.readConnectionQuality?.() ?? Promise.resolve(null),
+      onChange: next => {
+        setRestoredAt(last === 'lost' && next.level === 'good' ? Date.now() : 0);
+        last = next.level; setQuality(next);
+      } });
   }, [demo, phone]);
-  // After an interruption, a green confirmation stays three seconds then disappears.
-  const [restored, setRestored] = useState(false);
-  const previous = useRef<ConnectionQuality['level']>('unknown');
   useEffect(() => {
-    const was = previous.current; previous.current = quality.level;
-    if (quality.level !== 'good') { setRestored(false); return; }
-    if (was !== 'lost') return;
-    setRestored(true);
-    const timer = window.setTimeout(() => setRestored(false), 3000);
+    if (!restoredAt) return;
+    const timer = window.setTimeout(() => setRestoredAt(0), 3000);
     return () => window.clearTimeout(timer);
-  }, [quality.level]);
+  }, [restoredAt]);
+  const restored = restoredAt > 0 && quality.level === 'good';
   const visible = quality.level === 'slow' || quality.level === 'lost' || restored;
   useLayoutEffect(() => {
     const root = document.documentElement;
