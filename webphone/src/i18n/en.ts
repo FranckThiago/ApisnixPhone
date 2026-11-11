@@ -3,6 +3,7 @@ import type { MessageKey } from './fr';
 /** English (British spelling, 24-hour clock through the en-GB locale). */
 export const en: Record<MessageKey, string> = {
   "team.title": "Team",
+  "team.callTools": "Tools during the call",
   "team.lead": "Shared callbacks, instructions and coaching.",
   "team.accessDenied": "Your team access has changed. Sign in again.",
   "team.conflict": "This information has changed. Refresh before trying again.",

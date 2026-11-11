@@ -1,6 +1,7 @@
 /** French, the reference language: every other dictionary must translate exactly these keys. */
 export const fr = {
   "team.title": "Équipe",
+  "team.callTools": "Outils pendant l’appel",
   "team.lead": "Vos rappels partagés, consignes et accompagnement.",
   "team.accessDenied": "L’accès à cette équipe a changé. Reconnectez-vous.",
   "team.conflict": "Ces informations ont changé. Actualisez avant de réessayer.",

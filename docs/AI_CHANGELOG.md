@@ -1,5 +1,15 @@
 # Journal des changements
 
+## Zone Équipe pendant l'appel — 11 novembre 2026
+
+La zone affichée sous la carte d'appel quand les outils partagés sont activés
+devient une carte du dock, comme le script d'appel et le volume : en-tête
+« Équipe · Outils pendant l'appel », boutons Aide et Transférer avec icônes,
+transfert dans un encart avec Annuler, objections en accordéon avec compteur
+et défilement interne. Comportement inchangé. Nouveau libellé FR/EN/ES.
+309 tests, typage, lint, build ; recette démo bureau et mobile 375 px, thèmes
+clair et sombre, transfert confirmé. Non publié sur Hermes.
+
 ## Fusion dans main — 11 novembre 2026
 
 `main` était resté au 13 octobre (`b74d46c`) pendant que le travail avançait sur

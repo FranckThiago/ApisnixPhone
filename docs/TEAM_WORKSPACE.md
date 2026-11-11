@@ -6,7 +6,8 @@ Le menu Équipe fournit consignes avec confirmation de lecture, réponses aux
 objections, demande d’aide/réponse du superviseur, objectifs collectifs par
 qualification et évaluations personnelles. Un badge signale les consignes,
 réponses et évaluations à consulter. Les réponses aux objections sont également
-accessibles pendant l’appel, près du script et du volume. Texte brut, pas de HTML.
+accessibles pendant l’appel dans la carte « Outils pendant l’appel », entre
+le script et le volume. Texte brut, pas de HTML.
 Les nouveaux libellés de l’interface sont disponibles en français, anglais et espagnol.
 
 Planifier un rappel propose Personnel (par défaut) ou Groupe si l’équipe autorise

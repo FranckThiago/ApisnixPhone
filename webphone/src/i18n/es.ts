@@ -3,6 +3,7 @@ import type { MessageKey } from './fr';
 /** Spanish (Spain), tuteo as in most consumer software. */
 export const es: Record<MessageKey, string> = {
   "team.title": "Equipo",
+  "team.callTools": "Herramientas durante la llamada",
   "team.lead": "Recordatorios compartidos, instrucciones y acompañamiento.",
   "team.accessDenied": "Tu acceso al equipo ha cambiado. Inicia sesión de nuevo.",
   "team.conflict": "Esta información ha cambiado. Actualiza antes de volver a intentarlo.",
