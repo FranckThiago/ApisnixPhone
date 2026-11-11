@@ -1,5 +1,15 @@
 # État du projet
 
+## Fonctions d'équipe choisies par le superviseur — 11 novembre 2026
+
+Le dock Équipe n'affiche que les fonctions activées dans Supervision →
+Gestion → Téléphone des agents (en service depuis 14:45:25 Douala). La
+supervision n'active par défaut que le transfert ; aide, consignes,
+objections, rappels de groupe, objectifs, coaching et script restent masqués
+jusqu'à activation (valeur par défaut publiée côté supervision séparément).
+Guides FR/EN/ES : transfert et aide décrits comme conditionnels.
+[Fonctionnement](TEAM_WORKSPACE.md).
+
 ## Équipe sous le clavier — 11 novembre 2026
 
 En service depuis le 11 novembre à 13:56:17 Douala : plus de menu Équipe. Une

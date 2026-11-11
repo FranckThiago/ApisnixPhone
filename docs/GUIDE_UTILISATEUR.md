@@ -108,9 +108,9 @@ avant, le bouton rouge indique **Annuler**.
 - **Clavier** (`K`, ou les chiffres) envoie des touches à un serveur vocal
   (« tapez 1… »).
 - **Raccrocher** termine l'appel.
+- **Équipe** (si activée) : **Transférer** à un collègue, **Demander de l’aide**.
 
-Les raccourcis ne fonctionnent pas pendant que vous écrivez dans un champ, et la
-touche Échap ne raccroche jamais.
+Raccourcis inactifs pendant la saisie ; Échap ne raccroche jamais.
 
 ## 5. À la fin de l'appel
 

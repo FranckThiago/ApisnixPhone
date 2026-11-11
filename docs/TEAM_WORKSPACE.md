@@ -3,8 +3,13 @@
 ## Parcours
 
 Pas de menu Équipe : une carte « Équipe » s’affiche sous le clavier, et sous la
-carte d’appel pendant une conversation, seulement si le groupe a les outils
-partagés ou si l’agent a des évaluations. Elle regroupe la demande d’aide et sa
+carte d’appel pendant une conversation, seulement si au moins une fonction est
+activée pour le groupe. Le superviseur choisit les fonctions dans
+Supervision → Gestion → Téléphone des agents ; `policy.features` les transmet
+(aide, transfert, consignes, objections, rappels de groupe, objectifs, coaching,
+script). Côté serveur, seul le transfert est actif par défaut (décision du
+11 novembre 2026) ; le téléphone traite une clé absente comme active, ce qui ne
+sert qu’à la démonstration, le serveur envoyant toutes les clés. Elle regroupe la demande d’aide et sa
 réponse, le transfert pendant un appel actif (liste des collègues connectés),
 puis des lignes dépliables : consignes avec confirmation de lecture, réponses
 aux objections, objectifs collectifs par qualification, évaluations personnelles

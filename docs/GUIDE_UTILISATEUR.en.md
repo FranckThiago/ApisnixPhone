@@ -94,6 +94,7 @@ button reads **Cancel**.
   back.
 - **Keypad** (`K`, or the digits) sends keys to a voice menu (“press 1…”).
 - **Hang up** ends the call.
+- **Team** (if enabled): **Transfer** to a colleague, **Ask for help**.
 
 Shortcuts do not work while you are typing in a field, and the Esc key never
 hangs up.

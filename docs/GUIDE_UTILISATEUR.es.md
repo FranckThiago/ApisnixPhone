@@ -100,6 +100,7 @@ el botón rojo indica **Cancelar**.
   llamada.
 - **Teclado** (`K`, o las cifras) envía teclas a un menú de voz («pulse 1…»).
 - **Colgar** termina la llamada.
+- **Equipo** (si está activada): **Transferir** a un compañero, **Pedir ayuda**.
 
 Los atajos no funcionan mientras escribes en un campo, y la tecla Esc nunca
 cuelga.
