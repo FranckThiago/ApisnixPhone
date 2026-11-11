@@ -73,7 +73,10 @@ function Workspace() {
   const announcements = useAnnouncements(announcementsSource);
   const now = useNow();
   const team = useTeam();
-  const teamPending=(team.workspace?.resources.filter(r=>r.kind==='notice'&&!r.read).length||0)+(team.workspace?.help.filter(h=>h.status==='answered').length||0)+team.reviews.filter(r=>r.ack_revision!==r.revision).length;
+  const teamPending = (team.workspace?.resources.filter(resource => resource.kind === 'notice' && !resource.read).length ?? 0)
+    + (team.workspace?.help.filter(item => item.status === 'answered').length ?? 0)
+    + team.reviews.filter(review => review.ack_revision !== review.revision).length;
+  const showTeam = Boolean(team.workspace?.policy.shared_enabled) || team.reviews.length > 0;
 
   // A callback that comes due is announced once: in the page, and by the system when the person allowed it.
   const announced = useRef(new Set<string>());
@@ -140,11 +143,11 @@ function Workspace() {
           <span className="brand-name">APISNIX<small>ApisnixPhone</small></span></a>
         <p className="nav-caption">{t('nav.caption')}</p>
         <ul>
-          {NAV.filter(([key]) => key!=='team'||team.workspace?.policy.shared_enabled||team.reviews.length>0).map(([key, label, Icon]) => (
+          {NAV.filter(([key]) => key !== 'team' || showTeam).map(([key, label, Icon]) => (
             <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key || key === 'journal' && view === 'callbacks' ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
               aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => navigate(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{t(label)}</span>
-              {key==='team'&&teamPending>0&&<i className="badge badge-yellow">{teamPending}</i>}
+              {key === 'team' && teamPending > 0 && <i className="badge badge-yellow">{teamPending}</i>}
               {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (!unseenMissed ? ' badge-yellow' : '')}
                 aria-label={unseenMissed ? t('nav.missedBadge', { count: unseenMissed }) : t('callbacks.newDue', { count: unseenDue })}>{unseenMissed || unseenDue}</i>}</button></li>
           ))}

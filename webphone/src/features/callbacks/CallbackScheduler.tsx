@@ -11,10 +11,11 @@ import { dateFormat, useI18n } from '../../i18n';
 /** Choose a moment, review it, then explicitly save the callback. */
 export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: { number: string; name?: string; tone?: 'page' | 'call'; onScheduled?(): void }) {
   const { store, notify } = useApp();
-  const {workspace,request}=useTeam();
-  const {busy,run}=useTeamAction();
-  const [scope,setScope]=useState('personal');
-  const [requestId,setRequestId]=useState(()=>crypto.randomUUID());
+  const { workspace, request } = useTeam();
+  const { busy, run } = useTeamAction();
+  const [scope, setScope] = useState<'personal' | 'group'>('personal');
+  // Stable per save: a retried request cannot create the same group callback twice.
+  const [requestId, setRequestId] = useState(() => crypto.randomUUID());
   const { t } = useI18n();
   const now = useNow();
   const summaryId = useId();
@@ -38,7 +39,9 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
   const schedule = async (confirmedNow: number) => {
     // Recheck the real clock at confirmation, even after an inactive tab resumes.
     if (!Number.isFinite(dueAt) || dueAt <= confirmedNow) return notify(t('scheduler.future'), 'danger');
-    if(scope==='group'&&workspace?.policy.shared_enabled) await request('/callbacks',{id:requestId,number:parseDialInput(number).dialTarget,name:name||'',dueAt,note:note.trim()});
+    if (scope === 'group' && workspace?.policy.shared_enabled) {
+      await request('/callbacks', { id: requestId, number: parseDialInput(number).dialTarget, name: name || '', dueAt, note: note.trim() });
+    }
     else store.scheduleCallback({ number, name, dueAt, note: note.trim() || undefined });
     setRequestId(crypto.randomUUID());
     notify(t('scheduler.planned', { when: formatDue(dueAt, confirmedNow).toLowerCase() }), 'success');
@@ -56,7 +59,10 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
   return (
     <div className={`scheduler scheduler-${tone}`} role="group" aria-label={t('scheduler.open')}>
       <p className="scheduler-title"><AlarmClock size={18} /> {t('scheduler.title', { name: name ?? number })}</p>
-      {workspace?.policy.shared_enabled&&<label>{t('team.callbackType')}<select value={scope} disabled={busy} onChange={e=>setScope(e.target.value)}><option value="personal">{t('team.personal')}</option><option value="group">{t('team.group')}</option></select></label>}
+      {workspace?.policy.shared_enabled && <label>{t('team.callbackType')}
+        <select value={scope} disabled={busy} onChange={event => setScope(event.target.value === 'group' ? 'group' : 'personal')}>
+          <option value="personal">{t('team.personal')}</option><option value="group">{t('team.group')}</option>
+        </select></label>}
       <p className="scheduler-help">{t('scheduler.help')}</p>
       <div className="scheduler-presets" role="group" aria-label={t('scheduler.shortcuts')}>
         {quickOptions(now).map(option => <button key={option.label} type="button" aria-pressed={`${date}T${time}` === toLocalInput(option.at)} onClick={() => choose(option.at)}>{option.label}</button>)}
@@ -93,7 +99,7 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
         <CalendarDays size={18} />
         {future ? <span>{t('scheduler.summary')}<strong>{dateFormat({ dateStyle: 'full', timeStyle: 'short' }).format(dueAt)}</strong></span> : <span className="scheduler-error">{t('scheduler.future')}</span>}
       </div>
-      <button type="button" className="primary scheduler-confirm" disabled={!future||busy} aria-describedby={summaryId} onClick={() => {void run(()=>schedule(Date.now()));}}><Check size={17} /> {t('scheduler.save')}</button>
+      <button type="button" className="primary scheduler-confirm" disabled={!future || busy} aria-describedby={summaryId} onClick={() => { void run(() => schedule(Date.now())); }}><Check size={17} /> {t('scheduler.save')}</button>
       <button type="button" className="scheduler-cancel" onClick={() => setOpen(false)}>{t('action.cancel')}</button>
     </div>
   );

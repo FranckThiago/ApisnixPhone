@@ -136,7 +136,10 @@ export class DemoPhoneController implements PhoneController {
     this.updateCall(id, { phase: 'ended', outcome, endedAt: Date.now(), holdPending: false });
   }
 
-  async transfer(extension: string) { if(!extension||this.snapshot.call?.phase!=='active')throw new Error(t('team.transferFailed'));this.hangup(); }
+  async transfer(extension: string) {
+    if (!extension || this.snapshot.call?.phase !== 'active') throw new Error(t('team.transferFailed'));
+    this.hangup();
+  }
 
   dismiss() {
     if (this.snapshot.call?.phase === 'ended') this.update({ call: null });

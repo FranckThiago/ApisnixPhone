@@ -126,7 +126,10 @@ export class CallWaitingPhoneController implements PhoneController {
       holdsLine: async () => true,
       call: async () => { throw new Error('Only an incoming second call is supported'); },
       answer: s => manager().answer(s), decline: s => manager().decline(s), hangup: s => manager().hangup(s),
-      transfer: (s, destination) => {const m=manager();return m.transfer?m.transfer(s,destination):Promise.reject(new Error(t('team.transferFailed')));},
+      transfer: (s, destination) => {
+        const shared = manager();
+        return shared.transfer ? shared.transfer(s, destination) : Promise.reject(new Error(t('team.transferFailed')));
+      },
       hold: s => manager().hold(s), unhold: s => manager().unhold(s),
       mute: s => manager().mute(s), unmute: s => manager().unmute(s),
       sendDTMF: (s, tone) => manager().sendDTMF(s, tone), sentAudioPackets: s => manager().sentAudioPackets(s),
@@ -193,7 +196,7 @@ export class CallWaitingPhoneController implements PhoneController {
   decline = () => { if (!this.switching) this.children[this.selected].decline(); };
   hangup() { this.operation++; this.switching = false; this.children[this.selected].hangup(); this.rebuild(); }
   async transfer(extension: string) {
-    if(this.switching || this.children.filter(child=>live(child.getSnapshot().call)).length!==1)throw new Error(t('team.transferFailed'));
+    if (this.switching || this.children.filter(child => live(child.getSnapshot().call)).length !== 1) throw new Error(t('team.transferFailed'));
     return this.children[this.selected].transfer(extension);
   }
   dismiss() { if (!this.children.some(child => live(child.getSnapshot().call))) this.children.forEach(child => child.dismiss()); }

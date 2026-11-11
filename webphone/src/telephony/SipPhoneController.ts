@@ -723,15 +723,19 @@ export class SipPhoneController implements PhoneController {
 
   private transferring = false;
   async transfer(extension: string) {
-    const session=this.session, manager=this.manager, call=this.snapshot.call;
-    if(this.transferring || !session || !manager?.transfer || call?.phase!=='active' || call.holdPending || !/^[A-Za-z0-9_.-]{1,64}$/.test(extension)) throw new Error(t('team.transferFailed'));
-    this.transferring=true;
+    const session = this.session, manager = this.manager, call = this.snapshot.call;
+    if (this.transferring || !session || !manager?.transfer || call?.phase !== 'active' || call.holdPending
+      || !/^[A-Za-z0-9_.-]{1,64}$/.test(extension)) throw new Error(t('team.transferFailed'));
+    this.transferring = true;
     try {
-      await manager.transfer(session,`sip:${extension}@${this.config.domain}`);
+      await manager.transfer(session, `sip:${extension}@${this.config.domain}`);
       // Never hang up a replacement call after a late result from the former dialog.
-      if(this.session===session && this.snapshot.call?.id===call.id && this.snapshot.call.phase!=='ended') this.hangup();
-    } catch { throw new Error(t('team.transferFailed')); }
-    finally { this.transferring=false; }
+      if (this.session === session && this.snapshot.call?.id === call.id && this.snapshot.call.phase !== 'ended') this.hangup();
+    } catch {
+      throw new Error(t('team.transferFailed'));
+    } finally {
+      this.transferring = false;
+    }
   }
 
   dismiss() {

@@ -1,5 +1,18 @@
 # Journal des changements
 
+## Revue du travail du 22 octobre au 9 novembre — 11 novembre 2026
+
+Revue des 40 commits de `dadcb14` à `58dcbc5` (release `20261109-audio-search`) :
+typage, lint, 307 tests et les deux builds réussis ; aucun secret dans le diff.
+Corrections dans l'espace Équipe : une action enregistrée (consigne lue, rappel
+pris, évaluation lue) attend désormais un relevé frais au lieu d'être ignorée
+quand le relevé périodique tourne déjà ; double clic bloqué avant le rendu ;
+identifiants de rappels et d'évaluations encodés dans toutes les URL ; flèches
+de pagination des rappels de groupe nommées pour les lecteurs d'écran. Code
+`team/` et transfert remis au style du dépôt, sans changement de comportement.
+309 tests (file de relevé testée), typage, lint, builds et parcours démo
+consigne → rappel de groupe → appel → transfert vérifiés. **Non publié.**
+
 ## Recherche dans Audio — 9 novembre 2026
 
 Champ de recherche et bouton d'effacement dans Recordings, traductions FR/EN/ES,

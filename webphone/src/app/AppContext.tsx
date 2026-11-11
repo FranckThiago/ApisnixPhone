@@ -239,8 +239,8 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
         store.close();
         lineCredentials.current = null;
         setRecordingsAccess({ state: 'idle' });
-    setCallTags(CALL_TAGS);
-    setCallScript(null);
+        setCallTags(CALL_TAGS);
+        setCallScript(null);
         await recordings.signOut();
         throw error;
       } finally { setSigningIn(false); loginAttempt.current = null; }

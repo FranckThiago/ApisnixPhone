@@ -37,7 +37,8 @@ conservés. Le build conférence VICIdial reste séparé et n’utilise pas ce p
 
 `team/` : client HTTP avec sessionFetch et CSRF existants, données en mémoire,
 provider monté uniquement dans l’espace connecté. Relevé toutes les 30 secondes
-si visible, au focus/retour réseau. Arrêt et rejet des résultats tardifs après
+si visible, au focus/retour réseau. Un seul relevé à la fois : celui demandé pendant
+un autre (action enregistrée, nouvel accès) le suit immédiatement. Arrêt et rejet des résultats tardifs après
 fermeture/changement d’accès ; 401/403 masque les données. Aucune nouvelle
 permission microphone, stockage de clé ou dépendance. Démonstration exclusivement
 fictive, en mémoire et sans réseau.
