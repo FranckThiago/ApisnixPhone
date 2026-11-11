@@ -1,5 +1,26 @@
 # Construction et validation
 
+## Correctifs de l'espace Équipe — 11 novembre 2026
+
+Release active **20261111-team-refresh**, source `2bf84dc`, depuis
+**13:23:52 Douala** sur Hermes. Frontend seul : pas de backend, de migration
+ni de changement SIP. Build live isolé à partir du commit, mêmes trois
+variables publiques `VITE_APP_MODE`, `VITE_SIP_DOMAIN`, `VITE_SIP_WSS_URL` ;
+270 fichiers, dont 268 identiques à la release précédente (seuls `index.html`
+et le bundle principal changent). Anciennes ressources conservées pour les
+onglets ouverts.
+
+309 tests, typage, lint et build réussis dans le dossier isolé. Recette en
+démonstration : consigne lue (badge effacé aussitôt), rappel de groupe pris
+puis appelé, transfert confirmé, aucune erreur console. Après bascule : HTTPS
+et empreintes vérifiés par le script, Caddy et supervision actifs, page
+publique chargée avec le nouveau bundle, sans erreur ni ressource non HTTPS.
+Aucun appel réel lancé pour cette recette.
+
+Sauvegarde intégrale et reçu dans `/root/apisnix-phone-backups/20261111-team-refresh/`.
+Retour : repointer atomiquement `current` sur **20261109-audio-search**, sans
+redémarrage. Preuves locales : `.work/review-fixes-20261111/`.
+
 ## Recherche dans Audio — 9 novembre 2026
 
 Release active **20261109-audio-search**, source `d194f7c`, depuis

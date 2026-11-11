@@ -11,7 +11,9 @@ identifiants de rappels et d'évaluations encodés dans toutes les URL ; flèche
 de pagination des rappels de groupe nommées pour les lecteurs d'écran. Code
 `team/` et transfert remis au style du dépôt, sans changement de comportement.
 309 tests (file de relevé testée), typage, lint, builds et parcours démo
-consigne → rappel de groupe → appel → transfert vérifiés. **Non publié.**
+consigne → rappel de groupe → appel → transfert vérifiés. Publié sur Hermes à
+13:23:52 Douala, release `20261111-team-refresh`, source `2bf84dc` ; sauvegarde
+et retour vers `20261109-audio-search` documentés dans OPERATIONS.
 
 ## Recherche dans Audio — 9 novembre 2026
 

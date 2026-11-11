@@ -65,3 +65,5 @@ le 7 novembre. Backend à 13:05:27, raccord interne PBX à 13:11:52. Aucun group
 réel activé à la livraison. Ressources HTTPS conformes et formulaire public
 chargé sans erreur console. Aucun appel réel provoqué ; conversation et audio
 transférés restent à valider. Sauvegardes, reçus et retour dans [OPERATIONS](OPERATIONS.md).
+Correctifs de relevé et d'accessibilité en service depuis le 11 novembre,
+release **20261111-team-refresh**.
