@@ -1,8 +1,19 @@
 # Construction et validation
 
+## Guide V3, durées en vert et suggestions — 12 novembre 2026
+
+Release active **20261112-guide-v3**, source `74a5230`, depuis
+**12:43:41 Douala** sur Hermes (feu vert de Franck). Frontend seul : durées
+répondues et durées d'enregistrement en vert, suggestions du composeur sous le
+bouton Appeler. Build live isolé (`.work/guide-v3-20261112`, mêmes variables
+publiques), 313 tests, typage, lint et build réussis ; 270 fichiers, seuls
+`index.html`, le JS et le CSS principaux changent ; HTTPS et empreintes vérifiés
+par le script. Sauvegarde dans `/root/apisnix-phone-backups/20261112-guide-v3/`.
+Retour : repointer `current` sur **20261111-audio-mobile**, sans redémarrage.
+
 ## Audio sur téléphone — 11 novembre 2026
 
-Release active **20261111-audio-mobile**, source `ac4fe50`, depuis
+Release précédente **20261111-audio-mobile**, source `ac4fe50`, depuis
 **15:25:01 Douala** sur Hermes. Frontend seul : en classement par durée, la
 date de l'appel reste visible sous le nom sur téléphone, et les onglets de
 période défilent sur une ligne. Vérifié à 375 px en démo. Build live isolé,

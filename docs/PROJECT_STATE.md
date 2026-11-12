@@ -4,8 +4,8 @@
 
 Durées de conversation (journal) et d'enregistrement (Audio) en vert ;
 suggestions du composeur sous le bouton Appeler. Guide utilisateur **V3**
-(transfert et aide, audios les plus longs) en FR/EN/ES. Code commité, **pas
-encore publié** sur phone.apisnix-crm.com.
+(transfert et aide, audios les plus longs) en FR/EN/ES. En service depuis le 12/11 à
+12:43:41 Douala (release `20261112-guide-v3`).
 
 ## Fonctions d'équipe choisies par le superviseur — 11 novembre 2026
 

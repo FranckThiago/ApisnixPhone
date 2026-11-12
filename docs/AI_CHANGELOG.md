@@ -11,7 +11,7 @@ couverture, diffusé sous « ApisnixPhone - V3.pdf ») : transfert et aide en
 bref avec capture `20-equipe`, nouvelle section « Retrouver les audios les plus
 longs » (`21-audio-longs`), FR/EN/ES, 9 pages. Script de captures réparé
 (boutons de rappel `.scheduler-presets`). 313 tests, typage et lint OK.
-Pas encore publié sur Hermes.
+Publié le 12/11 (release `20261112-guide-v3`, 12:43:41 Douala).
 
 ## Équipe sous le clavier et bouton Effacer — 11 novembre 2026
 
