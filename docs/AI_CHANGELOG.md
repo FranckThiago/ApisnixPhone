@@ -1,6 +1,20 @@
 # Journal des changements
 
-## Rappel du dernier numéro à clavier vide — 12 novembre 2026
+## Réafficher la dernière saisie, puis appeler — 12 novembre 2026
+
+Release active **20261112-rappel2**, source `eb73759`, depuis **20:40:19
+Douala** sur Hermes. Demande de Franck : champ vide, Appeler ou Entrée
+réaffiche la dernière saisie sortante (préfixes de route compris) sans appeler ;
+un second appui la compose. Bouton actif dès qu'une saisie est mémorisée, même
+hors ligne. La saisie est conservée par ligne dans le navigateur
+(`localStorage`, `app/lastDial.ts`) et survit au rechargement. Frontend seul ;
+270 fichiers, seuls `index.html` et `main-B0WFG8io.js` changent. 321 tests,
+typage, lint, build live ; démo navigateur ; HTTPS et empreintes vérifiés.
+Aucun appel réel ; manuels inchangés. Sauvegarde
+`/root/apisnix-phone-backups/20261112-rappel2/`. Retour : repointer `current`
+sur **20261112-redial**, sans redémarrage.
+
+## Rappel du dernier numéro à clavier vide — 12 novembre 2026 (remplacé à 20:40 par l’entrée ci-dessus)
 
 Appeler, ou Entrée, avec le champ vide rappelle la saisie originale du dernier
 appel sortant accepté de la session, préfixes de route et zéros conservés ;
