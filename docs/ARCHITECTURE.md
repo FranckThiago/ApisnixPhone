@@ -233,7 +233,10 @@ qu'au pays, à l'affichage, au journal et à la comparaison de numéros (dont
 l'historique d'un contact) : `parseDialInput` compose les chiffres saisis tels
 quels, sélecteurs numériques compris. `AppContext.lastDial` garde en mémoire
 vive la saisie originale du dernier appel sortant accepté ; Appeler ou Entrée
-sur un champ vide la recompose. `DataStore` normalise le journal et les rappels avant
+sur un champ vide la recompose. Raison (Franck, 12 novembre) : les
+préfixes numériques choisissent le trunk côté PBX, qui les retire au départ ;
+ils servent à essayer plusieurs routes, dont les routes grises (poste de test
+8522 : `9003…`). Ne jamais les retirer ni les réécrire avant la composition. `DataStore` normalise le journal et les rappels avant
 notification/persistance, y compris au chargement d'un ancien profil ; les
 adaptateurs du journal central/audio normalisent aussi les réponses anciennes.
 Notes, contacts, IDs, dates et tags sont conservés. Le backend applique la même
