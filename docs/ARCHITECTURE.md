@@ -228,8 +228,12 @@ d'affichage. Depuis le 13 octobre, `customerNumber` interprète le format exact
 `633` suivi de neuf chiffres (premier 1–9) comme `6` + numéro français `33…`,
 globalement : aucune destination Philippines n'est proposée. Variantes `+`/`00`
 et séparateurs visuels acceptés ; extensions, autres préfixes et numéros
-incomplets conservés. Cette règle précède la numérotation, le pays et la
-comparaison de numéros. `DataStore` normalise le journal et les rappels avant
+incomplets conservés. Depuis le 12 novembre, cette règle ne s'applique plus
+qu'au pays, à l'affichage, au journal et à la comparaison de numéros (dont
+l'historique d'un contact) : `parseDialInput` compose les chiffres saisis tels
+quels, sélecteurs numériques compris. `AppContext.lastDial` garde en mémoire
+vive la saisie originale du dernier appel sortant accepté ; Appeler ou Entrée
+sur un champ vide la recompose. `DataStore` normalise le journal et les rappels avant
 notification/persistance, y compris au chargement d'un ancien profil ; les
 adaptateurs du journal central/audio normalisent aussi les réponses anciennes.
 Notes, contacts, IDs, dates et tags sont conservés. Le backend applique la même

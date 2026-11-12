@@ -5,7 +5,7 @@ import { Avatar } from '../../components/Avatar';
 import { CallbackScheduler } from '../callbacks/CallbackScheduler';
 import { Flag } from '../../components/Flag';
 import { fold, formatDay, formatDuration, formatTime } from '../../domain/format';
-import { countryLabel, describeNumber, parseDialInput } from '../../domain/numbers';
+import { countryLabel, customerNumber, describeNumber, parseDialInput } from '../../domain/numbers';
 import { outcomeLabel, talkSeconds, type Contact, type ContactNumber } from '../../domain/types';
 import { useI18n } from '../../i18n';
 import { searchContacts } from '../../storage/DataStore';
@@ -57,7 +57,8 @@ function Detail({ contact, onEdit }: { contact: Contact; onEdit(): void }) {
   const { store, placeCall, openContact, notify } = useApp();
   const { calls } = useData();
   const { t } = useI18n();
-  const targets = contact.numbers.map(number => parseDialInput(number.value).dialTarget);
+  // Le journal garde les numéros sans sélecteur opérateur : même forme pour retrouver l'historique du contact.
+  const targets = contact.numbers.map(number => parseDialInput(customerNumber(number.value)).dialTarget);
   const history = calls.filter(call => targets.includes(call.dialTarget)).slice(0, 8);
 
   return (
