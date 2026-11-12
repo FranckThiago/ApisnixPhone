@@ -1,5 +1,12 @@
 # État du projet
 
+## Durées en vert et suggestions sous le clavier — 12 novembre 2026
+
+Durées de conversation (journal) et d'enregistrement (Audio) en vert ;
+suggestions du composeur sous le bouton Appeler. Guide utilisateur **V3**
+(transfert et aide, audios les plus longs) en FR/EN/ES. Code commité, **pas
+encore publié** sur phone.apisnix-crm.com.
+
 ## Fonctions d'équipe choisies par le superviseur — 11 novembre 2026
 
 Le dock Équipe n'affiche que les fonctions activées dans Supervision →

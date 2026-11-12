@@ -108,7 +108,13 @@ avant, le bouton rouge indique **Annuler**.
 - **Clavier** (`K`, ou les chiffres) envoie des touches à un serveur vocal
   (« tapez 1… »).
 - **Raccrocher** termine l'appel.
-- **Équipe** (si activée) : **Transférer** à un collègue, **Demander de l’aide**.
+
+![Outils d'équipe pendant l'appel](guide/20-equipe.png "droite 62mm")
+
+**Transfert et aide** (si votre superviseur les a activés) : la zone **Équipe** apparaît sous l'appel.
+
+- **Transférer** : choisissez un collègue connecté de votre groupe, puis **Confirmer le transfert**. Son téléphone sonne ; l'appel vous quitte dès qu'il décroche. S'il ne répond pas, vous gardez votre client.
+- **Demander de l'aide** : écrivez un court message. Votre superviseur est prévenu et sa réponse s'affiche ici.
 
 Raccourcis inactifs pendant la saisie ; Échap ne raccroche jamais.
 
@@ -182,7 +188,19 @@ fichier. Vous ne voyez que les enregistrements de votre poste.
 Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
 **Réessayer** ; sinon, contactez APISNIX.
 
-## 10. Réglages
+## 10. Retrouver les audios les plus longs
+
+![Audios classés du plus long au plus court](guide/21-audio-longs.png "droite")
+
+Les appels les plus longs sont souvent les meilleurs exemples pour travailler et former.
+
+- **1.** Ouvrez **Audio** dans le menu.
+- **2.** Choisissez la période, par exemple **30 derniers jours**.
+- **3.** En haut à droite, choisissez **Plus longs d'abord**.
+
+La liste est alors classée du plus long au plus court, avec la date de chaque appel et sa durée en vert. **Écouter** ou **Télécharger** pour réutiliser l'exemple.
+
+## 11. Réglages
 
 ![Réglages](guide/13-reglages.png "droite")
 
@@ -209,7 +227,7 @@ Rien à saisir : l'accès s'ouvre avec votre ligne. En cas d'échec,
   Appels et audios consultables sur 30 jours.
 - **Compte** : votre identifiant, la version, **Se déconnecter**.
 
-## 11. Sur téléphone ou petite fenêtre
+## 12. Sur téléphone ou petite fenêtre
 
 ![Journal sur mobile](guide/16-mobile-journal.png "gauche 56mm") ![Téléphone sur mobile](guide/17-mobile-telephone.png)
 

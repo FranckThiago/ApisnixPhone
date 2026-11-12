@@ -100,7 +100,13 @@ el botón rojo indica **Cancelar**.
   llamada.
 - **Teclado** (`K`, o las cifras) envía teclas a un menú de voz («pulse 1…»).
 - **Colgar** termina la llamada.
-- **Equipo** (si está activada): **Transferir** a un compañero, **Pedir ayuda**.
+
+![Herramientas de equipo durante la llamada](guide/es/20-equipe.png "droite 62mm")
+
+**Transferencia y ayuda** (si tu supervisor las activó): la zona **Equipo** aparece debajo de la llamada.
+
+- **Transferir**: elige a un compañero conectado de tu grupo y luego **Confirmar transferencia**. Su teléfono suena; la llamada te deja en cuanto contesta. Si no contesta, conservas a tu cliente.
+- **Pedir ayuda**: escribe un mensaje corto. Tu supervisor recibe el aviso y su respuesta aparece aquí.
 
 Los atajos no funcionan mientras escribes en un campo, y la tecla Esc nunca
 cuelga.
@@ -173,7 +179,19 @@ Elige Hoy, Ayer, Últimos 7 o Últimos 30 días y pulsa **Escuchar** o **Descarg
 Solo ves tus grabaciones. El acceso se abre con tu línea; si falla, **Reintentar**
 o contacta con APISNIX.
 
-## 10. Ajustes
+## 10. Encontrar las grabaciones más largas
+
+![Grabaciones de la más larga a la más corta](guide/es/21-audio-longs.png "droite")
+
+Las llamadas más largas suelen ser los mejores ejemplos para trabajar y formar.
+
+- **1.** Abre **Audio** en el menú.
+- **2.** Elige el periodo, por ejemplo **Últimos 30 días**.
+- **3.** Arriba a la derecha, elige **Más largos primero**.
+
+La lista queda ordenada de la más larga a la más corta, con la fecha de cada llamada y su duración en verde. **Escuchar** o **Descargar** para reutilizar el ejemplo.
+
+## 11. Ajustes
 
 ![Ajustes](guide/es/13-reglages.png "droite")
 
@@ -202,7 +220,7 @@ o contacta con APISNIX.
   Llamadas y audios disponibles durante 30 días.
 - **Cuenta**: tu usuario, la versión, **Cerrar sesión**.
 
-## 11. En un teléfono o en una ventana pequeña
+## 12. En un teléfono o en una ventana pequeña
 
 ![Registro en el móvil](guide/es/16-mobile-journal.png "gauche 56mm") ![Teléfono en el móvil](guide/es/17-mobile-telephone.png)
 

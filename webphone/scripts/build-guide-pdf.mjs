@@ -10,6 +10,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+const GUIDE_EDITION = 'V3';
 const DOCS = resolve(import.meta.dirname, '../../docs');
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PORT = 9338;
@@ -118,7 +119,8 @@ async function edition(lang) {
   const intro = rest.join('\n').split('\n## ')[0];
   const body = '## ' + rest.join('\n').split('\n## ').slice(1).join('\n## ');
   const sections = [...body.matchAll(/^## (.+)$/gm)].map(match => match[1]);
-  const version = /ApisnixPhone Web \d+(?:\.\d+)*/.exec(markdown)?.[0] ?? 'ApisnixPhone Web';
+  // Édition du guide (diffusé sous « ApisnixPhone - V<n>.pdf ») : l'augmenter à chaque nouvelle version remise aux clients.
+  const version = `${GUIDE_EDITION} · ${/ApisnixPhone Web \d+(?:\.\d+)*/.exec(markdown)?.[0] ?? 'ApisnixPhone Web'}`;
   const today = new Intl.DateTimeFormat(settings.locale, { month: 'long', year: 'numeric' }).format(new Date());
   const contents = pages => sections.map((title, index) => {
     const [, number, name] = /^(?:(\d+)\. )?(.+)$/.exec(title);

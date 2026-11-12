@@ -115,12 +115,16 @@ try {
   await shot('04-sonnerie', '.call-card');
   await run(`await __wait(2600);`);
   await shot('05-en-appel', '.call-card');
+  // Outils d'équipe pendant l'appel (Demander de l'aide, Transférer), quand le superviseur les a activés.
+  await run(`document.querySelector('.call-team-card').scrollIntoView({ block: 'center' }); await __wait(300);`);
+  await shot('20-equipe', '.call-team-card');
+  await run(`document.querySelector('.call-card').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); document.querySelectorAll('*').forEach(el => { if (el.scrollTop) el.scrollTop = 0; }); await __wait(300);`);
   await run(`__click('.call-controls .control', 0); __click('.call-controls .control', 1); await __wait(900);`);
   await shot('06-muet-attente', '.call-card');
   await run(`__click('.call-controls .control', 1); await __wait(800); document.querySelector('.hangup').click(); await __wait(500); __click('.wrapup .tags .tag');
     __type('.wrapup .note', ${JSON.stringify(WORDS['demo.noteQuote'])}); __click('.wrapup > .ghost-call'); await __wait(300);`);
   await shot('07-fin-appel', '.call-card');
-  await run(`__text('.scheduler .tag', ${JSON.stringify(WORDS['quick.tomorrow'])}); await __wait(400); __click('.wrapup-actions .done'); await __wait(400);`);
+  await run(`const presets = [...document.querySelectorAll('.scheduler-presets button')]; (presets.find(b => b.textContent.trim() === ${JSON.stringify(WORDS['quick.tomorrow'])}) ?? presets[1]).click(); await __wait(400); __click('.wrapup-actions .done'); await __wait(400);`);
 
   await run(`document.querySelector('.call-summary').click(); await __wait(400);`);
   await shot('08-journal-detail');
@@ -140,6 +144,10 @@ try {
 
   await run(`__nav('audio'); await __wait(500);`);
   await shot('18-audio');
+  // Audios les plus longs d'abord, sur 30 jours : la vue utilisée pour travailler et former.
+  await run(`__text('.toolbar .tabs button', ${JSON.stringify(WORDS['rec.month'])}); await __wait(300); const sel = document.querySelector('.audio-order select');
+    Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(sel, 'audio_desc'); sel.dispatchEvent(new Event('change', { bubbles: true })); await __wait(900);`);
+  await shot('21-audio-longs');
   await run(`__nav('journal'); await __wait(300);`);
 
   await viewport(390, 844, true);

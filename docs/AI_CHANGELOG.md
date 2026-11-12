@@ -1,5 +1,18 @@
 # Journal des changements
 
+## Durées en vert, suggestions sous le clavier, guide V3 — 12 novembre 2026
+
+Demandes de Franck. Journal : la durée d'un appel répondu est en vert
+(`.result-answered`, `--success`), « Sans réponse » reste jaune. Audio : durée
+de chaque enregistrement en vert. Composeur : les suggestions de contacts
+s'affichent sous le bouton Appeler, pour que le clavier ne bouge plus pendant
+la saisie. Guide **V3** (constante `GUIDE_EDITION`, affichée sur la
+couverture, diffusé sous « ApisnixPhone - V3.pdf ») : transfert et aide en
+bref avec capture `20-equipe`, nouvelle section « Retrouver les audios les plus
+longs » (`21-audio-longs`), FR/EN/ES, 9 pages. Script de captures réparé
+(boutons de rappel `.scheduler-presets`). 313 tests, typage et lint OK.
+Pas encore publié sur Hermes.
+
 ## Équipe sous le clavier et bouton Effacer — 11 novembre 2026
 
 Le menu latéral Équipe et sa page sont supprimés. `team/TeamDock.tsx`

@@ -131,7 +131,7 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .row-tags { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
 .tag-mini { max-width: 100%; overflow-wrap: anywhere; font-style: normal; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--yellow-soft); color: var(--text); border: 1px solid color-mix(in srgb, var(--yellow) 60%, transparent); }
 .result { font-size: 12.5px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
-.result-answered { color: var(--text); } .result-missed, .result-failed { color: var(--danger); } .result-busy, .result-no-answer { color: var(--warning); }
+.result-answered { color: var(--success); } .result-missed, .result-failed { color: var(--danger); } .result-busy, .result-no-answer { color: var(--warning); }
 .when { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
 .chevron { color: var(--faint); transition: transform .18s; } .call-row.open .chevron { transform: rotate(180deg); }
 .row-call { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--success); background: var(--success-soft); opacity: 0; transform: scale(.9); transition: opacity .15s, transform .15s, background .15s, color .15s; }
@@ -253,7 +253,7 @@ input[type=range] { accent-color: var(--brand); }
 .dial-row input::placeholder { color: var(--faint); font-weight: 500; font-size: 18px; letter-spacing: 0; }
 .dial-hint { display: flex; align-items: center; gap: 8px; min-height: 20px; font-size: 12.5px; color: var(--muted); }
 .dial-exact { margin-left: auto; font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
-.suggestions { display: grid; gap: 2px; margin: -4px 0; } .suggestions li { display: flex; align-items: center; }
+.suggestions { display: grid; gap: 2px; margin: 0; } .suggestions li { display: flex; align-items: center; }
 .suggestions li > button:first-child { flex: 1; display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 10px; text-align: left; } .suggestions li > button:first-child:hover { background: var(--brand-soft); }
 .suggestions b, .suggestions small { display: block; }
 .keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
@@ -515,7 +515,7 @@ input[type=range] { accent-color: var(--brand); }
 .day-group .audio-row:first-child { border-top: 0; } .audio-row:hover { background: var(--surface-2); }
 .audio-files { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-left: auto; }
 .audio-actions { display: inline-flex; align-items: center; gap: 6px; }
-.audio-length { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 4px; }
+.audio-length { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--success); font-variant-numeric: tabular-nums; margin-right: 4px; }
 .ghost.active-audio { background: var(--yellow); border-color: var(--yellow-strong); color: var(--on-yellow); }
 a.ghost { text-decoration: none; }
 .audio-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 18px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }

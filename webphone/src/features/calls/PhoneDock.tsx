@@ -122,6 +122,11 @@ function Dialer() {
               : null}
           </p>
         </div>
+        <Keypad onKey={press} />
+        <button type="button" className="call-button" disabled={!ready} onClick={() => placeCall(dial)}>
+          <Phone size={20} /> {t('action.call')} <Kbd>↵</Kbd>
+        </button>
+        {/* Sous le bouton d'appel : la liste qui apparaît pendant la saisie ne déplace plus le clavier. */}
         {suggestions.length > 0 && (
           <ul className="suggestions" aria-label={t('dialer.suggestions')}>
             {suggestions.map(contact => (
@@ -134,10 +139,6 @@ function Dialer() {
             ))}
           </ul>
         )}
-        <Keypad onKey={press} />
-        <button type="button" className="call-button" disabled={!ready} onClick={() => placeCall(dial)}>
-          <Phone size={20} /> {t('action.call')} <Kbd>↵</Kbd>
-        </button>
       </section>
       <DueCallbacks />
     </>

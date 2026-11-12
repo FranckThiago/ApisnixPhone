@@ -94,7 +94,13 @@ button reads **Cancel**.
   back.
 - **Keypad** (`K`, or the digits) sends keys to a voice menu (“press 1…”).
 - **Hang up** ends the call.
-- **Team** (if enabled): **Transfer** to a colleague, **Ask for help**.
+
+![Team tools during the call](guide/en/20-equipe.png "droite 62mm")
+
+**Transfer and help** (if your supervisor enabled them): the **Team** area appears under the call.
+
+- **Transfer**: pick a signed-in colleague from your group, then **Confirm transfer**. Their phone rings; the call leaves you as soon as they answer. If they do not answer, you keep your customer.
+- **Ask for help**: write a short message. Your supervisor is notified and their reply shows here.
 
 Shortcuts do not work while you are typing in a field, and the Esc key never
 hangs up.
@@ -165,7 +171,19 @@ only see the recordings of your own extension.
 Nothing to type: access opens with your line. If it fails, **Try again**;
 otherwise, contact APISNIX.
 
-## 10. Settings
+## 10. Find the longest recordings
+
+![Recordings ranked from longest to shortest](guide/en/21-audio-longs.png "droite")
+
+The longest calls are often the best examples to work with and to train.
+
+- **1.** Open **Audio** in the menu.
+- **2.** Choose the period, for example **Last 30 days**.
+- **3.** At the top right, choose **Longest first**.
+
+The list is then ranked from longest to shortest, with each call's date and its duration in green. **Listen** or **Download** to reuse the example.
+
+## 11. Settings
 
 ![Settings](guide/en/13-reglages.png "droite")
 
@@ -194,7 +212,7 @@ otherwise, contact APISNIX.
   Calls and recordings remain accessible for 30 days.
 - **Account**: your username, the version, **Sign out**.
 
-## 11. On a phone or a small window
+## 12. On a phone or a small window
 
 ![Call log on mobile](guide/en/16-mobile-journal.png "gauche 56mm") ![Phone on mobile](guide/en/17-mobile-telephone.png)
 
