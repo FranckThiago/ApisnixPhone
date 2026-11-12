@@ -1,22 +1,22 @@
 # Journal des changements
 
-## 12 novembre — Rappel clavier vide préparé, non publié
+## Rappel du dernier numéro à clavier vide — 12 novembre 2026
 
-Un clic sur Appeler, ou Entrée, avec le champ vide rappelle la saisie originale
-de la dernière tentative sortante acceptée dans la session. Préfixes numériques
-et zéros conservés, sans reprendre le numéro reformatté du journal. Une saisie
-présente reste prioritaire ; une saisie invalide ne déclenche jamais de rappel.
-Mémoire en RAM remise à zéro au login réussi, à la déconnexion et au rechargement.
-Le sélecteur numérique 633 n'est plus retiré par `parseDialInput` ; affichage
-historique et rapprochement des contacts conservés, convention du + inchangée.
+Appeler, ou Entrée, avec le champ vide rappelle la saisie originale du dernier
+appel sortant accepté de la session, préfixes de route et zéros conservés ;
+une saisie présente reste prioritaire. Mémoire vive seulement (remise à zéro à
+la connexion, à la déconnexion et au rechargement). `parseDialInput` ne retire
+plus le sélecteur 633 : les préfixes choisissent le trunk côté PBX. Affichage,
+pays, journal et rapprochement des contacts inchangés (`33…`).
 
-318 tests, typage, lint et build démo réussis (39 fichiers de tests). Sources sur
-`codex/redial-20261112`, base 84c99af. Aucun appel réel ni changement de manuel.
-Publication et recette visuelle non réalisées : accès réseau restreint, serveur
-local refusé et URL file bloquée par le navigateur. La release de production
-reste celle documentée ci-dessous. Reprendre par une recette démo puis un build
-live avec les variables publiques actives, sauvegarde et bascule atomique selon
-OPERATIONS. Aucun build démo à publier en production.
+Release active **20261112-redial**, source `17515ea`, depuis **19:52:30
+Douala** sur Hermes. Frontend seul ; build live isolé depuis Git avec les trois
+variables publiques ; 270 fichiers, seuls `index.html` et le JS principal
+(`main-Dec1kig8.js`) changent. 318 tests, typage, lint ; démo navigateur (clic,
+Entrée, saisie invalide, 00633 et 90033 rappelés) ; HTTPS et empreintes
+vérifiés par le script, page live sans erreur console. Aucun appel réel testé ;
+manuels inchangés. Sauvegarde `/root/apisnix-phone-backups/20261112-redial/`.
+Retour : repointer `current` sur **20261112-guide-v3**, sans redémarrage.
 
 ## Durées en vert, suggestions sous le clavier, guide V3 — 12 novembre 2026
 
