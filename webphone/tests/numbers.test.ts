@@ -12,6 +12,10 @@ describe('dial input', () => {
     expect(parseDialInput('+41 44 220 15 15').dialTarget).toBe('41442201515');
     expect(parseDialInput('90033100000001').dialTarget).toBe('90033100000001');
     expect(parseDialInput('815145550100').dialTarget).toBe('815145550100');
+    for (const raw of ['633612345678', '00633612345678', '133612345678', '630033612345678', '730033612345678', '830033612345678', '930033612345678', '00123']) {
+      expect(parseDialInput(raw).dialTarget).toBe(raw);
+      expect(parseDialInput(parseDialInput(raw).rawInput).dialTarget).toBe(raw);
+    }
     expect(parseDialInput('+*72').valid).toBe(false);
     expect(parseDialInput('8523').dialTarget).toBe('8523');
   });

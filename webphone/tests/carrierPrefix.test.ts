@@ -3,12 +3,12 @@ import { customerNumber, describeNumber, parseDialInput, sameNumber } from '../s
 import { DataStore, emptyData } from '../src/storage/DataStore';
 
 describe('France carrier selector 633', () => {
-  it('keeps country, display and recall consistent for old journal formats', () => {
+  it('keeps historical display and contact matching separate from exact outgoing prefixes', () => {
     for (const number of ['633612345678', '+633612345678', '00633612345678', '+63 36 12 34 56 78']) {
       expect(customerNumber(number)).toBe('33612345678');
       expect(describeNumber(number)).toMatchObject({ country: 'FR', display: '33612345678' });
       expect(describeNumber(number, 'inbound')).toMatchObject({ country: 'FR' });
-      expect(parseDialInput(number).dialTarget).toBe('33612345678');
+      expect(parseDialInput(number).dialTarget).toBe(number.replace(/[+\s]/g, ''));
       expect(sameNumber(number, '33612345678')).toBe(true);
     }
   });

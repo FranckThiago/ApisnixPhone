@@ -1,5 +1,23 @@
 # Journal des changements
 
+## 12 novembre — Rappel clavier vide préparé, non publié
+
+Un clic sur Appeler, ou Entrée, avec le champ vide rappelle la saisie originale
+de la dernière tentative sortante acceptée dans la session. Préfixes numériques
+et zéros conservés, sans reprendre le numéro reformatté du journal. Une saisie
+présente reste prioritaire ; une saisie invalide ne déclenche jamais de rappel.
+Mémoire en RAM remise à zéro au login réussi, à la déconnexion et au rechargement.
+Le sélecteur numérique 633 n'est plus retiré par `parseDialInput` ; affichage
+historique et rapprochement des contacts conservés, convention du + inchangée.
+
+318 tests, typage, lint et build démo réussis (39 fichiers de tests). Sources sur
+`codex/redial-20261112`, base 84c99af. Aucun appel réel ni changement de manuel.
+Publication et recette visuelle non réalisées : accès réseau restreint, serveur
+local refusé et URL file bloquée par le navigateur. La release de production
+reste celle documentée ci-dessous. Reprendre par une recette démo puis un build
+live avec les variables publiques actives, sauvegarde et bascule atomique selon
+OPERATIONS. Aucun build démo à publier en production.
+
 ## Durées en vert, suggestions sous le clavier, guide V3 — 12 novembre 2026
 
 Demandes de Franck. Journal : la durée d'un appel répondu est en vert

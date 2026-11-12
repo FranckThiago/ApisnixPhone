@@ -5,8 +5,8 @@ import { fold } from './format';
 /**
  * What the user typed, what will really be dialled, and display-only metadata
  * are kept apart. A leading + uses the PBX format: +33 becomes 0033, otherwise
- * only + is removed. National zeros stay unchanged; the APISNIX 633 selector
- * is converted to the customer-facing French 33 format before those rules.
+ * only + is removed. National zeros and every numeric carrier selector stay
+ * unchanged. Display normalization must never choose the outgoing route.
  */
 export interface DialInput {
   rawInput: string;
@@ -34,7 +34,7 @@ export function customerNumber(value: string): string {
 
 
 export function parseDialInput(rawInput: string): DialInput {
-  let dialTarget = customerNumber(rawInput.replace(VISUAL_SEPARATORS, ''));
+  let dialTarget = rawInput.replace(VISUAL_SEPARATORS, '');
   if (!dialTarget) return { rawInput, dialTarget, valid: false, reason: 'empty' };
   if (!/^[+\d*#]+$/.test(dialTarget)) return { rawInput, dialTarget, valid: false, reason: 'characters' };
   if (dialTarget.lastIndexOf('+') > 0) return { rawInput, dialTarget, valid: false, reason: 'plus' };
@@ -177,7 +177,7 @@ export function incomingNumber(raw: string, identities: readonly (string | undef
 }
 
 export function sameNumber(a: string, b: string): boolean {
-  return parseDialInput(a).dialTarget === parseDialInput(b).dialTarget;
+  return parseDialInput(customerNumber(a)).dialTarget === parseDialInput(customerNumber(b)).dialTarget;
 }
 
 export function countryLabel(info: NumberInfo): string {

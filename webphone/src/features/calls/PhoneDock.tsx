@@ -72,7 +72,7 @@ function Keypad({ onKey, compact = false }: { onKey(key: string): void; compact?
 }
 
 function Dialer() {
-  const { dial, setDial, placeCall, openContact } = useApp();
+  const { dial, lastDial, setDial, placeCall, openContact } = useApp();
   const { connection } = usePhone();
   const { contacts } = useData();
   const { t } = useI18n();
@@ -84,7 +84,9 @@ function Dialer() {
   const info = describeNumber(input.dialTarget);
   const known = input.valid ? findContact(contacts, input.dialTarget) : undefined;
   const suggestions = useMemo(() => (dial.trim().length > 1 && !known ? searchContacts(contacts, dial).slice(0, 3) : []), [dial, contacts, known]);
-  const ready = connection === 'ready' && input.valid;
+  const callInput = dial.trim() ? dial : lastDial;
+  const ready = connection === 'ready' && parseDialInput(callInput).valid;
+  const redialLabel = !dial.trim() && lastDial ? t('dialer.redial', { number: lastDial }) : undefined;
 
   const press = (key: string) => {
     setDial(filterDialCharacters(dial + key));
@@ -104,7 +106,7 @@ function Dialer() {
             <input id="dial-input" ref={field} value={dial} inputMode="tel" autoComplete="off" spellCheck={false}
               placeholder={t('dialer.placeholder')} aria-describedby="dial-hint"
               onChange={event => setDial(/[a-zA-ZÀ-ÿ]/.test(event.target.value) ? event.target.value.slice(0, 40) : filterDialCharacters(event.target.value))}
-              onKeyDown={event => { if (event.key === 'Enter' && ready) placeCall(dial); }} />
+              onKeyDown={event => { if (event.key === 'Enter' && ready) placeCall(callInput); }} />
             {dial && <button type="button" className="dial-erase" aria-label={t('dialer.backspace')} title={t('dialer.backspaceHint')}
               onPointerDown={() => {
                 eraseHold.current.cleared = false;
@@ -123,7 +125,7 @@ function Dialer() {
           </p>
         </div>
         <Keypad onKey={press} />
-        <button type="button" className="call-button" disabled={!ready} onClick={() => placeCall(dial)}>
+        <button type="button" className="call-button" disabled={!ready} title={redialLabel} aria-label={redialLabel} onClick={() => placeCall(callInput)}>
           <Phone size={20} /> {t('action.call')} <Kbd>↵</Kbd>
         </button>
         {/* Sous le bouton d'appel : la liste qui apparaît pendant la saisie ne déplace plus le clavier. */}

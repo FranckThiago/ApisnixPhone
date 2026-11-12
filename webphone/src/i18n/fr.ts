@@ -302,6 +302,7 @@ export const fr = {
   'dialer.backspace': 'Effacer le dernier caractère',
   'dialer.backspaceHint': 'Effacer · maintenir pour tout effacer',
   'dialer.exact': 'Numéro exactement composé',
+  'dialer.redial': 'Rappeler le dernier numéro : {number}',
   'dialer.allowed': 'Chiffres, +, * et # uniquement.',
   'dialer.suggestions': 'Contacts correspondants',
   'dialer.openContact': 'Ouvrir la fiche de {name}',

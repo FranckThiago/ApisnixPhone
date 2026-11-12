@@ -43,6 +43,8 @@ interface AppValue {
   view: View;
   setView(view: View): void;
   dial: string;
+  /** Original outgoing input, scoped to the signed-in session. */
+  lastDial: string;
   setDial(value: string): void;
   placeCall(rawInput: string): void;
   /** Resolves to true once the line is registered and the session is open. */
@@ -101,6 +103,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   const [callScript, setCallScript] = useState<CallScript | null>(null);
   const [view, setView] = useState<View>(embedded ? 'phone' : 'journal');
   const [dial, setDial] = useState('');
+  const [lastDial, setLastDial] = useState('');
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [wrapUpRecordId, setWrapUpRecordId] = useState<string | null>(null);
@@ -188,7 +191,11 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     else if (state.call) return notify(t('dial.busy'), 'danger');
     const contact = findContact(store.getSnapshot().contacts, input.dialTarget);
     phone.call(rawInput, input.dialTarget, contact?.name);
-    setDial('');
+    const started = phone.getSnapshot().call;
+    if (started?.direction === 'outbound' && started.rawInput === rawInput && started.id !== state.call?.id) {
+      setLastDial(rawInput);
+      setDial('');
+    }
   }, [notify]);
 
   const reopenRecordings = useCallback(async () => {
@@ -231,6 +238,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
           return false;
         }
         lineCredentials.current = { ...credentials, username: credentials.username.trim() };
+        setLastDial('');
         setSessionOpen(true);
         if (demoPhone) void reopenRecordings();
         return true;
@@ -272,6 +280,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     recorded.current.clear();
     setView(embedded ? 'phone' : 'journal');
     setDial('');
+    setLastDial('');
     setSelectedContactId(null);
     setFavoritesOnly(false);
     lineCredentials.current = null;
@@ -294,9 +303,9 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    callTags, callScript: sessionOpen && recordingsAccess.state === 'open' ? callScript : null, phone, store, recordings, announcements, view, setView, dial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
+    callTags, callScript: sessionOpen && recordingsAccess.state === 'open' ? callScript : null, phone, store, recordings, announcements, view, setView, dial, lastDial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
-  }), [callTags, callScript, view, dial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
+  }), [callTags, callScript, view, dial, lastDial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
