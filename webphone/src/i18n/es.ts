@@ -304,7 +304,7 @@ export const es: Record<MessageKey, string> = {
   'dialer.backspace': 'Borrar el último carácter',
   'dialer.backspaceHint': 'Borrar · mantener para borrar todo',
   'dialer.exact': 'Número marcado tal cual',
-  'dialer.redial': 'Volver a llamar al último número: {number}',
+  'dialer.redial': 'Recuperar el último número marcado: {number}',
   'dialer.allowed': 'Solo cifras, +, * y #.',
   'dialer.suggestions': 'Contactos que coinciden',
   'dialer.openContact': 'Abrir la ficha de {name}',

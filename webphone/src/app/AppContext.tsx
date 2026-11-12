@@ -1,6 +1,7 @@
 import { isEmbeddedSession } from '../http/embeddedSession';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { parseDialInput } from '../domain/numbers';
+import { readLastDial, writeLastDial } from './lastDial';
 import { notificationsEnabled } from '../telephony/notifications';
 import { bindPageLifecycle } from '../telephony/pageLifecycle';
 import { CALL_TAGS } from '../domain/types';
@@ -194,6 +195,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     const started = phone.getSnapshot().call;
     if (started?.direction === 'outbound' && started.rawInput === rawInput && started.id !== state.call?.id) {
       setLastDial(rawInput);
+      if (lineCredentials.current) writeLastDial(lineCredentials.current.username, rawInput);
       setDial('');
     }
   }, [notify]);
@@ -238,7 +240,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
           return false;
         }
         lineCredentials.current = { ...credentials, username: credentials.username.trim() };
-        setLastDial('');
+        setLastDial(readLastDial(credentials.username));
         setSessionOpen(true);
         if (demoPhone) void reopenRecordings();
         return true;

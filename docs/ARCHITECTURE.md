@@ -232,8 +232,10 @@ incomplets conservés. Depuis le 12 novembre, cette règle ne s'applique plus
 qu'au pays, à l'affichage, au journal et à la comparaison de numéros (dont
 l'historique d'un contact) : `parseDialInput` compose les chiffres saisis tels
 quels, sélecteurs numériques compris. `AppContext.lastDial` garde en mémoire
-vive la saisie originale du dernier appel sortant accepté ; Appeler ou Entrée
-sur un champ vide la recompose. Raison (Franck, 12 novembre) : les
+la saisie originale du dernier appel sortant accepté ; `app/lastDial.ts` la
+conserve aussi par ligne dans le navigateur (`localStorage`), pour la retrouver
+après un rechargement. Appeler ou Entrée sur un champ vide la **réaffiche** dans
+le champ sans appeler, même hors ligne ; un second appui la compose. Raison (Franck, 12 novembre) : les
 préfixes numériques choisissent le trunk côté PBX, qui les retire au départ ;
 ils servent à essayer plusieurs routes, dont les routes grises (poste de test
 8522 : `9003…`). Ne jamais les retirer ni les réécrire avant la composition. `DataStore` normalise le journal et les rappels avant
