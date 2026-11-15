@@ -6,8 +6,12 @@ Seuils approuvés : audio > 600 ms ou pertes > 5 % pendant 10 s ; quatre
 incidents en 30 s ; retour sous 500 ms et pertes ≤ 5 % pendant 10 s avec
 oubli des incidents. HTTPS > 1 500 ms pendant 10 s, texte serveur FR/EN/ES.
 Moteur synchronisé avec le CRM ; coupures rouges et timeout inchangés.
-344 tests, typage et lint réussis. Publication en préparation. Architecture,
-plan, état et opérations alignés ; pas de migration ni de modification de manuel.
+344 tests, typage, lint et build réussis. En service sur Hermes à 19:06:58 Douala,
+release `20261115-connection-tolerance`, source `f46b2a9`. 270 fichiers vérifiés,
+seuls index/bundle principal changés, anciennes ressources conservées. Simulations
+et chargement public validés, services actifs ; aucun appel réel. Sauvegarde et
+retour ciblé détaillés dans OPERATIONS. Architecture, plan et état alignés ;
+pas de migration ni de modification de manuel.
 
 
 ## Conférence à trois et messagerie vocale — 15 novembre 2026

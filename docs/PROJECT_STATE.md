@@ -2,11 +2,14 @@
 
 ## Alerte de connexion assouplie — 15 novembre 2026
 
-Version `20261115-connection-tolerance` en préparation : audio > 600 ms ou
+Version **`20261115-connection-tolerance` en service depuis 19:06:58 Douala**
+sur Hermes (source `f46b2a9`) : audio > 600 ms ou
 pertes > 5 % pendant 10 s ; HTTPS > 1 500 ms avec message serveur distinct.
 Quatre incidents en 30 s ; récupération sous 500 ms et pertes ≤ 5 % pendant
 10 s, anciens incidents effacés. Rouge inchangé. Moteur identique au CRM.
-344 tests, typage/lint réussis ; aucune migration ni manuel modifié.
+344 tests, typage/lint/build réussis ; simulations et chargement public vérifiés.
+Seuls l'index et le bundle principal changent ; services conservés, aucune
+migration ni manuel modifié. Actualiser hors appel. Détails et retour : OPERATIONS.
 
 
 ## Conférence à trois et messagerie vocale — 15 novembre 2026

@@ -2,12 +2,30 @@
 
 ## Alerte de connexion assouplie — 15 novembre 2026
 
-Version `20261115-connection-tolerance` en préparation : audio > 600 ms ou
-pertes > 5 % pendant 10 s ; HTTPS > 1 500 ms avec message serveur distinct.
-Quatre incidents en 30 s ; récupération sous 500 ms et pertes ≤ 5 % pendant
-10 s, anciens incidents effacés. Rouge inchangé. Moteur identique au CRM.
-344 tests, typage/lint réussis ; aucune migration ni manuel modifié.
+Release active **`20261115-connection-tolerance`**, source `f46b2a9`, depuis
+**19:06:58 Douala** sur Hermes. Audio > 600 ms ou pertes > 5 % pendant 10 s ;
+HTTPS > 1 500 ms avec message serveur distinct. Quatre incidents en 30 s ;
+récupération sous 500 ms et pertes ≤ 5 % pendant 10 s, anciens incidents effacés.
+Rouge et timeout inchangés. Moteur identique à celui du CRM publié à 19:06:39.
 
+Build live isolé du commit, variables publiques conservées (`VITE_APP_MODE`,
+`VITE_SIP_DOMAIN`, `VITE_SIP_WSS_URL`, `VITE_CALL_WAITING_LINES`). 270 fichiers
+vérifiés ; seuls `index.html` et le JS principal `main-D6KKuTFK.js` changent.
+Anciennes ressources conservées pour les onglets ouverts. 344 tests, typage,
+lint et build réussis (avertissement habituel de taille du bundle).
+
+Simulations dans le navigateur intégré : message serveur, coupure, disparition
+après stabilité ; CRM audio/serveur également contrôlé. Page publique après
+bascule : nouveau bundle chargé, bandeau monté et masqué, aucune erreur console.
+HTTPS et empreintes validés par le script ; Caddy et supervision actifs.
+Aucun compte client connecté ni appel réel ; aucune migration, aucun manuel
+modifié. Recharger les pages hors appel, sans interrompre les sessions ouvertes.
+
+Sauvegarde intégrale vérifiée et reçu :
+`/root/apisnix-phone-backups/20261115-connection-tolerance/` (0700).
+`rollback.py` contrôle IP, release active et empreintes puis repointe atomiquement
+`current` vers **`20261115-tous-postes`**, sans redémarrage ni restauration DB.
+Preuves locales : `.work/connection-tolerance-20261115/`.
 
 ## Conférence à trois et messagerie vocale — 15 novembre 2026
 
