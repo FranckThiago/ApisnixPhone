@@ -113,8 +113,16 @@ avant, le bouton rouge indique **Annuler**.
 
 **Transfert et aide** (si votre superviseur les a activés) : la zone **Équipe** apparaît sous l'appel.
 
-- **Transférer** : choisissez un collègue connecté de votre groupe, puis **Confirmer le transfert**. Son téléphone sonne ; l'appel vous quitte dès qu'il décroche. S'il ne répond pas, vous gardez votre client.
+- **Transférer** : choisissez un collègue connecté de votre groupe. **Transfert direct** : son téléphone sonne et l'appel vous quitte dès qu'il décroche ; s'il ne répond pas, vous gardez votre client. **Attente puis appeler** : votre client patiente en musique pendant que vous parlez d'abord à votre collègue.
 - **Demander de l'aide** : écrivez un court message. Votre superviseur est prévenu et sa réponse s'affiche ici.
+
+![Choix du transfert](guide/22-transfert.png "58mm") ![Pendant que vous parlez à votre collègue](guide/24-consultation-commandes.png "58mm")
+
+Après **Attente puis appeler**, une fois votre collègue en ligne :
+
+- **Conférence à trois** : le client revient, vous parlez tous les trois ; **Quitter la conférence** les laisse ensemble.
+- **Relier et quitter** : le client et votre collègue sont mis en relation, vous êtes libre.
+- **Raccrocher le tiers** termine l'appel du collègue et vous rend votre client ; **Raccrocher les deux** termine tout.
 
 Raccourcis inactifs pendant la saisie ; Échap ne raccroche jamais.
 

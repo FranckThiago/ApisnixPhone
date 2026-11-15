@@ -21,6 +21,8 @@ if (!WORDS) throw new Error(`GUIDE_LANG inconnu : ${LANG} (fr, en ou es)`);
 // GUIDE_OUT writes elsewhere (the site's gallery) and GUIDE_SCALE sharpens the pictures (2 for the site, 1.5 for the guide).
 const OUT = process.env.GUIDE_OUT ? resolve(process.env.GUIDE_OUT) : resolve(import.meta.dirname, '../../docs/guide', LANG === 'fr' ? '' : LANG);
 const SCALE = Number(process.env.GUIDE_SCALE ?? 1.5);
+// GUIDE_ONLY=22-transfert,24-consultation-commandes rewrites only the named pictures and leaves the others as they are.
+const ONLY = process.env.GUIDE_ONLY ? new Set(process.env.GUIDE_ONLY.split(',').map(name => name.trim())) : null;
 const PORT = 9337;
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
@@ -57,6 +59,7 @@ const run = async expression => {
 };
 const viewport = (width, height, mobile = false) => send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: SCALE, mobile });
 async function shot(name, selector) {
+  if (ONLY && !ONLY.has(name)) return;
   // The guide shows the application as a client sees it: the demonstration banner, the sign-in hint and the
   // « demo » / « fictional data » mentions stay out of the pictures (text nodes only, the layout is unchanged).
   await run(`
@@ -118,6 +121,13 @@ try {
   // Outils d'équipe pendant l'appel (Demander de l'aide, Transférer), quand le superviseur les a activés.
   await run(`document.querySelector('.call-team-card').scrollIntoView({ block: 'center' }); await __wait(300);`);
   await shot('20-equipe', '.call-team-card');
+  // Transfert : choix du collègue, puis « Attente puis appeler » et les commandes de la consultation.
+  await run(`__click('.call-team-action', 1); await __wait(400); __click('.team-peer'); await __wait(300); document.activeElement?.blur();
+    document.querySelector('.call-team-transfer').scrollIntoView({ block: 'center' }); await __wait(300);`);
+  await shot('22-transfert', '.call-team-transfer');
+  await run(`__click('.team-choice', 1); await __wait(3400); window.scrollTo(0, 0); document.querySelectorAll('*').forEach(el => { if (el.scrollTop) el.scrollTop = 0; }); await __wait(300);`);
+  await shot('24-consultation-commandes', '.consult-actions');
+  await run(`__click('.consult-ends .ghost-call', 0); await __wait(600);`);
   await run(`document.querySelector('.call-card').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); document.querySelectorAll('*').forEach(el => { if (el.scrollTop) el.scrollTop = 0; }); await __wait(300);`);
   await run(`__click('.call-controls .control', 0); __click('.call-controls .control', 1); await __wait(900);`);
   await shot('06-muet-attente', '.call-card');

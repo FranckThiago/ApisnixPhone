@@ -99,8 +99,16 @@ button reads **Cancel**.
 
 **Transfer and help** (if your supervisor enabled them): the **Team** area appears under the call.
 
-- **Transfer**: pick a signed-in colleague from your group, then **Confirm transfer**. Their phone rings; the call leaves you as soon as they answer. If they do not answer, you keep your customer.
+- **Transfer**: pick a signed-in colleague from your group. **Direct transfer**: their phone rings and the call leaves you as soon as they answer; if they do not answer, you keep your customer. **Hold then call**: your customer waits with music while you speak to your colleague first.
 - **Ask for help**: write a short message. Your supervisor is notified and their reply shows here.
+
+![Transfer choices](guide/en/22-transfert.png "58mm") ![While you are speaking to your colleague](guide/en/24-consultation-commandes.png "58mm")
+
+After **Hold then call**, once your colleague is on the line:
+
+- **Three-way conference**: the customer comes back and all three of you talk; **Leave the conference** leaves them together.
+- **Connect and leave**: the customer and your colleague are put through, you are free.
+- **Hang up the third party** ends the colleague's call and gives you your customer back; **Hang up both** ends everything.
 
 Shortcuts do not work while you are typing in a field, and the Esc key never
 hangs up.

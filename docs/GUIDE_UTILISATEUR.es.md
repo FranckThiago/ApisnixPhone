@@ -105,8 +105,16 @@ el botón rojo indica **Cancelar**.
 
 **Transferencia y ayuda** (si tu supervisor las activó): la zona **Equipo** aparece debajo de la llamada.
 
-- **Transferir**: elige a un compañero conectado de tu grupo y luego **Confirmar transferencia**. Su teléfono suena; la llamada te deja en cuanto contesta. Si no contesta, conservas a tu cliente.
+- **Transferir**: elige a un compañero conectado de tu grupo. **Transferencia directa**: su teléfono suena y la llamada te deja en cuanto contesta; si no contesta, conservas a tu cliente. **Espera y llamar**: tu cliente espera con música mientras hablas primero con tu compañero.
 - **Pedir ayuda**: escribe un mensaje corto. Tu supervisor recibe el aviso y su respuesta aparece aquí.
+
+![Opciones de transferencia](guide/es/22-transfert.png "58mm") ![Mientras hablas con tu compañero](guide/es/24-consultation-commandes.png "58mm")
+
+Después de **Espera y llamar**, cuando tu compañero está en línea:
+
+- **Conferencia a tres**: el cliente vuelve y habláis los tres; **Salir de la conferencia** los deja juntos.
+- **Conectar y salir**: el cliente y tu compañero quedan en comunicación, tú quedas libre.
+- **Colgar al tercero** termina la llamada del compañero y te devuelve a tu cliente; **Colgar a los dos** termina todo.
 
 Los atajos no funcionan mientras escribes en un campo, y la tecla Esc nunca
 cuelga.

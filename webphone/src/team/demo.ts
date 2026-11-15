@@ -6,7 +6,7 @@ export class DemoTeamClient implements TeamClient {
   private workspace: Workspace = {endpoint_id:'demo-self',assignment_version:0,team_id:'demo',policy:{shared_enabled:true,transfers_enabled:true},
     resources:[{id:'notice',kind:'notice',title:t('team.demoNotice'),content:t('team.demoNoticeText'),revision:1,read:false},
       {id:'objection',kind:'objection',title:t('team.demoObjection'),content:t('team.demoObjectionText'),revision:1,read:false}],help:[],
-    peers:[{id:'demo-peer',name:'Camille · Démo',extension:'1002',assignment_version:0,connected:true}]};
+    peers:[{id:'demo-peer',name:'Camille Bernard',extension:'1002',assignment_version:0,connected:true}]};
   private callbacks: GroupCallback[] = [{id:'demo-callback',number:'0100000001',name:t('team.demoContact'),note:t('team.demoCallback'),dueAt:Date.now()-600000,createdAt:Date.now()-86400000,revision:1,claimed_by:null,claimed_name:null,owner:'Camille'}];
   private reviews: Review[] = [];
   private promoted: string[] = [];
