@@ -15,14 +15,16 @@ depuis **12:04:44 Douala** ; 270 fichiers conformes, page publique sans erreur.
 Sauvegarde et retrait dans OPERATIONS. La conférence
 VICIdial native utilise un build séparé et ne reçoit pas ce panneau.
 
-## Alerte de connexion — 6 novembre 2026
+## Alerte de connexion — 15 novembre 2026
 
-Alerte commune login/espace connecté, en bas sans recouvrir les commandes :
-orange après trois mesures > 400 ms, masquée après trois < 350 ms ; rouge en
-coupure confirmée. Délai entre mesures 2 s, confirmation sur au moins 4 s.
-Texte utilisateur sans compteur technique, FR/EN/ES. Mesure audio si disponible,
-indicateur HTTPS sinon ; aucune action automatique sur les appels.
-Contrat et limites : ARCHITECTURE ; état de publication : OPERATIONS.
+Bandeau passif commun login/espace connecté : orange si audio > 600 ms ou pertes
+> 5 % pendant 10 s, ou quatre incidents en 30 s. Sans mesure audio, seuil HTTPS
+> 1 500 ms pendant 10 s et message distinct « Réponse du serveur lente ».
+Retour sous 500 ms et pertes ≤ 5 % pendant 10 s, anciens incidents effacés.
+Rouge après trois échecs sur au moins 4 s, hors ligne immédiat. Contrôles toutes
+les 2 s après la réponse, timeout 4 s ; texte FR/EN/ES sans compteur technique.
+Aucune action automatique sur les appels. Contrat : ARCHITECTURE ; publication :
+OPERATIONS. Les builds conférence restent séparés.
 
 ## Première intégration dans un CRM — 23 octobre 2026
 

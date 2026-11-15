@@ -20,7 +20,7 @@ chaque nouvel appel. En démo, texte fictif traduit FR/EN/ES et aucune requête 
 L'API et les tables additives sont documentées dans le dépôt privé CRM,
 `docs/SUPERVISION_GESTION_20261107.md`. Build conférence native inchangé.
 
-## Mesure de connexion passive — 6 novembre 2026
+## Mesure de connexion passive — 15 novembre 2026
 
 `connection/ConnectionAlert.tsx` reste monté au niveau App à travers login et
 navigation. `connection-monitor.mjs` gère seuils, confirmations, timeout 4 s,
@@ -33,8 +33,15 @@ RTT ICE du seul appel sélectionné, compteur figé expiré après 10 s. Hors ap
 ou stats absentes : GET HTTPS 204 vers le PBX, sans cookies, sans cache, sans
 identifiant. Le délai HTTPS est un indicateur applicatif, pas un ping ICMP ou
 une garantie audio. Une panne du serveur n’est pas attribuée au réseau local.
-Gigue/pertes non utilisées comme déclencheurs. Rien n’est persisté ou transmis
-en télémétrie. Bandeau avec hauteur réservée, y compris navigation mobile,
+Seuil audio > 600 ms ou pertes reçues > 5 % pendant 10 s ; seuil HTTPS > 1 500 ms
+pendant 10 s avec un texte « Réponse du serveur lente », sans conclusion audio.
+Les pertes se calculent entre deux relevés, sur au moins 20 paquets reçus/perdus.
+Quatre observations d'incident (échec ou pertes ≥ 10 %) en 30 s déclenchent aussi
+l'orange. Retour sous 500 ms et pertes ≤ 5 % pendant 10 s : état sain et anciens
+incidents effacés, y compris en HTTPS. Rouge après trois échecs sur au moins 4 s,
+hors ligne immédiat. Les confirmations exigent au moins trois observations ;
+une mesure invalide ou une nouvelle source casse la série. Gigue non utilisée.
+Rien n’est persisté ou transmis en télémétrie. Bandeau avec hauteur réservée, y compris navigation mobile,
 région accessible silencieuse sauf changement d’état. Builds conférence séparés
 inchangés ; raccord agent et endpoint documentés dans le dépôt privé.
 

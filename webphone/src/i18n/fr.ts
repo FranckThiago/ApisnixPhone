@@ -65,6 +65,8 @@ export const fr = {
 
   'quality.slow': "Connexion instable",
   'quality.impact': "La qualité de vos appels peut être dégradée.",
+  'quality.serverSlow': "Réponse du serveur lente",
+  'quality.serverSlowDetail': "Les réponses du serveur prennent plus de temps que prévu.",
   'quality.lost': "Connexion au serveur interrompue",
   'quality.checkNetwork': "Vérifiez votre réseau.",
   'quality.audioLost': "Connexion audio interrompue",

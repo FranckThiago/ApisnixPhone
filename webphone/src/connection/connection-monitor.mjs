@@ -1,9 +1,11 @@
 // Kept identical in ApisnixPhone webphone/src/connection/connection-monitor.mjs and agent-skin/connection-monitor.js.
 // Passive measurements only: never register, reconnect, alter or end a call.
 // Intermittent failures (timeouts, refused probes, heavy audio packet loss) are
-// counted on a sliding window: three within 30 s mean an unstable connection
+// counted on a sliding window: four within 30 s mean an unstable connection
 // even when good answers are interleaved. Sustained failures still mean "lost".
-export const BURST_WINDOW_MS = 30000, BURST_COUNT = 3, LOSS_SLOW_PCT = 5, LOSS_EVENT_PCT = 10;
+export const BURST_WINDOW_MS = 30000, BURST_COUNT = 4, LOSS_SLOW_PCT = 5, LOSS_EVENT_PCT = 10;
+const MEDIA_SLOW_MS = 600, HTTP_SLOW_MS = 1500, RECOVERY_MS = 500;
+const QUALITY_CONFIRM_MS = 10000, LOST_CONFIRM_MS = 4000;
 export function createQualityGate() {
   let level = 'unknown', kind, count = 0, since = 0, source, events = [];
   const burst = now => (events = events.filter(at => now - at <= BURST_WINDOW_MS)).length >= BURST_COUNT;
@@ -13,15 +15,16 @@ export function createQualityGate() {
       if (value.source !== source) { kind = undefined; count = 0; source = value.source; events = []; }
       const loss = Number.isFinite(value.lossPct) ? value.lossPct : 0;
       if (value.lost || loss >= LOSS_EVENT_PCT) events.push(now);
+      const slowMs = value.source === 'http' ? HTTP_SLOW_MS : MEDIA_SLOW_MS;
       const next = value.lost ? 'lost' : Number.isFinite(value.rttMs) && value.rttMs >= 0
-        ? value.rttMs > 400 || loss > LOSS_SLOW_PCT ? 'slow' : value.rttMs < 350 ? 'good' : 'middle' : 'unknown';
+        ? value.rttMs > slowMs || loss > LOSS_SLOW_PCT ? 'slow' : value.rttMs < RECOVERY_MS ? 'good' : 'middle' : 'unknown';
       if (next !== kind) { kind = next; count = 0; since = now; }
       count++;
       if (value.source === 'offline' && value.lost) level = 'lost';
-      else if (count >= 3 && now - since >= 4000) {
+      else if (count >= 3 && now - since >= (next === 'lost' ? LOST_CONFIRM_MS : QUALITY_CONFIRM_MS)) {
         if (next === 'lost') { level = 'lost'; events = []; } // Already announced as interrupted.
         else if (next === 'slow') level = 'slow';
-        else if (next === 'good' && !burst(now)) level = 'good';
+        else if (next === 'good') { level = 'good'; events = []; } // Ten healthy seconds clear old incidents.
         // An intermediate/unavailable measurement never declares recovery.
       }
       if (level !== 'lost' && burst(now)) level = 'slow';

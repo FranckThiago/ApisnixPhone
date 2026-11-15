@@ -1,5 +1,15 @@
 # Journal des changements
 
+## 2026-11-15 — Alerte de connexion moins sensible
+
+Seuils approuvés : audio > 600 ms ou pertes > 5 % pendant 10 s ; quatre
+incidents en 30 s ; retour sous 500 ms et pertes ≤ 5 % pendant 10 s avec
+oubli des incidents. HTTPS > 1 500 ms pendant 10 s, texte serveur FR/EN/ES.
+Moteur synchronisé avec le CRM ; coupures rouges et timeout inchangés.
+344 tests, typage et lint réussis. Publication en préparation. Architecture,
+plan, état et opérations alignés ; pas de migration ni de modification de manuel.
+
+
 ## Conférence à trois et messagerie vocale — 15 novembre 2026
 
 Demande de Franck. Conférence à trois mixée dans le navigateur (`setConference`

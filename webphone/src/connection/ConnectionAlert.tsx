@@ -44,7 +44,7 @@ export function ConnectionAlert() {
   return <aside ref={bar} className={`connection-alert${lost ? ' is-lost' : ok ? ' is-restored' : ''}`} hidden={!visible}
     role="status" aria-live="polite" aria-atomic="true">
     {ok ? <CheckCircle2 size={20} aria-hidden="true" /> : lost ? <WifiOff size={20} aria-hidden="true" /> : <Wifi size={20} aria-hidden="true" />}
-    <span><strong>{t(ok ? 'quality.restored' : lost ? quality.source === 'media' ? 'quality.audioLost' : 'quality.lost' : 'quality.slow')}</strong>
-      <span>{t(ok ? 'quality.restoredDetail' : lost ? 'quality.checkNetwork' : 'quality.impact')}</span></span>
+    <span><strong>{t(ok ? 'quality.restored' : lost ? quality.source === 'media' ? 'quality.audioLost' : 'quality.lost' : quality.source === 'http' ? 'quality.serverSlow' : 'quality.slow')}</strong>
+      <span>{t(ok ? 'quality.restoredDetail' : lost ? 'quality.checkNetwork' : quality.source === 'http' ? 'quality.serverSlowDetail' : 'quality.impact')}</span></span>
   </aside>;
 }

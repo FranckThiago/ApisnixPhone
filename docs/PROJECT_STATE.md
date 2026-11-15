@@ -1,5 +1,14 @@
 # État du projet
 
+## Alerte de connexion assouplie — 15 novembre 2026
+
+Version `20261115-connection-tolerance` en préparation : audio > 600 ms ou
+pertes > 5 % pendant 10 s ; HTTPS > 1 500 ms avec message serveur distinct.
+Quatre incidents en 30 s ; récupération sous 500 ms et pertes ≤ 5 % pendant
+10 s, anciens incidents effacés. Rouge inchangé. Moteur identique au CRM.
+344 tests, typage/lint réussis ; aucune migration ni manuel modifié.
+
+
 ## Conférence à trois et messagerie vocale — 15 novembre 2026
 
 En service depuis le 15 novembre à 16:09:36 Douala. Dans Audio, un second

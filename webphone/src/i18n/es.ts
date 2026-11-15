@@ -67,6 +67,8 @@ export const es: Record<MessageKey, string> = {
 
   'quality.slow': "Conexión inestable",
   'quality.impact': "La calidad de sus llamadas puede verse afectada.",
+  'quality.serverSlow': "Respuesta del servidor lenta",
+  'quality.serverSlowDetail': "El servidor tarda más de lo previsto en responder.",
   'quality.lost': "Conexión con el servidor interrumpida",
   'quality.checkNetwork': "Compruebe su red.",
   'quality.audioLost': "Conexión de audio interrumpida",

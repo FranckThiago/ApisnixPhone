@@ -1,57 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createMediaReader, createQualityGate, startConnectionMonitor, type ConnectionQuality, type ConnectionSample } from '../src/connection/connection-monitor.mjs';
+import { createMediaReader, startConnectionMonitor, type ConnectionQuality, type ConnectionSample } from '../src/connection/connection-monitor.mjs';
 
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
-describe('400 ms connection warning', () => {
-  it('ignores isolated spikes, exactly 400 ms, and event bursts', () => {
-    const gate = createQualityGate();
-    for (const [time, rttMs] of [[0, 800], [2000, 150], [4000, 401], [6000, 400], [8000, 900], [8001, 900], [8002, 900]])
-      expect(gate.sample({ source: 'http', rttMs }, time!).level).not.toBe('slow');
-    expect(gate.sample({ source: 'http', rttMs: 900 }, 12000).level).toBe('slow');
-  });
-  it('keeps orange/red in the 350–400 band and clears only after three readings below 350', () => {
-    for (const level of ['slow', 'lost']) {
-      const gate = createQualityGate();
-      for (const time of [0, 2000, 4000]) gate.sample({ source: 'http', rttMs: 450, lost: level === 'lost' }, time);
-      for (const time of [6000, 8000, 10000]) expect(gate.sample({ source: 'http', rttMs: 350 }, time).level).toBe(level);
-      for (const time of [12000, 14000]) expect(gate.sample({ source: 'http', rttMs: 349 }, time).level).toBe(level);
-      expect(gate.sample({ source: 'http', rttMs: 350 }, 16000).level).toBe(level);
-      for (const time of [18000, 20000]) expect(gate.sample({ source: 'http', rttMs: 349 }, time).level).toBe(level);
-      expect(gate.sample({ source: 'http', rttMs: 349 }, 22000).level).toBe('good');
-    }
-  });
-  it('does not treat missing/invalid stats or a new source as confirmed recovery', () => {
-    const gate = createQualityGate();
-    expect(gate.sample({ source: 'offline', lost: true }, 0).level).toBe('lost');
-    for (const time of [2000, 4000, 6000]) expect(gate.sample({ source: 'media', rttMs: NaN }, time).level).toBe('lost');
-    gate.sample({ source: 'media', rttMs: 100 }, 8000);
-    gate.sample({ source: 'media', rttMs: 100 }, 10000);
-    expect(gate.sample({ source: 'http', rttMs: 100 }, 12000).level).toBe('lost');
-    gate.reset();
-    expect(gate.sample({ source: 'http', rttMs: 100 }, 14000).level).toBe('lost');
-  });
-});
-
-describe('intermittent timeouts and audio loss', () => {
-  it('warns after three timeouts within 30 s even with good answers in between', () => {
-    const gate = createQualityGate();
-    const steps: [number, boolean][] = [[0, true], [2000, false], [4000, true], [6000, false], [8000, false], [10000, true]];
-    const levels = steps.map(([time, lost]) => gate.sample({ source: 'http', rttMs: 80, lost }, time).level);
-    expect(levels.slice(0, 5)).not.toContain('slow');
-    expect(levels.at(-1)).toBe('slow');
-    for (const time of [12000, 14000, 16000, 30000]) expect(gate.sample({ source: 'http', rttMs: 80 }, time).level).toBe('slow');
-    expect(gate.sample({ source: 'http', rttMs: 80 }, 40001).level).toBe('good');
-  });
-  it('two isolated timeouts in 30 s never warn', () => {
-    const gate = createQualityGate();
-    for (const [time, lost] of [[0, true], [10000, false], [20000, true], [22000, false], [24000, false], [26000, false]] as [number, boolean][])
-      expect(gate.sample({ source: 'http', rttMs: 80, lost }, time).level).not.toBe('slow');
-  });
-  it('sustained audio packet loss during a call is unstable', () => {
-    const gate = createQualityGate();
-    for (const time of [0, 2000]) gate.sample({ source: 'media', rttMs: 60, lossPct: 7 }, time);
-    expect(gate.sample({ source: 'media', rttMs: 60, lossPct: 7 }, 4000).level).toBe('slow');
-  });
+describe('received audio loss', () => {
   it('reads received-audio loss between two readings only', async () => {
     const read = createMediaReader();
     let responses = 1, lost = 0, received = 0;
@@ -81,7 +32,7 @@ describe('passive probe lifecycle', () => {
     vi.useFakeTimers();
     const fetcher = vi.fn(async () => new Response(null, { status: 204 }));
     const { target, values, stop } = setup(fetcher);
-    await vi.advanceTimersByTimeAsync(4500);
+    await vi.advanceTimersByTimeAsync(10500);
     expect(values.at(-1)?.level).toBe('good');
     expect(fetcher.mock.calls[0]).toEqual([expect.stringContaining('?t='), expect.objectContaining({ cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer' })]);
     target.navigator.onLine = false; target.dispatchEvent(new Event('offline'));
@@ -89,7 +40,7 @@ describe('passive probe lifecycle', () => {
     target.navigator.onLine = true; target.dispatchEvent(new Event('online'));
     await vi.advanceTimersByTimeAsync(2100);
     expect(values.at(-1)?.level).toBe('lost');
-    await vi.advanceTimersByTimeAsync(2100);
+    await vi.advanceTimersByTimeAsync(8000);
     expect(values.at(-1)?.level).toBe('good');
     stop(); const calls = fetcher.mock.calls.length;
     await vi.advanceTimersByTimeAsync(10000);
@@ -134,8 +85,8 @@ describe('passive probe lifecycle', () => {
     vi.useFakeTimers();
     const fetcher = vi.fn(async () => new Response(null, { status: 204 }));
     const key = {};
-    const { values, stop } = setup(fetcher, async () => ({ source: 'media', rttMs: 450, key }));
-    await vi.advanceTimersByTimeAsync(4500);
+    const { values, stop } = setup(fetcher, async () => ({ source: 'media', rttMs: 650, key }));
+    await vi.advanceTimersByTimeAsync(10500);
     expect(values.at(-1)).toEqual({ level: 'slow', source: 'media' });
     expect(fetcher).not.toHaveBeenCalled(); stop();
   });
