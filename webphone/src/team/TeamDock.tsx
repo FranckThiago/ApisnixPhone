@@ -1,4 +1,4 @@
-import { AlarmClock, ChevronDown, ChevronRight, ClipboardCheck, LifeBuoy, Megaphone, MessageSquareQuote, PhoneForwarded, Target, Users } from 'lucide-react';
+import { AlarmClock, Check, ChevronDown, ChevronRight, ClipboardCheck, LifeBuoy, Megaphone, MessageSquareQuote, PhoneCall, PhoneForwarded, Search, Target, Users, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useApp, usePhone } from '../app/AppContext';
 import { Avatar } from '../components/Avatar';
@@ -39,6 +39,7 @@ export function TeamDock() {
   const [panel, setPanel] = useState<Panel | null>(null);
   const [target, setTarget] = useState('');
   const [help, setHelp] = useState('');
+  const [peerQuery, setPeerQuery] = useState('');
   const shared = Boolean(workspace?.policy.shared_enabled);
   // Only the functions the supervisor left on for this team are shown.
   const on = (key: TeamFeature) => shared && workspace?.policy.features?.[key] !== false;
@@ -59,6 +60,8 @@ export function TeamDock() {
   const unreadReviews = reviews.filter(review => review.ack_revision !== review.revision).length;
   const pending = (on('notices') ? unreadNotices : 0) + (on('help') ? answered : 0) + (coaching ? unreadReviews : 0);
   const toggle = (next: Panel) => setPanel(panel === next ? null : next);
+  const needle = peerQuery.trim().toLocaleLowerCase();
+  const shownPeers = workspace.peers.filter(peer => !needle || (peer.name + ' ' + peer.extension).toLocaleLowerCase().includes(needle) || peer.id === target);
 
   const transfer = async () => {
     const peer = workspace.peers.find(candidate => candidate.id === target);
@@ -130,21 +133,37 @@ export function TeamDock() {
         <div className="call-team-transfer">
           <fieldset className="team-peers" disabled={busy}>
             <legend>{t('team.destination')}</legend>
-            {workspace.peers.map(peer => (
-              <label key={peer.id} className={'team-peer' + (target === peer.id ? ' selected' : '')}>
-                <input type="radio" name="team-transfer-target" value={peer.id} checked={target === peer.id} onChange={() => setTarget(peer.id)} />
-                <Avatar name={peer.name} size={30} /><span className="team-peer-name"><b>{peer.name}</b><small>{peer.extension}</small></span>
-              </label>
-            ))}
+            {workspace.peers.length > 5 && (
+              <label className="team-peer-search"><Search size={15} aria-hidden="true" />
+                <input type="search" value={peerQuery} maxLength={60} placeholder={t('team.searchPeer')} aria-label={t('team.searchPeer')}
+                  onChange={event => setPeerQuery(event.target.value)} /></label>
+            )}
+            <div className="team-peer-list">
+              {shownPeers.map(peer => (
+                <label key={peer.id} className={'team-peer' + (target === peer.id ? ' selected' : '')}>
+                  <input type="radio" name="team-transfer-target" value={peer.id} checked={target === peer.id} onChange={() => setTarget(peer.id)} />
+                  <Avatar name={peer.name} size={30} /><span className="team-peer-name"><b>{peer.name}</b>{peer.extension !== peer.name && <small>{peer.extension}</small>}</span>
+                  {target === peer.id && <Check size={16} className="team-peer-check" aria-hidden="true" />}
+                </label>
+              ))}
+            </div>
           </fieldset>
           {!workspace.peers.length && <p className="call-team-empty">{t('team.noPeers')}</p>}
-          <p className="call-team-hint">{t(canConsult ? 'team.consultHelp' : 'team.transferHelp')}</p>
-          <div className={'call-team-confirm' + (canConsult ? ' two' : '')}>
-            <button type="button" className="primary" disabled={busy || !target} onClick={() => { void transfer(); }}>
-              {t(busy ? 'team.transferring' : 'team.confirmTransfer')}
+          {workspace.peers.length > 0 && !shownPeers.length && <p className="call-team-hint">{t('team.noPeerMatch')}</p>}
+          <div className="team-choices">
+            <button type="button" className="team-choice strong" disabled={busy || !target} onClick={() => { void transfer(); }}>
+              <PhoneForwarded size={19} aria-hidden="true" />
+              <span><b>{t(busy ? 'team.transferring' : 'team.confirmTransfer')}</b><small>{t('team.directHint')}</small></span>
             </button>
-            {canConsult && <button type="button" className="primary alt" disabled={busy || !target} onClick={() => { void consult(); }}>{t('team.consult')}</button>}
-            <button type="button" className="ghost" disabled={busy} onClick={() => setPanel(null)}>{t('action.cancel')}</button>
+            {canConsult && (
+              <button type="button" className="team-choice" disabled={busy || !target} onClick={() => { void consult(); }}>
+                <PhoneCall size={19} aria-hidden="true" />
+                <span><b>{t('team.consult')}</b><small>{t('team.consultHint')}</small></span>
+              </button>
+            )}
+            <button type="button" className="team-choice quiet" disabled={busy} onClick={() => setPanel(null)}>
+              <X size={17} aria-hidden="true" /><span><b>{t('action.cancel')}</b></span>
+            </button>
           </div>
         </div>
       )}

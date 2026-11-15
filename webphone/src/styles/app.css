@@ -721,3 +721,6 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 .voicemail-list .audio-actions { flex-wrap: wrap; row-gap: 6px; }
 .voicemail-list .audio-files { min-width: 0; }
 @media (max-width: 520px) { .audio-tabs { display: flex; } .audio-tabs button { flex: 1; justify-content: center; white-space: normal; line-height: 1.2; } }
+/* Ending a consultation: two tiles, icon above the label, like the call controls. */
+.consult-ends .ghost-call { flex-direction: column; gap: 5px; min-height: 58px; padding: 8px 6px; font-size: 12.5px; text-align: center; }
+.consult-join { width: 100%; padding: 0 12px; }
