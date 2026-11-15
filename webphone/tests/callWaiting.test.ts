@@ -4,7 +4,7 @@ import type { ManagedSession, ManagerDelegate, SipEnvironment } from '../src/tel
 
 const session = (id: string): ManagedSession => ({ id, remoteIdentity: { uri: { user: id } } });
 const tick = () => vi.advanceTimersByTimeAsync(0);
-function harness(lines = ['pilot']) {
+function harness(lines = ['pilot'], maxLines = 2) {
   let delegate!: ManagerDelegate;
   const events: string[] = [];
   const manager = {
@@ -14,6 +14,7 @@ function harness(lines = ['pilot']) {
     unregister: vi.fn(async () => undefined), disconnect: vi.fn(async () => undefined), dropSilently: vi.fn(async () => undefined),
     holdsLine: vi.fn(async () => true), sentAudioPackets: vi.fn(async () => 250),
     call: vi.fn(async () => { delegate.onCallCreated(session('out')); }),
+    attendedTransfer: vi.fn(async (a: ManagedSession, b: ManagedSession) => { events.push(`refer:${a.id}>${b.id}`); }),
     answer: vi.fn(async (s: ManagedSession) => { events.push(`answer:${s.id}`); delegate.onCallAnswered(s); }),
     decline: vi.fn(async (s: ManagedSession) => { events.push(`decline:${s.id}`); delegate.onCallHangup(s); }),
     hangup: vi.fn(async (s: ManagedSession) => { events.push(`hangup:${s.id}`); delegate.onCallHangup(s); }),
@@ -25,7 +26,7 @@ function harness(lines = ['pilot']) {
     createRemoteAudio: () => undefined,
     createManager: vi.fn((_config, _credentials, given) => { delegate = given; return manager; }),
   };
-  const phone = new CallWaitingPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example/ws', callWaitingLines: lines }, environment);
+  const phone = new CallWaitingPhoneController({ domain: 'pbx.example', wssUrl: 'wss://pbx.example/ws', callWaitingLines: lines, maxLines }, environment);
   const incoming = (id: string) => { if (!delegate.canReceiveCall()) return false; const s = session(id); delegate.onCallCreated(s); delegate.onCallReceived(s); return true; };
   return { phone, manager, environment, events, incoming, get delegate() { return delegate; } };
 }
@@ -182,5 +183,91 @@ describe('isolated microphone legs', () => {
     const third = await mic.clone(); expect(getUserMedia).toHaveBeenCalledTimes(2);
     expect(current.getAudioTracks()[0]!.readyState).toBe('live'); expect(third.getAudioTracks()[0]!.readyState).toBe('live');
     mic.close();
+  });
+});
+
+describe('five-line account', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => { vi.clearAllTimers(); vi.useRealTimers(); vi.unstubAllGlobals(); });
+  const five = () => harness(['pilot'], 5);
+  it('lets four more calls ring behind a conversation and refuses a sixth', async () => {
+    const h = five(); await ready(h); h.incoming('A'); h.phone.answer(); await tick();
+    for (const id of ['B', 'C', 'D', 'E']) expect(h.incoming(id)).toBe(true);
+    expect(h.incoming('F')).toBe(false);
+    expect(h.phone.getSnapshot().call).toMatchObject({ id: 'A', phase: 'active' });
+    expect(h.phone.getSnapshot().otherCalls?.map(c => [c.id, c.phase])).toEqual([['B', 'ringing-in'], ['C', 'ringing-in'], ['D', 'ringing-in'], ['E', 'ringing-in']]);
+    expect(vi.mocked(h.environment.createManager).mock.calls[0]![0].maxCalls).toBe(5);
+    expect(h.manager.register).toHaveBeenCalledTimes(1);
+  });
+  it('answers the chosen ringing call by id and declines another without touching the rest', async () => {
+    const h = five(); await ready(h); h.incoming('A'); h.phone.answer(); await tick();
+    h.incoming('B'); h.incoming('C'); h.incoming('D');
+    h.phone.declineWaiting('C'); await tick();
+    h.phone.answerWaiting('D'); h.delegate.onCallHold(session('A'), true); await tick();
+    expect(h.events).toEqual(['answer:A', 'decline:C', 'hold:A', 'answer:D']);
+    expect(h.phone.getSnapshot().call).toMatchObject({ id: 'D', phase: 'active' });
+    expect(h.phone.getSnapshot().otherCalls?.map(c => [c.id, c.phase])).toEqual([['A', 'held'], ['B', 'ringing-in']]);
+    h.phone.switchCall('A'); h.delegate.onCallHold(session('D'), true); await tick();
+    expect(h.phone.getSnapshot().call).toMatchObject({ id: 'A', phase: 'active' });
+  });
+  it('resumes a held conversation, not a ringing call, when the current one ends', async () => {
+    const h = five(); await ready(h); h.incoming('A'); h.phone.answer(); await tick();
+    h.incoming('B'); h.phone.answerWaiting('B'); h.delegate.onCallHold(session('A'), true); await tick();
+    h.incoming('C');
+    h.phone.hangup(); await tick();
+    expect(h.events.at(-1)).toBe('unhold:A');
+    expect(h.phone.getSnapshot().call).toMatchObject({ id: 'A' });
+    expect(h.phone.getSnapshot().otherCalls?.map(c => c.id)).toEqual(['C']);
+  });
+  async function consult(h: Harness) {
+    await ready(h); h.incoming('A'); h.phone.answer(); await tick();
+    const placing = h.phone.callSecond('1002', '1002', 'Camille');
+    await tick(); h.delegate.onCallHold(session('A'), true); await tick(); await placing; await tick();
+  }
+  it('holds the conversation before placing the second call on a free line', async () => {
+    const h = five(); await consult(h);
+    expect(h.events).toEqual(['answer:A', 'hold:A']);
+    expect(h.manager.call).toHaveBeenCalledTimes(1);
+    expect((h.manager.call.mock.calls[0] as unknown[])[0]).toBe('sip:1002@pbx.example');
+    expect(h.phone.getSnapshot().call).toMatchObject({ direction: 'outbound', dialTarget: '1002' });
+    expect(h.phone.getSnapshot().otherCalls?.map(c => [c.id, c.phase])).toEqual([['A', 'held']]);
+  });
+  it('never places the second call if the hold is not confirmed', async () => {
+    const h = five(); await ready(h); h.incoming('A'); h.phone.answer(); await tick();
+    h.manager.hold.mockRejectedValueOnce(new Error('hold refused'));
+    await h.phone.callSecond('1002', '1002'); await tick();
+    expect(h.manager.call).not.toHaveBeenCalled();
+    expect(h.phone.getSnapshot()).toMatchObject({ call: { id: 'A', phase: 'active' }, switchingCall: false });
+    expect(h.phone.getSnapshot().error).toBeTruthy();
+  });
+  it('hangs up the third party only and gives the conversation back', async () => {
+    const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();
+    h.phone.hangupSecond(); await tick();
+    expect(h.events).toContain('hangup:out'); expect(h.events.at(-1)).toBe('unhold:A');
+    expect(h.phone.getSnapshot().call).toMatchObject({ id: 'A', phase: 'active' });
+    expect(h.phone.getSnapshot().otherCalls).toEqual([]);
+  });
+  it('bridges both parties with a confirmed transfer, then leaves both dialogs', async () => {
+    const h = five(); await consult(h);
+    await expect(h.phone.completeTransfer()).rejects.toThrow();
+    h.delegate.onCallAnswered(session('out')); await tick();
+    await h.phone.completeTransfer(); await tick();
+    expect(h.events).toContain('refer:A>out');
+    expect(h.events.filter(e => e.startsWith('hangup:')).sort()).toEqual(['hangup:A', 'hangup:out']);
+    expect(h.phone.getSnapshot().otherCalls).toEqual([]);
+  });
+  it('keeps both calls when the transfer is refused', async () => {
+    const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();
+    h.manager.attendedTransfer.mockRejectedValueOnce(new Error('refused'));
+    await expect(h.phone.completeTransfer()).rejects.toThrow();
+    expect(h.events.some(e => e.startsWith('hangup:'))).toBe(false);
+    expect(h.phone.getSnapshot()).toMatchObject({ call: { phase: 'active' }, switchingCall: false });
+    expect(h.phone.getSnapshot().otherCalls?.map(c => c.id)).toEqual(['A']);
+  });
+  it('hangs up both calls at once', async () => {
+    const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();
+    h.incoming('Z');
+    h.phone.hangupAll(); await tick();
+    expect(h.events.slice(-3).sort()).toEqual(['decline:Z', 'hangup:A', 'hangup:out']);
   });
 });

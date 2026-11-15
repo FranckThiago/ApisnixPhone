@@ -54,6 +54,8 @@ export interface Manager {
   decline(session: ManagedSession): Promise<void>;
   hangup(session: ManagedSession): Promise<void>;
   transfer?(session: ManagedSession, destination: string): Promise<void>;
+  /** REFER with Replaces: bridges `session`'s far end with `target`'s far end. */
+  attendedTransfer?(session: ManagedSession, target: ManagedSession): Promise<void>;
   hold(session: ManagedSession): Promise<void>;
   unhold(session: ManagedSession): Promise<void>;
   mute(session: ManagedSession): void;
@@ -79,7 +81,9 @@ export interface SipConfig {
   mediaAccess?: boolean;
   /** Explicit build pilot; empty by default. No server permissions are granted here. */
   callWaitingLines?: string[];
-  maxCalls?: 1 | 2;
+  maxCalls?: number;
+  /** Lines offered to a multi-call account (2 to 5). */
+  maxLines?: number;
   /** Public connection information only: never a key or a password. */
   domain: string;
   wssUrl: string;
@@ -651,8 +655,10 @@ export class SipPhoneController implements PhoneController {
     this.update({ connection: 'offline', account: null, call: null, error: undefined, lineTaken: false, blockedUntil: undefined });
   }
 
-  call(rawInput: string, dialTarget: string, remoteName?: string) {
-    if (this.snapshot.connection !== 'ready' || this.snapshot.call || !this.manager || !/^[+\d*#]+$/.test(dialTarget)) return;
+  /** `route` is an internal PBX reference dialled instead of `dialTarget`, which then only names the colleague. */
+  call(rawInput: string, dialTarget: string, remoteName?: string, route?: string) {
+    const valid = route === undefined ? /^[+\d*#]+$/.test(dialTarget) : /^[A-Za-z0-9_.-]{1,64}$/.test(route);
+    if (this.snapshot.connection !== 'ready' || this.snapshot.call || !this.manager || !valid) return;
     this.rejection = undefined;
     this.rejectionReason = undefined;
     this.localHangup = false;
@@ -661,7 +667,7 @@ export class SipPhoneController implements PhoneController {
     this.earlyAudio = false;
     this.update({ call: { id, direction: 'outbound', rawInput, dialTarget, remoteName, phase: 'dialing', muted: false, holdPending: false, startedAt: Date.now(), dtmf: '' }, error: undefined });
     // Digits, + and * go out exactly as typed; only # must be escaped inside a SIP URI.
-    const destination = `sip:${dialTarget.replace(/#/g, '%23')}@${this.config.domain}`;
+    const destination = `sip:${(route ?? dialTarget).replace(/#/g, '%23')}@${this.config.domain}`;
     const manager = this.manager;
     // Early media (a pilot choice of the server): the 183's answer is applied at once, so ICE and DTLS
     // finish while the far end rings instead of after it answers.

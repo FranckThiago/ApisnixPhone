@@ -501,3 +501,35 @@ export function microphoneErrorMessage(error: unknown): string {
   if (name === 'NotReadableError') return t('mic.inUse');
   return t('mic.unavailable');
 }
+
+/** Two soft beeps every few seconds: another call is ringing behind the conversation. */
+export class WaitingTone {
+  private timer?: ReturnType<typeof setInterval>;
+  start(volume: number) {
+    if (this.timer || volume <= 0) return;
+    const beep = () => {
+      const context = soundContext();
+      if (!context || context.state !== 'running') return;
+      [0, 0.22].forEach(offset => {
+        const start = context.currentTime + 0.02 + offset;
+        const oscillator = context.createOscillator();
+        const envelope = context.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 440;
+        envelope.gain.setValueAtTime(0, start);
+        envelope.gain.linearRampToValueAtTime(0.18 * volume, start + 0.01);
+        envelope.gain.setValueAtTime(0.18 * volume, start + 0.11);
+        envelope.gain.linearRampToValueAtTime(0, start + 0.14);
+        oscillator.connect(envelope).connect(soundOutput(context));
+        oscillator.start(start);
+        oscillator.stop(start + 0.16);
+      });
+    };
+    beep();
+    this.timer = setInterval(beep, 4000);
+  }
+  stop() {
+    if (this.timer) clearInterval(this.timer);
+    this.timer = undefined;
+  }
+}

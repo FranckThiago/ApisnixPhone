@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Cinq lignes, attente puis appeler — 15 novembre 2026
+
+Demande de Franck. Le contrôleur du double appel passe de deux à cinq lignes
+par compte listé, accepte un second appel sortant interne et le transfert
+accompagné (REFER/Replaces). Interface : carte « Autres appels » avec lignes
+qui clignotent et double bip, boutons « Transfert direct » (ancien « Confirmer
+le transfert ») et « Attente puis appeler » dans la carte Équipe, puis « Relier
+et quitter », « Raccrocher le tiers », « Raccrocher les deux ». Démonstration
+multi-lignes. 330 tests, typage, lint, builds ; recette démo bureau et mobile.
+Non publié : il faut d'abord relever la limite d'appels des postes de test sur
+le PBX et les inscrire au build. Détail : `docs/DOUBLE_APPEL_PILOTE.md`.
+
 ## Réafficher la dernière saisie, puis appeler — 12 novembre 2026
 
 Release active **20261112-rappel2**, source `eb73759`, depuis **20:40:19

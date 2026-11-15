@@ -42,7 +42,13 @@ export interface PhoneSnapshot {
   call: CallSnapshot | null;
   /** Pilot: second conversation, and completed calls awaiting journal persistence. */
   otherCall?: CallSnapshot;
+  /** Every other live call of a multi-call account: ringing or waiting on hold. */
+  otherCalls?: CallSnapshot[];
   completedCalls?: CallSnapshot[];
+  /** Lines this account may use at once (1 unless multi-call). */
+  lines?: number;
+  /** A second call was placed while the first waits on hold (« Attente puis appeler »). */
+  consulting?: boolean;
   switchingCall?: boolean;
   error?: string;
   /** Start of the continuous outage, including successive registration attempts. */
@@ -76,9 +82,18 @@ export interface PhoneController {
   reconnect?(): Promise<void>;
   call(rawInput: string, dialTarget: string, remoteName?: string): void;
   answer(): void;
-  answerWaiting?(): void;
-  declineWaiting?(): void;
-  switchCall?(): void;
+  /** Multi-call accounts: act on the call with this id, or on the first matching one. */
+  answerWaiting?(id?: string): void;
+  declineWaiting?(id?: string): void;
+  switchCall?(id?: string): void;
+  /** Holds the conversation and places a second, internal call. */
+  callSecond?(rawInput: string, dialTarget: string, remoteName?: string, route?: string): Promise<void>;
+  /** Bridges the held party with the consulted one, then leaves. */
+  completeTransfer?(): Promise<void>;
+  /** Ends the consulted call only; the held conversation resumes. */
+  hangupSecond?(): void;
+  /** Ends every call. */
+  hangupAll?(): void;
   decline(): void;
   hangup(): void;
   /** Transfer one established call; resolves only after the PBX confirms success. */

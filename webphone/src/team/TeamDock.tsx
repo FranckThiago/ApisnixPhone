@@ -74,6 +74,21 @@ export function TeamDock() {
     });
   };
 
+  // « Attente puis appeler » : same server check as a transfer, then an internal second call.
+  const canConsult = canTransfer && (snapshot.lines ?? 1) > 1 && Boolean(phone.callSecond);
+  const consult = async () => {
+    const peer = workspace.peers.find(candidate => candidate.id === target);
+    const callId = phone.getSnapshot().call?.id;
+    if (!peer || !canConsult || !callId) return;
+    await run(async () => {
+      const result = await request<{ extension: string; name: string }>('/transfer', { endpoint_id: peer.id, assignment_version: peer.assignment_version });
+      const current = phone.getSnapshot().call;
+      if (current?.id !== callId || !['active', 'held'].includes(current.phase)) throw new Error(t('team.callUnavailable'));
+      await phone.callSecond!(peer.extension, peer.extension, peer.name, result.extension);
+      setPanel(null);
+    });
+  };
+
   return (
     <section className="dock-card call-team-card" aria-label={t('team.title')}>
       <header className="call-team-head">
@@ -123,12 +138,13 @@ export function TeamDock() {
             ))}
           </fieldset>
           {!workspace.peers.length && <p className="call-team-empty">{t('team.noPeers')}</p>}
-          <p className="call-team-hint">{t('team.transferHelp')}</p>
-          <div className="call-team-confirm">
-            <button type="button" className="ghost" disabled={busy} onClick={() => setPanel(null)}>{t('action.cancel')}</button>
+          <p className="call-team-hint">{t(canConsult ? 'team.consultHelp' : 'team.transferHelp')}</p>
+          <div className={'call-team-confirm' + (canConsult ? ' two' : '')}>
             <button type="button" className="primary" disabled={busy || !target} onClick={() => { void transfer(); }}>
               {t(busy ? 'team.transferring' : 'team.confirmTransfer')}
             </button>
+            {canConsult && <button type="button" className="primary alt" disabled={busy || !target} onClick={() => { void consult(); }}>{t('team.consult')}</button>}
+            <button type="button" className="ghost" disabled={busy} onClick={() => setPanel(null)}>{t('action.cancel')}</button>
           </div>
         </div>
       )}

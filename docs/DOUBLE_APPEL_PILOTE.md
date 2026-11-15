@@ -1,5 +1,37 @@
 # Double appel entrant : pilote contrôlé
 
+## Extension du 15 novembre 2026 — cinq lignes et second appel interne
+
+Non publié à cette date ; les sections suivantes décrivent le pilote à deux
+appels tel qu'il a été validé, et restent vraies pour l'isolation.
+
+- **Jusqu'à cinq lignes** pour un compte de la liste `VITE_CALL_WAITING_LINES`
+  (`maxLines`, 2 à 5, défaut 5) : `CallWaitingPhoneController` porte un
+  contrôleur isolé par ligne sur une seule inscription SIP. Plusieurs appels
+  peuvent sonner ensemble ; une seule conversation est audible. Le PBX reste
+  maître : tant que le phone porte `call-limit=1`/`busylevel=1`, il refuse le
+  deuxième appel avant le navigateur.
+- **Affichage** : carte « Autres appels » en tête de la colonne téléphone, une
+  ligne par appel. Un appel qui sonne clignote, avec Répondre et Refuser ; un
+  appel en attente propose Reprendre. Double bip discret toutes les quatre
+  secondes tant qu'un appel sonne derrière la conversation (réglage sonnerie).
+- **Fin de la conversation courante** : une conversation en attente revient
+  avant un appel qui sonne encore, et reprend automatiquement.
+- **Attente puis appeler** (`callSecond`) : l'attente du correspondant doit être
+  confirmée avant de composer. Le second appel utilise la référence de transfert
+  émise par la supervision (`apxfer-…`), résolue par le contexte
+  `apisnix-team-transfer` du PBX en `Dial(SIP/<poste>)` : appel interne, sans
+  trunk sortant, vers un collègue connecté du même groupe uniquement.
+- **Pendant la consultation** : « Relier et quitter » (`completeTransfer`, REFER
+  avec Replaces suivi jusqu'au NOTIFY final, puis sortie des deux dialogues),
+  « Raccrocher le tiers » (`hangupSecond`, le correspondant reprend) et
+  « Raccrocher les deux » (`hangupAll`). Transfert refusé : rien n'est raccroché.
+- **Hors périmètre** : conférence à trois (demande un pont côté PBX), second
+  appel sortant vers l'extérieur.
+- Tests : `webphone/tests/callWaiting.test.ts`, bloc « five-line account ».
+  Démonstration : cinq lignes simulées, « Simuler un appel entrant » plusieurs fois.
+  Aucun appel réel n'a encore validé cette extension.
+
 ## Périmètre et activation
 
 Le pilote du 16 octobre 2026 permet de conserver une conversation, de la mettre

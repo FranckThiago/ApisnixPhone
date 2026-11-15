@@ -167,7 +167,8 @@ export const browserSipEnvironment: SipEnvironment = {
       if (!uri) return Promise.reject(new Error('Invalid transfer destination'));
       return confirmedTransfer(session, uri);
     };
-    return Object.assign(manager, { transfer, readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    const attendedTransfer = (session: Session, target: Session) => confirmedTransfer(session, target);
+    return Object.assign(manager, { transfer, attendedTransfer, readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {

@@ -1,6 +1,6 @@
 import { TeamDock } from '../../team/TeamDock';
 import { WaitingCallCard } from './WaitingCallCard';
-import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, X } from 'lucide-react';
+import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneForwarded, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, UserX, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -242,9 +242,16 @@ function WrapUp({ call }: { call: CallSnapshot }) {
 }
 
 function CallCard({ call }: { call: CallSnapshot }) {
-  const { phone } = useApp();
-  const { audioBlocked, switchingCall } = usePhone();
+  const { phone, notify } = useApp();
+  const { audioBlocked, switchingCall, consulting } = usePhone();
   const { contacts } = useData();
+  const [joining, setJoining] = useState(false);
+  const join = async () => {
+    setJoining(true);
+    try { await phone.completeTransfer?.(); notify(t('consult.done'), 'success'); }
+    catch (error) { notify(error instanceof Error ? error.message : t('team.transferFailed'), 'danger'); }
+    finally { setJoining(false); }
+  };
   const { t } = useI18n();
   const [keypad, setKeypad] = useState(false);
   const info = describeNumber(call.dialTarget, call.direction);
@@ -306,7 +313,17 @@ function CallCard({ call }: { call: CallSnapshot }) {
                 <button type="button" className="control" disabled={call.phase !== 'active' || switchingCall} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
               </div>
             )}
-            <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{t(live ? 'call.hangUp' : 'action.cancel')}</button>
+            {consulting ? (
+              <div className="consult-actions" role="group" aria-label={t('consult.title')}>
+                <p className="consult-title"><Pause size={14} aria-hidden="true" /> {t('consult.title')}</p>
+                <button type="button" className="consult-join" disabled={call.phase !== 'active' || joining || switchingCall} title={t('consult.completeHint')}
+                  onClick={() => { void join(); }}><PhoneForwarded size={19} />{t(joining ? 'team.transferring' : 'consult.complete')}</button>
+                <div className="consult-ends">
+                  <button type="button" className="ghost-call" disabled={joining} onClick={() => phone.hangupSecond?.()}><UserX size={16} /> {t('consult.hangupSecond')}</button>
+                  <button type="button" className="ghost-call danger" disabled={joining} onClick={() => phone.hangupAll?.()}><PhoneOff size={16} /> {t('consult.hangupAll')}</button>
+                </div>
+              </div>
+            ) : <button type="button" className="hangup" onClick={() => phone.hangup()}><PhoneOff size={22} />{t(live ? 'call.hangUp' : 'action.cancel')}</button>}
           </>
         )}
     </section>
@@ -315,9 +332,9 @@ function CallCard({ call }: { call: CallSnapshot }) {
 
 function OtherCall() {
   const { phone } = useApp();
-  const { otherCall, switchingCall } = usePhone();
-  return <WaitingCallCard call={otherCall} switchingCall={switchingCall}
-    onAnswer={() => phone.answerWaiting?.()} onDecline={() => phone.declineWaiting?.()} onSwitch={() => phone.switchCall?.()} />;
+  const { otherCall, otherCalls, switchingCall } = usePhone();
+  return <WaitingCallCard calls={otherCalls ?? (otherCall ? [otherCall] : [])} switchingCall={switchingCall}
+    onAnswer={id => phone.answerWaiting?.(id)} onDecline={id => phone.declineWaiting?.(id)} onSwitch={id => phone.switchCall?.(id)} />;
 }
 
 export function PhoneDock() {

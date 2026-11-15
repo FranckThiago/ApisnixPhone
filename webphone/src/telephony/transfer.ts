@@ -1,7 +1,7 @@
 import type { Session, URI } from 'sip.js';
 
 /** A 202 response only accepts REFER. The final sipfrag NOTIFY proves the result. */
-export function confirmedTransfer(session: Pick<Session, 'refer'>, destination: URI, timeout = 45000): Promise<void> {
+export function confirmedTransfer(session: Pick<Session, 'refer'>, destination: URI | Session, timeout = 45000): Promise<void> {
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (ok: boolean) => {

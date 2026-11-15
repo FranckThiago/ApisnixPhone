@@ -70,3 +70,7 @@ details[open] > summary > .call-team-chevron { transform: rotate(180deg); }
 .call-team-answers summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; font-size: 13px; }
 .call-team-answers summary::-webkit-details-marker { display: none; }
 .call-team-answers summary > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.call-team-confirm.two { grid-template-columns: 1fr 1fr; }
+.call-team-confirm.two .ghost { grid-column: 1 / -1; }
+.call-team-confirm .primary.alt { background: var(--surface); color: var(--green-strong); border: 1px solid var(--green); }
+.call-team-confirm .primary.alt:hover:not(:disabled) { background: var(--green-soft); }
