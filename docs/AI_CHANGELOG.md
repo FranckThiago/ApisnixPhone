@@ -9,8 +9,8 @@ qui clignotent et double bip, boutons « Transfert direct » (ancien « Confirme
 le transfert ») et « Attente puis appeler » dans la carte Équipe, puis « Relier
 et quitter », « Raccrocher le tiers », « Raccrocher les deux ». Démonstration
 multi-lignes. 330 tests, typage, lint, builds ; recette démo bureau et mobile.
-Non publié : il faut d'abord relever la limite d'appels des postes de test sur
-le PBX et les inscrire au build. Détail : `docs/DOUBLE_APPEL_PILOTE.md`.
+Publié sur Hermes à 15:35:22 Douala, release `20261115-cinq-lignes`, pour 8522
+et test004 dont la limite PBX passe à 5. Détail : `docs/DOUBLE_APPEL_PILOTE.md`.
 
 ## Réafficher la dernière saisie, puis appeler — 12 novembre 2026
 

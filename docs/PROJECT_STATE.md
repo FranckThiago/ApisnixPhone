@@ -1,5 +1,16 @@
 # État du projet
 
+## Cinq lignes et attente puis appeler — 15 novembre 2026
+
+En service depuis le 15 novembre à 15:35:22 Douala pour les seuls comptes 8522
+et test004 : jusqu'à cinq appels sur le poste, carte « Autres appels » avec
+lignes qui clignotent et double bip, « Attente puis appeler » vers un collègue
+connecté (appel interne), puis « Relier et quitter », « Raccrocher le tiers »
+ou « Raccrocher les deux ». « Transfert direct » remplace « Confirmer le
+transfert ». Pas encore validé sur des appels réels ; conférence à trois non
+faite. [Fonctionnement](DOUBLE_APPEL_PILOTE.md) ·
+[Publication](OPERATIONS.md#cinq-lignes-et-attente-puis-appeler--15-novembre-2026).
+
 ## Réafficher la dernière saisie, puis appeler — 12 novembre 2026
 
 Release active **20261112-rappel2**, source `eb73759`, depuis **20:40:19

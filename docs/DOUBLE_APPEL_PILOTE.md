@@ -2,7 +2,8 @@
 
 ## Extension du 15 novembre 2026 — cinq lignes et second appel interne
 
-Non publié à cette date ; les sections suivantes décrivent le pilote à deux
+Publié le 15 novembre pour 8522 et test004 (release `20261115-cinq-lignes`) ;
+les sections suivantes décrivent le pilote à deux
 appels tel qu'il a été validé, et restent vraies pour l'isolation.
 
 - **Jusqu'à cinq lignes** pour un compte de la liste `VITE_CALL_WAITING_LINES`

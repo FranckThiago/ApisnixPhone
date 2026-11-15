@@ -1,5 +1,29 @@
 # Construction et validation
 
+## Cinq lignes et attente puis appeler — 15 novembre 2026
+
+Release active **20261115-cinq-lignes**, source `167e230`, depuis **15:35:22
+Douala** sur Hermes. Frontend seul. Build live isolé à partir du commit, trois
+variables publiques habituelles plus `VITE_CALL_WAITING_LINES=8522,test004` ;
+270 fichiers, seuls `index.html`, le JS et le CSS principaux changent. Anciennes
+ressources conservées pour les onglets ouverts.
+
+Côté PBX (OVH, un dimanche, aucun canal sur ces postes) : `call-limit=5` et
+`busylevel=5` dans le `conf_override` des seuls phones 8522 et test004, détail
+et retour dans `docs/CINQ_LIGNES_20261115.md` du dépôt de gestion. Les autres
+comptes gardent une ligne : ils ne sont pas dans la liste du build.
+
+330 tests, typage, lint et build réussis dans le dossier isolé. Recette démo
+bureau et mobile : trois appels qui sonnent ensemble, répondre, refuser,
+reprendre, attente puis appeler, raccrocher le tiers, relier et quitter. Après
+bascule : HTTPS et empreintes vérifiés par le script, Caddy et supervision
+actifs, page publique chargée avec le nouveau bundle, sans erreur console.
+**Aucun appel réel n'a encore validé cette release.**
+
+Sauvegarde intégrale et reçu dans `/root/apisnix-phone-backups/20261115-cinq-lignes/`.
+Retour : repointer atomiquement `current` sur **20261112-rappel2**, sans
+redémarrage. Preuves locales : `.work/cinq-lignes-20261115/`.
+
 ## Réafficher la dernière saisie, puis appeler — 12 novembre 2026
 
 Release active **20261112-rappel2**, source `eb73759`, depuis **20:40:19

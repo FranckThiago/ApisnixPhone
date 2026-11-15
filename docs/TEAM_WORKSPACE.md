@@ -31,7 +31,7 @@ contacts ni notes d’appels. Un marqueur serveur empêche l’ancien profil de 
 un rappel promu ; la mémoire du téléphone est nettoyée au prochain relevé.
 
 Sur un compte multi-lignes, le panneau propose aussi « Attente puis appeler »
-(voir [DOUBLE_APPEL_PILOTE](DOUBLE_APPEL_PILOTE.md), non publié au 15 novembre).
+(voir [DOUBLE_APPEL_PILOTE](DOUBLE_APPEL_PILOTE.md), en service le 15 novembre pour 8522 et test004).
 Transférer apparaît pendant un appel actif quand le superviseur l’a activé pour
 le groupe. Choix d’un autre poste connecté du même groupe et du même PBX ; contrôle
 serveur au clic et à la résolution téléphonique. Pas de transfert pendant la mise
