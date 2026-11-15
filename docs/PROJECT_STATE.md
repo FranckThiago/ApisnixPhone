@@ -1,5 +1,16 @@
 # État du projet
 
+## Conférence à trois et messagerie vocale — 15 novembre 2026
+
+En service depuis le 15 novembre à 16:09:36 Douala. Dans Audio, un second
+onglet « Messagerie vocale » liste les messages de la boîte du poste connecté
+(reçus depuis son attribution) : écoute, téléchargement, rappel, suppression ;
+le menu garde cinq entrées. Pour les comptes multi-lignes (8522, test004), une
+consultation décrochée peut devenir une conférence à trois mixée dans le
+navigateur, puis « Quitter la conférence » relie les deux correspondants.
+Conférence et suppression non encore validées sur des appels réels.
+[Publication](OPERATIONS.md#conférence-à-trois-et-messagerie-vocale--15-novembre-2026).
+
 ## Cinq lignes et attente puis appeler — 15 novembre 2026
 
 En service depuis le 15 novembre à 15:35:22 Douala pour les seuls comptes 8522

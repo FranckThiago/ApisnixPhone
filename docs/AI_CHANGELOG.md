@@ -11,6 +11,7 @@ l'autre conversation ; « Quitter la conférence » relie les deux correspondant
 téléchargement, rappel, suppression ; cinq entrées de menu conservées. API
 `/api/voicemail` de la supervision (dépôt de gestion). 337 tests, typage, lint,
 builds, recette démo. Détail : `DOUBLE_APPEL_PILOTE.md`, `ARCHITECTURE.md`.
+Publié sur Hermes à 16:09:36 Douala, release `20261115-conference-messagerie`.
 
 ## Cinq lignes, attente puis appeler — 15 novembre 2026
 

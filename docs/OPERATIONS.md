@@ -1,5 +1,30 @@
 # Construction et validation
 
+## Conférence à trois et messagerie vocale — 15 novembre 2026
+
+Release active **20261115-conference-messagerie**, source `8ec0cc2`, depuis
+**16:09:36 Douala** sur Hermes. Build live isolé à partir du commit, trois
+variables publiques plus `VITE_CALL_WAITING_LINES=8522,test004` ; 270 fichiers,
+seuls `index.html`, le JS et le CSS principaux changent. Anciennes ressources
+conservées pour les onglets ouverts.
+
+Dépendances publiées juste avant, dépôt de gestion : supervision Hermes
+`20261115-messagerie-poste` (routes `/api/voicemail`, 16:06) et passerelle du
+PBX avec le mode `voicemail` (15:59). Sans elles, l'onglet Messagerie vocale
+affiche « indisponible » ; le reste du téléphone n'en dépend pas.
+
+337 tests, typage, lint et build réussis dans le dossier isolé. Recette démo :
+onglets Audio, écoute, suppression, conférence à trois puis « Quitter la
+conférence ». Après bascule : HTTPS et empreintes vérifiés par le script,
+Caddy et supervision actifs, page publique chargée avec le nouveau bundle, sans
+erreur console. Chaîne réelle vérifiée de Hermes au PBX pour la liste d'une
+boîte (18 messages) ; **aucun appel réel, aucune conférence réelle et aucune
+suppression réelle n'ont encore été faits**.
+
+Sauvegarde et reçu dans `/root/apisnix-phone-backups/20261115-conference-messagerie/`.
+Retour : repointer atomiquement `current` sur **20261115-cinq-lignes**, sans
+redémarrage. Preuves locales : `.work/conference-messagerie-20261115/`.
+
 ## Cinq lignes et attente puis appeler — 15 novembre 2026
 
 Release active **20261115-cinq-lignes**, source `167e230`, depuis **15:35:22
