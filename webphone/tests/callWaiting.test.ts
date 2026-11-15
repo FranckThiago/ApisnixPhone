@@ -187,6 +187,16 @@ describe('isolated microphone legs', () => {
   });
 });
 
+describe('lines opened to every account', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => { vi.clearAllTimers(); vi.useRealTimers(); vi.unstubAllGlobals(); });
+  it('gives any standalone account its lines with « * »', async () => {
+    const h = harness(['*'], 5); await ready(h, 'anyone'); h.incoming('A'); h.phone.answer(); await tick();
+    expect(h.incoming('B')).toBe(true);
+    expect(h.phone.getSnapshot().lines).toBe(5);
+  });
+});
+
 describe('five-line account', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => { vi.clearAllTimers(); vi.useRealTimers(); vi.unstubAllGlobals(); });

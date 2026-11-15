@@ -18,14 +18,16 @@ describe('voicemail client', () => {
     const fetchImpl = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       if (url.endsWith('/me')) return json({ csrf: 'token' });
-      if (url.endsWith('/delete')) return json({ ok: true });
+      if (url.endsWith('/delete') || url.endsWith('/read')) return json({ ok: true });
       void init;
       return json({ messages: [] });
     });
     const source = new HttpVoicemailSource('/api', fetchImpl as unknown as typeof fetch);
     expect(await source.list()).toEqual([]);
     await source.remove('a 1');
-    expect(fetchImpl.mock.calls.map(call => String(call[0]))).toEqual(['/api/voicemail', '/api/me', '/api/voicemail/a%201/delete']);
+    await source.markRead(['a-1']); await source.markRead();
+    expect(fetchImpl.mock.calls.map(call => String(call[0]))).toEqual(['/api/voicemail', '/api/me', '/api/voicemail/a%201/delete', '/api/me', '/api/voicemail/read', '/api/me', '/api/voicemail/read']);
+    expect(fetchImpl.mock.calls[4]![1]!.body).toBe('{"ids":["a-1"]}'); expect(fetchImpl.mock.calls[6]![1]!.body).toBe('{"all":true}');
     const sent = fetchImpl.mock.calls[2]![1]!;
     expect(sent.method).toBe('POST');
     expect((sent.headers as Record<string, string>)['X-CSRF-Token']).toBe('token');
@@ -42,5 +44,7 @@ describe('voicemail client', () => {
     await demo.remove('demo-vm-1');
     expect((await demo.list()).map(m => m.id)).toEqual(['demo-vm-2']);
     expect(await demo.audioUrl()).toBe('blob:tone');
+    await demo.markRead();
+    expect((await demo.list()).every(m => !m.unread)).toBe(true);
   });
 });

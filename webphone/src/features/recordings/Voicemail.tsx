@@ -1,4 +1,4 @@
-import { Clock3, Download, Play, RefreshCw, Square, Trash2, Voicemail as VoicemailIcon } from 'lucide-react';
+import { CheckCheck, Clock3, Download, Play, RefreshCw, Square, Trash2, Voicemail as VoicemailIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
@@ -53,6 +53,8 @@ export function Voicemail({ tabs, onCount }: { tabs: ReactNode; onCount(unread: 
       const src = await voicemail.audioUrl(message.id);
       if (current !== generation.current) { if (src.startsWith('blob:')) URL.revokeObjectURL(src); return; }
       setPlaying({ id: message.id, src, label: `${label(message)} · ${formatDay(message.receivedAt)} ${formatTime(message.receivedAt)}` });
+      // Listening is reading: the badge follows at once, the service remembers it.
+      if (message.unread) void voicemail.markRead([message.id]).then(load).catch(() => undefined);
     } catch (raised) { if (current === generation.current) notify(raised instanceof Error ? raised.message : t('rec.fileError'), 'danger'); }
     finally { setBusy(null); }
   };
@@ -77,6 +79,11 @@ export function Voicemail({ tabs, onCount }: { tabs: ReactNode; onCount(unread: 
   };
 
   const unread = messages?.filter(message => message.unread).length ?? 0;
+  const readAll = async () => {
+    setLoading(true);
+    try { await voicemail.markRead(); await load(); }
+    catch (raised) { notify(raised instanceof Error ? raised.message : t('voicemail.unavailable'), 'danger'); setLoading(false); }
+  };
   return (
     <div className="page">
       <header className="page-head">
@@ -90,6 +97,7 @@ export function Voicemail({ tabs, onCount }: { tabs: ReactNode; onCount(unread: 
         <div className="toolbar">
           <span className="voicemail-count" role="status">{messages ? tp('voicemail.count', messages.length) : ''}{unread ? ` · ${tp('voicemail.unread', unread)}` : ''}</span>
           <div className="head-actions">
+            {unread > 0 && <button type="button" className="ghost small" disabled={loading || !open} onClick={() => { void readAll(); }}><CheckCheck size={14} /> {t('voicemail.readAll')}</button>}
             <button type="button" className="ghost small" disabled={loading || !open} onClick={() => { void load(); }}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
           </div>
         </div>

@@ -248,6 +248,6 @@ export function sipConfigFromEnv(env: ImportMetaEnv, embedded = false) {
   if (!/^[a-z0-9.-]+$/i.test(domain) || !/^wss:\/\/[^\s]+$/i.test(wssUrl)) throw new Error('VITE_SIP_DOMAIN et VITE_SIP_WSS_URL (wss://) sont requis en mode live.');
   // The PBX web server says whether this site is blocked (same host as the SIP domain unless overridden).
   const statusUrl = String(env.VITE_BLOCK_STATUS_URL ?? '').trim() || `https://${domain}/agc/apisnix/etat-telephonie.php`;
-  const callWaitingLines = String(env.VITE_CALL_WAITING_LINES ?? '').split(',').map(line => line.trim()).filter(line => /^[a-zA-Z0-9_-]{1,64}$/.test(line));
+  const callWaitingLines = String(env.VITE_CALL_WAITING_LINES ?? '').split(',').map(line => line.trim()).filter(line => line === '*' || /^[a-zA-Z0-9_-]{1,64}$/.test(line));
   return { domain, wssUrl, iceServers, statusUrl, callWaitingLines, embedded };
 }

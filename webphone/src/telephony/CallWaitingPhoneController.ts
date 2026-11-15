@@ -196,7 +196,9 @@ export class CallWaitingPhoneController implements PhoneController {
 
   async connect(credentials: Credentials) {
     if (this.children[0]!.getSnapshot().connection === 'ready') return;
-    this.enabled = this.config.callWaitingLines?.includes(credentials.username.trim()) === true;
+    const lines = this.config.callWaitingLines ?? [];
+    // « * » opens the lines to every account of the standalone phone; a CRM-embedded phone must be named.
+    this.enabled = lines.includes(credentials.username.trim()) || (lines.includes('*') && !this.config.embedded);
     this.selected = 0; this.closing = false; this.operationError = undefined;
     await Promise.all(this.children.slice(0, this.enabled ? this.lines : 1).map(child => child.connect(credentials)));
     if (this.audio) this.applyAudio(this.audio);

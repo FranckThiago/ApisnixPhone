@@ -17,6 +17,8 @@ export interface VoicemailSource {
   /** A playable or downloadable address of the message's audio. */
   audioUrl(id: string): Promise<string>;
   remove(id: string): Promise<void>;
+  /** Marks these messages as read; without ids, every message of the mailbox. */
+  markRead(ids?: string[]): Promise<void>;
 }
 
 interface ServiceMessage { id: string; caller: string; name: string; received_at: number; duration: number | null; folder: string }
@@ -50,16 +52,22 @@ export class HttpVoicemailSource implements VoicemailSource {
     return URL.createObjectURL(await response.blob());
   }
 
-  async remove(id: string) {
+  private async post(path: string, body: unknown) {
     const me = await (await this.call('/me')).json() as { csrf?: string };
     if (!me.csrf) throw new Error(t('voicemail.denied'));
-    await this.call(`/voicemail/${encodeURIComponent(id)}/delete`, { method: 'POST', headers: { 'X-CSRF-Token': me.csrf, 'Content-Type': 'application/json' }, body: '{}' });
+    await this.call(path, { method: 'POST', headers: { 'X-CSRF-Token': me.csrf, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   }
+
+  remove(id: string) { return this.post(`/voicemail/${encodeURIComponent(id)}/delete`, {}); }
+
+  markRead(ids?: string[]) { return this.post('/voicemail/read', ids ? { ids } : { all: true }); }
 }
 
 /** Fictional messages for the demonstration: no network, a generated tone as audio. */
 export class DemoVoicemailSource implements VoicemailSource {
   private removed = new Set<string>();
+  private read = new Set<string>();
+  private allRead = false;
   constructor(private readonly tone: () => string | Promise<string>, private readonly now = () => Date.now()) {}
   async list() {
     const now = this.now();
@@ -67,8 +75,10 @@ export class DemoVoicemailSource implements VoicemailSource {
       { id: 'demo-vm-1', caller: '+33100000002', name: '', receivedAt: now - 25 * 60_000, durationSeconds: 12, unread: true },
       { id: 'demo-vm-2', caller: '+2250000000001', name: '', receivedAt: now - 26 * 3_600_000, durationSeconds: 12, unread: false },
     ];
-    return messages.filter(message => !this.removed.has(message.id));
+    return messages.filter(message => !this.removed.has(message.id))
+      .map(message => this.allRead || this.read.has(message.id) ? { ...message, unread: false } : message);
   }
   async audioUrl() { return this.tone(); }
   async remove(id: string) { this.removed.add(id); }
+  async markRead(ids?: string[]) { if (ids) ids.forEach(id => this.read.add(id)); else this.allRead = true; }
 }
