@@ -56,6 +56,8 @@ export interface Manager {
   transfer?(session: ManagedSession, destination: string): Promise<void>;
   /** REFER with Replaces: bridges `session`'s far end with `target`'s far end. */
   attendedTransfer?(session: ManagedSession, target: ManagedSession): Promise<void>;
+  /** Local three-way mix: every listed call hears the microphone and the other call. `undefined` ends it. */
+  setConference?(sessions: ManagedSession[] | undefined, micMuted?: boolean): void;
   hold(session: ManagedSession): Promise<void>;
   unhold(session: ManagedSession): Promise<void>;
   mute(session: ManagedSession): void;

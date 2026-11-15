@@ -49,6 +49,8 @@ export interface PhoneSnapshot {
   lines?: number;
   /** A second call was placed while the first waits on hold (« Attente puis appeler »). */
   consulting?: boolean;
+  /** Both calls of a consultation are mixed together: everyone hears everyone. */
+  conference?: boolean;
   switchingCall?: boolean;
   error?: string;
   /** Start of the continuous outage, including successive registration attempts. */
@@ -90,6 +92,8 @@ export interface PhoneController {
   callSecond?(rawInput: string, dialTarget: string, remoteName?: string, route?: string): Promise<void>;
   /** Bridges the held party with the consulted one, then leaves. */
   completeTransfer?(): Promise<void>;
+  /** Mixes the held party, the consulted one and this phone in one conversation. */
+  startConference?(): Promise<void>;
   /** Ends the consulted call only; the held conversation resumes. */
   hangupSecond?(): void;
   /** Ends every call. */

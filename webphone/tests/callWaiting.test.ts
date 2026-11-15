@@ -14,6 +14,7 @@ function harness(lines = ['pilot'], maxLines = 2) {
     unregister: vi.fn(async () => undefined), disconnect: vi.fn(async () => undefined), dropSilently: vi.fn(async () => undefined),
     holdsLine: vi.fn(async () => true), sentAudioPackets: vi.fn(async () => 250),
     call: vi.fn(async () => { delegate.onCallCreated(session('out')); }),
+    setConference: vi.fn((sessions?: ManagedSession[], muted?: boolean) => { events.push(sessions ? `mix:${sessions.map(x => x.id).join('+')}:${muted ? 'muted' : 'open'}` : 'mix:off'); }),
     attendedTransfer: vi.fn(async (a: ManagedSession, b: ManagedSession) => { events.push(`refer:${a.id}>${b.id}`); }),
     answer: vi.fn(async (s: ManagedSession) => { events.push(`answer:${s.id}`); delegate.onCallAnswered(s); }),
     decline: vi.fn(async (s: ManagedSession) => { events.push(`decline:${s.id}`); delegate.onCallHangup(s); }),
@@ -263,6 +264,32 @@ describe('five-line account', () => {
     expect(h.events.some(e => e.startsWith('hangup:'))).toBe(false);
     expect(h.phone.getSnapshot()).toMatchObject({ call: { phase: 'active' }, switchingCall: false });
     expect(h.phone.getSnapshot().otherCalls?.map(c => c.id)).toEqual(['A']);
+  });
+  it('mixes both calls only after the held party is back, and mutes the microphone alone', async () => {
+    const h = five(); await consult(h);
+    await expect(h.phone.startConference()).rejects.toThrow();
+    h.delegate.onCallAnswered(session('out')); await tick();
+    await h.phone.startConference(); await tick();
+    expect(h.events.slice(-2)).toEqual(['unhold:A', 'mix:A+out:open']);
+    expect(h.phone.getSnapshot()).toMatchObject({ conference: true, consulting: true, switchingCall: false });
+    h.phone.setMuted(true); h.phone.setHeld(true); await tick();
+    expect(h.events.at(-1)).toBe('mix:A+out:muted');
+    expect(h.manager.mute).not.toHaveBeenCalled(); expect(h.events.filter(e => e.startsWith('hold:'))).toEqual(['hold:A']);
+    expect(h.phone.getSnapshot().call?.muted).toBe(true);
+  });
+  it('ends the mix when one party leaves and keeps the other call', async () => {
+    const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();
+    await h.phone.startConference(); await tick();
+    h.delegate.onCallHangup(session('out')); await tick();
+    expect(h.events).toContain('mix:off');
+    expect(h.phone.getSnapshot()).toMatchObject({ conference: false, call: { id: 'A', phase: 'active' } });
+  });
+  it('leaves the conference by bridging both parties', async () => {
+    const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();
+    await h.phone.startConference(); await tick();
+    await h.phone.completeTransfer(); await tick();
+    expect(h.events).toContain('refer:A>out');
+    expect(h.phone.getSnapshot().conference).toBe(false);
   });
   it('hangs up both calls at once', async () => {
     const h = five(); await consult(h); h.delegate.onCallAnswered(session('out')); await tick();

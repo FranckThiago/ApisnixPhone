@@ -165,19 +165,21 @@ export class CallWaitingPhoneController implements PhoneController {
       const fallback = next >= 0 ? next : calls.findIndex(live);
       if (fallback >= 0) this.selected = fallback;
     }
-    const main = calls[this.selected];
+    // The mix stops as soon as one of its two calls is gone; the other goes on as an ordinary call.
+    if (this.conference && !this.liveConsult()) { this.conference = false; this.conferenceMuted = false; this.manager?.setConference?.(undefined); }
+    const main = this.conference && calls[this.selected] ? { ...calls[this.selected]!, muted: this.conferenceMuted } : calls[this.selected];
     const others = this.enabled ? calls.filter((call, index) => index !== this.selected && live(call)) as CallSnapshot[] : [];
     this.snapshot = { ...this.children[0]!.getSnapshot(), ...this.children[this.selected]!.getSnapshot(),
       connection: this.children[0]!.getSnapshot().connection, account: this.children[0]!.getSnapshot().account,
       lineTaken: this.children[0]!.getSnapshot().lineTaken, recoverySince: this.children[0]!.getSnapshot().recoverySince,
       retryAt: this.children[0]!.getSnapshot().retryAt, blockedUntil: this.children[0]!.getSnapshot().blockedUntil,
       call: main ?? null, otherCall: others[0], otherCalls: others,
-      lines: this.enabled ? this.lines : 1, consulting: this.enabled && this.liveConsult(true) !== undefined,
+      lines: this.enabled ? this.lines : 1, consulting: this.enabled && this.liveConsult(true) !== undefined, conference: this.conference,
       completedCalls: this.completed, switchingCall: this.switching,
       error: this.operationError ?? this.children[this.selected]!.getSnapshot().error ?? this.children[0]!.getSnapshot().error,
     };
     if (this.enabled) {
-      this.manager?.focusSession?.(live(main) ? this.sessions[this.selected] : undefined);
+      if (!this.conference) this.manager?.focusSession?.(live(main) ? this.sessions[this.selected] : undefined);
       if (!calls.some(live)) this.mic.close();
       // A call ringing behind a conversation announces itself with a discreet double beep.
       const ringingBehind = others.some(call => call.phase === 'ringing-in') && live(main) && main!.phase !== 'ringing-in';
@@ -204,7 +206,7 @@ export class CallWaitingPhoneController implements PhoneController {
     this.closing = true; this.operation++; this.switching = false;
     this.waitingTone.stop();
     for (const child of [...this.children].reverse()) await child.disconnect();
-    this.generation++; this.manager = undefined; this.mic.close(); this.sessions = []; this.owners.clear(); this.completed = []; this.selected = 0; this.dialing = undefined; this.rebuild();
+    this.generation++; this.manager = undefined; this.mic.close(); this.sessions = []; this.owners.clear(); this.completed = []; this.selected = 0; this.dialing = undefined; this.conference = false; this.consult = undefined; this.rebuild();
   }
   checkConnection = () => this.children[0]!.checkConnection();
   reconnect = () => this.children[0]!.reconnect();
@@ -265,6 +267,28 @@ export class CallWaitingPhoneController implements PhoneController {
     }
   }
 
+  /** Conference: the held party comes back and both calls are mixed with this phone. */
+  async startConference() {
+    const consult = this.liveConsult();
+    const shared = this.manager;
+    if (!consult || this.conference || this.switching || !shared?.setConference) throw new Error(t('threeWay.failed'));
+    const [heldSlot, placedSlot] = consult;
+    if (this.children[placedSlot]!.getSnapshot().call?.phase !== 'active') throw new Error(t('threeWay.failed'));
+    const token = ++this.operation;
+    this.switching = true; this.rebuild();
+    try {
+      const held = this.children[heldSlot]!;
+      const resumed = held.getSnapshot().call?.phase === 'active' || await this.waitFor(heldSlot, 'active', () => held.setHeld(false), true);
+      if (token !== this.operation) return;
+      const sessions = [this.sessions[heldSlot], this.sessions[placedSlot]];
+      if (!resumed || !sessions[0] || !sessions[1] || !this.liveConsult()) throw new Error(t('threeWay.failed'));
+      this.conference = true; this.conferenceMuted = false;
+      shared.setConference(sessions as ManagedSession[], false);
+    } finally {
+      if (token === this.operation) { this.switching = false; this.rebuild(); }
+    }
+  }
+
   /** « Raccrocher le tiers » : ends the consulted call; the held conversation resumes by itself. */
   hangupSecond() {
     const consult = this.liveConsult(true);
@@ -284,6 +308,8 @@ export class CallWaitingPhoneController implements PhoneController {
   }
 
   private consult?: { held: string; placed: string };
+  private conference = false;
+  private conferenceMuted = false;
   /** Slots of the held party and of the consulted one, while both calls are still up. */
   private liveConsult(dialingToo = false): [Slot, Slot] | undefined {
     if (!this.consult) return undefined;
@@ -317,8 +343,17 @@ export class CallWaitingPhoneController implements PhoneController {
     return this.children[this.selected]!.transfer(extension);
   }
   dismiss() { if (!this.children.some(child => live(child.getSnapshot().call))) this.children.forEach(child => child.dismiss()); }
-  setMuted(muted: boolean) { if (!this.switching) this.children[this.selected]!.setMuted(muted); }
-  setHeld(held: boolean) { if (!this.switching) this.children[this.selected]!.setHeld(held); }
+  setMuted(muted: boolean) {
+    if (this.switching) return;
+    // In a conference only the microphone is cut: both parties keep hearing each other.
+    if (this.conference) { this.conferenceMuted = muted; this.manager?.setConference?.(this.conferenceSessions(), muted); this.rebuild(); return; }
+    this.children[this.selected]!.setMuted(muted);
+  }
+  setHeld(held: boolean) { if (!this.switching && !this.conference) this.children[this.selected]!.setHeld(held); }
+  private conferenceSessions() {
+    const consult = this.liveConsult();
+    return consult ? consult.map(slot => this.sessions[slot]).filter((session): session is ManagedSession => !!session) : undefined;
+  }
   sendDtmf(tone: string) { if (!this.switching) this.children[this.selected]!.sendDtmf(tone); }
   resumeAudio() { this.children[this.selected]!.resumeAudio(); }
   async setInputDevice(id: string) { await this.mic.setDevice(id); await Promise.all(this.children.map(child => child.setInputDevice(id))); }

@@ -704,3 +704,6 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 .audio-order select { border: 0; background: none; color: var(--text); font: inherit; font-size: 13px; font-weight: 600; padding: 7px 4px; cursor: pointer; outline: none; }
 .audio-order:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
 .consult-ends .ghost-call { white-space: normal; min-height: 44px; line-height: 1.2; }
+
+.consult-join.alt { background: var(--call-raised); color: var(--green-strong); border: 1px solid var(--green); }
+.consult-join.alt:hover:not(:disabled) { background: var(--green-soft); }

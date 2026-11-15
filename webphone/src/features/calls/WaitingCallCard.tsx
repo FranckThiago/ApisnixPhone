@@ -3,8 +3,8 @@ import { useI18n } from '../../i18n';
 import type { CallSnapshot } from '../../telephony/types';
 
 /** The other lines of a multi-call phone: each call that rings or waits on hold, with its own actions. */
-export function WaitingCallCard({ calls, switchingCall, onAnswer, onDecline, onSwitch }: {
-  calls: CallSnapshot[]; switchingCall?: boolean; onAnswer(id: string): void; onDecline(id: string): void; onSwitch(id: string): void;
+export function WaitingCallCard({ calls, switchingCall, conference, onAnswer, onDecline, onSwitch }: {
+  calls: CallSnapshot[]; switchingCall?: boolean; conference?: boolean; onAnswer(id: string): void; onDecline(id: string): void; onSwitch(id: string): void;
 }) {
   const { t, tp } = useI18n();
   if (!calls.length) return null;
@@ -26,7 +26,7 @@ export function WaitingCallCard({ calls, switchingCall, onAnswer, onDecline, onS
               </span>
               <span className="line-who">
                 <b>{call.remoteName || call.dialTarget}</b>
-                <small>{rings ? t('call.ringingIn') : call.phase === 'held' ? <><Pause size={11} aria-hidden="true" /> {t('call.held')}</> : t('waiting.held')}{call.remoteName ? ` · ${call.dialTarget}` : ''}</small>
+                <small>{rings ? t('call.ringingIn') : call.phase === 'held' ? <><Pause size={11} aria-hidden="true" /> {t('call.held')}</> : t(conference ? 'threeWay.member' : 'waiting.held')}{call.remoteName ? ` · ${call.dialTarget}` : ''}</small>
               </span>
               <span className="line-actions">
                 {rings ? <>
@@ -35,7 +35,7 @@ export function WaitingCallCard({ calls, switchingCall, onAnswer, onDecline, onS
                   <button type="button" className="line-button decline" disabled={switchingCall} onClick={() => onDecline(call.id)}
                     aria-label={t('call.decline')} title={t('call.decline')}><PhoneOff size={17} /></button>
                 </> : (
-                  <button type="button" className="line-button resume" disabled={switchingCall || call.holdPending || !waits} onClick={() => onSwitch(call.id)}
+                  <button type="button" className="line-button resume" disabled={switchingCall || conference || call.holdPending || !waits} onClick={() => onSwitch(call.id)}
                     aria-label={t('waiting.switch')} title={t('waiting.switch')}><Play size={17} /></button>
                 )}
               </span>

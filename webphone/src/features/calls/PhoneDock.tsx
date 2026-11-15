@@ -1,6 +1,6 @@
 import { TeamDock } from '../../team/TeamDock';
 import { WaitingCallCard } from './WaitingCallCard';
-import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneForwarded, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, UserX, X } from 'lucide-react';
+import { AlarmClock, Delete, Grid3x3, Headphones, Mic, MicOff, Pause, Phone, PhoneForwarded, PhoneIncoming, PhoneOff, Play, RotateCcw, StickyNote, UserPlus, Users, UserX, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -243,13 +243,19 @@ function WrapUp({ call }: { call: CallSnapshot }) {
 
 function CallCard({ call }: { call: CallSnapshot }) {
   const { phone, notify } = useApp();
-  const { audioBlocked, switchingCall, consulting } = usePhone();
+  const { audioBlocked, switchingCall, consulting, conference } = usePhone();
   const { contacts } = useData();
   const [joining, setJoining] = useState(false);
   const join = async () => {
     setJoining(true);
     try { await phone.completeTransfer?.(); notify(t('consult.done'), 'success'); }
     catch (error) { notify(error instanceof Error ? error.message : t('team.transferFailed'), 'danger'); }
+    finally { setJoining(false); }
+  };
+  const confer = async () => {
+    setJoining(true);
+    try { await phone.startConference?.(); }
+    catch (error) { notify(error instanceof Error ? error.message : t('threeWay.failed'), 'danger'); }
     finally { setJoining(false); }
   };
   const { t } = useI18n();
@@ -307,7 +313,7 @@ function CallCard({ call }: { call: CallSnapshot }) {
               <div className="call-controls">
                 <button type="button" className={'control' + (call.muted ? ' on' : '')} disabled={!live || switchingCall} aria-pressed={call.muted} onClick={() => phone.setMuted(!call.muted)}>
                   {call.muted ? <MicOff size={21} /> : <Mic size={21} />}<span>{t(call.muted ? 'call.unmute' : 'call.mute')}</span><Kbd>M</Kbd></button>
-                <button type="button" className={'control' + (call.phase === 'held' ? ' on' : '')} disabled={!live || call.holdPending || switchingCall} aria-pressed={call.phase === 'held'}
+                <button type="button" className={'control' + (call.phase === 'held' ? ' on' : '')} disabled={!live || call.holdPending || switchingCall || conference} aria-pressed={call.phase === 'held'}
                   onClick={() => phone.setHeld(call.phase !== 'held')}>
                   {call.phase === 'held' ? <Play size={21} /> : <Pause size={21} />}<span>{t(call.holdPending ? 'call.wait' : call.phase === 'held' ? 'call.resume' : 'call.hold')}</span><Kbd>H</Kbd></button>
                 <button type="button" className="control" disabled={call.phase !== 'active' || switchingCall} onClick={() => setKeypad(true)}><Grid3x3 size={21} /><span>{t('call.keypad')}</span><Kbd>K</Kbd></button>
@@ -315,9 +321,11 @@ function CallCard({ call }: { call: CallSnapshot }) {
             )}
             {consulting ? (
               <div className="consult-actions" role="group" aria-label={t('consult.title')}>
-                <p className="consult-title"><Pause size={14} aria-hidden="true" /> {t('consult.title')}</p>
+                <p className="consult-title">{conference ? <Users size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />} {t(conference ? 'threeWay.title' : 'consult.title')}</p>
+                {!conference && <button type="button" className="consult-join alt" disabled={call.phase !== 'active' || joining || switchingCall} title={t('consult.completeHint')}
+                  onClick={() => { void confer(); }}><Users size={19} />{t('threeWay.start')}</button>}
                 <button type="button" className="consult-join" disabled={call.phase !== 'active' || joining || switchingCall} title={t('consult.completeHint')}
-                  onClick={() => { void join(); }}><PhoneForwarded size={19} />{t(joining ? 'team.transferring' : 'consult.complete')}</button>
+                  onClick={() => { void join(); }}><PhoneForwarded size={19} />{t(joining ? 'team.transferring' : conference ? 'threeWay.leave' : 'consult.complete')}</button>
                 <div className="consult-ends">
                   <button type="button" className="ghost-call" disabled={joining} onClick={() => phone.hangupSecond?.()}><UserX size={16} /> {t('consult.hangupSecond')}</button>
                   <button type="button" className="ghost-call danger" disabled={joining} onClick={() => phone.hangupAll?.()}><PhoneOff size={16} /> {t('consult.hangupAll')}</button>
@@ -332,8 +340,8 @@ function CallCard({ call }: { call: CallSnapshot }) {
 
 function OtherCall() {
   const { phone } = useApp();
-  const { otherCall, otherCalls, switchingCall } = usePhone();
-  return <WaitingCallCard calls={otherCalls ?? (otherCall ? [otherCall] : [])} switchingCall={switchingCall}
+  const { otherCall, otherCalls, switchingCall, conference } = usePhone();
+  return <WaitingCallCard calls={otherCalls ?? (otherCall ? [otherCall] : [])} switchingCall={switchingCall} conference={conference}
     onAnswer={id => phone.answerWaiting?.(id)} onDecline={id => phone.declineWaiting?.(id)} onSwitch={id => phone.switchCall?.(id)} />;
 }
 

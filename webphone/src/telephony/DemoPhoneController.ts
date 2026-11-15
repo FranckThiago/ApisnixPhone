@@ -144,7 +144,7 @@ export class DemoPhoneController implements PhoneController {
     this.clearTimers();
     this.ringer.stop();
     this.callProgress.stop();
-    const held = this.others().find(other => other.phase === 'held');
+    const held = this.others().find(other => other.phase === 'held' || (this.snapshot.conference && other.phase === 'active'));
     if (held) {
       // A conversation left on hold comes back by itself, as on the real line.
       this.setOthers(this.others().filter(other => other.id !== held.id), { call: { ...held, phase: 'active' }, consulting: false });
@@ -157,7 +157,8 @@ export class DemoPhoneController implements PhoneController {
   private setOthers(otherCalls: CallSnapshot[], patch: Partial<PhoneSnapshot> = {}) {
     const ringing = otherCalls.some(call => call.phase === 'ringing-in');
     if (ringing && this.ringtone.enabled) this.waitingTone.start(this.ringtone.volume); else this.waitingTone.stop();
-    this.update({ otherCalls, otherCall: otherCalls[0], consulting: this.snapshot.consulting && otherCalls.some(call => call.phase === 'held'), ...patch });
+    const consulting = this.snapshot.consulting && otherCalls.some(call => call.phase === 'held' || (this.snapshot.conference && call.phase === 'active'));
+    this.update({ otherCalls, otherCall: otherCalls[0], consulting, conference: consulting && this.snapshot.conference, ...patch });
   }
   private pick(id: string | undefined, ringing: boolean) {
     return this.others().find(call => id ? call.id === id : (call.phase === 'ringing-in') === ringing);
@@ -181,21 +182,27 @@ export class DemoPhoneController implements PhoneController {
     this.later(700, () => this.updateCall(id, { phase: 'ringing-out' }));
     this.later(2600, () => this.updateCall(id, { phase: 'active', answeredAt: Date.now() }));
   }
+  async startConference() {
+    const held = this.others().find(call => call.phase === 'held');
+    if (!this.snapshot.consulting || this.snapshot.call?.phase !== 'active' || !held) throw new Error(t('threeWay.failed'));
+    this.update({ conference: true, otherCalls: this.others().map(call => call.id === held.id ? { ...call, phase: 'active' as const } : call) });
+    this.update({ otherCall: this.others()[0] });
+  }
   async completeTransfer() {
     if (!this.snapshot.consulting || this.snapshot.call?.phase !== 'active') throw new Error(t('team.transferFailed'));
-    const held = this.others().find(call => call.phase === 'held');
+    const held = this.others().find(call => call.phase === 'held' || call.phase === 'active');
     // The demonstration keeps the customer's call for the wrap-up; the colleague's leg simply ends.
     this.setOthers(this.others().filter(call => call.id !== held?.id), { call: held ? { ...held, phase: 'active' } : this.snapshot.call, consulting: false });
     this.hangup();
   }
   hangupSecond() {
-    const held = this.others().find(call => call.phase === 'held');
+    const held = this.others().find(call => call.phase === 'held' || call.phase === 'active');
     if (!this.snapshot.consulting || !held) return;
     this.clearTimers();
     this.setOthers(this.others().filter(call => call.id !== held.id), { call: { ...held, phase: 'active' }, consulting: false });
   }
   hangupAll() {
-    const held = this.others().find(call => call.phase === 'held');
+    const held = this.others().find(call => call.phase === 'held' || call.phase === 'active');
     this.setOthers([], { consulting: false, ...(this.snapshot.consulting && held ? { call: { ...held, phase: 'active' as const } } : {}) });
     this.hangup();
   }

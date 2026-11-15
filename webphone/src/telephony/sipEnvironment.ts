@@ -153,7 +153,48 @@ export const browserSipEnvironment: SipEnvironment = {
       stats.forEach(report => { if (report.type === 'outbound-rtp' && report.kind === 'audio') packets = (packets ?? 0) + (report.packetsSent ?? 0); });
       return packets;
     };
+    // Three-way conversation mixed in the browser: each call is sent the microphone plus the other call.
+    let conference: { ids: string[]; context: AudioContext; gain: GainNode; restore: Array<() => void> } | undefined;
+    const peer = (session: { sessionDescriptionHandler?: unknown }) =>
+      (session.sessionDescriptionHandler as InstanceType<typeof Web.SessionDescriptionHandler> | undefined)?.peerConnection;
+    const setConference = (sessions: Array<{ id: string }> | undefined, micMuted = false) => {
+      const ids = sessions?.map(session => session.id) ?? [];
+      if (conference && conference.ids.join() === ids.join()) { conference.gain.gain.value = micMuted ? 0 : 1; return; }
+      if (conference) {
+        conference.restore.forEach(undo => undo());
+        void conference.context.close().catch(() => undefined);
+        conference = undefined;
+      }
+      const members = manager.managedSessions.map(item => item.session).filter(session => ids.includes(session.id));
+      if (members.length < 2) return;
+      const context = new AudioContext();
+      const gain = context.createGain();
+      gain.gain.value = micMuted ? 0 : 1;
+      const restore: Array<() => void> = [];
+      const remote = (session: (typeof members)[number]) => peer(session)?.getReceivers().find(receiver => receiver.track?.kind === 'audio')?.track;
+      let micConnected = false;
+      for (const session of members) {
+        const sender = peer(session)?.getSenders().find(candidate => candidate.track?.kind === 'audio');
+        const original = sender?.track;
+        if (!sender || !original) continue;
+        const destination = context.createMediaStreamDestination();
+        if (!micConnected) { context.createMediaStreamSource(new MediaStream([original])).connect(gain); micConnected = true; }
+        gain.connect(destination);
+        for (const other of members) {
+          const track = other === session ? undefined : remote(other);
+          if (track) { track.enabled = true; context.createMediaStreamSource(new MediaStream([track])).connect(destination); }
+        }
+        original.enabled = true;
+        const mixed = destination.stream.getAudioTracks()[0]!;
+        void sender.replaceTrack(mixed).catch(() => undefined);
+        restore.push(() => { void sender.replaceTrack(original).catch(() => undefined); mixed.stop(); });
+        const own = remote(session);
+        if (own) own.enabled = true;
+      }
+      conference = { ids, context, gain, restore };
+    };
     const focusSession = (selected: { id: string } | undefined) => {
+      if (conference) return;
       for (const { session } of manager.managedSessions) {
         const handler = session.sessionDescriptionHandler as InstanceType<typeof Web.SessionDescriptionHandler> | undefined;
         const pc = handler?.peerConnection;
@@ -168,7 +209,7 @@ export const browserSipEnvironment: SipEnvironment = {
       return confirmedTransfer(session, uri);
     };
     const attendedTransfer = (session: Session, target: Session) => confirmedTransfer(session, target);
-    return Object.assign(manager, { transfer, attendedTransfer, readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
+    return Object.assign(manager, { transfer, attendedTransfer, setConference, readConnectionQuality, focusSession, prepareMedia, contactName: manager.userAgent.contact.uri.user!, dropSilently, holdsLine, sentAudioPackets }) as unknown as Manager;
   },
 
   createRemoteAudio() {
