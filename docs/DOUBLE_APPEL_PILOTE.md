@@ -6,6 +6,9 @@ Publié le 15 novembre pour 8522 et test004 (release `20261115-cinq-lignes`) ;
 les sections suivantes décrivent le pilote à deux
 appels tel qu'il a été validé, et restent vraies pour l'isolation.
 
+- **Depuis le 15 novembre au soir, `VITE_CALL_WAITING_LINES=*`** ouvre les lignes
+  à tous les comptes du téléphone autonome ; les modèles `SIP_*_WEB` du PBX sont
+  à cinq appels. Un téléphone intégré à un CRM reste à une ligne s'il n'est pas nommé.
 - **Jusqu'à cinq lignes** pour un compte de la liste `VITE_CALL_WAITING_LINES`
   (`maxLines`, 2 à 5, défaut 5) : `CallWaitingPhoneController` porte un
   contrôleur isolé par ligne sur une seule inscription SIP. Plusieurs appels

@@ -1,5 +1,16 @@
 # Journal des changements
 
+## Cinq lignes pour tous, messages lus, transfert et guide — 15 novembre 2026
+
+Demandes de Franck. `callWaitingLines` accepte `*` (hors téléphone intégré) ;
+`VoicemailSource.markRead` et bouton « Tout marquer comme lu » ; panneau de
+transfert en choix pleine largeur avec icônes, recherche de collègue au-delà de
+cinq, tuiles « Raccrocher le tiers / les deux » ; pair de démonstration renommé
+« Camille Bernard ». Guide client FR/EN/ES : transfert direct, attente puis
+appeler, conférence, deux captures (`22-transfert`, `24-consultation-commandes`),
+PDF reconstruits, 10 pages ; `guide-screenshots.mjs` accepte `GUIDE_ONLY`.
+344 tests. Releases `20261115-tous-postes` puis `20261115-transfert-ui`.
+
 ## 2026-11-15 — Alerte de connexion moins sensible
 
 Seuils approuvés : audio > 600 ms ou pertes > 5 % pendant 10 s ; quatre

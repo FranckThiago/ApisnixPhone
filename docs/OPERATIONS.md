@@ -1,5 +1,33 @@
 # Construction et validation
 
+## Cinq lignes pour tous, messages lus, panneau de transfert — 15 novembre 2026
+
+Deux releases le même soir, sur demande de Franck :
+
+- **20261115-tous-postes**, source `c9a8579`, à **17:47:32 Douala** : build avec
+  `VITE_CALL_WAITING_LINES=*` (toutes les lignes du téléphone autonome ; un
+  téléphone intégré à un CRM doit rester nommé), messages vocaux marqués lus à
+  l'écoute et bouton « Tout marquer comme lu ».
+- **20261115-transfert-ui**, source `e0335b0`, à **20:09:38 Douala**, release
+  active : panneau de transfert refait (choix en pleine largeur avec icône et
+  explication, recherche de collègue, tuiles de fin de consultation). Publiée
+  par-dessus `20261115-connection-tolerance` d'une autre session, dont le code
+  est sur `main` et donc inclus.
+
+Côté PBX le même jour : `call-limit=5` / `busylevel=5` dans les neuf modèles
+`SIP_*_WEB` (99 postes actifs), voir `docs/CINQ_LIGNES_20261115.md` du dépôt de
+gestion. **Garder `VITE_CALL_WAITING_LINES=*` dans tout build suivant** : sans
+cette variable, tous les postes reviennent à une seule ligne côté navigateur.
+
+344 tests, typage, lint et build dans le dossier isolé ; recette démo du
+panneau (aucun débordement à 375 px) ; après bascule, HTTPS et empreintes
+vérifiés par le script. Aucun appel réel fait par l'agent.
+
+Sauvegardes : `/root/apisnix-phone-backups/20261115-tous-postes/` et
+`/root/apisnix-phone-backups/20261115-transfert-ui/`. Retour : repointer
+`current` sur **20261115-connection-tolerance**. Preuves locales :
+`.work/tous-postes-20261115/`, `.work/transfert-ui-20261115/`.
+
 ## Alerte de connexion assouplie — 15 novembre 2026
 
 Release active **`20261115-connection-tolerance`**, source `f46b2a9`, depuis

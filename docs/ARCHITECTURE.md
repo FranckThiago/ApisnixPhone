@@ -529,7 +529,9 @@ enregistrements), `POST /api/voicemail/<id>/delete` avec le jeton CSRF de
 poste connecté à la passerelle du PBX, qui retrouve sa `voicemail_id`, refuse
 une boîte partagée par plusieurs postes actifs et masque les messages
 antérieurs à l'attribution du poste. « Nouveau » = dossiers INBOX/Urgent
-d'Asterisk ; l'écoute dans le téléphone ne change pas cet état. Démonstration :
+d'Asterisk, sauf si le message a été marqué lu ici : `POST /api/voicemail/read`
+(`{"ids":[…]}` à l'écoute, `{"all":true}` pour tout marquer) mémorise la lecture
+côté supervision, sans toucher à la messagerie d'Asterisk. Démonstration :
 deux messages fictifs en mémoire.
 
 ### Extension CRM du 23 octobre — fiche et conférence pilote

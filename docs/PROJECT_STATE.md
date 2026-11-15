@@ -1,5 +1,15 @@
 # État du projet
 
+## Cinq lignes pour tous et transfert plus clair — 15 novembre 2026
+
+En service : tous les postes ApisnixPhone (téléphone autonome) ont jusqu'à cinq
+lignes, « Attente puis appeler » et la conférence à trois ; le panneau de
+transfert propose « Transfert direct » et « Attente puis appeler » en pleine
+largeur, avec recherche de collègue. Dans Audio › Messagerie vocale, écouter un
+message le marque lu et « Tout marquer comme lu » vide le badge. Le guide
+client (FR/EN/ES, 10 pages) explique le transfert et la consultation.
+[Publication](OPERATIONS.md#cinq-lignes-pour-tous-messages-lus-panneau-de-transfert--15-novembre-2026).
+
 ## Alerte de connexion assouplie — 15 novembre 2026
 
 Version **`20261115-connection-tolerance` en service depuis 19:06:58 Douala**
