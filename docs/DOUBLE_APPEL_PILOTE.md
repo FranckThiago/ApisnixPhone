@@ -27,8 +27,14 @@ appels tel qu'il a été validé, et restent vraies pour l'isolation.
   avec Replaces suivi jusqu'au NOTIFY final, puis sortie des deux dialogues),
   « Raccrocher le tiers » (`hangupSecond`, le correspondant reprend) et
   « Raccrocher les deux » (`hangupAll`). Transfert refusé : rien n'est raccroché.
-- **Hors périmètre** : conférence à trois (demande un pont côté PBX), second
-  appel sortant vers l'extérieur.
+- **Conférence à trois** (`startConference`, 15 novembre) : pendant une
+  consultation décrochée, le correspondant en attente est repris puis les deux
+  appels sont mixés dans le navigateur : chaque appel reçoit le micro et
+  l'autre conversation (Web Audio, `replaceTrack`), sans pont côté PBX. Muet ne
+  coupe que le micro ; Attente est désactivée. Le mixage s'arrête dès qu'un des
+  deux appels se termine ; « Quitter la conférence » relie les deux
+  correspondants par REFER/Replaces. Audio réel à valider sur des appels.
+- **Hors périmètre** : second appel sortant vers l'extérieur.
 - Tests : `webphone/tests/callWaiting.test.ts`, bloc « five-line account ».
   Démonstration : cinq lignes simulées, « Simuler un appel entrant » plusieurs fois.
   Aucun appel réel n'a encore validé cette extension.

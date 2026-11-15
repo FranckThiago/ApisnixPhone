@@ -511,6 +511,20 @@ contrôleurs isolés, avec une capture clonée et un verrou de sélection des pi
 La liste de build `VITE_CALL_WAITING_LINES` est vide par défaut. Voir
 [le fonctionnement détaillé et les limites](DOUBLE_APPEL_PILOTE.md).
 
+### Messagerie vocale du poste — 15 novembre 2026
+
+La vue Audio porte deux onglets : Enregistrements et Messagerie vocale. Le
+client (`webphone/src/voicemail/client.ts`) appelle la supervision sur la même
+origine : `GET /api/voicemail` (liste, 200 au plus), `GET
+/api/voicemail/<id>/audio` (WAV, chargé en blob puis lu par le lecteur des
+enregistrements), `POST /api/voicemail/<id>/delete` avec le jeton CSRF de
+`/api/me`. Le navigateur ne nomme jamais de boîte : la supervision transmet le
+poste connecté à la passerelle du PBX, qui retrouve sa `voicemail_id`, refuse
+une boîte partagée par plusieurs postes actifs et masque les messages
+antérieurs à l'attribution du poste. « Nouveau » = dossiers INBOX/Urgent
+d'Asterisk ; l'écoute dans le téléphone ne change pas cet état. Démonstration :
+deux messages fictifs en mémoire.
+
 ### Extension CRM du 23 octobre — fiche et conférence pilote
 
 Le SDK embarqué propose `setContact` (huit rubriques, identifiant et notes

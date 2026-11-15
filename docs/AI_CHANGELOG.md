@@ -1,5 +1,17 @@
 # Journal des changements
 
+## Conférence à trois et messagerie vocale — 15 novembre 2026
+
+Demande de Franck. Conférence à trois mixée dans le navigateur (`setConference`
+dans `sipEnvironment.ts`, `startConference` dans le contrôleur multi-lignes) :
+le correspondant en attente revient, les deux appels reçoivent le micro et
+l'autre conversation ; « Quitter la conférence » relie les deux correspondants
+(REFER/Replaces). Onglet « Messagerie vocale » dans Audio (`voicemail/client.ts`,
+`features/recordings/Voicemail.tsx`, `AudioView.tsx`) : liste, écoute,
+téléchargement, rappel, suppression ; cinq entrées de menu conservées. API
+`/api/voicemail` de la supervision (dépôt de gestion). 337 tests, typage, lint,
+builds, recette démo. Détail : `DOUBLE_APPEL_PILOTE.md`, `ARCHITECTURE.md`.
+
 ## Cinq lignes, attente puis appeler — 15 novembre 2026
 
 Demande de Franck. Le contrôleur du double appel passe de deux à cinq lignes
