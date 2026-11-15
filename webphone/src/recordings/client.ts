@@ -248,6 +248,9 @@ export class DemoRecordingsSource implements RecordingsSource {
   }
 }
 
+/** The demonstration's tone, shared with the fictional voicemail. */
+export function recordingsDemoTone(): string { return demoToneUrl(); }
+
 let tone: string | null = null;
 /** A 12-second 440 Hz wave, built once; the same file the supervision demonstration plays. */
 function demoToneUrl(): string {

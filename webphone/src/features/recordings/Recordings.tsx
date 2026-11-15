@@ -1,5 +1,5 @@
 import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Search, Square, X, ArrowDownUp } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { Flag } from '../../components/Flag';
@@ -75,7 +75,7 @@ function Row({ call, playingId, onPlay, showDate = false }: { call: RecordedCall
   );
 }
 
-export function Recordings() {
+export function Recordings({ tabs }: { tabs?: ReactNode } = {}) {
   const { recordings, notify, recordingsAccess, reopenRecordings } = useApp();
   const { demo } = usePhone();
   const { t, tp, language } = useI18n();
@@ -206,6 +206,7 @@ export function Recordings() {
           <span className="scope" title={t('rec.scopeTitle')}><Info size={14} /> {t('rec.extension', { name: identity.alias ?? identity.extension })}{demo ? ` · ${t('demo.fictional')}` : ''}</span>
         )}
       </header>
+      {tabs}
 
       {playing && (
         <RecordingPlayer key={playing.id} src={playing.src} label={playing.label}

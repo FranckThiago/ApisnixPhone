@@ -19,9 +19,10 @@ import type { Credentials, PhoneController } from '../telephony/types';
 import { createLineLogin } from '../features/auth/lineLogin';
 import { openLiveWorkspace, type RecordingsAccess } from '../features/auth/workspace';
 import { forgetSilentAccess } from '../features/auth/credentials';
-import { DemoRecordingsSource, HttpRecordingsSource } from '../recordings/client';
+import { DemoRecordingsSource, HttpRecordingsSource, recordingsDemoTone } from '../recordings/client';
 import { announcementsUrlFromEnv, DemoAnnouncementsSource, HttpAnnouncementsSource, type AnnouncementsSource } from '../announcements/client';
 import type { RecordingsSource } from '../recordings/types';
+import { DemoVoicemailSource, HttpVoicemailSource, type VoicemailSource } from '../voicemail/client';
 import { applyTheme, storedTheme } from './theme';
 
 export type View = 'journal' | 'contacts' | 'audio' | 'callbacks' | 'settings' | 'phone';
@@ -39,6 +40,7 @@ interface AppValue {
   store: DataStore;
   /** The recordings of the person's own phone, served by the supervision service. */
   recordings: RecordingsSource;
+  voicemail: VoicemailSource;
   /** APISNIX announcements written in the PBX administration; fictional in the demonstration. */
   announcements: AnnouncementsSource;
   view: View;
@@ -85,6 +87,8 @@ const phone: PhoneController = demoPhone ?? new CallWaitingPhoneController(sipCo
 const apiBase = String(import.meta.env.VITE_RECORDINGS_URL ?? '/api').replace(/\/$/, '');
 const store = new DataStore(demoPhone ? (typeof indexedDB === 'undefined' ? undefined : indexedDbPersistence) : new ServerPersistence(apiBase));
 // Same origin by default (`/api` behind the site's reverse proxy); the demonstration never calls the network.
+// The voicemail of the signed-in phone, read by the same service as the recordings.
+const voicemail: VoicemailSource = demoPhone ? new DemoVoicemailSource(() => recordingsDemoTone()) : new HttpVoicemailSource(apiBase);
 const recordings: RecordingsSource = demoPhone ? new DemoRecordingsSource(undefined, () => store.getSnapshot().contacts) : new HttpRecordingsSource(apiBase);
 // Read straight from the PBX's public page: its origin is allowed by the site's connection policy.
 const announcements: AnnouncementsSource = demoPhone ? new DemoAnnouncementsSource() : new HttpAnnouncementsSource(announcementsUrlFromEnv(import.meta.env));
@@ -305,7 +309,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
   }, []);
 
   const value = useMemo<AppValue>(() => ({
-    callTags, callScript: sessionOpen && recordingsAccess.state === 'open' ? callScript : null, phone, store, recordings, announcements, view, setView, dial, lastDial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
+    callTags, callScript: sessionOpen && recordingsAccess.state === 'open' ? callScript : null, phone, store, recordings, voicemail, announcements, view, setView, dial, lastDial, setDial, placeCall, login, signingIn, logout, paletteOpen, setPaletteOpen,
     toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, setFavoritesOnly, recordingsAccess, reopenRecordings,
   }), [callTags, callScript, view, dial, lastDial, placeCall, login, signingIn, logout, paletteOpen, toasts, notify, dismissToast, sessionOpen, wrapUpRecordId, simulateIncoming, selectedContactId, openContact, favoritesOnly, recordingsAccess, reopenRecordings]);
 

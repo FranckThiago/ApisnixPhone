@@ -17,7 +17,7 @@ import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
 import { useLineHistory } from '../features/history/useLineHistory';
 import { missedStamp, unseenMissedCalls } from '../recordings/lineHistory';
-import { Recordings } from '../features/recordings/Recordings';
+import { AudioView } from '../features/recordings/AudioView';
 import { NotificationOffer } from '../features/settings/NotificationOffer';
 import { showSystemNotification } from '../telephony/notifications';
 import { Settings } from '../features/settings/Settings';
@@ -201,7 +201,7 @@ function Workspace() {
           <ErrorBoundary key={view}>
             {(view === 'journal' || view === 'phone') && <Journal lineHistory={lineHistory} onSeen={markMissedSeen} />}
             {view === 'contacts' && <Contacts />}
-            {view === 'audio' && <Recordings />}
+            {view === 'audio' && <AudioView />}
             {view === 'callbacks' && <Callbacks />}
             {view === 'settings' && <Settings />}
           </ErrorBoundary>

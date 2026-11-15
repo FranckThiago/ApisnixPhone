@@ -707,3 +707,17 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 
 .consult-join.alt { background: var(--call-raised); color: var(--green-strong); border: 1px solid var(--green); }
 .consult-join.alt:hover:not(:disabled) { background: var(--green-soft); }
+/* Audio: recordings and voicemail share the entry, as two tabs under the title. */
+.audio-tabs { margin: 0 0 16px; }
+.audio-tabs button { display: inline-flex; align-items: center; gap: 6px; }
+.audio-tabs .badge { position: static; margin-left: 4px; }
+.voicemail-count { font-size: 13px; font-weight: 600; color: var(--muted); }
+.voicemail-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+.voicemail-dot.on { background: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
+.voicemail-list .audio-row.unread .who b { font-weight: 800; }
+.voicemail-list .when { white-space: nowrap; }
+.ghost.small.danger { color: var(--danger); }
+.ghost.small.danger:hover:not(:disabled) { background: var(--danger-soft); border-color: var(--danger); }
+.voicemail-list .audio-actions { flex-wrap: wrap; row-gap: 6px; }
+.voicemail-list .audio-files { min-width: 0; }
+@media (max-width: 520px) { .audio-tabs { display: flex; } .audio-tabs button { flex: 1; justify-content: center; white-space: normal; line-height: 1.2; } }
