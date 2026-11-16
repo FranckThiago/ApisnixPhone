@@ -296,11 +296,11 @@ Architecture et plan alignés, manuels inchangés.
 
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 
-**Dans le code, pas encore publié sur Hermes (accord de Franck attendu).**
+**En service `20261116-groupes-sonnerie`, source `a16c00c`, depuis le
+16 novembre à 10:35:33 Douala.**
 « Tous les appels du poste » affiche « Répondu par un collègue » et « Appel de
 groupe sans réponse » (FR/EN/ES) pour les issues serveur `ANSWERED_ELSEWHERE` et
-`GROUP_UNATTRIBUTED`, en neutre, sans les compter comme manqués. Avant cette
-version, le téléphone publié les montre « Issue inconnue ». Détail :
+`GROUP_UNATTRIBUTED`, en neutre, sans les compter comme manqués. Détail :
 [ARCHITECTURE](ARCHITECTURE.md#journal-des-appels-reçus-hors-connexion).
 
 ## Appels reçus hors connexion — 22 octobre 2026

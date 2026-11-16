@@ -1,5 +1,33 @@
 # Construction et validation
 
+## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
+
+Release active **`20261116-groupes-sonnerie`**, source `a16c00c`, depuis
+**10:35:33 Douala** sur Hermes, sur accord explicite de Franck. Le Journal du
+poste affiche « Répondu par un collègue » et « Appel de groupe sans réponse »
+en neutre, jamais en manqué.
+
+Build live isolé du commit avec les variables publiques habituelles, dont
+`VITE_CALL_WAITING_LINES=*` (présence vérifiée dans le bundle, identique à la
+release précédente). 270 fichiers ; seuls `index.html`, `main-D-M_2rtA.js` et
+`main-BrcqbM-R.css` changent, anciennes ressources conservées pour les onglets
+ouverts. 345 tests, typage, lint et build réussis.
+
+Première tentative arrêtée par le script avant la bascule : l'archive faite sur
+macOS contenait des fichiers `._*`. Dossiers inachevés retirés, archive refaite
+avec `COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata`, puis publication
+réussie. **Créer toute archive future de cette façon.**
+
+Après bascule : HTTPS et empreintes validés par le script, Caddy et supervision
+actifs, page publique chargée avec le nouveau bundle sans erreur console. Aucun
+compte client connecté ni appel réel ; l'historique d'un vrai poste membre d'un
+groupe n'a pas été consulté. Aucune migration, aucun manuel modifié.
+
+Sauvegarde et reçu : `/root/apisnix-phone-backups/20261116-groupes-sonnerie/`
+(0700). Retour : repointer atomiquement `current` sur
+**20261115-transfert-ui**, sans redémarrage. Preuves locales :
+`.work/groupes-sonnerie-20261116/`.
+
 ## Cinq lignes pour tous, messages lus, panneau de transfert — 15 novembre 2026
 
 Deux releases le même soir, sur demande de Franck :
@@ -9,7 +37,7 @@ Deux releases le même soir, sur demande de Franck :
   téléphone intégré à un CRM doit rester nommé), messages vocaux marqués lus à
   l'écoute et bouton « Tout marquer comme lu ».
 - **20261115-transfert-ui**, source `e0335b0`, à **20:09:38 Douala**, release
-  active : panneau de transfert refait (choix en pleine largeur avec icône et
+  active jusqu'au 16 novembre : panneau de transfert refait (choix en pleine largeur avec icône et
   explication, recherche de collègue, tuiles de fin de consultation). Publiée
   par-dessus `20261115-connection-tolerance` d'une autre session, dont le code
   est sur `main` et donc inclus.

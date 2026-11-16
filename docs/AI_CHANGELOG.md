@@ -8,8 +8,9 @@ en `answered-elsewhere` et `group-unanswered` au lieu de « Issue inconnue » ;
 libellés FR/EN/ES, icône et texte neutres, jamais comptés ni filtrés comme
 manqués. Liste d’issues du journal local côté serveur inchangée (valeurs jamais
 renvoyées par le téléphone). 345 tests, typage et lint réussis ; rendu vérifié
-en démonstration locale. Non publié sur Hermes : accord de Franck attendu.
-Manuels clients non modifiés.
+en démonstration locale. Publié sur Hermes à 10:35:33 Douala sur accord de
+Franck, release `20261116-groupes-sonnerie` ; retour vers
+`20261115-transfert-ui` (voir OPERATIONS). Manuels clients non modifiés.
 
 ## Cinq lignes pour tous, messages lus, transfert et guide — 15 novembre 2026
 
