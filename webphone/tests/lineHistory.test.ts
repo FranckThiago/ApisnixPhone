@@ -38,9 +38,9 @@ describe('line history for the journal badge', () => {
     expect(unseenMissedCalls(env.state.history!.calls, seen)).toHaveLength(1);
     env.feed.stop();
   });
-  it('never counts answered, outgoing unanswered or unknown calls', () => {
+  it('never counts answered, outgoing unanswered, unknown or ring-group calls', () => {
     const base = journal().calls[0]!;
-    expect(unseenMissedCalls(['answered', 'no-answer', 'busy', 'unknown', 'cancelled'].map(outcome => ({ ...base, outcome })), 0)).toEqual([]);
+    expect(unseenMissedCalls(['answered', 'no-answer', 'busy', 'unknown', 'cancelled', 'answered-elsewhere', 'group-unanswered'].map(outcome => ({ ...base, outcome })), 0)).toEqual([]);
   });
   it('refreshes on return to the page or network and once a minute while visible', async () => {
     vi.useFakeTimers(); const env = setup(); await env.feed.refresh();

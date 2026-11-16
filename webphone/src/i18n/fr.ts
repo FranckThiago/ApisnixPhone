@@ -393,6 +393,8 @@ export const fr = {
   'outcome.declined': 'Refusé',
   'outcome.missed': 'Manqué',
   'outcome.unknown': 'Issue inconnue',
+  'outcome.answered-elsewhere': 'Répondu par un collègue',
+  'outcome.group-unanswered': 'Appel de groupe sans réponse',
   'tag.interested': 'Intéressé',
   'tag.callBack': 'À rappeler',
   'tag.meeting': 'Rendez-vous',

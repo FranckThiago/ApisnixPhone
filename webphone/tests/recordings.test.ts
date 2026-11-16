@@ -30,6 +30,13 @@ describe('recordings client', () => {
     expect(toLineCalls([{ ...entries[0]!, outcome: 'ANSWERED', answered_at: 100.5 }])[0]!.outcome).toBe('answered');
     expect(toLineCalls([{ ...entries[0]!, outcome: 'UNKNOWN' }])[0]!.outcome).toBe('unknown');
   });
+  it('keeps ring-group results apart from missed calls: answered by a colleague, or unanswered and attributed elsewhere', () => {
+    const entry = { id: 1, direction: 'inbound', number: '0100', started_at: 100, ended_at: 101, complete: 1 };
+    expect(toLineCalls([{ ...entry, outcome: 'ANSWERED_ELSEWHERE' }, { ...entry, id: 2, outcome: 'GROUP_UNATTRIBUTED' }]).map(call => call.outcome))
+      .toEqual(['answered-elsewhere', 'group-unanswered']);
+    expect(toLineCalls([{ ...entry, outcome: 'ANSWERED_ELSEWHERE', complete: 0 }])[0]!.outcome).toBe('unknown');
+    expect(toLineCalls([{ ...entry, outcome: 'SOMETHING_NEW' }])[0]!.outcome).toBe('unknown');
+  });
   it('keeps server calls without audio, including inbound caller IDs, but excludes orphan audio', () => {
     expect(toLineCalls([
       { entry_id: 'call:4', id: 4, number: '0100000001', direction: 'inbound', started_at: 1700000000, answered_at: 1700000005, ended_at: 1700000030, outcome: 'ANSWERED', complete: 1, recordings: [] },

@@ -1,5 +1,16 @@
 # Journal des changements
 
+## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
+
+Demande de Franck après la publication des groupes de sonnerie dans la
+Supervision. `toLineCalls` traduit `ANSWERED_ELSEWHERE` et `GROUP_UNATTRIBUTED`
+en `answered-elsewhere` et `group-unanswered` au lieu de « Issue inconnue » ;
+libellés FR/EN/ES, icône et texte neutres, jamais comptés ni filtrés comme
+manqués. Liste d’issues du journal local côté serveur inchangée (valeurs jamais
+renvoyées par le téléphone). 345 tests, typage et lint réussis ; rendu vérifié
+en démonstration locale. Non publié sur Hermes : accord de Franck attendu.
+Manuels clients non modifiés.
+
 ## Cinq lignes pour tous, messages lus, transfert et guide — 15 novembre 2026
 
 Demandes de Franck. `callWaitingLines` accepte `*` (hors téléphone intégré) ;

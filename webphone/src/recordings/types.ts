@@ -48,7 +48,7 @@ export interface LineCall {
   startedAt: number;
   answeredAt?: number;
   endedAt?: number;
-  outcome: 'answered' | 'no-answer' | 'missed' | 'busy' | 'failed' | 'cancelled' | 'unknown';
+  outcome: 'answered' | 'no-answer' | 'missed' | 'busy' | 'failed' | 'cancelled' | 'unknown' | 'answered-elsewhere' | 'group-unanswered';
 }
 
 export interface LineHistory extends PageInfo {

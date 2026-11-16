@@ -123,7 +123,7 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .call-main { container: journal-row / inline-size; display: flex; align-items: center; padding-right: 12px; transition: background .12s; } .call-main:hover, .call-row.open .call-main { background: var(--surface-2); }
 .call-summary { flex: 1; min-width: 0; display: grid; grid-template-columns: 30px 38px minmax(120px, 1.5fr) minmax(110px, 1fr) minmax(0, 1fr) 96px 52px 18px; align-items: center; gap: 12px; min-height: var(--row); padding: 6px 8px 6px 16px; text-align: left; }
 .direction { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; }
-.direction.outbound { color: var(--brand); background: var(--brand-soft); } .direction.inbound { color: var(--success); background: var(--success-soft); } .direction.missed { color: var(--danger); background: var(--danger-soft); }
+.direction.outbound { color: var(--brand); background: var(--brand-soft); } .direction.inbound { color: var(--success); background: var(--success-soft); } .direction.missed { color: var(--danger); background: var(--danger-soft); } .direction.group { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
 .who { min-width: 0; } .who b, .who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .who b { font-weight: 650; }
 .is-missed .who b { color: var(--danger); }
 .journal-inline-flag { display: none; }

@@ -125,6 +125,14 @@ pas des appels que le navigateur a pu observer. Un entrant terminé, sans
 `FAILED` devient `missed` (libellé et filtre « Manqué »). `ANSWERED` reste répondu ;
 une observation incomplète ou inconnue reste inconnue. Les sortants sont inchangés.
 
+Groupes de sonnerie (collecte du 16 novembre 2026) : `ANSWERED_ELSEWHERE`
+devient `answered-elsewhere` (« Répondu par un collègue ») et
+`GROUP_UNATTRIBUTED` devient `group-unanswered` (« Appel de groupe sans
+réponse »). Ce ne sont pas des manqués de ce poste : icône et texte neutres,
+hors filtre « Manqués », hors badge rouge et hors compteur. Ces deux valeurs
+n’existent que dans l’historique serveur ; le journal local de l’appareil ne les
+produit ni ne les renvoie, la liste d’issues acceptée par le serveur est inchangée.
+
 La collecte serveur observe aussi la tentative `Dial` vers un poste local connu
 lorsqu’aucun canal destinataire ne peut être créé (poste hors ligne). Elle écrit
 une seule entrée entrante sans réponse au raccrochage de la source ; un véritable

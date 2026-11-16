@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserPlus } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserCheck, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -20,6 +20,8 @@ const FILTERS: Array<[Filter, MessageKey]> = [['all', 'filter.all'], ['outbound'
 function DirectionIcon({ call }: { call: CallRecord }) {
   const { t } = useI18n();
   if (call.outcome === 'missed') return <span className="direction missed" title={t('direction.missed')}><PhoneMissed size={16} /></span>;
+  if (call.outcome === 'answered-elsewhere') return <span className="direction group" title={t('outcome.answered-elsewhere')}><UserCheck size={16} /></span>;
+  if (call.outcome === 'group-unanswered') return <span className="direction group" title={t('outcome.group-unanswered')}><Users size={16} /></span>;
   return call.direction === 'inbound'
     ? <span className="direction inbound" title={t('direction.inbound')}><ArrowDownLeft size={16} /></span>
     : <span className="direction outbound" title={t('direction.outbound')}><ArrowUpRight size={16} /></span>;

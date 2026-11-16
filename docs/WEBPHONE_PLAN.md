@@ -54,6 +54,9 @@ s’affichent « Manqué », qu’ils aient sonné dans le navigateur ou échou�
 le poste était déconnecté. Chargement à la connexion puis actualisation chaque
 minute ; filtre Manqués et compteurs du Journal utilisent ces mêmes entrées.
 Un appel répondu ou une observation incomplète ne devient pas un manqué.
+Depuis le 16 novembre 2026, un appel de groupe de sonnerie décroché par un
+collègue (« Répondu par un collègue ») ou resté sans réponse et attribué ailleurs
+(« Appel de groupe sans réponse ») s’affiche en neutre, jamais en manqué.
 Le journal local du téléphone reste propre à cet appareil. Pas de récupération
 des tentatives anciennes que le serveur n’avait jamais collectées.
 
@@ -376,7 +379,7 @@ compte de la réduction des animations. Contraste à mesurer dans les écrans r�
 | Connexion | Logo, identifiant et mot de passe ; domaine préconfiguré ; erreur lisible ; pas de jargon SIP en premier plan. Lien de connexion `#u=…&p=…` qui remplit et envoie le formulaire, puis s'efface de l'adresse, et générateur pour l'administrateur sur `/lien` (demande de Franck, 30 septembre ; format dans OPERATIONS) |
 | Préparation audio | Choisir micro/casque, vérifier le niveau micro, écouter un son local sur clic ; état de permission explicite |
 | Journal | Onglets Appels / Rappels ; liste d’appels recherchable, Tous/Sortants/Entrants/Manqués, date/durée/pays/résultat ; rappel depuis chaque ligne. Sur écran compact, cinq boutons de navigation gardent Appel au centre |
-| Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative. Issue en pastille : répondu vert, annulé/manqué/échec/refusé rouge, sans réponse/occupé jaune ambré, inconnu neutre ; icônes discrètes pour numéro/date/durée |
+| Détail d'appel | Numéro réellement composé, dates, durée de conversation, issue observée, contact et note locale facultative. Issue en pastille : répondu vert, annulé/manqué/échec/refusé rouge, sans réponse/occupé jaune ambré, inconnu et résultats de groupe de sonnerie neutres ; icônes discrètes pour numéro/date/durée |
 | Contacts | Création/modification/suppression locale, recherche, plusieurs numéros libellés ; pas d'import système automatique. Bascule **Tous / Favoris** dans la page : les favoris n'ont plus d'entrée de menu |
 | Favoris | Vue de Contacts : cartes des raccourcis, action Appeler distincte pour éviter les appels accidentels |
 | Audio | Enregistrements du poste de la personne, périodes Aujourd’hui / Hier / 7 / 30 derniers jours / 3 derniers mois, recherche nom/numéro/pays sur toute la période avant pagination par 50, effacement en un clic, servis par l'accès agent de la supervision : période, écoute en streaming, téléchargement, fichiers « en traitement » signalés ; ouverture automatique avec la ligne (`POST /api/line-session`, vérification du mot de passe par le PBX en lecture seule), session de service, jamais de lien public |

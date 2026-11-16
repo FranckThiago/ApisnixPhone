@@ -1,7 +1,9 @@
 import { t, type MessageKey } from '../i18n';
 
 export type CallDirection = 'outbound' | 'inbound';
-export type CallOutcome = 'answered' | 'no-answer' | 'busy' | 'failed' | 'cancelled' | 'declined' | 'missed' | 'unknown';
+export type CallOutcome = 'answered' | 'no-answer' | 'busy' | 'failed' | 'cancelled' | 'declined' | 'missed' | 'unknown'
+  /** Ring-group results seen by the server only: a colleague answered, or nobody did and the missed call belongs to another line. Never a missed call of this line. */
+  | 'answered-elsewhere' | 'group-unanswered';
 
 export interface ContactNumber {
   label: string;

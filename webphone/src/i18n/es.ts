@@ -395,6 +395,8 @@ export const es: Record<MessageKey, string> = {
   'outcome.declined': 'Rechazada',
   'outcome.missed': 'Perdida',
   'outcome.unknown': 'Resultado desconocido',
+  'outcome.answered-elsewhere': 'Contestada por un compañero',
+  'outcome.group-unanswered': 'Llamada de grupo sin respuesta',
   'tag.interested': 'Interesado',
   'tag.callBack': 'Volver a llamar',
   'tag.meeting': 'Cita',

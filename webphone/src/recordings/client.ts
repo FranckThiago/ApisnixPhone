@@ -71,6 +71,9 @@ export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
       const outcome = entry.complete === 0 ? 'unknown'
         : entry.outcome === 'ANSWERED' ? 'answered'
         : entry.direction === 'inbound' && !entry.answered_at && ['NO_ANSWER', 'BUSY', 'CANCELLED', 'FAILED'].includes(entry.outcome ?? '') ? 'missed'
+        // Ring groups: the call rang here, yet it is not a missed call of this line.
+        : entry.outcome === 'ANSWERED_ELSEWHERE' ? 'answered-elsewhere'
+        : entry.outcome === 'GROUP_UNATTRIBUTED' ? 'group-unanswered'
         : entry.outcome === 'NO_ANSWER' ? 'no-answer'
         : entry.outcome === 'BUSY' ? 'busy'
         : entry.outcome === 'CANCELLED' ? 'cancelled'
