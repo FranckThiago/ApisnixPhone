@@ -1,5 +1,18 @@
 # Journal des changements
 
+## Rappels de groupe remis en forme — 17 novembre 2026
+
+Demande de Franck. `GroupCallbacks` reprend le style de la liste personnelle :
+en-tête avec icône, compteur et actualisation en icône ; recherche avec loupe
+(Entrée, vidage = liste complète) ; onglets « À traiter / Terminés » au lieu
+d’une case ; lignes avatar, nom, échéance avec « En retard », actions
+« Prendre et appeler » ou « Appeler » + icônes reporter/terminé/libérer ;
+statut et note sur une seconde ligne ; pagination seulement au-delà d’une page.
+Mise en page sur deux lignes sous 1 240 px et empilée sur mobile. Libellés
+FR/EN/ES ; API et règles de prise en charge inchangées. 345 tests, typage, lint,
+build ; vérifié en démonstration (1 024, 1 440 px, mobile, prise en charge).
+Non publié. Manuels clients non modifiés.
+
 ## Grand panneau du script d’appel sur PC — 17 novembre 2026
 
 Demande de Franck : sur PC, le script occupe une grande zone. `CallScriptCard`

@@ -111,6 +111,11 @@ met l'écran et le badge à jour immédiatement, même pendant le relevé
 automatique. Double clic bloqué, pagination des rappels de groupe lisible par
 les lecteurs d'écran. [Publication](OPERATIONS.md#correctifs-de-lespace-équipe--11-novembre-2026).
 
+Depuis le 17 novembre 2026 (code, pas encore publié), la zone Rappels de groupe
+de la page Rappels suit le style de la liste personnelle : recherche avec loupe,
+onglets « À traiter / Terminés », lignes avec échéance, statut de prise en charge,
+note et actions en icônes ; pagination affichée seulement au-delà d'une page.
+
 ## Recherche dans Audio — 9 novembre 2026
 
 En service depuis le 9 novembre à 18:23:39 Douala : champ nom, numéro ou pays au-dessus des périodes,
