@@ -188,6 +188,8 @@ function Workspace() {
             <button type="button" className="banner-hangup" aria-label={t('call.hangUp')} onClick={() => phone.hangup()}><PhoneOff size={16} /></button>
           </div>
         )}
+        {/* On a wide screen the call script opens over this area (CallScriptCard portal). */}
+        <div className="main-stage">
         <div className="content">
           {/* APISNIX announcements head the main screen; the call commands live in the dock, untouched. */}
           {(view === 'journal' || view === 'callbacks' || view === 'phone') && announcements.visible.length > 0 && (
@@ -205,6 +207,7 @@ function Workspace() {
             {view === 'callbacks' && <Callbacks />}
             {view === 'settings' && <Settings />}
           </ErrorBoundary>
+        </div>
         </div>
       </div>
       {/* Mounted once, outside the views: the call survives every navigation. */}

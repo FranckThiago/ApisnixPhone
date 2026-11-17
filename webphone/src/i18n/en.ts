@@ -62,6 +62,9 @@ export const en: Record<MessageKey, string> = {
   "script.title": "Call script",
   "script.collapse": "Collapse script",
   "script.expand": "Show script",
+  "script.close": "Close",
+  "script.closeHint": "Close the script: it stays available under the call",
+  "script.open": "Show",
   "script.demoTitle": "Introduction — demo",
   "script.demoContent": "Hello, this is Camille. Thank you for taking my call.\n\n1. Briefly explain the reason for your call.\n2. Listen to what the person needs.\n3. Suggest a next step and confirm their availability.\n\nThank you for your time. Have a great day!",
 

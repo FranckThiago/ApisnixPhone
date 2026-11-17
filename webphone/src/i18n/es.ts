@@ -62,6 +62,9 @@ export const es: Record<MessageKey, string> = {
   "script.title": "Guion de llamada",
   "script.collapse": "Contraer el guion",
   "script.expand": "Mostrar el guion",
+  "script.close": "Cerrar",
+  "script.closeHint": "Cerrar el guion: sigue disponible debajo de la llamada",
+  "script.open": "Mostrar",
   "script.demoTitle": "Presentación — demostración",
   "script.demoContent": "Hola, soy Camille. Gracias por atender mi llamada.\n\n1. Explique brevemente el motivo de la llamada.\n2. Escuche las necesidades de su interlocutor.\n3. Proponga el siguiente paso y confirme su disponibilidad.\n\n¡Gracias por su tiempo, que tenga un buen día!",
 

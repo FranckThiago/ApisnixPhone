@@ -1,5 +1,16 @@
 # Journal des changements
 
+## Grand panneau du script d’appel sur PC — 17 novembre 2026
+
+Demande de Franck : sur PC, le script occupe une grande zone. `CallScriptCard`
+rend, au-delà de 921 px et quand `.main-stage` existe, un panneau par portail
+au-dessus du journal (fond opaque), avec « Fermer » qui le réduit en carte dans
+le dock et « Afficher » qui le rouvre ; ouvert à chaque nouvel appel. `App.tsx`
+entoure `.content` de `.main-stage`. Mobile et intégration inchangés (carte
+réductible). Libellés FR/EN/ES. 345 tests, typage, lint et build réussis ;
+vérifié en démonstration (ouverture, fermeture, réouverture, largeur mobile,
+console sans erreur). Pas encore publié sur Hermes. Manuels clients non modifiés.
+
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 
 Demande de Franck après la publication des groupes de sonnerie dans la

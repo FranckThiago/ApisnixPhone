@@ -669,6 +669,21 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 .call-script-card header button { flex-shrink: 0; }
 .call-script-text { margin-top: 14px; max-height: 240px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.7; }
 .call-script-text[hidden] { display: none; }
+.call-script-card.reduced header button { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+/* Wide screen: the script opens in large over the area left of the dock, the call commands stay in view. */
+.main-stage { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.main-stage > .content { min-height: 0; }
+/* Opaque, so the journal underneath never shows through the margins. */
+.call-script-backdrop { position: absolute; inset: 0; z-index: 5; display: flex; padding: 8px 28px 24px; background: var(--canvas); }
+.call-script-stage { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; padding: 24px 28px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-md); animation: rise .22s ease-out; }
+.call-script-stage header { display: flex; align-items: center; gap: 12px; color: var(--green); }
+.call-script-stage header div { flex: 1; min-width: 0; color: var(--text); }
+.call-script-stage header small, .call-script-stage header b { display: block; overflow-wrap: anywhere; }
+.call-script-stage header small { font-size: 12px; margin-bottom: 4px; color: var(--muted); }
+.call-script-stage header b { font-size: 20px; letter-spacing: -.2px; }
+.call-script-stage header button { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.call-script-stage .call-script-text { flex: 1; min-height: 0; max-height: none; margin: 0; padding-right: 8px; font-size: 17px; line-height: 1.75; }
 
 .history-pager {
   display: grid;

@@ -60,6 +60,9 @@ export const fr = {
   "script.title": "Script d’appel",
   "script.collapse": "Réduire le script",
   "script.expand": "Afficher le script",
+  "script.close": "Fermer",
+  "script.closeHint": "Fermer le script : il reste disponible sous l’appel",
+  "script.open": "Afficher",
   "script.demoTitle": "Présentation — démonstration",
   "script.demoContent": "Bonjour, je suis Camille. Merci de prendre mon appel.\n\n1. Présentez brièvement l’objet de votre appel.\n2. Écoutez le besoin de votre interlocuteur.\n3. Proposez une prochaine étape et confirmez ses disponibilités.\n\nMerci pour votre temps, excellente journée !",
 
