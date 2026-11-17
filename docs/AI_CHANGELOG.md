@@ -11,7 +11,8 @@ statut et note sur une seconde ligne ; pagination seulement au-delà d’une pag
 Mise en page sur deux lignes sous 1 240 px et empilée sur mobile. Libellés
 FR/EN/ES ; API et règles de prise en charge inchangées. 345 tests, typage, lint,
 build ; vérifié en démonstration (1 024, 1 440 px, mobile, prise en charge).
-Non publié. Manuels clients non modifiés.
+Publié avec le script, release `20261117-script-rappels`. Manuels clients
+non modifiés.
 
 ## Grand panneau du script d’appel sur PC — 17 novembre 2026
 
@@ -22,7 +23,8 @@ le dock et « Afficher » qui le rouvre ; ouvert à chaque nouvel appel. `App.ts
 entoure `.content` de `.main-stage`. Mobile et intégration inchangés (carte
 réductible). Libellés FR/EN/ES. 345 tests, typage, lint et build réussis ;
 vérifié en démonstration (ouverture, fermeture, réouverture, largeur mobile,
-console sans erreur). Pas encore publié sur Hermes. Manuels clients non modifiés.
+console sans erreur). Publié le 17 novembre à 23:59:03 Douala, release
+`20261117-script-rappels`. Manuels clients non modifiés.
 
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 

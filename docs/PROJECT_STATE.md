@@ -111,7 +111,7 @@ met l'écran et le badge à jour immédiatement, même pendant le relevé
 automatique. Double clic bloqué, pagination des rappels de groupe lisible par
 les lecteurs d'écran. [Publication](OPERATIONS.md#correctifs-de-lespace-équipe--11-novembre-2026).
 
-Depuis le 17 novembre 2026 (code, pas encore publié), la zone Rappels de groupe
+Depuis le 17 novembre 2026 (release `20261117-script-rappels`), la zone Rappels de groupe
 de la page Rappels suit le style de la liste personnelle : recherche avec loupe,
 onglets « À traiter / Terminés », lignes avec échéance, statut de prise en charge,
 note et actions en icônes ; pagination affichée seulement au-delà d'une page.
@@ -173,7 +173,7 @@ vérifiés, formulaire public intact. Aucun groupe réel activé ni appel provoq
 Le superviseur prépare un script dans Supervision → Gestion → Script d'appel,
 puis choisit explicitement les postes qui doivent le voir. Pendant une conversation
 ou une mise en attente, ApisnixPhone affiche ce texte. Sur écran large (≥ 921 px),
-depuis le 17 novembre 2026 (code, pas encore publié), il s'ouvre en grand panneau à
+depuis le 17 novembre 2026 (release `20261117-script-rappels`), il s'ouvre en grand panneau à
 gauche du téléphone, par-dessus le journal ; « Fermer » le réduit en carte dans la
 colonne du téléphone, « Afficher » le rouvre, et il se rouvre à chaque appel. Sur
 écran étroit et dans l'intégration sans zone principale, il reste au-dessus du
@@ -305,8 +305,9 @@ Architecture et plan alignés, manuels inchangés.
 
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 
-**En service `20261116-groupes-sonnerie`, source `a16c00c`, depuis le
-16 novembre à 10:35:33 Douala.**
+Publié en `20261116-groupes-sonnerie` (source `a16c00c`) le 16 novembre à
+10:35:33 Douala ; inclus dans la release active **`20261117-script-rappels`**
+(source `22c4622`, 17 novembre à 23:59:03 Douala).
 « Tous les appels du poste » affiche « Répondu par un collègue » et « Appel de
 groupe sans réponse » (FR/EN/ES) pour les issues serveur `ANSWERED_ELSEWHERE` et
 `GROUP_UNATTRIBUTED`, en neutre, sans les compter comme manqués. Détail :

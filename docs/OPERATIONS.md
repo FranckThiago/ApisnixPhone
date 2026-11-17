@@ -1,8 +1,33 @@
 # Construction et validation
 
+## Grand panneau du script et Rappels de groupe — 17 novembre 2026
+
+Release active **`20261117-script-rappels`**, source `22c4622` (contient aussi
+`8cd35db`), depuis **23:59:03 Douala** sur Hermes, sur accord explicite de
+Franck. Sur PC, le script d'appel s'ouvre en grand panneau à gauche du
+téléphone (Fermer = réduire, Afficher = rouvrir) ; la zone Rappels de groupe est
+remise en forme.
+
+Build live isolé du commit avec les variables publiques habituelles, dont
+`VITE_CALL_WAITING_LINES=*` (identique à la release précédente, vérifié dans le
+bundle). 270 fichiers ; seuls `index.html`, `main-eUCMMm7h.js` et
+`main-CkAF3rLN.css` changent, anciennes ressources conservées. Archive faite
+avec `COPYFILE_DISABLE=1` et sans métadonnées macOS (aucun `._*`), SHA-256
+`990405cacc79a99efef6df8bdf39579c3ab65a7a2f1b3336113a620d98cc8d91`. 345 tests,
+typage, lint et build réussis.
+
+Après bascule : HTTPS et empreintes validés par le script, Caddy et supervision
+actifs, page publique chargée avec le nouveau bundle sans erreur console. Aucun
+compte client connecté ni appel réel. Aucune migration, aucun manuel modifié.
+
+Sauvegarde et reçu : `/root/apisnix-phone-backups/20261117-script-rappels/`
+(0700). Retour : repointer atomiquement `current` sur
+**20261116-groupes-sonnerie**, sans redémarrage. Preuves locales :
+`.work/script-rappels-20261117/`.
+
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 
-Release active **`20261116-groupes-sonnerie`**, source `a16c00c`, depuis
+Release **`20261116-groupes-sonnerie`** (remplacée le 17 novembre), source `a16c00c`, depuis
 **10:35:33 Douala** sur Hermes, sur accord explicite de Franck. Le Journal du
 poste affiche « Répondu par un collègue » et « Appel de groupe sans réponse »
 en neutre, jamais en manqué.
