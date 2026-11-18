@@ -175,7 +175,8 @@ puis choisit explicitement les postes qui doivent le voir. Pendant une conversat
 ou une mise en attente, ApisnixPhone affiche ce texte. Sur écran large (≥ 921 px),
 depuis le 17 novembre 2026 (release `20261117-script-rappels`), il s'ouvre en grand panneau à
 gauche du téléphone, par-dessus le journal ; « Fermer » le réduit en carte dans la
-colonne du téléphone, « Afficher » le rouvre, et il se rouvre à chaque appel. Sur
+colonne du téléphone, « Afficher » le rouvre. Depuis le 18 novembre (code, pas encore publié), il
+démarre réduit à chaque appel : l'agent l'ouvre avec « Afficher ». Sur
 écran étroit et dans l'intégration sans zone principale, il reste au-dessus du
 volume dans un panneau réductible et défilant. Un script par équipe, titre 120 caractères et texte
 12 000 caractères maximum. Aperçu et sélection des postes côté supervision.

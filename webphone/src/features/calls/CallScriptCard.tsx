@@ -24,8 +24,9 @@ export function CallScriptCard() {
   const { callScript } = useApp();
   const { demo } = usePhone();
   const { t } = useI18n();
-  // Open at the start of every call (the card is keyed by call): closing only reduces it.
-  const [expanded, setExpanded] = useState(true);
+  // On a wide screen the script starts reduced in the dock and opens on « Afficher » (Franck, 18 Nov 2026);
+  // on a narrow one it stays open under the call. The card is keyed by call, so each call starts afresh.
+  const [expanded, setExpanded] = useState(() => !matchMedia(WIDE).matches);
   const stage = useStage();
   const script = demo ? { title: t('script.demoTitle'), content: t('script.demoContent') } : callScript;
   if (!script) return null;

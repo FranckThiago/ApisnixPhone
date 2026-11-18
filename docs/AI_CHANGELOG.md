@@ -1,5 +1,13 @@
 # Journal des changements
 
+## Script réduit au décroché sur PC — 18 novembre 2026
+
+Demande de Franck : le grand panneau ne s'ouvre plus seul. Sur écran large,
+`CallScriptCard` démarre réduit (carte « Afficher » dans le dock) ; sur écran
+étroit, la carte reste ouverte sous l'appel comme avant. 345 tests, typage et
+lint réussis ; vérifié en démonstration (PC réduit puis ouvert, mobile ouvert,
+console sans erreur). Pas encore publié. Manuels clients non modifiés.
+
 ## Rappels de groupe remis en forme — 17 novembre 2026
 
 Demande de Franck. `GroupCallbacks` reprend le style de la liste personnelle :
