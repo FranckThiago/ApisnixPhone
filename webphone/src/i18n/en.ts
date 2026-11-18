@@ -295,6 +295,7 @@ export const en: Record<MessageKey, string> = {
   'login.point2': 'Designed for headset and keyboard.',
   'login.point3': 'Your password is never stored.',
   'login.title': 'Welcome back',
+  'login.home': 'Back to the APISNIX home page',
   'login.lead': 'Connect your line to make and receive calls.',
   'login.demo': 'Demonstration: enter any username and password. No real call is made.',
   'login.username': 'Username',

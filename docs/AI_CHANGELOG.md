@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Logo de la connexion vers l'accueil — 18 novembre 2026
+
+Demande de Franck : des clients ouvrent la mauvaise page de connexion et n'ont
+aucun retour. Sur la page de connexion autonome, les deux logos (grand panneau et
+version mobile) sont un lien vers `https://apisnix-crm.com/`, avec infobulle
+`login.home` (fr/en/es) et survol visible. Le téléphone intégré (`embedded`) garde
+un logo simple, sans lien. 345 tests, typage et lint réussis ; pas vérifié à
+l'écran. **Non publié.** Manuels clients non modifiés.
+
 ## Script réduit au décroché sur PC — 18 novembre 2026
 
 Demande de Franck : le grand panneau ne s'ouvre plus seul. Sur écran large,

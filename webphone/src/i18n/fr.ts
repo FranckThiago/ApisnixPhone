@@ -293,6 +293,7 @@ export const fr = {
   'login.point2': 'Pensé pour le casque et le clavier.',
   'login.point3': 'Votre mot de passe n’est jamais enregistré.',
   'login.title': 'Bon retour parmi nous',
+  'login.home': 'Retour à l’accueil APISNIX',
   'login.lead': 'Connectez votre ligne pour passer et recevoir vos appels.',
   'login.demo': 'Démonstration : saisissez n’importe quel identifiant et mot de passe. Aucun appel réel n’est passé.',
   'login.username': 'Identifiant',

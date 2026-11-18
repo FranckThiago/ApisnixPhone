@@ -7,6 +7,9 @@ import { LANGUAGES, setLanguage, useI18n } from '../../i18n';
 import { primeAudio } from '../../telephony/audio';
 import { consumeSignInLink, offerToSave, onSignInLink, pendingSignInLink, savedCredentials } from './credentials';
 
+/** Public home page listing the four APISNIX sign-in pages: the way back for someone who opened the wrong one. */
+const HOME_URL = 'https://apisnix-crm.com/';
+
 /** Each language under its own name; the choice is remembered by this browser. */
 export function LanguagePicker() {
   const { t, language } = useI18n();
@@ -72,9 +75,11 @@ export function Login({ embedded = false }: { embedded?: boolean }) {
 
   return (
     <main className="login">
-      <section className="login-brand" aria-hidden="true">
-        <div className="login-glow" />
-        <img src="/apisnix-mark.png" alt="" width={120} height={120} />
+      <section className="login-brand">
+        <div className="login-glow" aria-hidden="true" />
+        {embedded
+          ? <img src="/apisnix-mark.png" alt="" width={120} height={120} />
+          : <a className="login-home" href={HOME_URL} title={t('login.home')}><img src="/apisnix-mark.png" alt={t('login.home')} width={120} height={120} /></a>}
         <h2>{t('login.brandLine1')}<br /><span className="swoosh">{t('login.brandLine2')}</span></h2>
         <ul>
           <li><Zap size={18} /> {t('login.point1')}</li>
@@ -85,7 +90,9 @@ export function Login({ embedded = false }: { embedded?: boolean }) {
       <section className="login-form">
         <form ref={form} onSubmit={event => { event.preventDefault(); void submit(); }}>
           <LanguagePicker />
-          <img src="/apisnix-mark.png" alt="APISNIX" width={56} height={56} className="login-mark" />
+          {embedded
+            ? <img src="/apisnix-mark.png" alt="APISNIX" width={56} height={56} className="login-mark" />
+            : <a className="login-home login-mark" href={HOME_URL} title={t('login.home')}><img src="/apisnix-mark.png" alt={t('login.home')} width={56} height={56} /></a>}
           <p className="eyebrow">ApisnixPhone</p>
           <h1>{t('login.title')}</h1>
           <p className="lead">{t(embedded ? 'embed.loginLead' : 'login.lead')}</p>

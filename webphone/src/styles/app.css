@@ -422,6 +422,10 @@ input[type=range] { accent-color: var(--brand); }
 /* La carte en verre : un fond blanc presque opaque qui laisse deviner les halos passant derrière. */
 .login-form form { width: min(430px, 100%); display: grid; gap: 14px; padding: 34px 32px 26px; border-radius: 22px; background: var(--login-glass); border: 1px solid var(--login-glass-border);
   box-shadow: var(--login-shadow); -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); }
+.login-home { width: fit-content; line-height: 0; cursor: pointer; transition: transform .15s ease; }
+.login-brand .login-home { display: block; border-radius: 30px; }
+.login-home:hover { transform: translateY(-2px) scale(1.03); }
+.login-home:focus-visible { outline: 3px solid var(--login-brand); outline-offset: 4px; }
 .login-mark { display: none; border-radius: 16px; background: #fff; padding: 4px; box-shadow: 0 0 0 3px var(--login-brand); }
 .login .eyebrow { color: var(--login-brand); }
 .login input { background: var(--surface-2); }
