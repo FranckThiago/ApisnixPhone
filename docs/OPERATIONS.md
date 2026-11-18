@@ -1,8 +1,30 @@
 # Construction et validation
 
+## Script réduit au décroché sur PC — 18 novembre 2026
+
+Release active **`20261118-script-reduit`**, source `2223e9f`, depuis
+**14:27:20 Douala** sur Hermes, sur accord explicite de Franck. Sur PC, le
+script d'appel démarre réduit (carte « Afficher » dans le dock) ; mobile
+inchangé.
+
+Build live isolé du commit avec les variables publiques habituelles, dont
+`VITE_CALL_WAITING_LINES=*` (vérifié dans le bundle). 270 fichiers ; seuls
+`index.html` et `main-D20WOBvo.js` changent, anciennes ressources conservées.
+Archive sans `._*`, SHA-256
+`57c99424ed89eddfa2cf34f994fee79cf26d91b4d39d766012f1142299b87fbd`. 345 tests,
+typage, lint et build réussis. Après bascule : HTTPS et empreintes validés par
+le script, Caddy et supervision actifs, page publique chargée avec le nouveau
+bundle sans erreur console. Aucun compte client connecté ni appel réel. Aucune
+migration, aucun manuel modifié.
+
+Sauvegarde et reçu : `/root/apisnix-phone-backups/20261118-script-reduit/`
+(0700). Retour : repointer atomiquement `current` sur
+**20261117-script-rappels**, sans redémarrage. Preuves locales :
+`.work/script-reduit-20261118/`.
+
 ## Grand panneau du script et Rappels de groupe — 17 novembre 2026
 
-Release active **`20261117-script-rappels`**, source `22c4622` (contient aussi
+Release **`20261117-script-rappels`** (remplacée le 18 novembre), source `22c4622` (contient aussi
 `8cd35db`), depuis **23:59:03 Douala** sur Hermes, sur accord explicite de
 Franck. Sur PC, le script d'appel s'ouvre en grand panneau à gauche du
 téléphone (Fermer = réduire, Afficher = rouvrir) ; la zone Rappels de groupe est

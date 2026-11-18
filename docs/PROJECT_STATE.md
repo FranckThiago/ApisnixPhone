@@ -175,7 +175,7 @@ puis choisit explicitement les postes qui doivent le voir. Pendant une conversat
 ou une mise en attente, ApisnixPhone affiche ce texte. Sur écran large (≥ 921 px),
 depuis le 17 novembre 2026 (release `20261117-script-rappels`), il s'ouvre en grand panneau à
 gauche du téléphone, par-dessus le journal ; « Fermer » le réduit en carte dans la
-colonne du téléphone, « Afficher » le rouvre. Depuis le 18 novembre (code, pas encore publié), il
+colonne du téléphone, « Afficher » le rouvre. Depuis le 18 novembre (release `20261118-script-reduit`), il
 démarre réduit à chaque appel : l'agent l'ouvre avec « Afficher ». Sur
 écran étroit et dans l'intégration sans zone principale, il reste au-dessus du
 volume dans un panneau réductible et défilant. Un script par équipe, titre 120 caractères et texte
@@ -307,8 +307,8 @@ Architecture et plan alignés, manuels inchangés.
 ## Résultats des groupes de sonnerie dans le Journal — 16 novembre 2026
 
 Publié en `20261116-groupes-sonnerie` (source `a16c00c`) le 16 novembre à
-10:35:33 Douala ; inclus dans la release active **`20261117-script-rappels`**
-(source `22c4622`, 17 novembre à 23:59:03 Douala).
+10:35:33 Douala ; inclus dans `20261117-script-rappels` puis dans la release active
+**`20261118-script-reduit`** (source `2223e9f`, 18 novembre à 14:27:20 Douala).
 « Tous les appels du poste » affiche « Répondu par un collègue » et « Appel de
 groupe sans réponse » (FR/EN/ES) pour les issues serveur `ANSWERED_ELSEWHERE` et
 `GROUP_UNATTRIBUTED`, en neutre, sans les compter comme manqués. Détail :
