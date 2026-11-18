@@ -1,8 +1,30 @@
 # Construction et validation
 
+## Logo de la connexion vers l'accueil — 18 novembre 2026
+
+Release active **`20261118-logo-accueil`**, source `c03a5b3`, depuis
+**14:45:59 Douala** sur Hermes, sur accord explicite de Franck. Sur la page de
+connexion autonome, le logo ramène à `https://apisnix-crm.com/` ; téléphone
+intégré inchangé.
+
+Build live isolé du commit avec les variables publiques habituelles, dont
+`VITE_CALL_WAITING_LINES=*` (vérifié dans le bundle). 270 fichiers ; seuls
+`index.html`, `main-De54GX3_.js` et `main-4aQ5Bsek.css` changent, anciennes
+ressources conservées. Archive sans `._*`, SHA-256
+`224b8c0f504fa953a1fd1821a69c9608b4f017ccdcd21b1b6ef243b933b77c5b`. 345 tests,
+typage, lint et build réussis. Après bascule : HTTPS et empreintes validés par
+le script, Caddy et supervision actifs, page publique chargée : lien, adresse et
+infobulle contrôlés dans le navigateur. Aucun compte client connecté ni appel
+réel. Aucune migration, aucun manuel modifié.
+
+Sauvegarde et reçu : `/root/apisnix-phone-backups/20261118-logo-accueil/`
+(0700). Retour : repointer atomiquement `current` sur
+**20261118-script-reduit**, sans redémarrage. Preuves locales :
+`.work/logo-accueil-20261118/`.
+
 ## Script réduit au décroché sur PC — 18 novembre 2026
 
-Release active **`20261118-script-reduit`**, source `2223e9f`, depuis
+Release **`20261118-script-reduit`** (remplacée à 14:45 le même jour), source `2223e9f`, depuis
 **14:27:20 Douala** sur Hermes, sur accord explicite de Franck. Sur PC, le
 script d'appel démarre réduit (carte « Afficher » dans le dock) ; mobile
 inchangé.

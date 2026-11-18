@@ -7,7 +7,8 @@ aucun retour. Sur la page de connexion autonome, les deux logos (grand panneau e
 version mobile) sont un lien vers `https://apisnix-crm.com/`, avec infobulle
 `login.home` (fr/en/es) et survol visible. Le téléphone intégré (`embedded`) garde
 un logo simple, sans lien. 345 tests, typage et lint réussis ; pas vérifié à
-l'écran. **Non publié.** Manuels clients non modifiés.
+l'écran avant publication. Publié le 18 novembre à 14:45:59 Douala, release
+`20261118-logo-accueil`, puis contrôlé en ligne. Manuels clients non modifiés.
 
 ## Script réduit au décroché sur PC — 18 novembre 2026
 
