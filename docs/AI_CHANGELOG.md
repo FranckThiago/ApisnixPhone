@@ -18,8 +18,8 @@ session de supervision, puis recharge la page (hors téléphone intégré) : auc
 état SIP.js, socket ou session de ligne ne survit, et la connexion suivante
 n'est pas prise pour un second appareil. Le lien de connexion étant retiré de
 l'adresse dès sa lecture, le rechargement ne reconnecte personne. 346 tests ;
-vérifié en démonstration (déconnexion, rechargement, reconnexion). Pas encore
-publié.
+vérifié en démonstration (déconnexion, rechargement, reconnexion). Publié à
+11:41:07 Douala, release `20261120-deconnexion-recharge`.
 
 ## Flèche retirée des lignes du journal — 20 novembre 2026
 

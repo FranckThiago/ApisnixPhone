@@ -1,5 +1,12 @@
 # État du projet
 
+## Rechargement après déconnexion — 20 novembre 2026
+
+« Se déconnecter » ferme la ligne, la session de supervision et l'accès
+silencieux, puis recharge la page : la connexion suivante repart d'une page
+neuve et n'est pas prise pour un second appareil. Le téléphone intégré n'est pas
+rechargé. Release **`20261120-deconnexion-recharge`** (source `fa935a0`).
+
 ## Détail d'appel et DID des entrants — 20 novembre 2026
 
 Dans le journal, un bouton ⓘ sur chaque ligne ouvre le détail de l'appel

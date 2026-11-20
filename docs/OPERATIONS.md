@@ -1,8 +1,20 @@
 # Construction et validation
 
+## Rechargement après déconnexion — 20 novembre 2026
+
+Release active **`20261120-deconnexion-recharge`**, source `fa935a0`, depuis
+**11:41:07 Douala** sur Hermes, sur accord explicite de Franck : après « Se
+déconnecter », la page se recharge une fois les sessions fermées (hors
+téléphone intégré). 270 fichiers ; seuls `index.html` et `main-CiitoxfS.js`
+changent. Archive sans `._*`, SHA-256
+`be403cd5fb304a07b701575e5531658d99859f70587c989cc0c20e2472b4c12b`. 346 tests,
+typage, lint, build ; HTTPS et empreintes validés. Sauvegarde :
+`/root/apisnix-phone-backups/20261120-deconnexion-recharge/`. Retour : repointer
+`current` sur **20261120-journal-sans-fleche**.
+
 ## Journal sans flèche — 20 novembre 2026
 
-Release active **`20261120-journal-sans-fleche`**, source `1a53945`, depuis
+Release **`20261120-journal-sans-fleche`** (remplacée à 11:41:07), source `1a53945`, depuis
 **11:18:11 Douala** sur Hermes, sur demande de Franck : la flèche des lignes du
 journal disparaît, le bouton ⓘ ouvre le détail (un clic sur la ligne aussi).
 Build live isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls
