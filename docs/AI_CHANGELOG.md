@@ -10,6 +10,13 @@ un logo simple, sans lien. 345 tests, typage et lint réussis ; pas vérifié à
 l'écran avant publication. Publié le 18 novembre à 14:45:59 Douala, release
 `20261118-logo-accueil`, puis contrôlé en ligne. Manuels clients non modifiés.
 
+## Flèche retirée des lignes du journal — 20 novembre 2026
+
+Demande de Franck : le ⓘ fait déjà la même chose. `ChevronDown` et la colonne
+de 18 px retirés de `.call-summary` (trois gabarits). Un clic sur la ligne ouvre
+toujours le détail. 346 tests ; vérifié en démonstration. Publié à 11:18:11
+Douala, release `20261120-journal-sans-fleche`.
+
 ## Bouton ⓘ et DID des appels entrants — 20 novembre 2026
 
 Demande de Franck (8522 reçoit plusieurs DID). `LineCall.did` et

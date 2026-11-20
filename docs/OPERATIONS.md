@@ -1,8 +1,20 @@
 # Construction et validation
 
+## Journal sans flèche — 20 novembre 2026
+
+Release active **`20261120-journal-sans-fleche`**, source `1a53945`, depuis
+**11:18:11 Douala** sur Hermes, sur demande de Franck : la flèche des lignes du
+journal disparaît, le bouton ⓘ ouvre le détail (un clic sur la ligne aussi).
+Build live isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls
+`index.html`, `main-BwoTi10p.js` et `main-DAKG7fSr.css` changent. Archive sans
+`._*`, SHA-256 `6daa8a959945acaf16ec76f969e1763267230255e153092df46adca7090ce8b5`.
+346 tests, typage, lint, build. HTTPS et empreintes validés, page publique
+sans erreur. Sauvegarde : `/root/apisnix-phone-backups/20261120-journal-sans-fleche/`.
+Retour : repointer `current` sur **20261120-journal-did**.
+
 ## Bouton ⓘ et DID des appels entrants — 20 novembre 2026
 
-Release active **`20261120-journal-did`**, source `db96c68`, depuis
+Release **`20261120-journal-did`** (remplacée à 11:18:11), source `db96c68`, depuis
 **10:57:16 Douala** sur Hermes, sur accord explicite de Franck ; précédente
 **`20261118-logo-accueil`** (publiée par une autre session, source `c03a5b3`,
 incluse). Chaque ligne du journal a un bouton ⓘ qui ouvre le détail : sens,

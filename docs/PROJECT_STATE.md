@@ -7,7 +7,9 @@ Dans le journal, un bouton ⓘ sur chaque ligne ouvre le détail de l'appel
 du poste », il indique « Reçu sur le DID » avec le numéro public qui a reçu
 l'appel, fourni par la supervision ; « Non indiqué par le serveur » quand le PBX
 n'en a pas (appel interne, ancien appel). Le libellé « Issue observée » devient
-« Statut ». Release **`20261120-journal-did`** (source `db96c68`).
+« Statut ». Release **`20261120-journal-did`** (source `db96c68`), puis
+**`20261120-journal-sans-fleche`** (source `1a53945`) : la flèche des lignes est
+retirée, le bouton ⓘ suffit.
 
 ## Cinq lignes pour tous et transfert plus clair — 15 novembre 2026
 
