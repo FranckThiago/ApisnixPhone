@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneIncoming, PhoneMissed, PhoneOutgoing, Search, Trash2, UserCheck, UserPlus, Users } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, CalendarDays, Clock3, Info, Phone, PhoneIncoming, PhoneMissed, PhoneOutgoing, Search, Trash2, UserCheck, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -193,7 +193,6 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
                         <span className="row-tags">{call.tags.slice(0, 2).map(tag => <i key={tag} className="tag-mini">{tagLabel(tag)}</i>)}</span>
                         <span className={`result result-${call.outcome}`}>{call.outcome === 'answered' ? formatDuration(seconds) : outcomeLabel(call.outcome)}</span>
                         <span className="when">{formatTime(call.startedAt)}</span>
-                        <ChevronDown size={16} className="chevron" aria-hidden="true" />
                       </button>
                       <button type="button" className={'row-info' + (open ? ' active' : '')} aria-expanded={open} aria-label={t('journal.info')} title={t('journal.info')}
                         onClick={() => setOpenId(open ? null : call.id)}><Info size={17} /></button>

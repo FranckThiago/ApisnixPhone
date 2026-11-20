@@ -121,7 +121,7 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .day-label span { font-weight: 600; padding: 0 7px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); }
 .call-row { border-top: 1px solid var(--border); } .day-group .call-row:first-child { border-top: 0; }
 .call-main { container: journal-row / inline-size; display: flex; align-items: center; padding-right: 12px; transition: background .12s; } .call-main:hover, .call-row.open .call-main { background: var(--surface-2); }
-.call-summary { flex: 1; min-width: 0; display: grid; grid-template-columns: 30px 38px minmax(120px, 1.5fr) minmax(110px, 1fr) minmax(0, 1fr) 96px 52px 18px; align-items: center; gap: 12px; min-height: var(--row); padding: 6px 8px 6px 16px; text-align: left; }
+.call-summary { flex: 1; min-width: 0; display: grid; grid-template-columns: 30px 38px minmax(120px, 1.5fr) minmax(110px, 1fr) minmax(0, 1fr) 96px 52px; align-items: center; gap: 12px; min-height: var(--row); padding: 6px 8px 6px 16px; text-align: left; }
 .direction { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; }
 .direction.outbound { color: var(--brand); background: var(--brand-soft); } .direction.inbound { color: var(--success); background: var(--success-soft); } .direction.missed { color: var(--danger); background: var(--danger-soft); } .direction.group { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
 .who { min-width: 0; } .who b, .who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .who b { font-weight: 650; }
@@ -133,7 +133,6 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .result { font-size: 12.5px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
 .result-answered { color: var(--success); } .result-missed, .result-failed { color: var(--danger); } .result-busy, .result-no-answer { color: var(--warning); }
 .when { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
-.chevron { color: var(--faint); transition: transform .18s; } .call-row.open .chevron { transform: rotate(180deg); }
 .row-call { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--success); background: var(--success-soft); opacity: 0; transform: scale(.9); transition: opacity .15s, transform .15s, background .15s, color .15s; }
 .call-main:hover .row-call, .row-call:focus-visible, .call-row.open .row-call { opacity: 1; transform: none; } .row-call:hover { background: var(--success); color: #fff; }
 /* Always visible: the ⓘ opens the same detail as the row, for people who look for a button. */
@@ -494,7 +493,7 @@ input[type=range] { accent-color: var(--brand); }
 /* Size the journal against its actual space beside the dialler, including zoom.
    Qualifications move below the identity instead of being clipped or hidden. */
 @container journal-row (max-width: 800px) {
-  .call-summary { grid-template-columns: 30px 38px minmax(0, 1.4fr) minmax(90px, 1fr) 90px 50px 18px; row-gap: 4px; padding-block: 10px; }
+  .call-summary { grid-template-columns: 30px 38px minmax(0, 1.4fr) minmax(90px, 1fr) 90px 50px; row-gap: 4px; padding-block: 10px; }
   .row-tags { grid-column: 3 / -1; grid-row: 2; }
   .row-tags:empty { display: none; }
 }
@@ -504,7 +503,7 @@ input[type=range] { accent-color: var(--brand); }
   .call-summary .who small { display: flex; align-items: center; gap: 6px; }
   .journal-inline-flag { display: inline-flex; flex: none; }
   .journal-secondary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .call-summary .where, .call-summary .when, .call-summary .chevron { display: none; }
+  .call-summary .where, .call-summary .when { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
