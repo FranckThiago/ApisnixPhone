@@ -280,7 +280,7 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     }
     setSessionOpen(false);
     // An explicit sign-out must not be undone by the browser signing back in on the next reload.
-    if (!embedded) void forgetSilentAccess();
+    const forgetting = embedded ? Promise.resolve() : forgetSilentAccess();
     await phone.disconnect();
     store.close();
     recorded.current.clear();
@@ -294,7 +294,12 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     setCallTags(CALL_TAGS);
     setCallScript(null);
     // The recordings session belongs to the person, not to the browser left open.
-    void recordings.signOut();
+    const closing = recordings.signOut();
+    if (embedded) return;
+    // Start the next sign-in from a fresh page: no SIP.js state, socket or line session survives, so the
+    // PBX and the service never take the next connection for a second device on the same line (Franck, 20 Nov 2026).
+    await Promise.allSettled([forgetting, closing]);
+    window.location.reload();
   }, [embedded]);
 
   const simulateIncoming = useCallback(() => {

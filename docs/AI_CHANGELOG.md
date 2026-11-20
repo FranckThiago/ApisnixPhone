@@ -10,6 +10,17 @@ un logo simple, sans lien. 345 tests, typage et lint réussis ; pas vérifié à
 l'écran avant publication. Publié le 18 novembre à 14:45:59 Douala, release
 `20261118-logo-accueil`, puis contrôlé en ligne. Manuels clients non modifiés.
 
+## Page rechargée après une déconnexion — 20 novembre 2026
+
+Demande de Franck : une reconnexion juste après une déconnexion échouait
+parfois. `logout()` attend l'oubli de l'accès silencieux et la fermeture de la
+session de supervision, puis recharge la page (hors téléphone intégré) : aucun
+état SIP.js, socket ou session de ligne ne survit, et la connexion suivante
+n'est pas prise pour un second appareil. Le lien de connexion étant retiré de
+l'adresse dès sa lecture, le rechargement ne reconnecte personne. 346 tests ;
+vérifié en démonstration (déconnexion, rechargement, reconnexion). Pas encore
+publié.
+
 ## Flèche retirée des lignes du journal — 20 novembre 2026
 
 Demande de Franck : le ⓘ fait déjà la même chose. `ChevronDown` et la colonne
