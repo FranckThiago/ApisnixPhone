@@ -1,5 +1,27 @@
 # Construction et validation
 
+## Bouton ⓘ et DID des appels entrants — 20 novembre 2026
+
+Release active **`20261120-journal-did`**, source `db96c68`, depuis
+**10:57:16 Douala** sur Hermes, sur accord explicite de Franck ; précédente
+**`20261118-logo-accueil`** (publiée par une autre session, source `c03a5b3`,
+incluse). Chaque ligne du journal a un bouton ⓘ qui ouvre le détail : sens,
+« Reçu sur le DID » pour un entrant, statut, durée.
+
+Le DID vient de la supervision (release `20261120-did-entrant`, colonne
+`calls.did`) et du relais PBX mis à jour le même matin : voir
+`supervision/ops/HERMES.md` du dépôt de gestion. Build live isolé avec
+`VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
+`main-PY68wk5-.js` et `main-OboOmw10.css` changent. Archive sans `._*`, SHA-256
+`6cbe1af3c05944eb5aaa5840a0bf1119a0da8664c155e6e14db3387239002b09`. 346 tests,
+typage, lint et build réussis. HTTPS et empreintes validés par le script, page
+publique chargée sans erreur. Aucun compte client connecté ni appel réel.
+Manuels inchangés.
+
+Sauvegarde et reçu : `/root/apisnix-phone-backups/20261120-journal-did/`.
+Retour : repointer atomiquement `current` sur **20261118-logo-accueil**, sans
+redémarrage. Preuves locales : `.work/journal-did-20261120/`.
+
 ## Logo de la connexion vers l'accueil — 18 novembre 2026
 
 Release active **`20261118-logo-accueil`**, source `c03a5b3`, depuis

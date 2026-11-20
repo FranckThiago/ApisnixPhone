@@ -10,6 +10,16 @@ un logo simple, sans lien. 345 tests, typage et lint réussis ; pas vérifié à
 l'écran avant publication. Publié le 18 novembre à 14:45:59 Douala, release
 `20261118-logo-accueil`, puis contrôlé en ligne. Manuels clients non modifiés.
 
+## Bouton ⓘ et DID des appels entrants — 20 novembre 2026
+
+Demande de Franck (8522 reçoit plusieurs DID). `LineCall.did` et
+`CallRecord.did` (entrant, chiffres seulement) ; bouton `.row-info` qui ouvre le
+détail existant ; détail enrichi du sens, du DID et du « Statut ». Démo : DID
+fictifs sur les entrants. Côté serveur : dépôt de gestion `6ab3912` (relais PBX
+et supervision). 346 tests, typage, lint, build ; vérifié en démonstration
+(1 440 px et mobile). Publié le 20 novembre à 10:57:16 Douala, release
+`20261120-journal-did`. Manuels clients non modifiés.
+
 ## Script réduit au décroché sur PC — 18 novembre 2026
 
 Demande de Franck : le grand panneau ne s'ouvre plus seul. Sur écran large,

@@ -1,5 +1,14 @@
 # État du projet
 
+## Détail d'appel et DID des entrants — 20 novembre 2026
+
+Dans le journal, un bouton ⓘ sur chaque ligne ouvre le détail de l'appel
+(numéro, sens, début, statut, durée). Pour un appel entrant de « Tous les appels
+du poste », il indique « Reçu sur le DID » avec le numéro public qui a reçu
+l'appel, fourni par la supervision ; « Non indiqué par le serveur » quand le PBX
+n'en a pas (appel interne, ancien appel). Le libellé « Issue observée » devient
+« Statut ». Release **`20261120-journal-did`** (source `db96c68`).
+
 ## Cinq lignes pour tous et transfert plus clair — 15 novembre 2026
 
 En service : tous les postes ApisnixPhone (téléphone autonome) ont jusqu'à cinq
