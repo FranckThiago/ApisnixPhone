@@ -136,6 +136,10 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .chevron { color: var(--faint); transition: transform .18s; } .call-row.open .chevron { transform: rotate(180deg); }
 .row-call { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--success); background: var(--success-soft); opacity: 0; transform: scale(.9); transition: opacity .15s, transform .15s, background .15s, color .15s; }
 .call-main:hover .row-call, .row-call:focus-visible, .call-row.open .row-call { opacity: 1; transform: none; } .row-call:hover { background: var(--success); color: #fff; }
+/* Always visible: the ⓘ opens the same detail as the row, for people who look for a button. */
+.row-info { display: grid; place-items: center; flex: none; width: 34px; height: 34px; margin-right: 6px; border-radius: 10px; color: var(--muted); transition: background .15s, color .15s; }
+.row-info:hover, .row-info.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.detail-did dd.mono { font-weight: 700; letter-spacing: .2px; } .call-detail dd.muted { color: var(--muted); font-weight: 500; }
 .call-detail { display: grid; gap: 12px; padding: 4px 18px 18px 66px; background: var(--surface-2); animation: rise .18s ease-out; }
 .call-detail dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; } dt { font-size: 11.5px; color: var(--muted); margin-bottom: 2px; } dd { font-weight: 600; }
 .call-detail dt { display: flex; align-items: center; gap: 5px; }

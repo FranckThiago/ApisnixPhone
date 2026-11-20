@@ -8,7 +8,7 @@ import { RecordingsError, type LineCall, type LineHistory, type LineSearch, type
 type Fetch = typeof fetch;
 
 interface ServiceRecording { id: string; state: string; duration: number | null; created_at: number }
-interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; answered_at?: number | null; ended_at?: number | null; outcome?: string; complete?: number; recordings?: ServiceRecording[] }
+interface ServiceEntry { entry_id?: string; id: number | null; number: string; direction: string | null; started_at: number; answered_at?: number | null; ended_at?: number | null; outcome?: string; complete?: number; did?: string | null; recordings?: ServiceRecording[] }
 interface ServiceDashboard {
   journal?: ServiceEntry[];
   truncated?: boolean;
@@ -80,7 +80,8 @@ export function toLineCalls(entries: ServiceEntry[]): LineCall[] {
         : entry.outcome === 'FAILED' ? 'failed' : 'unknown';
       return { id: entry.entry_id ?? `call:${entry.id}`, number: customerNumber(entry.number ?? ''), direction: entry.direction as 'inbound' | 'outbound',
         startedAt: Math.round(entry.started_at * 1000), answeredAt: entry.answered_at ? Math.round(entry.answered_at * 1000) : undefined,
-        endedAt: entry.ended_at ? Math.round(entry.ended_at * 1000) : undefined, outcome };
+        endedAt: entry.ended_at ? Math.round(entry.ended_at * 1000) : undefined, outcome,
+        ...(entry.direction === 'inbound' && typeof entry.did === 'string' && /^\+?\d{2,20}$/.test(entry.did) ? { did: entry.did } : {}) };
     });
 }
 

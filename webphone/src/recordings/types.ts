@@ -49,6 +49,8 @@ export interface LineCall {
   answeredAt?: number;
   endedAt?: number;
   outcome: 'answered' | 'no-answer' | 'missed' | 'busy' | 'failed' | 'cancelled' | 'unknown' | 'answered-elsewhere' | 'group-unanswered';
+  /** Incoming: the DID that received the call, when the PBX recorded one. */
+  did?: string;
 }
 
 export interface LineHistory extends PageInfo {

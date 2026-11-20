@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneMissed, PhoneOutgoing, Search, Trash2, UserCheck, UserPlus, Users } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, CalendarDays, ChevronDown, Clock3, Info, Phone, PhoneIncoming, PhoneMissed, PhoneOutgoing, Search, Trash2, UserCheck, UserPlus, Users } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -80,7 +80,7 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
   const calls: CallRecord[] = useMemo(() => scope === 'device' ? localCalls : (history?.calls ?? []).map((call): CallRecord => ({
     id: call.id, direction: call.direction, dialTarget: call.number, startedAt: call.startedAt,
     answeredAt: call.answeredAt, endedAt: call.endedAt ?? call.startedAt,
-    outcome: call.outcome, tags: [],
+    outcome: call.outcome, tags: [], did: call.did,
   })), [scope, localCalls, history]);
 
   const now = useNow();
@@ -195,12 +195,17 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
                         <span className="when">{formatTime(call.startedAt)}</span>
                         <ChevronDown size={16} className="chevron" aria-hidden="true" />
                       </button>
+                      <button type="button" className={'row-info' + (open ? ' active' : '')} aria-expanded={open} aria-label={t('journal.info')} title={t('journal.info')}
+                        onClick={() => setOpenId(open ? null : call.id)}><Info size={17} /></button>
                       <button type="button" className="row-call" aria-label={t('journal.callBack', { name: name ?? call.dialTarget })} onClick={() => placeCall(call.dialTarget)}><Phone size={17} /></button>
                     </div>
                     {open && (
                       <div className="call-detail">
                         <dl>
                           <div className="detail-number"><dt><Phone size={13} aria-hidden="true" />{t(call.direction === 'inbound' ? 'detail.callerNumber' : 'detail.dialledNumber')}</dt><dd className="mono">{call.dialTarget || t('detail.unknown')}</dd></div>
+                          <div><dt>{call.direction === 'inbound' ? <ArrowDownLeft size={13} aria-hidden="true" /> : <ArrowUpRight size={13} aria-hidden="true" />}{t('detail.direction')}</dt><dd>{t(call.direction === 'inbound' ? 'direction.inbound' : 'direction.outbound')}</dd></div>
+                          {call.direction === 'inbound' && <div className="detail-did"><dt><PhoneIncoming size={13} aria-hidden="true" />{t('detail.did')}</dt>
+                            <dd className={call.did ? 'mono' : 'muted'}>{call.did ? describeNumber(call.did, 'inbound').display : t('detail.didUnknown')}</dd></div>}
                           <div className="detail-start"><dt><CalendarDays size={13} aria-hidden="true" />{t('detail.start')}</dt><dd>{t('detail.startValue', { day: formatDay(call.startedAt), time: formatTime(call.startedAt) })}</dd></div>
                           <div><dt>{t('detail.outcome')}</dt><dd><span className={`detail-outcome detail-outcome-${call.outcome}`}>{outcomeLabel(call.outcome)}</span></dd></div>
                           {call.failure && <div><dt>{t('detail.diagnostic')}</dt><dd>{call.failure}</dd></div>}

@@ -37,6 +37,13 @@ describe('recordings client', () => {
     expect(toLineCalls([{ ...entry, outcome: 'ANSWERED_ELSEWHERE', complete: 0 }])[0]!.outcome).toBe('unknown');
     expect(toLineCalls([{ ...entry, outcome: 'SOMETHING_NEW' }])[0]!.outcome).toBe('unknown');
   });
+  it('keeps the DID of an incoming call only, and only when it is a plain number', () => {
+    const entry = { id: 1, direction: 'inbound', number: '0100', started_at: 100, ended_at: 101, complete: 1, outcome: 'ANSWERED' };
+    const [kept, outbound, empty, absent, odd] = toLineCalls([{ ...entry, did: '33970381558' }, { ...entry, id: 2, direction: 'outbound', did: '33970381558' },
+      { ...entry, id: 3, did: '' }, { ...entry, id: 4, did: null }, { ...entry, id: 5, did: "1' OR 1=1" }]);
+    expect(kept!.did).toBe('33970381558');
+    expect([outbound!.did, empty!.did, absent!.did, odd!.did]).toEqual([undefined, undefined, undefined, undefined]);
+  });
   it('keeps server calls without audio, including inbound caller IDs, but excludes orphan audio', () => {
     expect(toLineCalls([
       { entry_id: 'call:4', id: 4, number: '0100000001', direction: 'inbound', started_at: 1700000000, answered_at: 1700000005, ended_at: 1700000030, outcome: 'ANSWERED', complete: 1, recordings: [] },

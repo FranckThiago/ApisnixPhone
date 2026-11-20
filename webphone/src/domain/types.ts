@@ -38,6 +38,8 @@ export interface CallRecord {
   failure?: string;
   note?: string;
   tags: string[];
+  /** Incoming: the DID (public number) that received the call, when the service knows it. */
+  did?: string;
 }
 
 /** A promise to call someone back, kept on this device like the rest of the data. */

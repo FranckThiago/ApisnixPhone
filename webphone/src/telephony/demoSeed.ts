@@ -47,6 +47,7 @@ export function demoSeed(now = Date.now()): AppData {
       id: `demo-call-${index}`, direction, outcome, startedAt, answeredAt, tags: tags ?? [], note: note && t(note),
       dialTarget: contact.numbers[0]!.value.replace(/\s/g, ''), remoteName: undefined,
       endedAt: (answeredAt ?? startedAt + 12_000) + seconds * 1000,
+      ...(direction === 'inbound' ? { did: index % 2 ? '33970381558' : '33970381561' } : {}),
     };
   });
   // An unknown number, to show the « add to contacts » path.
