@@ -1,5 +1,17 @@
 # État du projet
 
+## Choix de l’affichage mobile ou ordinateur — 23 novembre 2026
+
+Réglages › Apparence › **Affichage** : Automatique (par défaut, téléphone à
+920 px de large ou moins, comme avant), Mobile ou Ordinateur. Le choix est
+gardé par ce navigateur seulement (`apisnixphone.layout`) ; le téléphone intégré
+au CRM et le module VICIdial restent toujours en Automatique. Ordinateur sur un
+petit écran garde une largeur de 921 px et défile sur le côté, pour que Réglages
+reste accessible. Un téléphone en mode « Version pour ordinateur » du navigateur
+annonce environ 980 px : en Automatique il reçoit l’affichage ordinateur ; la
+vraie correction reste de décocher ce mode. Code local seulement, **non publié**
+sur Hermes.
+
 ## Rechargement après déconnexion — 20 novembre 2026
 
 « Se déconnecter » ferme la ligne, la session de supervision et l'accès
@@ -190,7 +202,7 @@ vérifiés, formulaire public intact. Aucun groupe réel activé ni appel provoq
 
 Le superviseur prépare un script dans Supervision → Gestion → Script d'appel,
 puis choisit explicitement les postes qui doivent le voir. Pendant une conversation
-ou une mise en attente, ApisnixPhone affiche ce texte. Sur écran large (≥ 921 px),
+ou une mise en attente, ApisnixPhone affiche ce texte. Sur l’affichage ordinateur (écran ≥ 921 px ou choix Réglages),
 depuis le 17 novembre 2026 (release `20261117-script-rappels`), il s'ouvre en grand panneau à
 gauche du téléphone, par-dessus le journal ; « Fermer » le réduit en carte dans la
 colonne du téléphone, « Afficher » le rouvre. Depuis le 18 novembre (release `20261118-script-reduit`), il

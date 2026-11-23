@@ -1,5 +1,23 @@
 # Journal des changements
 
+## Réglage Affichage : Automatique, Mobile, Ordinateur — 23 novembre 2026
+
+Demande de Franck : un client voyait l’affichage ordinateur sur son téléphone.
+Cause probable : le mode « Version pour ordinateur » du navigateur, qui annonce
+environ 980 px. Nouveau `src/app/layout.ts` : il pose l’affichage effectif sur
+`<html data-layout>` (Mobile forcé, Ordinateur forcé, ou largeur ≤ 920 px en
+Automatique) et mémorise un choix forcé dans `apisnixphone.layout`. Les quatre
+blocs `@media` 920/921 px de `app.css` deviennent des règles
+`:where(:root[data-layout=…])`, sans changer la spécificité ni l’ordre ;
+`CallScriptCard` lit le même état au lieu de sa propre requête de largeur.
+`main.tsx` applique le choix enregistré au téléphone autonome seulement (intégré,
+pilote et `native-main.tsx` restent automatiques). Ordinateur forcé impose
+921 px minimum au `.shell` pour ne pas écraser la colonne centrale sur petit
+écran. Textes fr/en/es ajoutés. 346 tests, typage, lint et build réussis ;
+vérifié en démonstration à 1100/1400 px (Mobile), 420 px (Ordinateur puis
+Automatique), rechargement et `/embed` avec un choix enregistré. Non publié.
+Manuels clients non modifiés.
+
 ## Logo de la connexion vers l'accueil — 18 novembre 2026
 
 Demande de Franck : des clients ouvrent la mauvaise page de connexion et n'ont

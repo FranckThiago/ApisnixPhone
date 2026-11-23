@@ -317,7 +317,7 @@ input[type=range] { accent-color: var(--brand); }
 .wrapup .note { background: var(--call-fill); border-color: var(--call-line); color: var(--call-text); } .wrapup .note::placeholder { color: var(--call-placeholder); }
 .wrapup-actions { display: flex; flex-wrap: wrap; gap: 8px; } .wrapup-actions > * { flex: 1 1 auto; white-space: nowrap; } .done { min-height: 38px; padding: 7px 12px; border-radius: 12px; border: 1px solid var(--yellow-strong); font-weight: 700; background: var(--yellow); color: var(--on-yellow); box-shadow: var(--shadow-sm); } .done:hover { filter: brightness(1.05); }
 .call-banner { display: none; }
-@media (min-width: 921px) { .dock-head .pill { display: none; } .call-card { min-height: min(560px, calc(100vh - 80px)); align-content: space-between; } }
+:where(:root[data-layout="desktop"]) .dock-head .pill { display: none; } :where(:root[data-layout="desktop"]) .call-card { min-height: min(560px, calc(100vh - 80px)); align-content: space-between; }
 
 /* ---------- Callbacks ---------- */
 .callback-group.urgent { border-color: color-mix(in srgb, var(--yellow-strong) 60%, var(--border)); box-shadow: var(--shadow-sm), inset 4px 0 0 var(--yellow); }
@@ -463,33 +463,35 @@ input[type=range] { accent-color: var(--brand); }
   .sidebar-foot { flex-direction: column; } .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .content, .topbar { padding-inline: 20px; }
 }
-@media (max-width: 920px) {
-  .shell { grid-template: "banner" auto "main" 1fr "side" auto / minmax(0, 1fr); }
-  .dock { display: none; grid-area: main; padding: 14px; max-width: 460px; width: 100%; justify-self: center; } .shell.show-phone .dock { display: flex; } .shell.show-phone .main { display: none; }
-  .sidebar { flex-direction: row; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); } .brand, .sidebar-foot { display: none; }
-  .sidebar { overflow: visible; border-right: 0; border-top: 1px solid var(--side-border); box-shadow: 0 -8px 24px -18px rgb(8 12 40 / 40%); }
-  .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } .nav-phone { display: block; } .only-narrow { display: inline-flex !important; }
-  /* The phone remains the raised green action in the compact bar. */
-  .nav-phone .nav-item { width: min(62px, 100%); height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #34d399, #047857);
-    box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), inset 0 1px 0 rgb(255 255 255 / 35%); transition: transform .15s; }
-  .nav-phone .nav-item span { display: none !important; } .nav-phone .nav-item svg, .nav-phone .nav-item.active svg { color: #fff; } .nav-phone .nav-item:active { transform: scale(.94); }
-  .nav-phone .nav-item.active { background: linear-gradient(160deg, #34d399, #047857); box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), 0 0 0 7px var(--green-strong); } .nav-phone .nav-item.active::before { display: none; }
-  .nav-phone .nav-item.in-call { animation: pulse 1.4s ease-in-out infinite; }
-  .nav-item { flex-direction: column; gap: 3px; padding: 7px 0; font-size: 10.5px; } .nav-item span { display: block; } .nav-item.active::before { left: 30%; right: 30%; top: -6px; bottom: auto; width: auto; height: 3px; border-radius: 0 0 4px 4px; }
-  .call-banner { display: flex; margin: 0 14px 8px; border-radius: 12px; overflow: hidden; background: var(--success); color: #fff; font-weight: 650; }
-  .call-banner button:first-child { flex: 1; display: flex; gap: 8px; align-items: center; padding: 11px 14px; text-align: left; color: #fff; } .banner-hangup { padding: 0 16px; background: var(--danger); color: #fff; }
-  .contacts-layout, .settings-grid, .login { grid-template-columns: minmax(0, 1fr); } .login-brand { display: none; } .login-mark { display: block; } .login-form { padding: 24px 16px; } .login-form form { padding: 28px 22px 22px; }
-  .audio-row .where, .audio-row .when { display: none; }
-  /* Ranked by duration: the date is the only way to place the call, keep it under the name. */
-  .audio-row.is-ranked .audio-main { flex-wrap: wrap; } .audio-row.is-ranked .when { display: block; flex: 0 0 100%; text-align: left; padding-left: 86px; font-size: 12px; margin-top: -4px; }
-  .audio-search + .toolbar .tabs { display: flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; } .audio-search + .toolbar .tabs button { white-space: nowrap; flex: none; }
-  .callback-row { grid-template-columns: 40px minmax(0, 1fr); } .callback-row .due, .callback-row .callback-note { grid-column: 2 / -1; } .callback-row .callback-note { white-space: normal; } .callback-row .callback-actions { grid-column: 1 / -1; justify-content: flex-start; }
-  .toasts { bottom: 96px; width: calc(100% - 28px); }
-  .call-detail { padding-left: 18px; } .call-detail dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } .row-call { opacity: 1; transform: none; }
-  .palette-trigger .kbd { display: none; } .topbar { gap: 6px; } .topbar .pill { padding-inline: 9px; font-size: 11.5px; } .palette-trigger { padding-inline: 11px; }
-  .line-alert { margin-inline: 14px; flex-wrap: wrap; }
-  .content, .topbar { padding-inline: 14px; } h1 { font-size: 24px; } .search { min-width: 0; flex: 1; } .contact-list { max-height: none; }
-}
+/* Computer layout chosen on a small screen: keep its real width and scroll sideways, as a browser's
+   desktop-site mode does, so every page, Settings included, stays reachable. No effect above 920 px. */
+:where(:root[data-layout="desktop"]) .shell { min-width: 921px; }
+/* Phone layout: 920 px wide or less, or chosen in Settings (src/app/layout.ts). */
+:where(:root[data-layout="mobile"]) .shell { grid-template: "banner" auto "main" 1fr "side" auto / minmax(0, 1fr); }
+:where(:root[data-layout="mobile"]) .dock { display: none; grid-area: main; padding: 14px; max-width: 460px; width: 100%; justify-self: center; } :where(:root[data-layout="mobile"]) .shell.show-phone .dock { display: flex; } :where(:root[data-layout="mobile"]) .shell.show-phone .main { display: none; }
+:where(:root[data-layout="mobile"]) .sidebar { flex-direction: row; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); } :where(:root[data-layout="mobile"]) .brand, :where(:root[data-layout="mobile"]) .sidebar-foot { display: none; }
+:where(:root[data-layout="mobile"]) .sidebar { overflow: visible; border-right: 0; border-top: 1px solid var(--side-border); box-shadow: 0 -8px 24px -18px rgb(8 12 40 / 40%); }
+:where(:root[data-layout="mobile"]) .sidebar ul { flex: 1; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: end; } :where(:root[data-layout="mobile"]) .nav-phone { display: block; } :where(:root[data-layout="mobile"]) .only-narrow { display: inline-flex !important; }
+/* The phone remains the raised green action in the compact bar. */
+:where(:root[data-layout="mobile"]) .nav-phone .nav-item { width: min(62px, 100%); height: 62px; margin: -26px auto 2px; border-radius: 22px; justify-content: center; color: #fff; background: linear-gradient(160deg, #34d399, #047857);
+  box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), inset 0 1px 0 rgb(255 255 255 / 35%); transition: transform .15s; }
+:where(:root[data-layout="mobile"]) .nav-phone .nav-item span { display: none !important; } :where(:root[data-layout="mobile"]) .nav-phone .nav-item svg, :where(:root[data-layout="mobile"]) .nav-phone .nav-item.active svg { color: #fff; } :where(:root[data-layout="mobile"]) .nav-phone .nav-item:active { transform: scale(.94); }
+:where(:root[data-layout="mobile"]) .nav-phone .nav-item.active { background: linear-gradient(160deg, #34d399, #047857); box-shadow: 0 12px 22px -8px #047857cc, 0 0 0 5px var(--canvas), 0 0 0 7px var(--green-strong); } :where(:root[data-layout="mobile"]) .nav-phone .nav-item.active::before { display: none; }
+:where(:root[data-layout="mobile"]) .nav-phone .nav-item.in-call { animation: pulse 1.4s ease-in-out infinite; }
+:where(:root[data-layout="mobile"]) .nav-item { flex-direction: column; gap: 3px; padding: 7px 0; font-size: 10.5px; } :where(:root[data-layout="mobile"]) .nav-item span { display: block; } :where(:root[data-layout="mobile"]) .nav-item.active::before { left: 30%; right: 30%; top: -6px; bottom: auto; width: auto; height: 3px; border-radius: 0 0 4px 4px; }
+:where(:root[data-layout="mobile"]) .call-banner { display: flex; margin: 0 14px 8px; border-radius: 12px; overflow: hidden; background: var(--success); color: #fff; font-weight: 650; }
+:where(:root[data-layout="mobile"]) .call-banner button:first-child { flex: 1; display: flex; gap: 8px; align-items: center; padding: 11px 14px; text-align: left; color: #fff; } :where(:root[data-layout="mobile"]) .banner-hangup { padding: 0 16px; background: var(--danger); color: #fff; }
+:where(:root[data-layout="mobile"]) .contacts-layout, :where(:root[data-layout="mobile"]) .settings-grid, :where(:root[data-layout="mobile"]) .login { grid-template-columns: minmax(0, 1fr); } :where(:root[data-layout="mobile"]) .login-brand { display: none; } :where(:root[data-layout="mobile"]) .login-mark { display: block; } :where(:root[data-layout="mobile"]) .login-form { padding: 24px 16px; } :where(:root[data-layout="mobile"]) .login-form form { padding: 28px 22px 22px; }
+:where(:root[data-layout="mobile"]) .audio-row .where, :where(:root[data-layout="mobile"]) .audio-row .when { display: none; }
+/* Ranked by duration: the date is the only way to place the call, keep it under the name. */
+:where(:root[data-layout="mobile"]) .audio-row.is-ranked .audio-main { flex-wrap: wrap; } :where(:root[data-layout="mobile"]) .audio-row.is-ranked .when { display: block; flex: 0 0 100%; text-align: left; padding-left: 86px; font-size: 12px; margin-top: -4px; }
+:where(:root[data-layout="mobile"]) .audio-search + .toolbar .tabs { display: flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; } :where(:root[data-layout="mobile"]) .audio-search + .toolbar .tabs button { white-space: nowrap; flex: none; }
+:where(:root[data-layout="mobile"]) .callback-row { grid-template-columns: 40px minmax(0, 1fr); } :where(:root[data-layout="mobile"]) .callback-row .due, :where(:root[data-layout="mobile"]) .callback-row .callback-note { grid-column: 2 / -1; } :where(:root[data-layout="mobile"]) .callback-row .callback-note { white-space: normal; } :where(:root[data-layout="mobile"]) .callback-row .callback-actions { grid-column: 1 / -1; justify-content: flex-start; }
+:where(:root[data-layout="mobile"]) .toasts { bottom: 96px; width: calc(100% - 28px); }
+:where(:root[data-layout="mobile"]) .call-detail { padding-left: 18px; } :where(:root[data-layout="mobile"]) .call-detail dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } :where(:root[data-layout="mobile"]) .row-call { opacity: 1; transform: none; }
+:where(:root[data-layout="mobile"]) .palette-trigger .kbd { display: none; } :where(:root[data-layout="mobile"]) .topbar { gap: 6px; } :where(:root[data-layout="mobile"]) .topbar .pill { padding-inline: 9px; font-size: 11.5px; } :where(:root[data-layout="mobile"]) .palette-trigger { padding-inline: 11px; }
+:where(:root[data-layout="mobile"]) .line-alert { margin-inline: 14px; flex-wrap: wrap; }
+:where(:root[data-layout="mobile"]) .content, :where(:root[data-layout="mobile"]) .topbar { padding-inline: 14px; } :where(:root[data-layout="mobile"]) h1 { font-size: 24px; } :where(:root[data-layout="mobile"]) .search { min-width: 0; flex: 1; } :where(:root[data-layout="mobile"]) .contact-list { max-height: none; }
 /* Size the journal against its actual space beside the dialler, including zoom.
    Qualifications move below the identity instead of being clipped or hidden. */
 @container journal-row (max-width: 800px) {
@@ -593,11 +595,10 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 
 /* Outside both panes: the offer remains visible on the mobile phone view. */
 .line-alert.notification-offer { position: fixed; z-index: 80; inset-inline: 14px; bottom: 24px; margin: 0 auto; max-width: 640px; box-shadow: var(--shadow-lg); }
-@media (max-width: 920px) {
-  .line-alert.notification-offer { bottom: calc(96px + env(safe-area-inset-bottom)); flex-wrap: wrap; }
-  .notification-offer p { flex-basis: calc(100% - 32px); }
-  .notification-offer button:first-of-type { margin-left: auto; }
-}
+/* Phone layout: 920 px wide or less, or chosen in Settings (src/app/layout.ts). */
+:where(:root[data-layout="mobile"]) .line-alert.notification-offer { bottom: calc(96px + env(safe-area-inset-bottom)); flex-wrap: wrap; }
+:where(:root[data-layout="mobile"]) .notification-offer p { flex-basis: calc(100% - 32px); }
+:where(:root[data-layout="mobile"]) .notification-offer button:first-of-type { margin-left: auto; }
 
 /* The same real device routes in Audio and during a conversation. */
 .audio-output { min-width: 0; }
@@ -660,11 +661,10 @@ input.recording-player-position { width: 100%; min-width: 0; margin: 0; accent-c
 .login { padding-bottom: var(--connection-space, 0px); }
 .toasts { bottom: calc(22px + var(--connection-space, 0px)); }
 .line-alert.notification-offer { bottom: calc(24px + var(--connection-space, 0px)); }
-@media (max-width: 920px) {
-  .connection-alert { font-size: 12px; padding-inline: 14px; }
-  .connection-alert strong, .connection-alert strong + span { display: block; }
-  .toasts, .line-alert.notification-offer { bottom: calc(96px + var(--connection-space, 0px) + env(safe-area-inset-bottom, 0px)); }
-}
+/* Phone layout: 920 px wide or less, or chosen in Settings (src/app/layout.ts). */
+:where(:root[data-layout="mobile"]) .connection-alert { font-size: 12px; padding-inline: 14px; }
+:where(:root[data-layout="mobile"]) .connection-alert strong, :where(:root[data-layout="mobile"]) .connection-alert strong + span { display: block; }
+:where(:root[data-layout="mobile"]) .toasts, :where(:root[data-layout="mobile"]) .line-alert.notification-offer { bottom: calc(96px + var(--connection-space, 0px) + env(safe-area-inset-bottom, 0px)); }
 
 /* Team scripts are read-only, independently scrollable, and leave the volume accessible. */
 .call-script-card { padding: 16px; }

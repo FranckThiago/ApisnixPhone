@@ -7,6 +7,7 @@ import { LinkGenerator } from './features/auth/LinkGenerator';
 import { EmbeddedPhone } from './embed/EmbeddedPhone';
 import { IntegrationDemo } from './embed/IntegrationDemo';
 import { pilotEnabled } from './vicidial/pilotGate';
+import { startLayout, storedLayout } from './app/layout';
 import './styles/tokens.css';
 import './styles/app.css';
 import './embed/embed.css';
@@ -24,4 +25,7 @@ const ConferencePilot = import.meta.env.DEV
 const page = pilot ? <Suspense><ConferencePilot /></Suspense> : path === '/embed' || window.parent !== window ? <EmbeddedPhone />
   : path === '/integration-demo' && import.meta.env.VITE_APP_MODE !== 'live' ? <IntegrationDemo />
   : path === '/lien' ? <LinkGenerator /> : <AppProvider><App /></AppProvider>;
+// The embed sits in a CRM panel: it always follows its own width, never the phone page's choice.
+const embedded = path === '/embed' || window.parent !== window;
+startLayout(pilot || embedded ? 'auto' : storedLayout());
 createRoot(document.getElementById('root')!).render(<StrictMode><ErrorBoundary page>{page}</ErrorBoundary></StrictMode>);

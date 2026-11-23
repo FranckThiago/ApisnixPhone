@@ -3,19 +3,17 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useApp, usePhone } from '../../app/AppContext';
 import { useI18n } from '../../i18n';
+import { isMobileLayout, onLayoutChange } from '../../app/layout';
 
-/** Same breakpoint as the side dock in app.css: below it the dock is a view of its own. */
-const WIDE = '(min-width: 921px)';
 
 /** The area left of the dock, where a wide screen shows the script in large. Absent in the embed. */
 function useStage(): HTMLElement | null {
   const [stage, setStage] = useState<HTMLElement | null>(null);
   useEffect(() => {
-    const media = matchMedia(WIDE);
-    const pick = () => setStage(media.matches ? document.querySelector<HTMLElement>('.main-stage') : null);
+    // In the phone layout the dock is a view of its own: the script stays in it.
+    const pick = () => setStage(isMobileLayout() ? null : document.querySelector<HTMLElement>('.main-stage'));
     pick();
-    media.addEventListener('change', pick);
-    return () => media.removeEventListener('change', pick);
+    return onLayoutChange(pick);
   }, []);
   return stage;
 }
@@ -26,7 +24,7 @@ export function CallScriptCard() {
   const { t } = useI18n();
   // On a wide screen the script starts reduced in the dock and opens on « Afficher » (Franck, 18 Nov 2026);
   // on a narrow one it stays open under the call. The card is keyed by call, so each call starts afresh.
-  const [expanded, setExpanded] = useState(() => !matchMedia(WIDE).matches);
+  const [expanded, setExpanded] = useState(isMobileLayout);
   const stage = useStage();
   const script = demo ? { title: t('script.demoTitle'), content: t('script.demoContent') } : callScript;
   if (!script) return null;

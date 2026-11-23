@@ -448,6 +448,7 @@ pour compatibilité, sans effet visuel et sans migration.
 | Langue | Français par défaut ; anglais et espagnol au choix sur l'écran de connexion et dans Réglages → Apparence (demande de Franck, 29 septembre), retenus par le navigateur |
 | Apparence | Système par défaut (demande de Franck) ; clair et sombre au choix |
 | Espacement | Affichage confortable unique ; sélecteur de densité retiré le 27 octobre 2026 |
+| Affichage | Automatique (mobile à 920 px et moins), Mobile ou Ordinateur, choisi dans Réglages › Apparence et gardé par navigateur (Franck, 23 novembre 2026) ; `<html data-layout>` porte l’affichage effectif lu par le CSS (`src/app/layout.ts`) ; téléphone intégré toujours automatique |
 | Blocs Audio | Réglages → Audio en trois blocs encadrés (demande de Franck, 8 octobre) : Micro (autorisation, périphérique, niveau fixe à 100 %, test, annulation d'écho, réduction de bruit), Écoute (casque/sortie, volume d'écoute), Sonnerie et sons (sonnerie, bibliothèque, sons de ligne, sons du clavier) |
 | Micro | Périphérique système ; choix explicite possible |
 | Autorisation du micro | Ligne dédiée dans Réglages → Audio (demande de Franck, 28 septembre) : état lu par l'API Permissions quand elle existe, bouton qui redemande l'accès, étapes de déblocage quand le navigateur a retenu un refus — aucune page ne peut alors le forcer à redemander |

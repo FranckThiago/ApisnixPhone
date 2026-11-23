@@ -4,6 +4,7 @@ import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
 import { ConnectionPill } from '../calls/PhoneDock';
 import { applyTheme } from '../../app/theme';
+import { applyLayout, storedLayout, type LayoutMode } from '../../app/layout';
 import type { Theme } from '../../domain/types';
 import { LANGUAGES, setLanguage, useI18n, type MessageKey } from '../../i18n';
 import { AudioBlock, AudioSettings } from './AudioSettings';
@@ -28,6 +29,7 @@ export function Settings() {
   const { t, tp, language } = useI18n();
   const sync = useSyncExternalStore(store.subscribeSync, store.getSyncSnapshot);
   const [dataBusy, setDataBusy] = useState(false);
+  const [layout, setLayout] = useState<LayoutMode>(storedLayout);
   const changeData = async (action: () => Promise<void>) => {
     setDataBusy(true);
     try { await action(); } catch (error) { notify(error instanceof Error ? error.message : t('settings.saveError'), 'danger'); }
@@ -75,6 +77,12 @@ export function Settings() {
                 {([['light', 'theme.light'], ['dark', 'theme.dark'], ['system', 'theme.system']] as Array<[Theme, MessageKey]>).map(([value, label]) => (
                   <button key={value} type="button" aria-pressed={preferences.theme === value} className={preferences.theme === value ? 'active' : ''}
                     onClick={() => { set({ theme: value }); applyTheme(value); }}>{t(label)}</button>))}
+              </div></div>
+            <div className="setting"><span><b>{t('settings.layout')}</b><small>{t('settings.layoutHint')}</small></span>
+              <div className="segmented" role="group" aria-label={t('settings.layout')}>
+                {([['auto', 'layout.auto'], ['mobile', 'layout.mobile'], ['desktop', 'layout.desktop']] as Array<[LayoutMode, MessageKey]>).map(([value, label]) => (
+                  <button key={value} type="button" aria-pressed={layout === value} className={layout === value ? 'active' : ''}
+                    onClick={() => { setLayout(value); applyLayout(value); }}>{t(label)}</button>))}
               </div></div>
           </Section>
 
