@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Actualiser les sorties en icône — 25 novembre 2026
+
+Demande de Franck : dans Réglages › Audio › Écoute, le bouton « Actualiser les
+sorties » devient une simple icône ↻ (`icon-button`) à droite de la liste
+Casque / sortie (`.output-pick`). Le libellé reste en infobulle et pour les
+lecteurs d’écran. Le menu de sortie pendant un appel ne change pas. 346 tests,
+typage, lint, build ; vérifié en démonstration (clic, aucune erreur). Non publié.
+Manuels clients non modifiés.
+
 ## Réglage Affichage : Automatique, Mobile, Ordinateur — 23 novembre 2026
 
 Demande de Franck : un client voyait l’affichage ordinateur sur son téléphone.

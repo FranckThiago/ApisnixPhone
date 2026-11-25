@@ -24,13 +24,17 @@ export function AudioOutput() {
   const { t } = useI18n();
   return <div className="audio-output">
     <label className="setting"><span><b>{t('audio.output')}</b><small>{t(!supported ? 'audio.outputUnsupported' : outputs.length ? 'audio.outputChoice' : 'audio.outputUnavailable')}</small></span>
+      <span className="output-pick">
       <select value={selected} disabled={!supported} onFocus={refresh} onChange={event => select(event.target.value)}>
         <option value="default">{system?.label || t('audio.systemOutput')}</option>
         {missing && <option value={selected} disabled>{t('audio.outputDisconnected')}</option>}
         {outputs.map((device, index) => <option key={device.deviceId} value={device.deviceId}>{device.label || t('audio.outputNumber', { number: index + 1 })}</option>)}
       </select>
+      {/* Icon only beside the list (Franck, 25 Nov 2026); the name stays for screen readers and on hover. */}
+      {supported && <button type="button" className="icon-button" title={t('audio.refreshOutputs')} aria-label={t('audio.refreshOutputs')}
+        onClick={refresh}><RotateCcw size={16} aria-hidden="true" /></button>}
+      </span>
     </label>
-    {supported && <button type="button" className="ghost-call" onClick={refresh}><RotateCcw size={14} />{t('audio.refreshOutputs')}</button>}
   </div>;
 }
 
