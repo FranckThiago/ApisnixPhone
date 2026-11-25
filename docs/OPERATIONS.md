@@ -1,8 +1,21 @@
 # Construction et validation
 
+## Réglage Affichage — 25 novembre 2026
+
+Release active **`20261125-affichage`**, source `44f7ef3`, depuis **12:30:38
+Douala** sur Hermes, sur accord explicite de Franck : Réglages › Apparence ›
+Affichage (Automatique, Mobile, Ordinateur). Build live isolé avec
+`VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
+`main-YacZbCJz.js` et `main-DiSS1sVg.css` changent. Archive sans `._*`, SHA-256
+`fada85f3d35676c73a81d0c16378fa68271826c1c9af9366a6b2a829a443fe52`. 346 tests,
+typage, lint, build ; HTTPS et empreintes validés par le script, page publique
+sans erreur console, Caddy et supervision actifs. Sauvegarde :
+`/root/apisnix-phone-backups/20261125-affichage/`. Retour : repointer `current`
+sur **20261120-deconnexion-recharge**.
+
 ## Rechargement après déconnexion — 20 novembre 2026
 
-Release active **`20261120-deconnexion-recharge`**, source `fa935a0`, depuis
+Release **`20261120-deconnexion-recharge`** (remplacée le 25 novembre à 12:30:38), source `fa935a0`, depuis
 **11:41:07 Douala** sur Hermes, sur accord explicite de Franck : après « Se
 déconnecter », la page se recharge une fois les sessions fermées (hors
 téléphone intégré). 270 fichiers ; seuls `index.html` et `main-CiitoxfS.js`

@@ -15,7 +15,8 @@ pilote et `native-main.tsx` restent automatiques). Ordinateur forcé impose
 921 px minimum au `.shell` pour ne pas écraser la colonne centrale sur petit
 écran. Textes fr/en/es ajoutés. 346 tests, typage, lint et build réussis ;
 vérifié en démonstration à 1100/1400 px (Mobile), 420 px (Ordinateur puis
-Automatique), rechargement et `/embed` avec un choix enregistré. Non publié.
+Automatique), rechargement et `/embed` avec un choix enregistré. Publié le
+25 novembre à 12:30:38 Douala, release `20261125-affichage`, puis contrôlé en ligne.
 Manuels clients non modifiés.
 
 ## Logo de la connexion vers l'accueil — 18 novembre 2026

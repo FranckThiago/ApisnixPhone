@@ -9,8 +9,8 @@ au CRM et le module VICIdial restent toujours en Automatique. Ordinateur sur un
 petit écran garde une largeur de 921 px et défile sur le côté, pour que Réglages
 reste accessible. Un téléphone en mode « Version pour ordinateur » du navigateur
 annonce environ 980 px : en Automatique il reçoit l’affichage ordinateur ; la
-vraie correction reste de décocher ce mode. Code local seulement, **non publié**
-sur Hermes.
+vraie correction reste de décocher ce mode. Release **`20261125-affichage`**
+(source `44f7ef3`), en service depuis le 25 novembre.
 
 ## Rechargement après déconnexion — 20 novembre 2026
 
