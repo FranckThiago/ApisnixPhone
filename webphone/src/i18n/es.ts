@@ -746,6 +746,7 @@ export const es: Record<MessageKey, string> = {
   'audio.outputDisconnected': 'Salida seleccionada anteriormente no disponible',
   'audio.outputNumber': 'Salida {number}',
   'audio.refreshOutputs': 'Actualizar salidas',
+  'audio.refreshMics': 'Actualizar micrófonos',
   'audio.systemOutput': 'Salida del sistema',
   'audio.volumeHint': '{value} % — {state}. Hasta {max} %.',
   'audio.volumeAmplified': 'voz y sonidos amplificados; unos auriculares evitan el eco a tu interlocutor',

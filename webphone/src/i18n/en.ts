@@ -746,6 +746,7 @@ export const en: Record<MessageKey, string> = {
   'audio.outputDisconnected': 'Previously selected output unavailable',
   'audio.outputNumber': 'Output {number}',
   'audio.refreshOutputs': 'Refresh outputs',
+  'audio.refreshMics': 'Refresh microphones',
   'audio.systemOutput': 'System output',
   'audio.volumeHint': '{value} % — {state}. Up to {max} %.',
   'audio.volumeAmplified': 'voice and sounds amplified; a headset avoids echo for the other person',

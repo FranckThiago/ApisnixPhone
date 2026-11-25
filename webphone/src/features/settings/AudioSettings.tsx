@@ -159,10 +159,15 @@ export function AudioSettings({ micOptions }: { micOptions?: ReactNode }) {
       <AudioBlock icon={<Mic size={15} />} title={t('audio.micBlock')} hint={t('audio.micBlockHint')}>
       <MicPermission demo={demo} onAllowed={refreshDevices} />
       <label className="setting"><span><b>{t('audio.microphone')}</b><small>{t(devices.inputs.length ? 'audio.nextCall' : 'audio.systemMicHint')}</small></span>
+        <span className="output-pick">
         <select value={preferences.inputDevice} onChange={event => set({ inputDevice: event.target.value })}>
           <option value="default">{t('audio.systemMic')}</option>
           {devices.inputs.map(device => <option key={device.deviceId} value={device.deviceId}>{device.label}</option>)}
-        </select></label>
+        </select>
+        {/* Same icon as the output list (Franck, 25 Nov 2026): reads the microphones again. */}
+        <button type="button" className="icon-button" title={t('audio.refreshMics')} aria-label={t('audio.refreshMics')}
+          onClick={refreshDevices}><RotateCcw size={16} aria-hidden="true" /></button>
+        </span></label>
       {!demo && <MicTest onAllowed={refreshDevices} />}
       {micOptions}
       </AudioBlock>

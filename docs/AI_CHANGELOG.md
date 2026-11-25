@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Actualiser les micros en icône — 25 novembre 2026
+
+Demande de Franck : même style que la sortie. Dans Réglages › Audio › Micro, une
+icône ↻ (`icon-button`, `.output-pick`) à droite de la liste Microphone relit les
+micros disponibles (`useDevices`). Libellé `audio.refreshMics` (fr/en/es) en
+infobulle et pour les lecteurs d’écran. 346 tests, typage, lint, build ; vérifié
+en démonstration (icône alignée, clic sans erreur). Non publié. Manuels clients
+non modifiés.
+
 ## Actualiser les sorties en icône — 25 novembre 2026
 
 Demande de Franck : dans Réglages › Audio › Écoute, le bouton « Actualiser les

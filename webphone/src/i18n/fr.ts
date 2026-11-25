@@ -744,6 +744,7 @@ export const fr = {
   'audio.outputDisconnected': 'Sortie précédemment choisie indisponible',
   'audio.outputNumber': 'Sortie {number}',
   'audio.refreshOutputs': 'Actualiser les sorties',
+  'audio.refreshMics': 'Actualiser les micros',
   'audio.systemOutput': 'Sortie du système',
   'audio.volumeHint': '{value} % — {state}. Jusqu’à {max} %.',
   'audio.volumeAmplified': 'voix et sons amplifiés ; un casque évite l’écho chez votre correspondant',
