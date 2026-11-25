@@ -1,8 +1,21 @@
 # Construction et validation
 
+## Actualiser les sorties en icône — 25 novembre 2026
+
+Release active **`20261125-sortie-icone`**, source `ecccfac`, depuis **13:46:08
+Douala** sur Hermes, sur accord explicite de Franck : dans Réglages › Audio ›
+Écoute, « Actualiser les sorties » devient une icône ↻ à côté de la liste.
+Build live isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls
+`index.html`, `main-CdTJks_t.js` et `main-aqva0Yow.css` changent. Archive sans
+`._*`, SHA-256 `209afb49f493a5094bf55c9a8f547fa29a1a9748ab1f68e863fed746b9bcf372`.
+346 tests, typage, lint, build ; HTTPS et empreintes validés par le script, page
+publique sans erreur console, Caddy et supervision actifs. Sauvegarde :
+`/root/apisnix-phone-backups/20261125-sortie-icone/`. Retour : repointer
+`current` sur **20261125-affichage**.
+
 ## Réglage Affichage — 25 novembre 2026
 
-Release active **`20261125-affichage`**, source `44f7ef3`, depuis **12:30:38
+Release **`20261125-affichage`** (remplacée à 13:46:08), source `44f7ef3`, depuis **12:30:38
 Douala** sur Hermes, sur accord explicite de Franck : Réglages › Apparence ›
 Affichage (Automatique, Mobile, Ordinateur). Build live isolé avec
 `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,

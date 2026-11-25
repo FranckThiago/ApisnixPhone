@@ -6,7 +6,8 @@ Demande de Franck : dans Réglages › Audio › Écoute, le bouton « Actualise
 sorties » devient une simple icône ↻ (`icon-button`) à droite de la liste
 Casque / sortie (`.output-pick`). Le libellé reste en infobulle et pour les
 lecteurs d’écran. Le menu de sortie pendant un appel ne change pas. 346 tests,
-typage, lint, build ; vérifié en démonstration (clic, aucune erreur). Non publié.
+typage, lint, build ; vérifié en démonstration (clic, aucune erreur). Publié le
+25 novembre à 13:46:08 Douala, release `20261125-sortie-icone`, puis contrôlé en ligne.
 Manuels clients non modifiés.
 
 ## Réglage Affichage : Automatique, Mobile, Ordinateur — 23 novembre 2026
