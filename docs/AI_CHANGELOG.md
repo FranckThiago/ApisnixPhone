@@ -6,8 +6,9 @@ Demande de Franck : même style que la sortie. Dans Réglages › Audio › Micr
 icône ↻ (`icon-button`, `.output-pick`) à droite de la liste Microphone relit les
 micros disponibles (`useDevices`). Libellé `audio.refreshMics` (fr/en/es) en
 infobulle et pour les lecteurs d’écran. 346 tests, typage, lint, build ; vérifié
-en démonstration (icône alignée, clic sans erreur). Non publié. Manuels clients
-non modifiés.
+en démonstration (icône alignée, clic sans erreur). Publié le 25 novembre à
+14:10:45 Douala, release `20261125-micro-icone`, puis contrôlé en ligne.
+Manuels clients non modifiés.
 
 ## Actualiser les sorties en icône — 25 novembre 2026
 

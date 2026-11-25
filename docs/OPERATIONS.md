@@ -1,8 +1,21 @@
 # Construction et validation
 
+## Actualiser les micros en icône — 25 novembre 2026
+
+Release active **`20261125-micro-icone`**, source `460f89e`, depuis **14:10:45
+Douala** sur Hermes, sur accord explicite de Franck : dans Réglages › Audio ›
+Micro, une icône ↻ à côté de la liste Microphone relit les micros. Build live
+isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html` et
+`main-CxBoD5Iv.js` changent (CSS `main-aqva0Yow.css` inchangé). Archive sans
+`._*`, SHA-256 `1eb759f23b27a0e81bee6e2c918d3b293bc78555e3abb5cf8b17687625ec63bf`.
+346 tests, typage, lint, build ; HTTPS et empreintes validés par le script, page
+publique sans erreur console, Caddy et supervision actifs. Sauvegarde :
+`/root/apisnix-phone-backups/20261125-micro-icone/`. Retour : repointer
+`current` sur **20261125-sortie-icone**.
+
 ## Actualiser les sorties en icône — 25 novembre 2026
 
-Release active **`20261125-sortie-icone`**, source `ecccfac`, depuis **13:46:08
+Release **`20261125-sortie-icone`** (remplacée à 14:10:45), source `ecccfac`, depuis **13:46:08
 Douala** sur Hermes, sur accord explicite de Franck : dans Réglages › Audio ›
 Écoute, « Actualiser les sorties » devient une icône ↻ à côté de la liste.
 Build live isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls
