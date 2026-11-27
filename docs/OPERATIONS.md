@@ -1,8 +1,22 @@
 # Construction et validation
 
+## « En retard » lisible sur la page Rappels — 27 novembre 2026
+
+Release active **`20261127-rappels-en-retard`**, source `cf0666d`, depuis
+**16:27:34 Douala** sur Hermes, sur accord explicite de Franck : sous 960 px de
+liste, les actions d’un rappel passent sous le nom et la pastille « En retard »
+n’est plus coupée. Build live isolé avec `VITE_CALL_WAITING_LINES=*` ;
+270 fichiers, seuls `index.html`, `main-B7MJswLR.js` et `main-cxNVBTL4.css`
+changent. Archive sans `._*`, SHA-256
+`30f16587e49f852330232d525e4586f20f0494b29ef55662b139dde1b58b8324`.
+348 tests, typage, lint, build ; fichiers servis vérifiés en HTTPS par le script,
+CSS en ligne contrôlé. Sauvegarde :
+`/root/apisnix-phone-backups/20261127-rappels-en-retard/`. Retour : repointer
+`current` sur **20261127-contour-rappel**.
+
 ## Contour rouge des rappels urgents et croix « Fermer » du planificateur — 27 novembre 2026
 
-Release active **`20261127-contour-rappel`**, source `f9601b9`, depuis
+Release **`20261127-contour-rappel`** (remplacée le 27 novembre à 16:27:34), source `f9601b9`, depuis
 **16:12:51 Douala** sur Hermes, sur accord explicite de Franck : le bouton
 d’appel d’un rappel urgent reste vert avec un contour rouge clignotant, et le
 planificateur se ferme par une croix en haut (« Annuler » retiré). Build live

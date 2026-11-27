@@ -9,6 +9,7 @@ d’un rappel personnel était coupée par les boutons. La ligne a besoin d’en
 heure sur la première ligne, motif puis actions dessous ; sous 480 px, l’heure
 passe sous le nom. Au-delà de 960 px et en affichage mobile, rien ne change.
 Vérifié en démonstration à 375, 800 et 1700 px (aucun débordement).
+Publié le 27 novembre à 16:27:34 Douala, release `20261127-rappels-en-retard`.
 
 ## Rappel urgent : bouton vert, seul le contour rouge clignote — 27 novembre 2026
 
