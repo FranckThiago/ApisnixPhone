@@ -2,8 +2,9 @@
 
 ## Journal, Audio et Contacts réglables par équipe — 27 novembre 2026
 
-Le superviseur peut éteindre, pour son équipe, le **Journal**, l’**Audio** et
-les **Contacts** dans Supervision → Gestion → Téléphone des agents. Les trois
+Le superviseur peut éteindre, pour son équipe ou agent par agent, le
+**Journal**, l’**Audio** et les **Contacts** dans Supervision → Gestion →
+Téléphone des agents (le téléphone reçoit le réglage déjà résolu pour sa ligne). Les trois
 sont actifs par défaut et le restent tant que la politique d’équipe n’est pas
 connue (chargement, hors ligne). Éteint : l’entrée du menu, la vue et les
 commandes de la palette disparaissent ; une vue éteinte renvoie vers une vue
