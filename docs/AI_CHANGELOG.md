@@ -1,5 +1,15 @@
 # Journal des changements
 
+## « En retard » n’est plus coupé sur la page Rappels — 27 novembre 2026
+
+Retour de Franck : sur ordinateur à largeur moyenne, la pastille « En retard »
+d’un rappel personnel était coupée par les boutons. La ligne a besoin d’environ
+960 px (les actions seules ~380 px) et débordait de ~200 px dans une liste de
+551 px. Nouvelle requête `@container callback-list (max-width: 960px)` : nom et
+heure sur la première ligne, motif puis actions dessous ; sous 480 px, l’heure
+passe sous le nom. Au-delà de 960 px et en affichage mobile, rien ne change.
+Vérifié en démonstration à 375, 800 et 1700 px (aucun débordement).
+
 ## Rappel urgent : bouton vert, seul le contour rouge clignote — 27 novembre 2026
 
 Retour de Franck : un bouton d’appel rouge se lit comme « raccrocher ». Le

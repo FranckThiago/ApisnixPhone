@@ -333,6 +333,18 @@ input[type=range] { accent-color: var(--brand); }
 .callback-row.overdue .due { color: var(--text); } .callback-row.done { opacity: .62; } .callback-row.done .who b { text-decoration: line-through; }
 .callback-note { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .callback-actions { display: flex; align-items: center; gap: 2px; justify-content: flex-end; }
+/* One line needs about 960 px (the actions alone take ~380). Narrower lists put the actions under the name,
+   so the time and its « En retard » badge are never cut (Franck, 27 Nov 2026). */
+.callback-group > ul { container: callback-list / inline-size; }
+@container callback-list (max-width: 960px) {
+  .callback-row { grid-template-columns: 40px minmax(0, 1fr) auto; row-gap: 6px; }
+  .callback-row .callback-note { grid-column: 2 / -1; white-space: normal; } .callback-row .callback-note:empty { display: none; }
+  .callback-row .callback-actions { grid-column: 2 / -1; justify-content: flex-start; flex-wrap: wrap; }
+}
+@container callback-list (max-width: 480px) {
+  .callback-row .due { grid-column: 2 / -1; }
+  .callback-row .callback-actions { grid-column: 1 / -1; }
+}
 .day-label.as-button { width: 100%; cursor: pointer; padding-bottom: 14px; }
 /* The same planner is used in history, contacts and the call card. */
 .detail-actions:has(> .scheduler) { display: grid; justify-items: start; }

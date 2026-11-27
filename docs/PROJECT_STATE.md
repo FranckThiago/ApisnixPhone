@@ -392,7 +392,9 @@ animation si le système demande moins de mouvement (contour rouge fixe). Le
 calendrier du planificateur masque les semaines déjà passées ; les jours
 choisissables sont des cases bordées, les jours passés s’effacent, aujourd’hui
 est cerclé de vert. Le planificateur se ferme par une croix en haut à droite
-(rouge au survol) ; le lien « Annuler » du bas a disparu. L’onglet Audio n’a plus de bouton « Fermer l’accès » :
+(rouge au survol) ; le lien « Annuler » du bas a disparu. Sur la page Rappels,
+quand la liste fait moins de 960 px, les boutons passent sous le nom : l’heure
+et « En retard » ne sont plus coupés. L’onglet Audio n’a plus de bouton « Fermer l’accès » :
 l’accès se referme avec « Se déconnecter ».
 
 ## Planification des rappels plus lisible — 22 octobre 2026
