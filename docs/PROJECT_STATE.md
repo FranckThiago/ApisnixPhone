@@ -390,7 +390,8 @@ carte « Rappels » sous le clavier, page Rappels et rappels de groupe. Sans
 animation si le système demande moins de mouvement (anneau rouge fixe). Le
 calendrier du planificateur masque les semaines déjà passées ; les jours
 choisissables sont des cases bordées, les jours passés s’effacent, aujourd’hui
-est cerclé de vert. L’onglet Audio n’a plus de bouton « Fermer l’accès » :
+est cerclé de vert. Le planificateur se ferme par une croix en haut à droite
+(rouge au survol) ; le lien « Annuler » du bas a disparu. L’onglet Audio n’a plus de bouton « Fermer l’accès » :
 l’accès se referme avec « Se déconnecter ».
 
 ## Planification des rappels plus lisible — 22 octobre 2026

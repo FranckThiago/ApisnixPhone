@@ -1,5 +1,13 @@
 # Journal des changements
 
+## Croix « Fermer » sur le planificateur de rappel — 27 novembre 2026
+
+Demande de Franck (capture) : une croix en haut à droite du planificateur ferme
+le formulaire et rougit au survol ou au focus clavier (`scheduler-close`, clé
+existante `action.close`) ; le lien « Annuler » du bas est retiré. 348 tests,
+typage, lint ; vérifié en démonstration (ouverture, survol, fermeture).
+Manuels clients non modifiés.
+
 ## Rappels urgents en rouge, calendrier lisible, Audio sans « Fermer l’accès » — 27 novembre 2026
 
 Demande de Franck (capture du planificateur). 1) Onglet Audio : bouton

@@ -1,7 +1,7 @@
 import { useTeam } from '../../team/context';
 import { useTeamAction } from '../../team/useTeamAction';
 import { parseDialInput } from '../../domain/numbers';
-import { AlarmClock, CalendarDays, Check, ChevronLeft, ChevronRight, Clock3 } from 'lucide-react';
+import { AlarmClock, CalendarDays, Check, ChevronLeft, ChevronRight, Clock3, X } from 'lucide-react';
 import { useId, useState } from 'react';
 import { useApp } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
@@ -65,7 +65,10 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
 
   return (
     <div className={`scheduler scheduler-${tone}`} role="group" aria-label={t('scheduler.open')}>
-      <p className="scheduler-title"><AlarmClock size={18} /> {t('scheduler.title', { name: name ?? number })}</p>
+      <div className="scheduler-head">
+        <p className="scheduler-title"><AlarmClock size={18} /> {t('scheduler.title', { name: name ?? number })}</p>
+        <button type="button" className="icon-button danger scheduler-close" aria-label={t('action.close')} title={t('action.close')} onClick={() => setOpen(false)}><X size={18} /></button>
+      </div>
       {groupOn && <label>{t('team.callbackType')}
         <select value={scope} disabled={busy} onChange={event => setScope(event.target.value === 'group' ? 'group' : 'personal')}>
           <option value="personal">{t('team.personal')}</option><option value="group">{t('team.group')}</option>
@@ -107,7 +110,6 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
         {future ? <span>{t('scheduler.summary')}<strong>{dateFormat({ dateStyle: 'full', timeStyle: 'short' }).format(dueAt)}</strong></span> : <span className="scheduler-error">{t('scheduler.future')}</span>}
       </div>
       <button type="button" className="primary scheduler-confirm" disabled={!future || busy} aria-describedby={summaryId} onClick={() => { void run(() => schedule(Date.now())); }}><Check size={17} /> {t('scheduler.save')}</button>
-      <button type="button" className="scheduler-cancel" onClick={() => setOpen(false)}>{t('action.cancel')}</button>
     </div>
   );
 }
