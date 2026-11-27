@@ -620,7 +620,6 @@ export const en: Record<MessageKey, string> = {
   'rec.noMatch': 'No matching recordings',
   'rec.noMatchHint': 'Try another name, number or country, or change the period.',
   'rec.refresh': 'Refresh',
-  'rec.closeAccess': 'Close access',
   'rec.stale': 'The service no longer receives new data: the list may be incomplete.',
   'rec.catchingUp': 'Importing recent calls: the list completes itself.',
   'rec.pending.one': '{count} file being prepared: available in a few minutes, nothing to do.',

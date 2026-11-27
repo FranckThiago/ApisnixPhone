@@ -1,7 +1,7 @@
 import { AlarmClock, Check, ChevronLeft, ChevronRight, Clock3, LogOut, Phone, RefreshCw, Search, Undo2, Users } from 'lucide-react';
 import { useNow } from '../app/clock';
 import { Avatar } from '../components/Avatar';
-import { formatDue } from '../domain/callbacks';
+import { formatDue, isUrgentCallback } from '../domain/callbacks';
 import { useEffect, useState } from 'react';
 import { useApp, usePhone } from '../app/AppContext';
 import { useI18n } from '../i18n';
@@ -93,6 +93,7 @@ export function GroupCallbacks() {
       {result && result.callbacks.length > 0 && <ul className="gc-list">{result.callbacks.map(callback => {
         const mine = callback.claimed_by === workspace.endpoint_id;
         const overdue = !callback.doneAt && callback.dueAt < now;
+        const callClass = 'mini-call' + (isUrgentCallback(callback, now) ? ' urgent' : '');
         const status = callback.claimed_by ? (mine ? t('team.claimedByYou') : t('team.claimedBy', { name: callback.claimed_name || '' })) : t('team.available');
         return (
           <li className={'gc-row' + (overdue ? ' overdue' : '') + (callback.doneAt ? ' done' : '')} key={callback.id}>
@@ -101,10 +102,10 @@ export function GroupCallbacks() {
             <span className="due"><Clock3 size={14} aria-hidden="true" />{formatDue(callback.doneAt ?? callback.dueAt, now)}{overdue && <i>{t('callbacks.late')}</i>}</span>
             <span className="gc-actions">
               {!callback.doneAt && !callback.claimed_by && (
-                <button type="button" className="mini-call" disabled={busy || !available} title={t('team.claimCall')} onClick={() => claimAndCall(callback)}><Phone size={16} /> {t('team.claimShort')}</button>
+                <button type="button" className={callClass} disabled={busy || !available} title={t('team.claimCall')} onClick={() => claimAndCall(callback)}><Phone size={16} /> {t('team.claimShort')}</button>
               )}
               {mine && !callback.doneAt && <>
-                <button type="button" className="mini-call" disabled={busy || !available} onClick={() => placeCall(callback.number)}><Phone size={16} /> {t('action.call')}</button>
+                <button type="button" className={callClass} disabled={busy || !available} onClick={() => placeCall(callback.number)}><Phone size={16} /> {t('action.call')}</button>
                 <button type="button" className="icon-button" disabled={busy} aria-label={t('team.later')} title={t('team.later')} onClick={() => act(callback, 'postpone', { dueAt: Math.max(Date.now(), callback.dueAt) + 3600000 })}><AlarmClock size={17} /></button>
                 <button type="button" className="icon-button" disabled={busy} aria-label={t('callbacks.markDone')} title={t('callbacks.markDone')} onClick={() => act(callback, 'done')}><Check size={18} /></button>
                 <button type="button" className="icon-button" disabled={busy} aria-label={t('team.release')} title={t('team.release')} onClick={() => act(callback, 'release')}><LogOut size={16} /></button>

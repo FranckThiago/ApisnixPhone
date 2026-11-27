@@ -1,5 +1,18 @@
 # Journal des changements
 
+## Rappels urgents en rouge, calendrier lisible, Audio sans « Fermer l’accès » — 27 novembre 2026
+
+Demande de Franck (capture du planificateur). 1) Onglet Audio : bouton
+« Fermer l’accès » et clé `rec.closeAccess` (FR/EN/ES) retirés. 2) Calendrier
+du rappel : semaines entièrement passées masquées, jours choisissables en cases
+bordées (14 px, gras), jours passés estompés, aujourd’hui cerclé de vert,
+en-têtes de jours en capitales. 3) Bouton d’appel d’un rappel à ≤ 5 min ou en
+retard : rouge, bord clignotant (`urgent-edge`), anneau fixe en mouvement
+réduit ; appliqué à la carte Rappels du clavier, à la page Rappels et aux
+rappels de groupe. Nouveau `isUrgentCallback` dans `domain/callbacks.ts`, testé.
+348 tests, typage, build ; vérifié en démonstration (thèmes sombre et clair).
+Manuels clients non modifiés.
+
 ## Numéros lisibles dans le journal sur téléphone — 27 novembre 2026
 
 Demande de Franck (captures iPhone) : des numéros étaient coupés (« 14184… »),

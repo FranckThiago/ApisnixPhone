@@ -5,7 +5,7 @@ import { useApp, useData } from '../../app/AppContext';
 import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
 import { Flag } from '../../components/Flag';
-import { formatDue, groupCallbacks } from '../../domain/callbacks';
+import { formatDue, groupCallbacks, isUrgentCallback } from '../../domain/callbacks';
 import { countryLabel, describeNumber, parseDialInput } from '../../domain/numbers';
 import type { Callback } from '../../domain/types';
 import { useI18n } from '../../i18n';
@@ -29,7 +29,7 @@ function Row({ callback, now, overdue = false }: { callback: Callback; now: numb
       <span className="callback-actions">
         {done ? <button type="button" className="icon-button" aria-label={t('callbacks.reopen')} title={t('callbacks.reopen')} onClick={() => store.updateCallback(callback.id, { doneAt: undefined })}><Undo2 size={17} /></button> : (
           <>
-            <button type="button" className="mini-call" onClick={() => placeCall(callback.number)}><Phone size={16} /> {t('action.call')}</button>
+            <button type="button" className={'mini-call' + (isUrgentCallback(callback, now) ? ' urgent' : '')} onClick={() => placeCall(callback.number)}><Phone size={16} /> {t('action.call')}</button>
             <PromoteCallback callback={callback} />
             <button type="button" className="icon-button" aria-label={t('callbacks.postpone')} title={t('callbacks.postpone')} onClick={() => store.updateCallback(callback.id, { dueAt: Math.max(now, callback.dueAt) + 3_600_000 })}><AlarmClock size={17} /></button>
             <button type="button" className="icon-button" aria-label={t('callbacks.markDone')} title={t('callbacks.markDone')} onClick={() => store.updateCallback(callback.id, { doneAt: Date.now() })}><Check size={18} /></button>

@@ -172,6 +172,10 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .numbers li > span:not(.avatar) { flex: 1; min-width: 0; } .numbers b, .numbers small { display: block; }
 .mini-call { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 13px; border-radius: 10px; font-weight: 650; color: #fff; background: linear-gradient(180deg, #10b981, #047857); box-shadow: 0 6px 14px -7px #047857; }
 .mini-call:hover:not(:disabled) { filter: brightness(1.07); } .mini-call.wide { width: 100%; }
+/* A callback due within five minutes, or late: the call button turns red and its edge blinks (Franck, 27 Nov 2026). */
+.mini-call.urgent, .row-call.urgent { color: #fff; background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 6px 14px -7px #b91c1c; animation: urgent-edge 1s ease-in-out infinite; }
+@keyframes urgent-edge { 50% { box-shadow: 0 0 0 2px var(--surface), 0 0 0 5px #ef4444; } }
+@media (prefers-reduced-motion: reduce) { .mini-call.urgent, .row-call.urgent { animation: none; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #ef4444; } }
 .contact-note { padding: 12px 14px; border-radius: 12px; background: var(--yellow-soft); border-left: 3px solid var(--yellow-strong); }
 .contact-detail h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-top: 4px; }
 .timeline { display: grid; gap: 2px; } .timeline li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-bottom: 1px dashed var(--border); color: var(--muted); }
@@ -337,12 +341,14 @@ input[type=range] { accent-color: var(--brand); }
 .scheduler-presets { display: flex; flex-wrap: wrap; gap: 6px; }
 .scheduler-presets button { min-height: 38px; padding: 7px 10px; border: 1px solid var(--planner-border); border-radius: 10px; background: var(--planner-field); font-size: 12px; font-weight: 600; }
 .scheduler-presets button[aria-pressed=true] { background: var(--green-soft); color: var(--green-strong); border-color: var(--green); }
-.scheduler-calendar { border: 1px solid var(--planner-border); border-radius: 12px; padding: 8px; background: var(--planner-field); }
+.scheduler-calendar { border: 1px solid var(--planner-border); border-radius: 12px; padding: 10px; background: var(--planner-field); }
 .scheduler-month { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; } .scheduler-month b { text-transform: capitalize; font-size: 14px; } .scheduler-month .icon-button { width: 40px; height: 40px; color: var(--planner-text); }
-.scheduler-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; text-align: center; }
-.scheduler-weekday { font-size: 10px; color: var(--planner-muted); padding-block: 4px; }
-.scheduler-days button { min-width: 0; min-height: 40px; padding: 0; border-radius: 9px; font-size: 13px; font-variant-numeric: tabular-nums; border: 1px solid transparent; }
-.scheduler-days button[aria-current=date] { border-color: var(--green-edge); font-weight: 700; }
+.scheduler-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; text-align: center; }
+.scheduler-weekday { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; color: var(--planner-muted); padding-block: 2px 6px; }
+/* Days that can be chosen read as tiles; past days fade into the background (Franck, 27 Nov 2026). */
+.scheduler-days button { min-width: 0; min-height: 40px; padding: 0; border-radius: 9px; font-size: 14px; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--planner-text); background: var(--planner-surface); border: 1px solid var(--planner-border); }
+.scheduler-days button:disabled { background: transparent; border-color: transparent; color: var(--planner-muted); font-weight: 400; opacity: .45; }
+.scheduler-days button[aria-current=date] { border: 2px solid var(--green); color: var(--green-strong); font-weight: 750; }
 .scheduler-days button:hover:not(:disabled) { background: var(--green-soft); color: var(--green-strong); }
 .scheduler-days button[aria-pressed=true] { background: var(--green); color: var(--surface); font-weight: 750; }
 .scheduler-time { display: grid; gap: 6px; } .scheduler-time > span { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 650; }

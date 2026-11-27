@@ -7,7 +7,7 @@ import { useNow } from '../../app/clock';
 import { Avatar } from '../../components/Avatar';
 import { AudioOutputMenu } from '../settings/AudioOutput';
 import { CallbackScheduler } from '../callbacks/CallbackScheduler';
-import { formatDue, groupCallbacks } from '../../domain/callbacks';
+import { formatDue, groupCallbacks, isUrgentCallback } from '../../domain/callbacks';
 import { Flag } from '../../components/Flag';
 import { Kbd } from '../../components/Kbd';
 import { VolumeMark } from '../../components/VolumeMark';
@@ -184,7 +184,7 @@ function DueCallbacks() {
       <ul>{next.map(callback => (
         <li key={callback.id} className={callback.dueAt <= now ? 'overdue' : ''}>
           <span><b>{callback.name ?? callback.number}</b><small>{callback.dueAt <= now ? t('due.now') : formatDue(callback.dueAt, now)}{callback.note ? ` · ${callback.note}` : ''}</small></span>
-          <button type="button" className="row-call always" aria-label={t('action.callName', { name: callback.name ?? callback.number })} onClick={() => placeCall(callback.number)}><Phone size={16} /></button>
+          <button type="button" className={'row-call always' + (isUrgentCallback(callback, now) ? ' urgent' : '')} aria-label={t('action.callName', { name: callback.name ?? callback.number })} onClick={() => placeCall(callback.number)}><Phone size={16} /></button>
         </li>))}
       </ul>
     </section>

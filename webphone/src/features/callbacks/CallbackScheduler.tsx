@@ -55,6 +55,12 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
 
   const monthStart = new Date(`${month}-01T12:00`);
   const changeMonth = (offset: number) => setMonth(toLocalInput(new Date(monthStart.getFullYear(), monthStart.getMonth() + offset, 1, 12).getTime()).slice(0, 7));
+  // Weeks already over are dropped: late in the month the grid shows only days that can be chosen.
+  const allDays = calendarDays(month);
+  const visibleDays = allDays.filter((_, index) => {
+    const week = allDays.slice(index - index % 7, index - index % 7 + 7);
+    return week.some(day => day && day >= today);
+  });
   const zone = dateFormat({ timeZoneName: 'short' }).formatToParts(now).find(part => part.type === 'timeZoneName')?.value ?? '';
 
   return (
@@ -76,7 +82,7 @@ export function CallbackScheduler({ number, name, tone = 'page', onScheduled }: 
         </div>
         <div className="scheduler-days">
           {Array.from({ length: 7 }, (_, day) => <span key={day} className="scheduler-weekday" aria-hidden="true">{dateFormat({ weekday: 'short' }).format(new Date(2026, 0, 5 + day))}</span>)}
-          {calendarDays(month).map((day, index) => day ? <button key={day} type="button" disabled={day < today} aria-pressed={day === date} aria-current={day === today ? 'date' : undefined}
+          {visibleDays.map((day, index) => day ? <button key={day} type="button" disabled={day < today} aria-pressed={day === date} aria-current={day === today ? 'date' : undefined}
             aria-label={dateFormat({ dateStyle: 'full' }).format(new Date(`${day}T12:00`))} onClick={() => setDate(day)}>{Number(day.slice(8))}</button> : <span key={`blank-${index}`} />)}
         </div>
       </div>

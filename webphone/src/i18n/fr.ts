@@ -618,7 +618,6 @@ export const fr = {
   'rec.noMatch': 'Aucun enregistrement trouvé',
   'rec.noMatchHint': 'Essayez un autre nom, numéro ou pays, ou changez de période.',
   'rec.refresh': 'Actualiser',
-  'rec.closeAccess': 'Fermer l’accès',
   'rec.stale': 'Le service ne reçoit plus de nouvelles données : la liste peut être incomplète.',
   'rec.catchingUp': 'Import des appels récents en cours : la liste se complète toute seule.',
   'rec.pending.one': '{count} fichier en préparation : disponible dans quelques minutes, sans rien faire.',

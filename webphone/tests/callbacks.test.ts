@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calendarDays, groupCallbacks, parseCallbackMoment, quickOptions, toLocalInput } from '../src/domain/callbacks';
+import { calendarDays, groupCallbacks, isUrgentCallback, parseCallbackMoment, quickOptions, toLocalInput } from '../src/domain/callbacks';
 import { DataStore } from '../src/storage/DataStore';
 
 describe('callbacks', () => {
@@ -53,5 +53,17 @@ describe('callbacks', () => {
     expect(groupCallbacks(store.getSnapshot().callbacks, now).overdue).toHaveLength(1);
     store.removeCallback(later.id);
     expect(store.getSnapshot().callbacks).toHaveLength(2);
+  });
+});
+
+describe('isUrgentCallback', () => {
+  const now = Date.UTC(2026, 10, 27, 14, 0);
+  it('flags a callback due within five minutes or already late', () => {
+    expect(isUrgentCallback({ dueAt: now + 5 * 60_000 }, now)).toBe(true);
+    expect(isUrgentCallback({ dueAt: now - 60_000 }, now)).toBe(true);
+    expect(isUrgentCallback({ dueAt: now + 6 * 60_000 }, now)).toBe(false);
+  });
+  it('never flags a callback already done', () => {
+    expect(isUrgentCallback({ dueAt: now - 60_000, doneAt: now }, now)).toBe(false);
   });
 });

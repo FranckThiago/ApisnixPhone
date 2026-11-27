@@ -382,6 +382,17 @@ discrets sur numéro/date/durée. 229 tests, typage, lint, build live et rendu c
 à 375 px et sur ordinateur contrôlés ; données et manuels inchangés.
 Sauvegarde, preuve HTTPS et retour dans OPERATIONS.
 
+## Rappels urgents en rouge et calendrier allégé — 27 novembre 2026
+
+Un rappel dû dans 5 minutes ou moins, ou déjà en retard, a son bouton d’appel
+rouge avec un bord qui clignote (`isUrgentCallback`, `CALLBACK_URGENT_MS`) :
+carte « Rappels » sous le clavier, page Rappels et rappels de groupe. Sans
+animation si le système demande moins de mouvement (anneau rouge fixe). Le
+calendrier du planificateur masque les semaines déjà passées ; les jours
+choisissables sont des cases bordées, les jours passés s’effacent, aujourd’hui
+est cerclé de vert. L’onglet Audio n’a plus de bouton « Fermer l’accès » :
+l’accès se referme avec « Se déconnecter ».
+
 ## Planification des rappels plus lisible — 22 octobre 2026
 
 **En service `20261022-planification`, source `dadcb14`, depuis le 22 octobre

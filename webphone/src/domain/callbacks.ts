@@ -58,6 +58,11 @@ export function parseCallbackMoment(date: string, time: string): number {
 }
 
 /** A Monday-first month, padded to full weeks for the visible calendar. */
+/** A callback this close, or already late, calls for attention: its call button turns red and blinks. */
+export const CALLBACK_URGENT_MS = 5 * 60_000;
+export const isUrgentCallback = (callback: { dueAt: number; doneAt?: number | null }, now: number) =>
+  !callback.doneAt && callback.dueAt - now <= CALLBACK_URGENT_MS;
+
 export function calendarDays(month: string): Array<string | null> {
   const first = new Date(`${month}-01T12:00`);
   if (!/^\d{4}-\d{2}$/.test(month) || !Number.isFinite(first.getTime())) return [];

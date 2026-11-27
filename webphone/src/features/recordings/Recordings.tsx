@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, LogOut, Play, RefreshCw, Search, Square, X, ArrowDownUp } from 'lucide-react';
+import { ArrowDownLeft, ArrowUpRight, AudioLines, Clock3, Download, Info, KeyRound, Play, RefreshCw, Search, Square, X, ArrowDownUp } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../../app/AppContext';
 import { Avatar } from '../../components/Avatar';
@@ -237,7 +237,6 @@ export function Recordings({ tabs }: { tabs?: ReactNode } = {}) {
                 </select></label>
               <div className="head-actions">
                 <button type="button" className="ghost small" onClick={() => setReload(value => value + 1)} disabled={loading} aria-label={t('rec.refresh')}><RefreshCw size={14} className={loading ? 'spin' : ''} /> {t('rec.refresh')}</button>
-                <button type="button" className="ghost small" onClick={async () => { void handlePlay(null, ''); await recordings.signOut(); setIdentity(null); setListing(null); }}><LogOut size={14} /> {t('rec.closeAccess')}</button>
               </div>
             </div>
             {(pending > 0 || listing?.catchingUp || listing?.stale || error) && (
