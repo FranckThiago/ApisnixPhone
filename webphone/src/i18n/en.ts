@@ -829,19 +829,93 @@ export const en: Record<MessageKey, string> = {
   'sip.micKept': '{reason} The previous microphone is still used.',
   'sip.outputFailed': 'This headset cannot be selected; the system output is used.',
   'sip.creditExhausted': 'APX-CREDIT — credit exhausted or insufficient. Contact your administrator to top up the account. (SIP {status})',
-  'sip.callLimit': 'SIP {status} — this extension is busy. The server already has a call in progress on this extension. Try again after it ends.',
+  "sip.callLimit": "The server reports a simultaneous call limit. End a call or try again later. (SIP {status})",
   'sip.noRates': 'SIP {status} — the carrier has no rate for this destination.',
   'sip.noRoute': 'SIP {status} — the carrier has no route for this destination.',
   'sip.routePolicy': 'SIP {status} — the call was blocked by a carrier routing rule.',
   'sip.consentNeeded': 'SIP {status} — the carrier reports that authorization is required to reach this destination.',
   'sip.470': 'SIP 470 — call refused by the telephone route.',
   'sip.402': 'SIP 402 Payment Required — the server requires payment. Contact your administrator.',
-  'sip.403': 'SIP 403 Forbidden — call not allowed by the server.',
-  'sip.404': 'SIP 404 Not Found — number or destination not found.',
-  'sip.480': 'SIP 480 — call unavailable at the moment. Try again; if this persists, contact your administrator.',
-  'sip.486': 'SIP 486 Busy Here — line busy.',
-  'sip.488': 'SIP 488 Not Acceptable Here — media or codec refused.',
-  'sip.503': 'SIP 503 Service Unavailable — telephone service unavailable.',
+  "sip.403": "Call not allowed by the server. No precise reason was provided; contact your administrator. (SIP {status})",
+  "sip.404": "Destination not found on this route. Check the number and country code; this refusal does not prove the number is out of service. (SIP {status})",
+  "sip.480": "Destination temporarily unavailable. No more precise reason was provided; try again later. (SIP {status})",
+  "sip.486": "The server classified the call as busy. Try again later. (SIP {status})",
+  "sip.488": "Audio parameters refused. The server did not accept the media or codec; contact your administrator. (SIP {status})",
+  "sip.503": "Phone service or capacity unavailable. Try again later; this code alone does not identify the cause. (SIP {status})",
+
+  "sip.400": "Invalid call request. Check the number; if it persists, contact your administrator. (SIP {status})",
+
+  "sip.401": "Call authentication refused. Reconnect the line; if it persists, contact your administrator. (SIP {status})",
+
+  "sip.408": "The call setup response timed out. Try again later. (SIP {status})",
+
+  "sip.410": "Destination removed or number changed according to the server. Check the contact details. (SIP {status})",
+
+  "sip.430": "The destination phone connection is unavailable. Try again later. (SIP {status})",
+
+  "sip.481": "Call session not found on the server. Start the call again. (SIP {status})",
+
+  "sip.482": "A routing loop was detected. Contact your administrator to check the phone route. (SIP {status})",
+
+  "sip.484": "Incomplete number or rejected format. Check its length and country code. (SIP {status})",
+
+  "sip.485": "The destination is ambiguous to the server. Check the number or extension. (SIP {status})",
+
+  "sip.487": "The call attempt was cancelled before it was answered. (SIP {status})",
+
+  "sip.491": "Another call operation is already in progress. Wait a moment and try again. (SIP {status})",
+
+  "sip.500": "Internal phone server error. Try again; if it persists, contact your administrator. (SIP {status})",
+
+  "sip.501": "The server does not support this call function. Contact your administrator. (SIP {status})",
+
+  "sip.502": "Operator gateway failure. Try again; if it persists, contact your administrator. (SIP {status})",
+
+  "sip.504": "The next operator did not respond in time. Try again later. (SIP {status})",
+
+  "sip.603": "Call declined by the destination or its network. Try again later or use another contact method. (SIP {status})",
+
+  "sip.other": "The call failed with an unrecognised code. Give this code to your administrator. (SIP {status})",
+
+  "sip.busy": "The server classified the call as busy. Try again later. (SIP {status})",
+
+  "sip.notResponding": "The network reported no response from the destination device. Try again later. (SIP {status})",
+
+  "sip.noAnswer": "No answer according to the network. The waiting time expired; call again later. (SIP {status})",
+
+  "sip.absent": "Subscriber absent or device unreachable according to the network. Try again later. (SIP {status})",
+
+  "sip.rejected": "Call rejected by the network or destination. The server did not specify the reason. (SIP {status})",
+
+  "sip.unallocated": "The network reported an unallocated number. Check the number and country code. (SIP {status})",
+
+  "sip.numberChanged": "The network reports that the number has changed. Check the contact details. (SIP {status})",
+
+  "sip.destinationDown": "Destination out of order according to the network. Try again later. (SIP {status})",
+
+  "sip.invalidNumber": "The network reported an invalid number format. Check its length and country code. (SIP {status})",
+
+  "sip.capacity": "No channel available or network congestion according to the server. Wait and try again. (SIP {status})",
+
+  "sip.networkDown": "Phone network out of order according to the server. Try again later. (SIP {status})",
+
+  "sip.temporaryNetwork": "Temporary phone network failure. Try again later. (SIP {status})",
+
+  "sip.serviceDenied": "Phone service not authorised for this call according to the network. Contact your administrator. (SIP {status})",
+
+  "sip.mediaUnavailable": "The requested audio capability is unavailable on the network. Contact your administrator. (SIP {status})",
+
+  "sip.incompatible": "Incompatible devices or audio parameters according to the network. Contact your administrator. (SIP {status})",
+
+  "sip.timeout": "The network call setup timer expired. Try again later. (SIP {status})",
+
+  "sip.callingHours": "Call refused outside the hours allowed by the operator. Try again during the permitted hours. (SIP {status})",
+
+  "sip.destinationDenied": "Destination explicitly blocked by the operator. Contact your administrator to check allowed destinations. (SIP {status})",
+
+  "sip.serverBusy": "The server classified the call as busy. Try again later. (SIP 480)",
+
+  "sip.serverNoAnswer": "No answer: the server classified this call as unanswered. Call again later. (SIP 480)",
 
   // Demonstration data
   'demo.teamAbidjan': 'Abidjan team',

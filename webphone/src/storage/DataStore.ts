@@ -148,6 +148,14 @@ export class DataStore {
     this.commit({ calls: this.data.calls.map(call => (call.id === id ? { ...call, ...patch } : call)) });
   }
 
+  /** Refine a finished call without replacing the agent's notes, tags or callback. */
+  confirmCallFailure(id: string, outcome: 'busy' | 'no-answer', failure: string) {
+    const entry = this.data.calls.find(call => call.id === id);
+    if (!entry || !entry.endedAt || entry.answeredAt || !['failed', 'busy', 'no-answer'].includes(entry.outcome)
+        || entry.outcome === outcome && entry.failure === failure) return;
+    this.commit({ calls: this.data.calls.map(call => call.id === id ? { ...call, outcome, failure } : call) });
+  }
+
   removeCall(id: string) {
     this.commit({ calls: this.data.calls.filter(call => call.id !== id) });
   }

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CallWaitingPhoneController, PilotMicrophone } from '../src/telephony/CallWaitingPhoneController';
-import type { ManagedSession, ManagerDelegate, SipEnvironment } from '../src/telephony/SipPhoneController';
+import type { ManagedSession, Manager, ManagerDelegate, SipEnvironment } from '../src/telephony/SipPhoneController';
 
 const session = (id: string): ManagedSession => ({ id, remoteIdentity: { uri: { user: id } } });
 const tick = () => vi.advanceTimersByTimeAsync(0);
@@ -46,6 +46,17 @@ describe('two-call account-scoped pilot', () => {
     expect(h.incoming('B')).toBe(false); expect(h.phone.getSnapshot().otherCall).toBeUndefined();
     expect(h.environment.createManager).toHaveBeenCalledTimes(1);
     expect(vi.mocked(h.environment.createManager).mock.calls[0]![0].maxCalls).toBeUndefined();
+  });
+  it('keeps the completed-call journal consistent when a server result refines a generic 480', async () => {
+    const h = harness(); await ready(h);
+    h.phone.call('1001', '1001'); await tick();
+    const invite = (h.manager.call.mock.calls as unknown as Array<Parameters<Manager['call']>>)[0]![2];
+    invite.requestDelegate.onReject({ message: { statusCode: 480 } });
+    h.delegate.onCallHangup(session('out')); await tick();
+    const id = h.phone.getSnapshot().call!.id;
+    h.phone.confirmFailure(id, 'busy');
+    expect(h.phone.getSnapshot().call).toMatchObject({ id, outcome: 'busy', awaitingServerOutcome: false });
+    expect(h.phone.getSnapshot().completedCalls!.find(call => call.id === id)).toMatchObject({ outcome: 'busy', awaitingServerOutcome: false });
   });
   it('registers once, holds A before answering B, keeps both identities and rejects a third call', async () => {
     const h = harness(); await pair(h);

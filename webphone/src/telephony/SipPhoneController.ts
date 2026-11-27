@@ -1,7 +1,8 @@
+import { describeCallRejection } from './callDiagnostics';
 import { incomingNumber } from '../domain/numbers';
 import type { ConnectionSample } from '../connection/connection-monitor.mjs';
 import type { CallOutcome } from '../domain/types';
-import { t, type MessageKey } from '../i18n';
+import { t } from '../i18n';
 import { CallProgressSounds, type CallProgressSoundPlayer, MicPipeline, microphoneErrorMessage, primeElement, RemoteVoice, Ringer } from './audio';
 import { DEFAULT_RINGTONE } from './ringtones';
 import type { AudioSettings, CallSnapshot, Credentials, PhoneController, PhoneSnapshot } from './types';
@@ -108,32 +109,6 @@ export interface SipEnvironment {
   blockStatus?(url: string): Promise<BlockStatus | null>;
 }
 
-const REJECTIONS: Record<number, CallOutcome> = { 486: 'busy', 600: 'busy', 603: 'declined', 408: 'no-answer', 487: 'cancelled' };
-const SIP_CALL_FAILURES: Record<number, MessageKey> = { 403: 'sip.403', 404: 'sip.404', 470: 'sip.470', 480: 'sip.480', 486: 'sip.486', 488: 'sip.488', 503: 'sip.503' };
-
-/** Match known reasons only. A generic SIP status cannot identify an operator policy. */
-function callFailure(message: Rejection['message']): string | undefined {
-  const status = message.statusCode ?? 0;
-  if (status < 400 || status > 699) return;
-  const reasonHeader = message.getHeader?.('Reason') ?? '';
-  const headerText = /\btext\s*=\s*"([^"\r\n]*)"/i.exec(reasonHeader)?.[1];
-  const reasons = [message.reasonPhrase, headerText].map(value =>
-    (value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim());
-  const matches = (pattern: RegExp) => reasons.some(reason => pattern.test(reason));
-
-  if (status === 480 && matches(/^(?:Temporarily Unavailable \(Call limit\)|Call limit(?: reached)?)$/i)) {
-    return t('sip.callLimit', { status });
-  }
-  if (matches(/^(?:insufficient (?:balance|credit|funds)|(?:balance|credit) (?:exhausted|depleted)|no (?:credit|funds)|out of credit|(?:credit|solde) (?:insuffisant|epuise|fini))(?:\s+\d+)?[.!]?$/i)) {
-    return t('sip.creditExhausted', { status });
-  }
-  if (matches(/^No Rates Found(?: for (?:Customer|Account) \d+)?$/i)) return t('sip.noRates', { status });
-  if (matches(/^No Routes (?:Found|For the Call)$/i)) return t('sip.noRoute', { status });
-  if (matches(/^Loss to Destination [0-9+]+ Exceeds Max Loss$/i)) return t('sip.routePolicy', { status });
-  if (status === 470 && matches(/^Consent Needed$/i)) return t('sip.consentNeeded', { status });
-  if (status === 402) return t('sip.402');
-  return status in SIP_CALL_FAILURES ? t(SIP_CALL_FAILURES[status]!) : undefined;
-}
 const RECOVERY_DELAYS = [1000, 2000, 4000, 8000, 15000];
 
 /** Whole lengths only: « 1 min », « 15 min », « 1 h », « 24 h ». */
@@ -222,6 +197,15 @@ export class SipPhoneController implements PhoneController {
       ...(connection === 'ready' ? { retryAt: undefined } : {}),
     };
     this.listeners.forEach(listener => listener());
+  }
+
+  /** A generic 480 can be refined by the authenticated journal of this very call. */
+  confirmFailure(id: string, outcome: 'busy' | 'no-answer') {
+    const call = this.snapshot.call;
+    if (call?.id !== id || call.phase !== 'ended' || !call.awaitingServerOutcome || call.answeredAt || call.outcome !== 'failed') return;
+    const failure = t(outcome === 'busy' ? 'sip.serverBusy' : 'sip.serverNoAnswer');
+    this.updateCall({ outcome, failure, awaitingServerOutcome: false });
+    this.update({ error: failure });
   }
 
   private updateCall(patch: Partial<CallSnapshot>) {
@@ -594,9 +578,10 @@ export class SipPhoneController implements PhoneController {
     this.voice?.endCall();
     const micFailure = this.micFailure;
     const failure = micFailure ?? this.interruption ?? this.rejectionReason;
+    const awaitingServerOutcome = !micFailure && !this.interruption && this.snapshot.call?.awaitingServerOutcome;
     this.micFailure = this.interruption = this.rejectionReason = undefined;
     clearTimeout(this.holdTimer);
-    this.updateCall({ phase: 'ended', outcome: micFailure ? 'failed' : outcome, failure, endedAt: Date.now(), holdPending: false });
+    this.updateCall({ phase: 'ended', outcome: micFailure ? 'failed' : outcome, failure, awaitingServerOutcome, endedAt: Date.now(), holdPending: false });
     // Said out loud as well: a failed call must never leave the person wondering why.
     if (failure) this.update({ error: failure });
     if (this.snapshot.audioBlocked) this.update({ audioBlocked: false });
@@ -687,9 +672,10 @@ export class SipPhoneController implements PhoneController {
         onReject: response => {
           if (this.manager !== manager || this.snapshot.call?.id !== id || this.snapshot.call.phase === 'ended') return;
           this.callProgress.stop();
-          const status = response.message.statusCode ?? 0;
-          this.rejection = REJECTIONS[status] ?? 'failed';
-          this.rejectionReason = callFailure(response.message);
+          const diagnostic = describeCallRejection(response.message);
+          this.rejection = diagnostic.outcome;
+          this.rejectionReason = diagnostic.failure;
+          this.updateCall({ awaitingServerOutcome: diagnostic.awaitingServerOutcome });
         },
       },
     });

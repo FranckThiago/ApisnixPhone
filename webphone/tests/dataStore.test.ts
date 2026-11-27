@@ -101,3 +101,12 @@ describe('fixed microphone level', () => {
     expect(store.getSnapshot().preferences.micGain).toBe(100);
   });
 });
+
+it('refines the call result without losing agent classifications, notes or scheduled callbacks', async () => {
+  const store = new DataStore(); await store.open('fictional', false);
+  const entry = store.addCall({ ...call(Date.now()), outcome: 'failed', failure: 'generic', tags: ['À rappeler'], note: 'Keep this note' });
+  const callback = store.scheduleCallback({ number: entry.dialTarget, dueAt: Date.now() + 60000 });
+  store.confirmCallFailure(entry.id, 'busy', 'Server busy');
+  expect(store.getSnapshot().calls[0]).toMatchObject({ id: entry.id, outcome: 'busy', failure: 'Server busy', tags: ['À rappeler'], note: 'Keep this note' });
+  expect(store.getSnapshot().callbacks).toEqual([callback]);
+});

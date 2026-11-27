@@ -265,13 +265,20 @@ France ; dix sans zéro initial → Canada. Les internationaux explicites resten
 prioritaires, les extensions restent internes. Journal local/central, recherche,
 carte d'appel et audio utilisent la même fonction ; aucun numéro de rappel ou
 numéro persisté n'est modifié par cette déduction. Détail dans WEBPHONE_PLAN.
-Le refus d'un INVITE inspecte aussi `reasonPhrase` et le texte de l'en-tête
-`Reason` : un motif explicite de crédit insuffisant produit le diagnostic
-`APX-CREDIT`, avec le statut SIP reçu, dans la carte de fin et l'historique
-observé du téléphone. Le journal central ne reçoit pas ce motif. Un 403 seul
-reste générique ; un 402 seul signifie paiement requis, sans affirmer un solde
-nul. Aucun texte serveur brut n'est affiché ou persisté. Un refus tardif d'un
-ancien appel/contrôleur est ignoré. Aucun changement d'authentification.
+Le refus d’un INVITE est décrit par `telephony/callDiagnostics.ts` : motifs
+explicites connus, causes Q.850 distinctes des codes SIP, puis repli selon le
+code reçu. Chaque diagnostic et l’issue (`busy`, `no-answer`…) partagent cette
+source ; aucun texte opérateur brut n’est affiché ni persisté. Crédit insuffisant
+ne se déduit jamais d’un 403 ; numéro non attribué ne se déduit pas d’un 404.
+Un 480 sans motif peut être précisé depuis la première page du journal serveur
+autorisé, par `useServerCallOutcome` et `serverCallOutcome.ts`, sans nouvelle
+API. Corrélation conservatrice du numéro et des deux horodatages, exclusion
+des cas ambigus, réponses périmées et appels décrochés. Trois actualisations
+bornées, aucune si le Journal est désactivé. Le contrôleur met à jour la carte,
+les appels terminés multi-lignes et le résultat du journal observé, sans toucher
+aux notes, qualifications ou rappels. Aucun nouvel attribut n’est stocké dans
+le profil ; le journal central conserve son contrat. Une réponse tardive d’un
+ancien appel reste ignorée. [Contrat, priorités et limites](CALL_DIAGNOSTICS.md).
 La vue Audio transmet une recherche non vide par `line_audio=1&recorded=1`
 avec `q`, les indicatifs `calling`, les bornes de période et `page`. Le serveur
 filtre le numéro et les noms des contacts synchronisés avant les pages de 50,

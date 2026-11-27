@@ -1,5 +1,17 @@
 # Journal des changements
 
+## 27 novembre — Diagnostic des appels occupés et autres refus
+
+Sur demande de Franck, interprétation commune des réponses SIP et Q.850,
+messages plus précis FR/EN/ES et repli prudent pour les codes génériques.
+Un 480 peut être rapproché du journal autorisé de la ligne pour confirmer
+occupé/sans réponse ; aucun rapprochement ambigu, actif, répondu ou hors
+périmètre. Carte, multi-lignes et journal observé cohérents, notes/tags/rappels
+préservés. Tests contrôleur, causes contradictoires, corrélation et données ;
+banc React avec SIP simulé, sans appel externe. Contrat CALL_DIAGNOSTICS,
+architecture et état mis à jour dans le même commit. Pas de migration,
+backend/PBX ni manuels modifiés. Publication et retrait dans OPERATIONS.
+
 ## « En retard » n’est plus coupé sur la page Rappels — 27 novembre 2026
 
 Retour de Franck : sur ordinateur à largeur moyenne, la pastille « En retard »

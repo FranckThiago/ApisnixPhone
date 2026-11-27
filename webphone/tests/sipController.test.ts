@@ -330,12 +330,8 @@ describe('SIP controller', () => {
 
   it('keeps the exact SIP refusal and its meaning on the ended call', async () => {
     const cases = [
-      [403, 'failed', 'Forbidden — appel interdit par le serveur'],
-      [404, 'failed', 'Not Found — numéro ou destination introuvable'],
-      [480, 'failed', '— appel indisponible pour le moment. Réessayez ; si cela persiste, contactez votre administrateur'],
-      [486, 'busy', 'Busy Here — ligne occupée'],
-      [488, 'failed', 'Not Acceptable Here — média ou codec refusé'],
-      [503, 'failed', 'Service Unavailable — service téléphonique indisponible'],
+      [403, 'failed', 'sip.403'], [404, 'failed', 'sip.404'], [480, 'failed', 'sip.480'],
+      [486, 'busy', 'sip.486'], [488, 'failed', 'sip.488'], [503, 'failed', 'sip.503'],
     ] as const;
     for (const [status, outcome, meaning] of cases) {
       const h = harness();
@@ -346,9 +342,9 @@ describe('SIP controller', () => {
       h.invite.onReject(status);
       await Promise.resolve();
       expect(h.phone.getSnapshot().call).toMatchObject({
-        phase: 'ended', outcome, failure: `SIP ${status} ${meaning}.`,
+        phase: 'ended', outcome, failure: t(meaning, { status }),
       });
-      expect(h.phone.getSnapshot().error).toBe(`SIP ${status} ${meaning}.`);
+      expect(h.phone.getSnapshot().error).toBe(t(meaning, { status }));
     }
   });
 
@@ -383,7 +379,7 @@ describe('SIP controller', () => {
     await vi.advanceTimersByTimeAsync(0);
     h.invite.onReject(403, reason);
     h.delegate.onCallHangup(session('out'));
-    expect(h.phone.getSnapshot().call?.failure).toBe(t('sip.403'));
+    expect(h.phone.getSnapshot().call?.failure).toBe(t('sip.403', { status: 403 }));
   });
 
   it.each([
@@ -401,6 +397,23 @@ describe('SIP controller', () => {
     h.invite.onReject(status, reason, header);
     h.delegate.onCallHangup(session('out'));
     expect(h.phone.getSnapshot().call).toMatchObject({ phase: 'ended', failure: t(key, { status }) });
+  });
+
+  it('refines only the same ended generic 480, and ignores stale server results', async () => {
+    const h = harness(); await ready(h);
+    h.phone.call('first', '+33100000001'); await vi.advanceTimersByTimeAsync(0);
+    const id = h.phone.getSnapshot().call!.id;
+    h.invite.onReject(480); h.delegate.onCallHangup(session('out')); await Promise.resolve();
+    h.phone.confirmFailure('another-call', 'busy');
+    expect(h.phone.getSnapshot().call?.outcome).toBe('failed');
+    h.phone.confirmFailure(id, 'busy');
+    expect(h.phone.getSnapshot().call).toMatchObject({ outcome: 'busy', failure: t('sip.serverBusy'), awaitingServerOutcome: false });
+    h.phone.confirmFailure(id, 'no-answer');
+    expect(h.phone.getSnapshot().call?.outcome).toBe('busy');
+    h.phone.dismiss(); h.phone.call('next', '+33100000002'); await vi.advanceTimersByTimeAsync(0);
+    h.phone.confirmFailure(id, 'busy');
+    expect(h.phone.getSnapshot().call?.phase).toBe('dialing');
+    expect(h.phone.getSnapshot().call?.failure).toBeUndefined();
   });
 
   it('distinguishes payment required from explicit exhausted credit', async () => {
@@ -427,7 +440,7 @@ describe('SIP controller', () => {
     h.invite.onReject(486, 'Busy Here');
     oldInvite.onReject(403, 'Insufficient Balance 19');
     h.delegate.onCallHangup(session('out'));
-    expect(h.phone.getSnapshot().call).toMatchObject({ outcome: 'busy', failure: t('sip.486') });
+    expect(h.phone.getSnapshot().call).toMatchObject({ outcome: 'busy', failure: t('sip.486', { status: 486 }) });
   });
 
   it('does not carry a SIP refusal into the next call', async () => {

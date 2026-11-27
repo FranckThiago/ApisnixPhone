@@ -157,7 +157,11 @@ export class CallWaitingPhoneController implements PhoneController {
 
   private rebuild() {
     const calls = this.children.map(child => child.getSnapshot().call);
-    for (const call of calls) if (call?.phase === 'ended' && !this.completed.some(c => c.id === call.id)) this.completed = [...this.completed.slice(-31), call];
+    for (const call of calls) if (call?.phase === 'ended') {
+      const index = this.completed.findIndex(c => c.id === call.id);
+      if (index < 0) this.completed = [...this.completed.slice(-31), call];
+      else if (this.completed[index] !== call) this.completed = this.completed.map(c => c.id === call.id ? call : c);
+    }
     const previous = this.selected;
     if (this.enabled && !live(calls[this.selected])) {
       // A conversation left on hold comes back before a call that is still ringing.
@@ -343,6 +347,9 @@ export class CallWaitingPhoneController implements PhoneController {
   async transfer(extension: string) {
     if (this.switching || this.children.filter(child => live(child.getSnapshot().call)).length !== 1) throw new Error(t('team.transferFailed'));
     return this.children[this.selected]!.transfer(extension);
+  }
+  confirmFailure(id: string, outcome: 'busy' | 'no-answer') {
+    this.children.find(child => child.getSnapshot().call?.id === id)?.confirmFailure(id, outcome);
   }
   dismiss() { if (!this.children.some(child => live(child.getSnapshot().call))) this.children.forEach(child => child.dismiss()); }
   setMuted(muted: boolean) {

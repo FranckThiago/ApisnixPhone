@@ -149,7 +149,12 @@ export function AppProvider({ children, embedded = false, recordCalls = true }: 
     if (!recordCalls) return;
     const snapshot = phone.getSnapshot();
     for (const call of snapshot.completedCalls ?? [snapshot.call]) {
-      if (!call || call.phase !== 'ended' || recorded.current.has(call.id) || !call.outcome || !call.endedAt) continue;
+      if (!call || call.phase !== 'ended' || !call.outcome || !call.endedAt) continue;
+      if (recorded.current.has(call.id)) {
+        const id = recorded.current.get(call.id);
+        if (id && call.failure && (call.outcome === 'busy' || call.outcome === 'no-answer')) store.confirmCallFailure(id, call.outcome, call.failure);
+        continue;
+      }
       // Store notifications can synchronously rebuild the phone snapshot. Reserve first.
       recorded.current.set(call.id, '');
       const record = store.addCall({

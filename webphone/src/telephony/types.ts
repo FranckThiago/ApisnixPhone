@@ -27,6 +27,8 @@ export interface CallSnapshot {
   outcome?: CallOutcome;
   /** Why the call could not take place, in plain words (blocked microphone…). */
   failure?: string;
+  /** Only an unqualified 480; a matching server observation may refine it. Not persisted. */
+  awaitingServerOutcome?: boolean;
   dtmf: string;
 }
 
@@ -83,6 +85,7 @@ export interface PhoneController {
   /** Refresh a stuck connection without losing the signed-in workspace. */
   reconnect?(): Promise<void>;
   call(rawInput: string, dialTarget: string, remoteName?: string): void;
+  confirmFailure?(id: string, outcome: 'busy' | 'no-answer'): void;
   answer(): void;
   /** Multi-call accounts: act on the call with this id, or on the first matching one. */
   answerWaiting?(id?: string): void;

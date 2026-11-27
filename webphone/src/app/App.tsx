@@ -17,7 +17,7 @@ import { ConnectionPill, PhoneDock } from '../features/calls/PhoneDock';
 import { Callbacks } from '../features/callbacks/Callbacks';
 import { Contacts } from '../features/contacts/Contacts';
 import { Journal } from '../features/history/Journal';
-import { useLineHistory } from '../features/history/useLineHistory';
+import { useLineHistory, useServerCallOutcome } from '../features/history/useLineHistory';
 import { missedStamp, unseenMissedCalls } from '../recordings/lineHistory';
 import { AudioView } from '../features/recordings/AudioView';
 import { NotificationOffer } from '../features/settings/NotificationOffer';
@@ -99,6 +99,7 @@ function Workspace() {
 
   // A single server history feeds the journal and its badge, even on another screen.
   const lineHistory = useLineHistory(recordings, !demo && journalOn && recordingsAccess.state === 'open', connection);
+  useServerCallOutcome(phone, call, lineHistory, !demo && journalOn && recordingsAccess.state === 'open');
   const missedCalls = demo ? calls : (lineHistory.history?.calls ?? []);
   // No journal, no missed-call badge: the agent could not open what it announces.
   const unseen = journalOn ? unseenMissedCalls(missedCalls, preferences.missedSeenAt) : [];

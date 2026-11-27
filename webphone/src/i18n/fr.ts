@@ -827,19 +827,93 @@ export const fr = {
   'sip.micKept': '{reason} Le micro précédent reste utilisé.',
   'sip.outputFailed': 'Ce casque ne peut pas être sélectionné ; la sortie du système est utilisée.',
   'sip.creditExhausted': 'APX-CREDIT — crédit épuisé ou insuffisant. Contactez votre administrateur pour recharger le compte. (SIP {status})',
-  'sip.callLimit': 'SIP {status} — poste occupé. Le serveur compte déjà un appel en cours sur ce poste. Réessayez après sa fin.',
+  "sip.callLimit": "Limite d’appels simultanés atteinte selon le serveur. Terminez un appel ou réessayez plus tard. (SIP {status})",
   'sip.noRates': 'SIP {status} — aucun tarif disponible pour cette destination chez l’opérateur.',
   'sip.noRoute': 'SIP {status} — aucune route disponible pour cette destination chez l’opérateur.',
   'sip.routePolicy': 'SIP {status} — appel bloqué par une règle de routage de l’opérateur.',
   'sip.consentNeeded': 'SIP {status} — autorisation requise pour joindre cette destination selon la réponse de l’opérateur.',
   'sip.470': 'SIP 470 — appel refusé par la route téléphonique.',
   'sip.402': 'SIP 402 Payment Required — paiement requis par le serveur. Contactez votre administrateur.',
-  'sip.403': 'SIP 403 Forbidden — appel interdit par le serveur.',
-  'sip.404': 'SIP 404 Not Found — numéro ou destination introuvable.',
-  'sip.480': 'SIP 480 — appel indisponible pour le moment. Réessayez ; si cela persiste, contactez votre administrateur.',
-  'sip.486': 'SIP 486 Busy Here — ligne occupée.',
-  'sip.488': 'SIP 488 Not Acceptable Here — média ou codec refusé.',
-  'sip.503': 'SIP 503 Service Unavailable — service téléphonique indisponible.',
+  "sip.403": "Appel non autorisé par le serveur. Le motif précis n’a pas été transmis ; contactez votre administrateur. (SIP {status})",
+  "sip.404": "Destination introuvable sur cette route. Vérifiez le numéro et son indicatif ; ce refus ne prouve pas que le numéro est hors service. (SIP {status})",
+  "sip.480": "Destination temporairement indisponible. Aucun motif plus précis n’a été transmis ; réessayez plus tard. (SIP {status})",
+  "sip.486": "Appel classé occupé par le serveur. Réessayez plus tard. (SIP {status})",
+  "sip.488": "Paramètres audio refusés. Le serveur n’a pas accepté le média ou le codec ; contactez votre administrateur. (SIP {status})",
+  "sip.503": "Service ou capacité téléphonique indisponible. Réessayez plus tard ; ce code seul ne précise pas la cause. (SIP {status})",
+
+  "sip.400": "Demande d’appel invalide. Vérifiez le numéro ; si cela persiste, contactez votre administrateur. (SIP {status})",
+
+  "sip.401": "Authentification de l’appel refusée. Reconnectez la ligne ; si cela persiste, contactez votre administrateur. (SIP {status})",
+
+  "sip.408": "Délai de réponse dépassé pendant l’établissement de l’appel. Réessayez plus tard. (SIP {status})",
+
+  "sip.410": "Destination retirée ou numéro changé selon le serveur. Vérifiez les coordonnées du contact. (SIP {status})",
+
+  "sip.430": "Connexion téléphonique du destinataire indisponible. Réessayez plus tard. (SIP {status})",
+
+  "sip.481": "Session d’appel introuvable sur le serveur. Relancez l’appel. (SIP {status})",
+
+  "sip.482": "Boucle de routage détectée. Contactez votre administrateur pour vérifier la route téléphonique. (SIP {status})",
+
+  "sip.484": "Numéro incomplet ou format refusé. Vérifiez sa longueur et son indicatif. (SIP {status})",
+
+  "sip.485": "Destination ambiguë pour le serveur. Vérifiez le numéro ou le poste appelé. (SIP {status})",
+
+  "sip.487": "Tentative d’appel annulée avant le décroché. (SIP {status})",
+
+  "sip.491": "Une autre opération d’appel est déjà en cours. Attendez un instant puis réessayez. (SIP {status})",
+
+  "sip.500": "Erreur interne du serveur téléphonique. Réessayez ; si cela persiste, contactez votre administrateur. (SIP {status})",
+
+  "sip.501": "Fonction d’appel non prise en charge par le serveur. Contactez votre administrateur. (SIP {status})",
+
+  "sip.502": "Échec de la passerelle opérateur. Réessayez ; si cela persiste, contactez votre administrateur. (SIP {status})",
+
+  "sip.504": "L’opérateur suivant n’a pas répondu à temps. Réessayez plus tard. (SIP {status})",
+
+  "sip.603": "Appel refusé par le destinataire ou son réseau. Réessayez plus tard ou utilisez un autre moyen de contact. (SIP {status})",
+
+  "sip.other": "L’appel a échoué avec un code non reconnu. Communiquez ce code à votre administrateur. (SIP {status})",
+
+  "sip.busy": "Appel classé occupé par le serveur. Réessayez plus tard. (SIP {status})",
+
+  "sip.notResponding": "Aucune réponse du terminal appelé selon le réseau. Réessayez plus tard. (SIP {status})",
+
+  "sip.noAnswer": "Aucun décroché selon le réseau. Le délai d’attente est écoulé ; rappelez plus tard. (SIP {status})",
+
+  "sip.absent": "Abonné absent ou terminal non joignable selon le réseau. Réessayez plus tard. (SIP {status})",
+
+  "sip.rejected": "Appel rejeté par le réseau ou le destinataire. Le serveur n’a pas précisé le motif du rejet. (SIP {status})",
+
+  "sip.unallocated": "Numéro signalé non attribué par le réseau. Vérifiez le numéro et son indicatif. (SIP {status})",
+
+  "sip.numberChanged": "Le réseau indique que le numéro a changé. Vérifiez les coordonnées du contact. (SIP {status})",
+
+  "sip.destinationDown": "Destination hors service selon le réseau. Réessayez plus tard. (SIP {status})",
+
+  "sip.invalidNumber": "Format de numéro invalide signalé par le réseau. Vérifiez sa longueur et son indicatif. (SIP {status})",
+
+  "sip.capacity": "Aucun canal disponible ou réseau saturé selon le serveur. Patientez puis réessayez. (SIP {status})",
+
+  "sip.networkDown": "Réseau téléphonique hors service selon le serveur. Réessayez plus tard. (SIP {status})",
+
+  "sip.temporaryNetwork": "Défaillance temporaire du réseau téléphonique. Réessayez plus tard. (SIP {status})",
+
+  "sip.serviceDenied": "Service téléphonique non autorisé pour cet appel selon le réseau. Contactez votre administrateur. (SIP {status})",
+
+  "sip.mediaUnavailable": "Capacité audio demandée indisponible sur le réseau. Contactez votre administrateur. (SIP {status})",
+
+  "sip.incompatible": "Équipements ou paramètres audio incompatibles selon le réseau. Contactez votre administrateur. (SIP {status})",
+
+  "sip.timeout": "Délai d’établissement de l’appel dépassé sur le réseau. Réessayez plus tard. (SIP {status})",
+
+  "sip.callingHours": "Appel refusé hors de la plage horaire autorisée par l’opérateur. Réessayez aux horaires prévus. (SIP {status})",
+
+  "sip.destinationDenied": "Destination explicitement interdite par l’opérateur. Contactez votre administrateur pour vérifier les destinations autorisées. (SIP {status})",
+
+  "sip.serverBusy": "Appel classé occupé par le serveur. Réessayez plus tard. (SIP 480)",
+
+  "sip.serverNoAnswer": "Aucun décroché : le serveur classe cet appel sans réponse. Rappelez plus tard. (SIP 480)",
 
   // Demonstration data
   'demo.teamAbidjan': 'Équipe Abidjan',

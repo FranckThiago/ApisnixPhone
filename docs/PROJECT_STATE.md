@@ -1,5 +1,15 @@
 # État du projet
 
+## Motifs d’échec d’appel plus précis — 27 novembre 2026
+
+Messages FR/EN/ES distincts selon le code SIP, les motifs explicites et les
+causes Q.850 ; un 480 générique peut être précisé en « occupé » ou « sans
+réponse » par un rapprochement prudent avec le journal de la ligne autorisé.
+Carte et journal observé restent cohérents, notes/qualifications/rappels
+conservés. Aucun diagnostic de crédit ou numéro non attribué déduit d’un
+403/404 seul. Publication : OPERATIONS ; contrat et limites :
+[CALL_DIAGNOSTICS.md](CALL_DIAGNOSTICS.md).
+
 ## Journal, Audio et Contacts réglables par équipe — 27 novembre 2026
 
 Le superviseur peut éteindre, pour son équipe ou agent par agent, le
