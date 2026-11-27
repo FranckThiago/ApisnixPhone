@@ -1,5 +1,14 @@
 # Journal des changements
 
+## Erreurs Asterisk analysées, cause Q.850 activée sur le PBX — 27 novembre 2026
+
+Demande de Franck : inventaire des erreurs Asterisk des 7 derniers jours sur les
+postes ApisnixPhone (135 postes, 63 actifs). 2 630 échecs vus par les agents :
+404 (~1 280), 480 (~650), 403 (~400), 486 (~210), 488 (~83). Le PBX n’envoyait
+pas la cause Q.850 ; `use_q850_reason=yes` est activé (sauvegarde et retour
+dans le dépôt de gestion, `docs/Q850_REASON_20261127.md`). Aucune modification
+du code du téléphone. Manuels clients non modifiés.
+
 ## 27 novembre — Diagnostic des appels occupés et autres refus
 
 Sur demande de Franck, interprétation commune des réponses SIP et Q.850,

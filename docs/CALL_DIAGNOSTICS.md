@@ -90,3 +90,13 @@ inclus dans le build de production.
 Références primaires : [RFC 3398 §7.2.4.1](https://www.rfc-editor.org/rfc/rfc3398.html#section-7.2.4.1)
 et [RFC 3326](https://www.rfc-editor.org/rfc/rfc3326.html) pour l’en-tête Reason.
 Pas de modification du PBX, des routes, des permissions, du backend ou des manuels.
+
+## Cause Q.850 côté PBX — 27 novembre 2026
+
+Jusqu’au 27 novembre au soir, le PBX n’envoyait pas l’en-tête `Reason: Q.850`
+(`use_q850_reason` absent) : seuls les codes SIP nus arrivaient, et un
+« 603 Decline » de l’opérateur était vu en `403`. Depuis ~21:40 Douala,
+`use_q850_reason=yes` est actif dans `sip.conf` : les refus portent la cause,
+donc l’étape 2 de l’ordre de lecture s’applique. Fiche, sauvegarde et retour :
+dépôt de gestion, `docs/Q850_REASON_20261127.md`. Non encore observé sur un
+appel réel en échec.
