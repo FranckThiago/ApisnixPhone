@@ -1,8 +1,22 @@
 # Construction et validation
 
+## Contour rouge des rappels urgents et croix « Fermer » du planificateur — 27 novembre 2026
+
+Release active **`20261127-contour-rappel`**, source `f9601b9`, depuis
+**16:12:51 Douala** sur Hermes, sur accord explicite de Franck : le bouton
+d’appel d’un rappel urgent reste vert avec un contour rouge clignotant, et le
+planificateur se ferme par une croix en haut (« Annuler » retiré). Build live
+isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
+`main-Du7P27uh.js` et `main-VsoxnP5T.css` changent. Archive sans `._*`, SHA-256
+`de57fdf628b1f7309a1e1ce12f4cfaaa9f35ddaea204bb26e833c50cee93b8ce`.
+348 tests, typage, lint, build ; fichiers servis vérifiés en HTTPS par le script,
+CSS en ligne contrôlé. Sauvegarde :
+`/root/apisnix-phone-backups/20261127-contour-rappel/`. Retour : repointer
+`current` sur **20261127-rappels-urgents**.
+
 ## Rappels urgents en rouge, calendrier allégé, Audio sans « Fermer l’accès » — 27 novembre 2026
 
-Release active **`20261127-rappels-urgents`**, source `e013e59`, depuis
+Release **`20261127-rappels-urgents`** (remplacée le 27 novembre à 16:12:51), source `e013e59`, depuis
 **15:13:18 Douala** sur Hermes, sur accord explicite de Franck. Build live isolé
 avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
 `main---cbHood.js` et `main-Kc53z6q6.css` changent par rapport à

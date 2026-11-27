@@ -6,6 +6,8 @@ Retour de Franck : un bouton d’appel rouge se lit comme « raccrocher ». Le
 bouton d’un rappel imminent ou en retard garde son vert ; seul un contour rouge
 (anneau de 2 px détaché du bouton) clignote, et reste fixe en mouvement réduit.
 CSS seul (`.mini-call.urgent`, `.row-call.urgent`). Vérifié en démonstration.
+Publié avec la croix « Fermer » le 27 novembre à 16:12:51 Douala, release
+`20261127-contour-rappel`.
 
 ## Croix « Fermer » sur le planificateur de rappel — 27 novembre 2026
 
