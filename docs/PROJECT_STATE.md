@@ -2,7 +2,8 @@
 
 ## Motifs d’échec d’appel plus précis — 27 novembre 2026
 
-Messages FR/EN/ES distincts selon le code SIP, les motifs explicites et les
+En service depuis **21:00:45 Douala**, release **20261127-diagnostics**
+(source `967eaab`, 388 tests). Messages FR/EN/ES distincts selon le code SIP, les motifs explicites et les
 causes Q.850 ; un 480 générique peut être précisé en « occupé » ou « sans
 réponse » par un rapprochement prudent avec le journal de la ligne autorisé.
 Carte et journal observé restent cohérents, notes/qualifications/rappels

@@ -10,7 +10,10 @@ périmètre. Carte, multi-lignes et journal observé cohérents, notes/tags/rapp
 préservés. Tests contrôleur, causes contradictoires, corrélation et données ;
 banc React avec SIP simulé, sans appel externe. Contrat CALL_DIAGNOSTICS,
 architecture et état mis à jour dans le même commit. Pas de migration,
-backend/PBX ni manuels modifiés. Publication et retrait dans OPERATIONS.
+backend/PBX ni manuels modifiés. En ligne à 21:00:45 Douala, source `967eaab`,
+release `20261127-diagnostics` ; 388 tests et banc navigateur réussis,
+paramètres live et empreintes HTTPS vérifiés, page publique sans erreur.
+Sauvegarde ciblée et retrait dans OPERATIONS.
 
 ## « En retard » n’est plus coupé sur la page Rappels — 27 novembre 2026
 

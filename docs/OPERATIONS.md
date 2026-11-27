@@ -1,8 +1,42 @@
 # Construction et validation
 
+## Motifs d’échec plus précis — 27 novembre 2026
+
+Release active **`20261127-diagnostics`**, source `967eaab`, depuis
+**21:00:45 Douala** sur Hermes : diagnostic FR/EN/ES par code, motif explicite
+et cause Q.850. Un 480 générique peut être confirmé occupé/sans réponse par le
+journal autorisé de la ligne, avec correspondance prudente des numéros et des
+horodatages. Carte, multi-lignes et journal observé restent cohérents ; notes,
+qualifications et rappels conservés. Contrat et limites : CALL_DIAGNOSTICS.md.
+
+388 tests, typecheck, lint, build live isolé ; banc React testé dans le navigateur
+intégré : 480 puis classement serveur occupé, 404 prudent, crédit explicite,
+sans réponse et limite en FR/EN/ES, sans erreur console. Aucun appel externe
+ni connexion de compte client. Le formulaire de production charge bien le
+nouveau bundle sans erreur console.
+
+Paramètres Vite comparés au bundle précédent (mode live, domaine, WSS, cinq
+lignes `*`, réglages optionnels absents conservés). 270 fichiers vérifiés ;
+seuls l’index et le nouveau JS `main-DOaZENp1.js` changent, CSS
+`main-cxNVBTL4.css` et autres ressources identiques. Anciens assets conservés
+pour les onglets ouverts. Archive SHA-256 :
+`4a899db9a45817e93ed186914103cff565614243022d1aa557bc65175fc4efa3`.
+
+Sauvegarde complète protégée et manifeste comparé avant bascule atomique :
+`/root/apisnix-phone-backups/20261127-diagnostics/`, reçu avec source et heure.
+Empreintes HTTPS de l’index, assets, bibliothèque SIP, SDK et service worker
+conformes ; Caddy et supervision actifs, sans redémarrage. Aucun changement
+PBX, route, backend, permission, base ou manuel. Actualiser hors appel.
+
+Retour ciblé : vérifier que `current` pointe toujours sur
+`/srv/apisnixphone/releases/20261127-diagnostics`, puis remplacer atomiquement
+ce seul lien par `/srv/apisnixphone/releases/20261127-rappels-en-retard`.
+Ne pas restaurer de base. Preuves locales ignorées :
+`.work/diagnostics-20261127/` ; script de publication et reçu protégés sur Hermes.
+
 ## « En retard » lisible sur la page Rappels — 27 novembre 2026
 
-Release active **`20261127-rappels-en-retard`**, source `cf0666d`, depuis
+Release **`20261127-rappels-en-retard`** (remplacée le 27 novembre à 21:00:45), source `cf0666d`, depuis
 **16:27:34 Douala** sur Hermes, sur accord explicite de Franck : sous 960 px de
 liste, les actions d’un rappel passent sous le nom et la pastille « En retard »
 n’est plus coupée. Build live isolé avec `VITE_CALL_WAITING_LINES=*` ;
