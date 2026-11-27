@@ -1,5 +1,11 @@
 # Journal des changements
 
+## Icônes des statistiques du journal en couleur — 27 novembre 2026
+
+Demande de Franck : dans le journal, l’icône « Sortants aboutis » est verte et
+celle de « Manqués » rouge (même à zéro), en thèmes clair et sombre. Classes
+`reached`/`missed` sur les cartes ; CSS seul. Vérifié en démonstration.
+
 ## Erreurs Asterisk analysées, cause Q.850 activée sur le PBX — 27 novembre 2026
 
 Demande de Franck : inventaire des erreurs Asterisk des 7 derniers jours sur les

@@ -152,8 +152,8 @@ export function Journal({ lineHistory, onSeen }: { lineHistory: ReturnType<typeo
       <section className="stats" aria-label={t(scope === 'line' ? 'stats.labelLine' : 'stats.labelDevice')}>
         <article><Phone size={18} /><span>{t('stats.calls')}</span><strong>{stats?.count ?? '—'}</strong></article>
         <article className="accent"><Clock3 size={18} /><span>{t('stats.talk')}</span><strong>{stats ? formatLongDuration(stats.talk) : '—'}</strong></article>
-        <article><PhoneOutgoing size={18} /><span>{t('stats.reached')}</span><strong>{stats?.reached == null ? '—' : `${stats.reached} %`}</strong></article>
-        <article className={stats?.missed ? 'alert' : ''}><PhoneMissed size={18} /><span>{t('stats.missed')}</span><strong>{stats?.missed ?? '—'}</strong></article>
+        <article className="reached"><PhoneOutgoing size={18} /><span>{t('stats.reached')}</span><strong>{stats?.reached == null ? '—' : `${stats.reached} %`}</strong></article>
+        <article className={'missed' + (stats?.missed ? ' alert' : '')}><PhoneMissed size={18} /><span>{t('stats.missed')}</span><strong>{stats?.missed ?? '—'}</strong></article>
       </section>
 
       <section className="panel" ref={panel}>
