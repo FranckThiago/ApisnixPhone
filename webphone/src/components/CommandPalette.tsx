@@ -1,10 +1,12 @@
 import { AlarmClock, AudioLines, BookUser, History, Languages, Moon, Phone, PhoneIncoming, Search, Settings as SettingsIcon, Star } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useApp, useData, usePhone } from '../app/AppContext';
 import { applyTheme } from '../app/theme';
 import { countryLabel, describeNumber, parseDialInput } from '../domain/numbers';
 import { LANGUAGES, setLanguage, useI18n } from '../i18n';
 import { searchContacts } from '../storage/DataStore';
+import { TeamContext } from '../team/context';
+import { screenOn } from '../team/screens';
 import { Avatar } from './Avatar';
 import { Flag } from './Flag';
 
@@ -16,6 +18,9 @@ export function CommandPalette() {
   const { contacts, preferences } = useData();
   const { demo } = usePhone();
   const { t, language } = useI18n();
+  // Screens switched off for the team in Gestion are not offered here either.
+  const workspace = useContext(TeamContext)?.workspace;
+  const journalOn = screenOn(workspace, 'journal'), contactsOn = screenOn(workspace, 'contacts'), audioOn = screenOn(workspace, 'audio');
   const [query, setQuery] = useState('');
   const [index, setIndex] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -34,7 +39,7 @@ export function CommandPalette() {
       const info = describeNumber(input.dialTarget);
       result.push({ id: 'dial', icon: <Flag info={info} size={20} />, label: t('palette.call', { number: input.dialTarget }), hint: countryLabel(info), run: () => placeCall(query) });
     }
-    for (const contact of searchContacts(contacts, query).slice(0, query ? 5 : 3)) {
+    for (const contact of contactsOn ? searchContacts(contacts, query).slice(0, query ? 5 : 3) : []) {
       const number = contact.numbers[0]?.value;
       result.push({ id: 'c' + contact.id, icon: <Avatar name={contact.name} size={26} />, label: contact.name, hint: number,
                     run: () => (number && query ? placeCall(number) : openContact(contact.id)) });
@@ -53,8 +58,9 @@ export function CommandPalette() {
       ...(demo ? [{ id: 'incoming', icon: <PhoneIncoming size={18} />, label: t('palette.simulate'), run: simulateIncoming }] : []),
     ];
     const text = query.trim().toLowerCase();
-    return [...result, ...actions.filter(action => !text || action.label.toLowerCase().includes(text))];
-  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store, setFavoritesOnly, t, language]);
+    const hidden = new Set([...(journalOn ? [] : ['journal']), ...(contactsOn ? [] : ['contacts', 'favorites']), ...(audioOn ? [] : ['audio'])]);
+    return [...result, ...actions.filter(action => !hidden.has(action.id) && (!text || action.label.toLowerCase().includes(text)))];
+  }, [query, contacts, preferences.theme, demo, placeCall, openContact, setView, simulateIncoming, store, setFavoritesOnly, t, language, journalOn, contactsOn, audioOn]);
 
   const active = Math.min(index, Math.max(0, commands.length - 1));
   const run = (command: Command | undefined) => { if (!command) return; setPaletteOpen(false); command.run(); };

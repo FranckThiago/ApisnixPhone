@@ -6,7 +6,7 @@ export interface Peer { id: string; name: string; extension: string; assignment_
 export interface Resource { id: string; kind: 'notice' | 'objection'; title: string; content: string; revision: number; read: boolean }
 export interface Help { id: string; message: string; reply: string; status: 'open' | 'answered' | 'closed' }
 /** Team functions a supervisor can switch off in Gestion; absent means on. */
-export type TeamFeature = 'help' | 'transfers' | 'notices' | 'objections' | 'callbacks' | 'goals' | 'coaching' | 'script';
+export type TeamFeature = 'help' | 'transfers' | 'notices' | 'objections' | 'callbacks' | 'goals' | 'coaching' | 'script' | 'journal' | 'contacts' | 'audio';
 export interface Workspace { endpoint_id: string; assignment_version: number; team_id: string; policy: {shared_enabled: boolean; transfers_enabled: boolean; features?: Partial<Record<TeamFeature, boolean>>}; resources: Resource[]; help: Help[]; peers: Peer[]; admin_hangups?: {id: number; at: number}[] }
 export interface GroupCallback extends Callback { revision: number; claimed_by: string | null; claimed_name: string | null; owner: string }
 export interface CallbackPage { callbacks: GroupCallback[]; promoted: string[]; count: number; page: number; pages: number }

@@ -1,4 +1,6 @@
 import { TeamProvider } from '../team/TeamContext';
+import { useTeam } from '../team/context';
+import { allowedView, screenOn } from '../team/screens';
 import '../team/team.css';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ConnectionAlert } from '../connection/ConnectionAlert';
@@ -70,6 +72,14 @@ function Workspace() {
   useEffect(() => bindWorkspaceLineSounds(phone, store), [phone, store]);
   const announcements = useAnnouncements(announcementsSource);
   const now = useNow();
+  // Journal, contacts and audio can be switched off for the team in Gestion; the server enforces it too.
+  const { workspace } = useTeam();
+  const journalOn = screenOn(workspace, 'journal');
+  useEffect(() => {
+    const allowed = allowedView(view, workspace);
+    if (allowed !== view) setView(allowed);
+  }, [view, workspace, setView]);
+  const nav = NAV.filter(([key]) => key === 'journal' || key === 'phone' || key === 'settings' || screenOn(workspace, key as 'contacts' | 'audio'));
 
   // A callback that comes due is announced once: in the page, and by the system when the person allowed it.
   const announced = useRef(new Set<string>());
@@ -88,9 +98,10 @@ function Workspace() {
   }, [dueCallbacks, now, notify, preferences.notifications, demo, t]);
 
   // A single server history feeds the journal and its badge, even on another screen.
-  const lineHistory = useLineHistory(recordings, !demo && recordingsAccess.state === 'open', connection);
+  const lineHistory = useLineHistory(recordings, !demo && journalOn && recordingsAccess.state === 'open', connection);
   const missedCalls = demo ? calls : (lineHistory.history?.calls ?? []);
-  const unseen = unseenMissedCalls(missedCalls, preferences.missedSeenAt);
+  // No journal, no missed-call badge: the agent could not open what it announces.
+  const unseen = journalOn ? unseenMissedCalls(missedCalls, preferences.missedSeenAt) : [];
   const unseenMissed = unseen.length;
   const markMissedSeen = () => {
     // Loading or failed histories have not been consulted. Never advance past unseen data.
@@ -98,6 +109,7 @@ function Workspace() {
     if (unseen.length) store.setPreferences({ missedSeenAt: Math.max(...unseen.map(missedStamp)) });
   };
   const navigate = (next: View) => {
+    if (next === 'journal' && !journalOn) return setView('callbacks');
     if (next === 'journal') markMissedSeen();
     setView(next);
   };
@@ -136,13 +148,16 @@ function Workspace() {
           <span className="brand-name">APISNIX<small>ApisnixPhone</small></span></a>
         <p className="nav-caption">{t('nav.caption')}</p>
         <ul>
-          {NAV.map(([key, label, Icon]) => (
+          {nav.map(([key, navLabel, NavIcon]) => {
+            // Without the journal, its entry opens the callbacks it used to hold.
+            const [label, Icon] = key === 'journal' && !journalOn ? ['journal.tabCallbacks' as MessageKey, AlarmClock] as const : [navLabel, NavIcon] as const;
+            return (
             <li key={key} className={'nav-' + key}><button type="button" className={'nav-item' + (view === key || key === 'journal' && view === 'callbacks' ? ' active' : '') + (key === 'phone' && inCall ? ' in-call' : '')}
               aria-current={view === key || key === 'journal' && view === 'callbacks' ? 'page' : undefined} onClick={() => navigate(key)}>
               <Icon size={key === 'phone' ? 24 : 19} /><span>{t(label)}</span>
               {key === 'journal' && unseenMissed + unseenDue > 0 && <i className={'badge' + (!unseenMissed ? ' badge-yellow' : '')}
                 aria-label={unseenMissed ? t('nav.missedBadge', { count: unseenMissed }) : t('callbacks.newDue', { count: unseenDue })}>{unseenMissed || unseenDue}</i>}</button></li>
-          ))}
+          ); })}
         </ul>
         <div className="sidebar-foot">
           <Avatar name={account?.username} size={34} />
@@ -196,12 +211,13 @@ function Workspace() {
             <ErrorBoundary><AnnouncementList items={announcements.visible} onHide={announcements.hide} /></ErrorBoundary>
           )}
           {/* « Téléphone » is a view of its own only on a narrow screen; on a wide one the dock is always there. */}
-          {(view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label={t('journal.sections')}>
+          {journalOn && (view === 'journal' || view === 'callbacks') && <nav className="journal-sections tabs" aria-label={t('journal.sections')}>
             <button type="button" className={view === 'journal' ? 'active' : ''} aria-current={view === 'journal' ? 'page' : undefined} onClick={() => navigate('journal')}><History size={16} /> {t('journal.tabCalls')}</button>
             <button type="button" className={view === 'callbacks' ? 'active' : ''} aria-current={view === 'callbacks' ? 'page' : undefined} onClick={() => setView('callbacks')}><AlarmClock size={16} /> {t('journal.tabCallbacks')}{unseenDue > 0 && <i className="badge badge-yellow" aria-label={t('callbacks.newDue', { count: unseenDue })}>{unseenDue}</i>}</button>
           </nav>}
           <ErrorBoundary key={view}>
-            {(view === 'journal' || view === 'phone') && <Journal lineHistory={lineHistory} onSeen={markMissedSeen} />}
+            {journalOn && (view === 'journal' || view === 'phone') && <Journal lineHistory={lineHistory} onSeen={markMissedSeen} />}
+            {!journalOn && view === 'phone' && <Callbacks />}
             {view === 'contacts' && <Contacts />}
             {view === 'audio' && <AudioView />}
             {view === 'callbacks' && <Callbacks />}

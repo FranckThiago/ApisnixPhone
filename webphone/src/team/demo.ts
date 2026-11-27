@@ -2,8 +2,14 @@ import { t } from '../i18n';
 import type { CallbackPage, GroupCallback, Review, TeamClient, Workspace } from './client';
 
 /** Fictional in-memory tools; no network or persistent team data in demo mode. */
+// Demonstration only: « ?ecrans-off=journal,audio,contacts » shows the phone as a team whose supervisor switched those screens off.
+function demoScreensOff(): Workspace['policy']['features'] {
+  const off = typeof location === 'undefined' ? '' : new URLSearchParams(location.search).get('ecrans-off') ?? '';
+  return Object.fromEntries((['journal', 'contacts', 'audio'] as const).filter(key => off.split(',').includes(key)).map(key => [key, false]));
+}
+
 export class DemoTeamClient implements TeamClient {
-  private workspace: Workspace = {endpoint_id:'demo-self',assignment_version:0,team_id:'demo',policy:{shared_enabled:true,transfers_enabled:true},
+  private workspace: Workspace = {endpoint_id:'demo-self',assignment_version:0,team_id:'demo',policy:{shared_enabled:true,transfers_enabled:true,features:demoScreensOff()},
     resources:[{id:'notice',kind:'notice',title:t('team.demoNotice'),content:t('team.demoNoticeText'),revision:1,read:false},
       {id:'objection',kind:'objection',title:t('team.demoObjection'),content:t('team.demoObjectionText'),revision:1,read:false}],help:[],
     peers:[{id:'demo-peer',name:'Camille Bernard',extension:'1002',assignment_version:0,connected:true}]};
