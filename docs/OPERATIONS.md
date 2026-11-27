@@ -1,8 +1,25 @@
 # Construction et validation
 
+## Journal, Audio et Contacts réglables par équipe — 27 novembre 2026
+
+Release active **`20261127-ecrans-equipe`**, source `5f5ed64`, depuis
+**13:50:05 Douala** sur Hermes, sur accord explicite de Franck : le Journal,
+l’Audio et les Contacts disparaissent du téléphone quand le superviseur les
+éteint pour l’équipe ou pour l’agent (Supervision `20261127-ecrans`, publiée
+juste avant à 13:49:03). Build live isolé avec `VITE_CALL_WAITING_LINES=*` ;
+270 fichiers, seuls `index.html` et `main-CarAIhZ2.js` changent (CSS
+`main-dF3nXaP_.css` inchangé, adresses de service identiques dans le bundle).
+Archive sans `._*`, SHA-256 `69c32040077b3947f9e7399667c28cb2ed940f1cedef73850978b62d49f52fa8`.
+346 tests, typage, lint, build ; index public identique au build, scripts
+servis identiques, anciens scripts conservés, repli SPA 200, page publique sans
+erreur console, Caddy et supervision actifs. Non essayé sur une ligne réelle
+avec un écran éteint. Sauvegarde :
+`/root/apisnix-phone-backups/20261127-ecrans-equipe/`. Retour : repointer
+`current` sur **20261127-journal-numeros**.
+
 ## Numéros lisibles dans le journal sur téléphone — 27 novembre 2026
 
-Release active **`20261127-journal-numeros`**, source `0d2d13d`, depuis
+Release **`20261127-journal-numeros`** (remplacée le 27 novembre à 13:50:05), source `0d2d13d`, depuis
 **11:33:45 Douala** sur Hermes, sur accord explicite de Franck : sur une ligne
 de journal de 440 px ou moins, l’avatar disparaît et la ligne se resserre pour
 afficher les numéros en entier. Build live isolé avec `VITE_CALL_WAITING_LINES=*` ;

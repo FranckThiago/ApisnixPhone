@@ -12,8 +12,9 @@ permise (`src/team/screens.ts`). Sans journal, l’entrée du menu ouvre les
 Rappels, l’historique de ligne n’est plus demandé et la pastille d’appels
 manqués n’apparaît plus. Le carnet de contacts n’est pas effacé. Le serveur de
 supervision refuse lui-même le journal et l’audio à l’agent. Démonstration :
-`?ecrans-off=journal,audio,contacts`. **Non publié sur Hermes à ce stade** ; le
-serveur de supervision doit être publié avant.
+`?ecrans-off=journal,audio,contacts`. En service sur Hermes depuis le
+27 novembre à 13:50:05 Douala (release `20261127-ecrans-equipe`), après la
+supervision.
 
 ## Choix de l’affichage mobile ou ordinateur — 23 novembre 2026
 
