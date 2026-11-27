@@ -385,9 +385,10 @@ Sauvegarde, preuve HTTPS et retour dans OPERATIONS.
 ## Rappels urgents en rouge et calendrier allégé — 27 novembre 2026
 
 Un rappel dû dans 5 minutes ou moins, ou déjà en retard, a son bouton d’appel
-rouge avec un bord qui clignote (`isUrgentCallback`, `CALLBACK_URGENT_MS`) :
+entouré d’un contour rouge qui clignote ; le bouton reste vert, un bouton rouge
+évoquant « raccrocher » (`isUrgentCallback`, `CALLBACK_URGENT_MS`) :
 carte « Rappels » sous le clavier, page Rappels et rappels de groupe. Sans
-animation si le système demande moins de mouvement (anneau rouge fixe). Le
+animation si le système demande moins de mouvement (contour rouge fixe). Le
 calendrier du planificateur masque les semaines déjà passées ; les jours
 choisissables sont des cases bordées, les jours passés s’effacent, aujourd’hui
 est cerclé de vert. Le planificateur se ferme par une croix en haut à droite

@@ -172,10 +172,11 @@ h1 { font-size: 29px; line-height: 1.15; letter-spacing: -.8px; font-weight: 750
 .numbers li > span:not(.avatar) { flex: 1; min-width: 0; } .numbers b, .numbers small { display: block; }
 .mini-call { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 8px 13px; border-radius: 10px; font-weight: 650; color: #fff; background: linear-gradient(180deg, #10b981, #047857); box-shadow: 0 6px 14px -7px #047857; }
 .mini-call:hover:not(:disabled) { filter: brightness(1.07); } .mini-call.wide { width: 100%; }
-/* A callback due within five minutes, or late: the call button turns red and its edge blinks (Franck, 27 Nov 2026). */
-.mini-call.urgent, .row-call.urgent { color: #fff; background: linear-gradient(180deg, #ef4444, #b91c1c); box-shadow: 0 6px 14px -7px #b91c1c; animation: urgent-edge 1s ease-in-out infinite; }
-@keyframes urgent-edge { 50% { box-shadow: 0 0 0 2px var(--surface), 0 0 0 5px #ef4444; } }
-@media (prefers-reduced-motion: reduce) { .mini-call.urgent, .row-call.urgent { animation: none; box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #ef4444; } }
+/* A callback due within five minutes, or late: the call button stays green (red would read as hang up),
+   only a red edge around it blinks (Franck, 27 Nov 2026). */
+.mini-call.urgent, .row-call.urgent { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #ef4444; animation: urgent-edge 1s ease-in-out infinite; }
+@keyframes urgent-edge { 50% { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #ef444400; } }
+@media (prefers-reduced-motion: reduce) { .mini-call.urgent, .row-call.urgent { animation: none; } }
 .contact-note { padding: 12px 14px; border-radius: 12px; background: var(--yellow-soft); border-left: 3px solid var(--yellow-strong); }
 .contact-detail h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-top: 4px; }
 .timeline { display: grid; gap: 2px; } .timeline li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-bottom: 1px dashed var(--border); color: var(--muted); }
