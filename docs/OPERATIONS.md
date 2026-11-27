@@ -1,8 +1,22 @@
 # Construction et validation
 
+## Numéros lisibles dans le journal sur téléphone — 27 novembre 2026
+
+Release active **`20261127-journal-numeros`**, source `0d2d13d`, depuis
+**11:33:45 Douala** sur Hermes, sur accord explicite de Franck : sur une ligne
+de journal de 440 px ou moins, l’avatar disparaît et la ligne se resserre pour
+afficher les numéros en entier. Build live isolé avec `VITE_CALL_WAITING_LINES=*` ;
+270 fichiers, seuls `index.html`, `main-FHT8WsfH.js` (contenu identique, renommé)
+et `main-dF3nXaP_.css` changent. Archive sans `._*`, SHA-256
+`899b5cda7b8b5a94ba35451a96c8f145ca9a93073da58c8aa1c6d9fb45dff537`. 346 tests,
+typage, lint, build ; HTTPS et empreintes validés par le script, règle présente
+dans le CSS public, page sans erreur console, Caddy et supervision actifs.
+Sauvegarde : `/root/apisnix-phone-backups/20261127-journal-numeros/`. Retour :
+repointer `current` sur **20261125-micro-icone**.
+
 ## Actualiser les micros en icône — 25 novembre 2026
 
-Release active **`20261125-micro-icone`**, source `460f89e`, depuis **14:10:45
+Release **`20261125-micro-icone`** (remplacée le 27 novembre à 11:33:45), source `460f89e`, depuis **14:10:45
 Douala** sur Hermes, sur accord explicite de Franck : dans Réglages › Audio ›
 Micro, une icône ↻ à côté de la liste Microphone relit les micros. Build live
 isolé avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html` et

@@ -9,7 +9,8 @@ surtout à côté de « Issue inconnue ». Nouvelle requête `@container journal
 Le nom passe de ~60 px à 120–160 px à 375 px de large : « 14184769701 » +
 « Issue inconnue » et « 00339703812345 » s’affichent en entier. Au-dessus de
 440 px, rien ne change. 346 tests, typage, lint, build ; vérifié en
-démonstration à 375 px. Non publié. Manuels clients non modifiés.
+démonstration à 375 px. Publié le 27 novembre à 11:33:45 Douala, release
+`20261127-journal-numeros`, puis contrôlé en ligne. Manuels clients non modifiés.
 
 ## Actualiser les micros en icône — 25 novembre 2026
 
