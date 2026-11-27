@@ -11,6 +11,7 @@ retard : rouge, bord clignotant (`urgent-edge`), anneau fixe en mouvement
 réduit ; appliqué à la carte Rappels du clavier, à la page Rappels et aux
 rappels de groupe. Nouveau `isUrgentCallback` dans `domain/callbacks.ts`, testé.
 348 tests, typage, build ; vérifié en démonstration (thèmes sombre et clair).
+Publié le 27 novembre à 15:13:18 Douala, release `20261127-rappels-urgents`.
 Manuels clients non modifiés.
 
 ## Numéros lisibles dans le journal sur téléphone — 27 novembre 2026

@@ -1,8 +1,21 @@
 # Construction et validation
 
+## Rappels urgents en rouge, calendrier allégé, Audio sans « Fermer l’accès » — 27 novembre 2026
+
+Release active **`20261127-rappels-urgents`**, source `e013e59`, depuis
+**15:13:18 Douala** sur Hermes, sur accord explicite de Franck. Build live isolé
+avec `VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
+`main---cbHood.js` et `main-Kc53z6q6.css` changent par rapport à
+`20261127-ecrans-equipe`. Archive sans `._*`, SHA-256
+`8e8319ef744fa5a265c5e260454b22684926f4aa5bdc89b4a1e4c6d1524992e0`.
+348 tests, typage, lint, build ; fichiers servis vérifiés en HTTPS par le script,
+CSS en ligne contrôlé (`urgent-edge` présent). Sauvegarde :
+`/root/apisnix-phone-backups/20261127-rappels-urgents/`. Retour : repointer
+`current` sur **20261127-ecrans-equipe**.
+
 ## Journal, Audio et Contacts réglables par équipe — 27 novembre 2026
 
-Release active **`20261127-ecrans-equipe`**, source `5f5ed64`, depuis
+Release **`20261127-ecrans-equipe`** (remplacée le 27 novembre à 15:13:18), source `5f5ed64`, depuis
 **13:50:05 Douala** sur Hermes, sur accord explicite de Franck : le Journal,
 l’Audio et les Contacts disparaissent du téléphone quand le superviseur les
 éteint pour l’équipe ou pour l’agent (Supervision `20261127-ecrans`, publiée
