@@ -1,5 +1,16 @@
 # Journal des changements
 
+## Numéros lisibles dans le journal sur téléphone — 27 novembre 2026
+
+Demande de Franck (captures iPhone) : des numéros étaient coupés (« 14184… »),
+surtout à côté de « Issue inconnue ». Nouvelle requête `@container journal-row
+(max-width: 440px)` : l’avatar (souvent une silhouette vide) disparaît, les
+écarts se resserrent, le résultat est limité à 76 px et le bouton ⓘ s’affine.
+Le nom passe de ~60 px à 120–160 px à 375 px de large : « 14184769701 » +
+« Issue inconnue » et « 00339703812345 » s’affichent en entier. Au-dessus de
+440 px, rien ne change. 346 tests, typage, lint, build ; vérifié en
+démonstration à 375 px. Non publié. Manuels clients non modifiés.
+
 ## Actualiser les micros en icône — 25 novembre 2026
 
 Demande de Franck : même style que la sortie. Dans Réglages › Audio › Micro, une

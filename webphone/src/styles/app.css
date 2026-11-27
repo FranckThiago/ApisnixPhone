@@ -507,6 +507,14 @@ input[type=range] { accent-color: var(--brand); }
   .journal-secondary { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .call-summary .where, .call-summary .when { display: none; }
 }
+/* Phone width: the number comes first (Franck, 27 Nov 2026). The avatar, often an empty silhouette,
+   gives its room back and the gaps tighten; the direction icon and the coloured name keep the meaning. */
+@container journal-row (max-width: 440px) {
+  .call-summary { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; padding-left: 12px; padding-right: 4px; }
+  .call-summary > .avatar { display: none; }
+  .call-summary .result { max-width: 76px; font-size: 12px; }
+  .row-info { width: 30px; margin-right: 4px; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
 /* ---------- Audio (recordings of the person's own phone) ---------- */
