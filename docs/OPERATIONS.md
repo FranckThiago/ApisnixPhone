@@ -1,8 +1,22 @@
 # Construction et validation
 
+## Icônes des statistiques du journal en couleur — 27 novembre 2026
+
+Release active **`20261127-journal-icones`**, source `677d2af`, depuis
+**22:31:19 Douala** sur Hermes, sur accord explicite de Franck : icône
+« Sortants aboutis » verte, « Manqués » rouge. Contient aussi les diagnostics
+d’appel de `20261127-diagnostics`. Build live isolé avec
+`VITE_CALL_WAITING_LINES=*` ; 270 fichiers, seuls `index.html`,
+`main-lwdQJYyl.js` et `main-CsYj1-SP.css` changent. Archive sans `._*`, SHA-256
+`c50169392edfca21ce45e3c721202a38201af206d9f0bd107a7d344c17d601dc`.
+388 tests, typage, lint, build ; fichiers servis vérifiés en HTTPS par le script,
+CSS en ligne contrôlé. Sauvegarde :
+`/root/apisnix-phone-backups/20261127-journal-icones/`. Retour : repointer
+`current` sur **20261127-diagnostics**.
+
 ## Motifs d’échec plus précis — 27 novembre 2026
 
-Release active **`20261127-diagnostics`**, source `967eaab`, depuis
+Release **`20261127-diagnostics`** (remplacée le 27 novembre à 22:31:19), source `967eaab`, depuis
 **21:00:45 Douala** sur Hermes : diagnostic FR/EN/ES par code, motif explicite
 et cause Q.850. Un 480 générique peut être confirmé occupé/sans réponse par le
 journal autorisé de la ligne, avec correspondance prudente des numéros et des

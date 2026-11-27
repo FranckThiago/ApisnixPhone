@@ -5,6 +5,7 @@
 Demande de Franck : dans le journal, l’icône « Sortants aboutis » est verte et
 celle de « Manqués » rouge (même à zéro), en thèmes clair et sombre. Classes
 `reached`/`missed` sur les cartes ; CSS seul. Vérifié en démonstration.
+Publié le 27 novembre à 22:31:19 Douala, release `20261127-journal-icones`.
 
 ## Erreurs Asterisk analysées, cause Q.850 activée sur le PBX — 27 novembre 2026
 
